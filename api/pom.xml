@@ -22,13 +22,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>net.java</groupId>
-        <artifactId>jvnet-parent</artifactId>
-        <version>3</version>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.1</version>
     </parent>
 
-    <groupId>javax.enterprise.concurrent</groupId>
-    <artifactId>javax.enterprise.concurrent-api</artifactId>
+    <groupId>jakarta.enterprise.concurrent</groupId>
+    <artifactId>jakarta.enterprise.concurrent-api</artifactId>
     <version>1.2-SNAPSHOT</version>
     <name>javax.enterprise.concurrent-api</name>
     <description>JSR 236:Concurrency Utilities for Java EE</description>
