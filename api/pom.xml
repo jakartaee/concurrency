@@ -146,8 +146,9 @@
             <plugin>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>spec-version-maven-plugin</artifactId>
-                <version>1.2</version>
+                <version>1.5</version>
                 <configuration>
+                    <specMode>jakarta</specMode>
                     <spec>
                         <nonFinal>${non.final}</nonFinal>
                         <jarType>api</jarType>
@@ -166,7 +167,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>           
+            </plugin>
             <!--
               This plugin is reponsible for packaging artifacts
               as OSGi bundles.  Please refer to
@@ -317,19 +318,6 @@
                     </execution>
                 </executions>
             </plugin>
-	    <plugin>
-                 <groupId>org.apache.maven.plugins</groupId>
-                 <artifactId>maven-gpg-plugin</artifactId>
-                     <executions>
-                         <execution>
-                             <id>sign-artifacts</id>
-		             <phase>verify</phase>
-                             <goals>
-                                 <goal>sign</goal>
-                             </goals>
-                         </execution>
-                     </executions>
-             </plugin>
         </plugins>
     </build>
 
@@ -341,4 +329,28 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
