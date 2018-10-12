@@ -148,6 +148,7 @@
                 <artifactId>spec-version-maven-plugin</artifactId>
                 <version>1.5</version>
                 <configuration>
+                    <specMode>jakarta</specMode>
                     <spec>
                         <nonFinal>${non.final}</nonFinal>
                         <jarType>api</jarType>
