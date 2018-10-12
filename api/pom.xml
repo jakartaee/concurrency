@@ -142,11 +142,11 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins><!--
+        <plugins>
             <plugin>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>spec-version-maven-plugin</artifactId>
-                <version>1.2</version>
+                <version>1.5</version>
                 <configuration>
                     <spec>
                         <nonFinal>${non.final}</nonFinal>
@@ -166,7 +166,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->           
+            </plugin>         
             <!--
               This plugin is reponsible for packaging artifacts
               as OSGi bundles.  Please refer to
