@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
 
     <groupId>jakarta.enterprise.concurrent</groupId>
@@ -167,7 +167,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>         
+            </plugin>
             <!--
               This plugin is reponsible for packaging artifacts
               as OSGi bundles.  Please refer to
@@ -185,7 +185,7 @@
                         <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
                         <Extension-Name>${spec.extension.name}</Extension-Name>
                         <Implementation-Version>${spec.implementation.version}</Implementation-Version>
-                        <Specification-Version>${spec.specification.version}</Specification-Version>                         
+                        <Specification-Version>${spec.specification.version}</Specification-Version>
                         <specversion>${spec.specification.version}</specversion>
                         <Export-Package>${packages.export}</Export-Package>
                     </instructions>
