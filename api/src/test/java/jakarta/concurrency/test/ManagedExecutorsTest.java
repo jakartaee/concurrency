@@ -14,8 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package javax.enterprise.concurrent;
+package jakarta.concurrency.test;
 
+import jakarta.concurrency.ManagedExecutorService;
+import jakarta.concurrency.ManagedTask;
+import jakarta.concurrency.ManagedExecutors;
+import jakarta.concurrency.ManagedTaskListener;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
