@@ -1,6 +1,6 @@
 # Notices for Jakarta Concurrency
 
-This content is produced and maintained by theJakarta Concurrency project.
+This content is produced and maintained by the Jakarta Concurrency project.
 
  * Project home: https://projects.eclipse.org/projects/ee4j.cu
 
