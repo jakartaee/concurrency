@@ -22,13 +22,13 @@ import java.util.concurrent.ThreadFactory;
  * A manageable version of a <CODE>ThreadFactory</CODE>.<p>
  *
  * A ManagedThreadFactory extends the Java&trade; SE ThreadFactory to provide 
- * a method for creating threads for execution in a Java&trade; EE environment.
+ * a method for creating threads for execution in a Jakarta&trade; EE environment.
  * Implementations of the ManagedThreadFactory are
- * provided by a Java&trade; EE Product Provider.  Application Component Providers
+ * provided by a Jakarta&trade; EE Product Provider.  Application Component Providers
  * use the Java Naming and Directory Interface&trade; (JNDI) to look-up instances of one
  * or more ManagedThreadFactory objects using resource environment references.<p>
  *
- * The Concurrency Utilities for Java&trade; EE specification describes several
+ * The Jakarta EE Concurrency specification describes several
  * behaviors that a ManagedThreadFactory can implement.  The Application
  * Component Provider and Deployer identify these requirements and map the
  * resource environment reference appropriately.<p>

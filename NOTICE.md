@@ -1,13 +1,12 @@
-# Notices for Eclipse Project for Concurrency Utilities
+# Notices for Jakarta Concurrency
 
-This content is produced and maintained by the Eclipse Project for Concurrency
-Utilities project.
+This content is produced and maintained by the Jakarta Concurrency project.
 
  * Project home: https://projects.eclipse.org/projects/ee4j.cu
 
 ## Trademarks
 
-Eclipse Project for Concurrency Utilities is a trademark of the Eclipse
+Jakarta Concurrency is a trademark of the Eclipse
 Foundation.
 
 ## Declared Project Licenses

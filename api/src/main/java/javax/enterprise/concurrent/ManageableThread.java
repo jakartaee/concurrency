@@ -18,7 +18,7 @@ package javax.enterprise.concurrent;
 
 /**
  *
- * Interface to be implemented by the Java&trade; EE product providers on threads
+ * Interface to be implemented by the Jakarta&trade; EE product providers on threads
  * that are created by calling 
  * {@link ManagedThreadFactory#newThread(java.lang.Runnable) }.
  * 

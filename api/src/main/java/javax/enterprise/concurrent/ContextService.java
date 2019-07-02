@@ -22,7 +22,7 @@ import java.util.Map;
  * The ContextService provides methods for creating dynamic proxy objects
  * (as defined by {@link java.lang.reflect.Proxy java.lang.reflect.Proxy}) with
  * the addition of context typically associated with applications executing in a
- * Java&trade; EE environment. 
+ * Jakarta&trade; EE environment. 
  * Examples of such context are classloading, namespace, security, etc.
  * <p>
  *
@@ -34,8 +34,8 @@ import java.util.Map;
  * <li>The proxy instance will implement all of the interfaces specified on the
  *     {@code createContextualProxy} methods.
  * <li>The object to have a proxy instance created for should not be a 
- *     component managed by the Java&trade; EE Product Provider, such as a web
- *     component or an EJB.
+ *     component managed by the Jakarta&trade; EE Product Provider, such as a web
+ *     component or a Jakarta&trade; Enterprise Bean.
  * <li>All interface method invocations on a proxy instance run in the
  *     creator's context with the exception of {@code hashCode}, 
  *     {@code equals}, {@code toString} and all other methods declared in 
@@ -48,7 +48,7 @@ import java.util.Map;
  * <li>Execution properties are to be used for controlling how various contextual
  *     information is retrieved and applied to the thread. Although application
  *     components can store arbitrary property keys and values, it is not
- *     recommended. Java&trade; EE product providers may impose limits to the 
+ *     recommended. Jakarta&trade; EE product providers may impose limits to the 
  *     size of the keys and values.
  * </ul>
  * <P>
@@ -76,7 +76,7 @@ public interface ContextService {
    * <pre>
    *  public class MyRunnable implements Runnable {
    *      public void run() {
-   *          System.out.println(&quot;MyRunnable.run with Java EE Context available.&quot;);
+   *          System.out.println(&quot;MyRunnable.run with Jakarta EE Context available.&quot;);
    *      }
    *  }
    *  
@@ -119,7 +119,7 @@ public interface ContextService {
    * <pre>
    *  public class MyRunnableWork implements Runnable, SomeWorkInterface {
    *      public void run() {
-   *          System.out.println(&quot;MyRunnableWork.run with Java EE Context available.&quot;);
+   *          System.out.println(&quot;MyRunnableWork.run with Jakarta EE Context available.&quot;);
    *      }
    *      public void someWorkInterfaceMethod() {
    *          ...

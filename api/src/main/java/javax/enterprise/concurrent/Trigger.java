@@ -19,7 +19,7 @@ package javax.enterprise.concurrent;
 /**
  * Triggers allow application developers to plug in rules for when 
  * and how often a task should run. The trigger can be as simple as 
- * a single, absolute date-time or can include Java&trade; EE business 
+ * a single, absolute date-time or can include Jakarta&trade; EE business 
  * calendar logic. A Trigger implementation is created by the 
  * application developer (or may be supplied to the application 
  * externally) and is registered with a task when it is submitted 

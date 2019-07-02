@@ -1,12 +1,10 @@
-# Contributing to Eclipse Project for Concurrency Utilities
+# Contributing to Jakarta Concurrency
 
 Thanks for your interest in this project.
 
 ## Project description
 
-Concurrency Utilities for Java EE provides a simple, standardized API for using
-concurrency from application components without compromising container integrity
-while still preserving the Java EE platform's fundamental benefits.
+Jakarta Concurrency provides a specification document, API and TCK for using concurrency from application components without compromising container integrity while still preserving the Jakarta EE platform's fundamental benefits.
 
  * https://projects.eclipse.org/projects/ee4j.cu
 
