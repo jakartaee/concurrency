@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService;
  * A ManagedExecutorService extends the Java&trade; SE ExecutorService to provide
  * methods for submitting tasks for execution in a Jakarta&trade; EE environment. 
  * Implementations of the ManagedExecutorService are
- * provided by a Jakarta&trade; EE Product Provider.  Application Component Providers
+ * provided by a Jakarta EE Product Provider.  Application Component Providers
  * use the Java Naming and Directory Interface&trade; (JNDI) to look-up instances of one
  * or more ManagedExecutorService objects using resource environment references.
  * ManagedExecutorService instances can also be injected into application
@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService;
  * Enterprise Beans or for processing async tasks for Servlets that
  * supports asynchronous processing.
  * <p>
- * Tasks are run in managed threads provided by the Jakarta&trade; EE Product Provider
+ * Tasks are run in managed threads provided by the Jakarta EE Product Provider
  * and are run within the application component context that submitted the task. 
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a

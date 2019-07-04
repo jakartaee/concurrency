@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * to provide methods for submitting delayed or periodic tasks for execution in
  * a Jakarta&trade; EE environment.
  * Implementations of the ManagedScheduledExecutorService are
- * provided by a Jakarta&trade; EE Product Provider.  Application Component Providers
+ * provided by a Jakarta EE Product Provider.  Application Component Providers
  * use the Java Naming and Directory Interface&trade; (JNDI) to look-up instances of one
  * or more ManagedScheduledExecutorService objects using resource environment references.
  * ManagedScheduledExecutorService instances can also be injected into application

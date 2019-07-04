@@ -45,7 +45,7 @@ public interface ManagedTask {
   /**
    * Execution property to be returned in {@link #getExecutionProperties()} or
    * {@link ContextService#createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class) ContextService.createContextualProxy()}
-   * to inform the Jakarta&trade; EE Product Provider under which transaction 
+   * to inform the Jakarta EE Product Provider under which transaction 
    * should the task or proxy method of contextual proxy object be executed
    * in.
    * 
