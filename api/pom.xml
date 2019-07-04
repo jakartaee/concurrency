@@ -242,7 +242,7 @@
                     <doctitle>Jakarta Concurrency ${project.version} Specification</doctitle>
                     <bottom>
 <![CDATA[Copyright &#169; 2019,
-    <a href="http://www.payara.fish">Payara Services Limited</a>
+    <a href="http://www.oracle.com">Oracle</a>
     and/or its affiliates.
     Use is subject to
     <a href="{@docRoot}/doc-files/speclicense.html target="_top">license terms</a>.
