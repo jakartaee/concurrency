@@ -34,8 +34,8 @@ import java.util.Map;
  * <li>The proxy instance will implement all of the interfaces specified on the
  *     {@code createContextualProxy} methods.
  * <li>The object to have a proxy instance created for should not be a 
- *     component managed by the Jakarta&trade; EE Product Provider, such as a web
- *     component or a Jakarta&trade; Enterprise Bean.
+ *     component managed by the Jakarta EE Product Provider, such as a web
+ *     component or a Jakarta Enterprise Bean.
  * <li>All interface method invocations on a proxy instance run in the
  *     creator's context with the exception of {@code hashCode}, 
  *     {@code equals}, {@code toString} and all other methods declared in 
@@ -48,7 +48,7 @@ import java.util.Map;
  * <li>Execution properties are to be used for controlling how various contextual
  *     information is retrieved and applied to the thread. Although application
  *     components can store arbitrary property keys and values, it is not
- *     recommended. Jakarta&trade; EE product providers may impose limits to the 
+ *     recommended. Jakarta EE product providers may impose limits to the 
  *     size of the keys and values.
  * </ul>
  * <P>
