@@ -1,0 +1,8 @@
+= Jakarta Concurrency Specification, Version 1.1
+
+:sectnums:
+== Introduction
+
+Jakarta Concurrency provides a specification document, API and TCK for using concurrency from application components without compromising container integrity while still preserving the Jakarta EE platform's fundamental benefits.
+
+
