@@ -29,10 +29,10 @@
 
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-    <version>1.2-SNAPSHOT</version>
-    <name>javax.enterprise.concurrent-api</name>
-    <description>JSR 236:Concurrency Utilities for Java EE</description>
-    <url>https://github.com/javaee/concurrency-ee-spec</url>
+    <version>1.1.2-SNAPSHOT</version>
+    <name>jakarta.enterprise.concurrent-api</name>
+    <description>Jakarta Concurrency</description>
+    <url>https://github.com/eclipse-ee4j/concurrency-api</url>
 
      <licenses>
         <license>
@@ -66,7 +66,7 @@
         <api_package>javax.enterprise.concurrent</api_package>
         <non.final>false</non.final>
         <last.spec_version>0.0</last.spec_version>
-        <next.spec_version>1.2</next.spec_version>
+        <next.spec_version>1.1</next.spec_version>
         <spec.version>${next.spec_version}</spec.version>
         <new.spec.version />
         <build_number />
@@ -239,9 +239,9 @@
                 <version>2.8</version>
                 <configuration>
 		    <additionalparam>-Xdoclint:none</additionalparam>
-                    <doctitle>Concurrency Utilities for Java EE ${project.version} API Specification</doctitle>
+                    <doctitle>Jakarta Concurrency ${project.version} specification</doctitle>
                     <bottom>
-<![CDATA[Copyright &#169; 1996-2013,
+<![CDATA[Copyright &#169; 1996-2019,
     <a href="http://www.oracle.com">Oracle</a>
     and/or its affiliates. All Rights Reserved.
     Use is subject to

@@ -36,7 +36,7 @@ public interface ManagedTask {
    * Execution property to be returned in {@link #getExecutionProperties()} or
    * {@link ContextService#createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class) ContextService.createContextualProxy()}
    * to provide hint about whether the task could take a long time to complete.
-   * Java&trade; EE Product Providers may make use of this hint value to 
+   * Jakarta&trade; EE Product Providers may make use of this hint value to 
    * decide how to allocate thread resource for running this task.
    * Valid values are "true" or "false".
    */
@@ -45,7 +45,7 @@ public interface ManagedTask {
   /**
    * Execution property to be returned in {@link #getExecutionProperties()} or
    * {@link ContextService#createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class) ContextService.createContextualProxy()}
-   * to inform the Java&trade; EE Product Provider under which transaction 
+   * to inform the Jakarta EE Product Provider under which transaction 
    * should the task or proxy method of contextual proxy object be executed
    * in.
    * 
@@ -63,7 +63,7 @@ public interface ManagedTask {
    * will run within the transaction (if any) of the execution thread. A
    * {@link javax.transaction.UserTransaction} will only be available if it is 
    * also available in the execution thread (for example, when the proxy method
-   * is invoked from a Servlet or Bean Managed Transaction EJB). When there is
+   * is invoked from a Servlet or Bean Managed Transaction). When there is
    * no existing transaction on the execution thread, such as when running tasks
    * that are submitted to a {@link ManagedExecutorService} or a
    * {@link ManagedScheduledExecutorService}, a 

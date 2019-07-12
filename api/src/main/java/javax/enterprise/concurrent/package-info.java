@@ -15,6 +15,6 @@
  */
 
 /**
- * Classes and interfaces for concurrent programming in Java EE&trade; applications. 
+ * Classes and interfaces that make up the Jakarta Concurrency specification. 
  */
 package javax.enterprise.concurrent;

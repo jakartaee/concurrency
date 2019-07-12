@@ -22,25 +22,25 @@ import java.util.concurrent.ExecutorService;
  * A manageable version of a {@link java.util.concurrent.ExecutorService}.
  * <p>
  * A ManagedExecutorService extends the Java&trade; SE ExecutorService to provide
- * methods for submitting tasks for execution in a Java&trade; EE environment. 
+ * methods for submitting tasks for execution in a Jakarta&trade; EE environment. 
  * Implementations of the ManagedExecutorService are
- * provided by a Java&trade; EE Product Provider.  Application Component Providers
+ * provided by a Jakarta EE Product Provider.  Application Component Providers
  * use the Java Naming and Directory Interface&trade; (JNDI) to look-up instances of one
  * or more ManagedExecutorService objects using resource environment references.
  * ManagedExecutorService instances can also be injected into application
  * components through the use of the {@code Resource} annotation.
  * <p>
- * The Concurrency Utilities for Java&trade; EE specification describes several
+ * The Jakarta Concurrency specification describes several
  * behaviors that a ManagedExecutorService can implement.  The Application
  * Component Provider and Deployer identify these requirements and map the
  * resource environment reference appropriately.
  * <p>
  * The most common uses for a ManagedExecutorService is to run short-duration asynchronous
- * tasks such as for processing of asynchronous methods in Enterprise
- * JavaBean&trade; (EJB&trade;) or for processing async tasks for Servlets that
+ * tasks such as for processing of asynchronous methods in Jakarta
+ * Enterprise Beans or for processing async tasks for Servlets that
  * supports asynchronous processing.
  * <p>
- * Tasks are run in managed threads provided by the Java&trade; EE Product Provider
+ * Tasks are run in managed threads provided by the Jakarta EE Product Provider
  * and are run within the application component context that submitted the task. 
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
