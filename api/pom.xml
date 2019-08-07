@@ -29,7 +29,7 @@
 
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
     <name>jakarta.enterprise.concurrent-api</name>
     <description>Jakarta Concurrency</description>
     <url>https://github.com/eclipse-ee4j/concurrency-api</url>
