@@ -1,4 +1,4 @@
-= Jakarta Concurrency Specification, Version 1.0
+= Jakarta Concurrency Specification, Version 1.2
 
 :sectnums:
 == Introduction

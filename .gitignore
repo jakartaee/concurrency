@@ -1,3 +1,10 @@
-/spec/target/
-/jakarta-concurrency-spec/target/
-/specification/target/
+.classpath
+.project
+.settings/
+target/
+*~
+*.iml
+*nbactions.xml
+.vscode/
+.idea
+nb-configuration.xml
