@@ -27,7 +27,7 @@
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>concurrency-spec</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.3-SNAPSHOT</version>
     <name>Jakarta Concurrency Specification</name>
 
     <properties>
