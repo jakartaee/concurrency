@@ -65,7 +65,7 @@
 
         <api_package>jakarta.enterprise.concurrent</api_package>
         <non.final>false</non.final>
-        <last.spec_version>0.1</last.spec_version>
+        <last.spec_version>1.1</last.spec_version>
         <next.spec_version>1.2</next.spec_version>
         <spec.version>${next.spec_version}</spec.version>
         <new.spec.version />
