@@ -1,7 +1,7 @@
 Jakarta Concurrency Specification
 ============================
 
-This project generates the Jakarta Concurrency 1.0 Specification.
+This project generates the Jakarta Concurrency 2.0 Specification.
 
 Building
 --------
