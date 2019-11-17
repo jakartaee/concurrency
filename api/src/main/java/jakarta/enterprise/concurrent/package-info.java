@@ -17,4 +17,4 @@
 /**
  * Classes and interfaces that make up the Jakarta Concurrency specification. 
  */
-package javax.enterprise.concurrent;
+package jakarta.enterprise.concurrent;
