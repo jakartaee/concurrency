@@ -25,7 +25,7 @@ import java.util.Map;
  * a {@link ManagedTaskListener} to get notification of lifecycle events of
  * the task, or to provide additional execution properties.
  * <p>
- * See also {@link ManagedExecutors#managedTask(java.util.concurrent.Callable, java.util.Map, javax.enterprise.concurrent.ManagedTaskListener) ManagedExecutors.managedTask()}.
+ * See also {@link ManagedExecutors#managedTask(java.util.concurrent.Callable, java.util.Map, jakarta.enterprise.concurrent.ManagedTaskListener) ManagedExecutors.managedTask()}.
  * <p>
  * 
  * @since 1.0
