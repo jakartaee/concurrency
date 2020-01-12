@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Exception indicating that the result of a value-producing task cannot be 
  * retrieved because the task run was skipped. A task can be skipped if the 
- * {@link Trigger#skipRun(javax.enterprise.concurrent.LastExecution, java.util.Date)} 
+ * {@link Trigger#skipRun(jakarta.enterprise.concurrent.LastExecution, java.util.Date)} 
  * method returns true or if it throws an unchecked exception.
  * <p>
  * Use the {@link Throwable#getCause()} method to determine if an unchecked 
