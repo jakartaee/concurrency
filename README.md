@@ -6,7 +6,7 @@ This project is part of the overall Jakarta EE platform and is a project within 
 
 We have a [mailing list](https://accounts.eclipse.org/mailing-list/cu-dev) for discussions.
 
-We have a [Jenkins Instance](https://jenkins.eclipse.org/cu/) set up for building and testing.
+We have a [Jenkins Instance](https://ci.eclipse.org/cu/) set up for building and testing.
 
 
 
