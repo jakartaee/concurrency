@@ -64,7 +64,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <api_package>jakarta.enterprise.concurrent</api_package>
-        <non.final>false</non.final>
+        <non.final>true</non.final>
         <last.spec_version>1.1</last.spec_version>
         <next.spec_version>2.0</next.spec_version>
         <spec.version>${next.spec_version}</spec.version>
