@@ -155,7 +155,7 @@
                         <specVersion>${spec.version}</specVersion>
                         <newSpecVersion>${new.spec.version}</newSpecVersion>
                         <specBuild>${build_number}</specBuild>
-                        <specImplVersion>${project.version}</specImplVersion>
+                        <specImplVersion>2.0.0-RC1</specImplVersion>
                         <apiPackage>${api_package}</apiPackage>
                     </spec>
                 </configuration>
