@@ -163,7 +163,9 @@
                     <execution>
                         <goals>
                             <goal>set-spec-properties</goal>
+<!-- reenable before 2.0 release after plugin is fixed 
                             <goal>check-module</goal>
+-->
                         </goals>
                     </execution>
                 </executions>
