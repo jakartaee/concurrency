@@ -22,7 +22,7 @@
     <formats>
 	<format>zip</format>
     </formats>
-    <baseDirectory>concurrency-spec</baseDirectory>
+    <baseDirectory>jakarta-concurrency-spec</baseDirectory>
     <fileSets>
 	<fileSet>
 	    <directory>target/generated-docs</directory>
