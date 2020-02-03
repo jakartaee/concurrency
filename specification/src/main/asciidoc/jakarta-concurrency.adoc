@@ -1,7 +1,7 @@
 :sectnums:
-= Jakarta Concurrency Specification, Version 1.0
+= Jakarta Concurrency Specification, Version 2.0
 
-Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
@@ -10,67 +10,67 @@ affiliates. Other names may be trademarks of their respective owners.
 
 === Overview
 
-Java™ Platform, Enterprise Edition (Java EE) server containers such as
+Jakarta™ Platform, Enterprise Edition (Jakarta EE) server containers such as
 the enterprise bean or web component container do not recommend using
 common Java SE concurrency APIs such as java.lang.Thread or
 java.util.Timer directly.
 
-The server containers provide runtime support for Java EE application
-components (such as servlets and Enterprise JavaBeans™ (EJB™)). They
+The server containers provide runtime support for Jakarta EE application
+components (such as Jakarta Servlets and Jakarta Enterprise Beans). They
 provide a layer between application component code and platform services
 and resources. All application component code is run on a thread managed
 by a container and each container typically expects all access to
 container-supplied objects to occur on the same thread.
 
 It is because of this behavior that application components are typically
-unable to reliably use other Java EE platform services from a thread
+unable to reliably use other Jakarta EE platform services from a thread
 that is not managed by the container.
 
-Java EE Product Providers (see chapter 2.11 of the Java EE 7
+Jakarta EE Product Providers (see chapter 2.11 of the Jakarta EE 9
 Specification) also discourage the use of resources in a non-managed
 way, because it can potentially undermine the enterprise features that
 the platform is designed to provide such as availability, security, and
 reliability and scalability.
 
 This specification provides a simple, standardized API for using
-concurrency from Java EE application components without compromising the
+concurrency from Jakarta EE application components without compromising the
 integrity of the container while still preserving the fundamental
-benefits of the Java EE platform.
+benefits of the Jakarta EE platform.
 
 === Goals of this specification
 
 This specification was developed with the following goals in mind:
 
-* Utilize existing applicable Java EE platform services. Provide a
+* Utilize existing applicable Jakarta EE platform services. Provide a
 simple yet flexible API for application component providers to design
 applications using concurrency design principles.
-* Allow Java SE developers a simple migration path to the Java EE
-platform by providing consistency between the Java SE and Java EE
+* Allow Java SE developers a simple migration path to the Jakarta EE
+platform by providing consistency between the Java SE and Jakarta EE
 platforms.
 * Allow application component providers to easily add concurrency to
-existing Java EE applications.
+existing Jakarta EE applications.
 * Support simple (common) and advanced concurrency patterns without
 sacrificing usability.
 
-=== Other Java Platform Specifications
+=== Other Java Platform and Jakarta Specifications
 
-The following Java Platform specifications are referenced in this
+The following Java Platform and Jakarta specifications are referenced in this
 document:
 
 * Concurrency Utilities Specification (JSR-166)
-* Java EE Connector Architecture
+* Jakarta Connectors
 * Java Platform Standard Edition
-* Java 2 Platform, Enterprise Edition, Management Specification (JSR-77)
+* Jakarta Management
 * Java Naming and Directory Interface ^TM^
-* Java Transaction API
-* Java Transaction Service
+* Jakarta Transactions
+* Jakarta Transaction Service
 * JDBC^TM^ API
-* Java Message Service (JMS)
-* Enterprise JavaBeans ^TM^
+* Jakarta Messaging
+* Jakarta Enterprise Beans
 
-=== Concurrency Utilities for Java EE Expert Group
+=== Concurrency Utilities for Java EE Expert Group at the JCP
 
-This specification is the result of the collaborative work of the
+The original Java EE specification was the result of the collaborative work of the
 members of the Concurrency Utilities for Java EE Expert Group. The
 expert group includes the following members: Adam Bien, Marius Bogoevici
 (RedHat), Cyril Bouteille, Andrew Evers, Anthony Lai (Oracle), Doug Lea,
@@ -97,7 +97,7 @@ The Courier font is used for code examples.
 == Overview
 
 The focus of this specification is on providing asynchronous
-capabilities to Java EE application components. This is largely achieved
+capabilities to Jakarta EE application components. This is largely achieved
 through extending the Concurrency Utilities API developed under JSR-166
 and found in Java Platform, Standard Edition (Java SE) in the
 java.util.concurrent package.
@@ -110,32 +110,32 @@ existing code libraries and usage patterns with little modification.
 This specification has several aspects:
 
 * Definition and usage of centralized, manageable
-java.util.concurrent.ExecutorService objects in a Java EE application
+java.util.concurrent.ExecutorService objects in a Jakarta EE application
 server.
-* Usage of Java SE Concurrency Utilities in a Java EE application.
-* Propagation of the Java EE container's runtime contextual information
+* Usage of Java SE Concurrency Utilities in a Jakarta EE application.
+* Propagation of the Jakarta EE container's runtime contextual information
 to other threads.
 * Managing and monitoring the lifecycle of asynchronous operations in a
-Java EE Application Component.
+Jakarta EE Application Component.
 * Preserving application integrity.
 
 === Container-Managed vs. Unmanaged Threads
 
-Java EE application servers require resource management in order to
+Jakarta EE application servers require resource management in order to
 centralize administration and protect application components from
 consuming unneeded resources. This can be achieved through the pooling
 of resources and managing a resource’s lifecycle. Using Java SE
-concurrency utilities such as the java.util.concurrent API,
-java.lang.Thread and java.util.Timer in a server application component
-such as a servlet or EJB are problematic since the container and server
+concurrency utilities such as the `java.util.concurrent` API,
+`java.lang.Thread` and `java.util.Timer` in a server application component
+such as a servlet or Jakarta Enterprise Bean are problematic since the container and server
 have no knowledge of these resources.
 
-By extending the java.util.concurrent API, application servers and Java
+By extending the `java.util.concurrent` API, application servers and Jakarta
 EE containers can become aware of the resources that are used and
 provide the proper execution context for the asynchronous operations.
 
 This is largely achieved by providing managed versions of the
-predominant java.util.concurrent.ExecutorService interfaces.
+predominant `java.util.concurrent.ExecutorService` interfaces.
 
 === Application Integrity
 
@@ -143,16 +143,16 @@ Managed environments allow applications to coexist without causing harm
 to the overall system and isolate application components from one
 another. Administrators can adjust deployment and runtime settings to
 provide different qualities of service, provisioning of resources,
-scheduling of tasks, etc. Java EE containers also provide runtime
+scheduling of tasks, etc. Jakarta EE containers also provide runtime
 context services to the application component. When using concurrency
 utilities such as those in java.util.concurrent, these context services
 need to be available.
 
 === Container Thread Context
 
-Java EE depends on various context information to be available on the
-thread when interacting with other Java EE services such as JDBC data
-sources, JMS providers and EJBs. When using Java EE services from a
+Jakarta EE depends on various context information to be available on the
+thread when interacting with other Jakarta EE services such as JDBC data
+sources, Jakarta Messaging providers and Jakarta Enterrise Beans. When using Jakarta EE services from a
 non-container thread, the following behaviors are required:
 
 * Saving the application component thread’s container context.
@@ -166,24 +166,22 @@ security information. Containers must support propagation of these
 context types. In addition, containers can choose to support propagation
 of other types of context.
 
-The relationships between the various Java EE architectural elements,
+The relationships between the various Jakarta EE architectural elements,
 containers and concurrency constructs are shown in Figure 2‑1.
 
 Containers (represented here in a single rectangle) provide environments
-for application components to safely interact with Java EE Standard
-Services (represented in the rectangles directly below the EJB/Web
+for application components to safely interact with Jakarta EE Standard
+Services (represented in the rectangles directly below the Enterprise Bean/Web
 Container rectangle). Four new concurrency services (represented by four
-dark-gray rectangles) allow application components and Java EE Standard
+dark-gray rectangles) allow application components and Jakarta EE Standard
 Services to run asynchronous tasks without violating container
 contracts.
 
 The arrows in the diagram illustrate various flows from one part of the
-Java EE platform to another.
+Jakarta EE platform to another.
 
 image:1.png[image]
-
-[#_Ref346952925 .anchor]##Figure 2‑1 Concurrency Utilities for Java EE
-Architecture Diagram
+*Figure 2‑1 Concurrency Utilities for Jakarta EE Architecture Diagram*
 
 ==== Contextual Invocation Points
 
@@ -192,24 +190,24 @@ business logic at runtime using various invocation points on well-known
 interfaces. These invocation points or callback methods, here-by known
 as "tasks" will be referred to throughout the specification:
 
-* java.util.concurrent.Callable
-** call()
-* java.lang.Runnable
-** run()
+* `java.util.concurrent.Callable`
+** `call()`
+* `java.lang.Runnable`
+** `run()`
 
 ===== Optional Contextual Invocation Points
 
 The following callback methods run with unspecified context by default,
 but may be configured as contextual invocation points if desired:
 
-* javax.enterprise.concurrent.ManagedTaskListener
-** taskAborted()
-** taskSubmitted()
-** taskStarting()
+* `jakarta.enterprise.concurrent.ManagedTaskListener`
+** `taskAborted()`
+** `taskSubmitted()`
+** `taskStarting()`
 
-* javax.enterprise.concurrent.Trigger
-** getNextRunTime()
-** skipRun()
+* `jakarta.enterprise.concurrent.Trigger`
+** `getNextRunTime()`
+** `skipRun()`
 
 It is not required that container context be propagated to the threads
 that invoke these methods. This is to avoid the overhead of setting up
@@ -220,31 +218,30 @@ methods. These methods can be made contextual through the ContextService
 ==== Contextual Objects and Tasks
 
 Tasks are concrete implementations of the Java SE
-java.util.concurrent.Callable and java.lang.Runnable interfaces (see the
-Javadoc for java.util.concurrent.ExecutorService). Tasks are units of
+`java.util.concurrent.Callable` and `java.lang.Runnable` interfaces (see the
+Javadoc for `java.util.concurrent.ExecutorService`). Tasks are units of
 work that represent a computation or some business logic.
 
 A contextual object is any Java object instance that has a particular
 application component's thread context associated with it (for example,
 user identity).
 
-____
-_*Note* - Contextual Objects and Tasks referred here is not the same as
-the Context object as defined in the Contexts and Dependency Injection
-for the Java EE platform specification (CDI). See section_ _2.3.2.1_ _on
+[NOTE]
+====
+Contextual Objects and Tasks referred here is not the same as
+the Context object as defined in the Jakarta Contexts and Dependency Injection specification. See section_ _2.3.2.1_ _on
 using CDI beans as tasks._
-____
+====
 
 When a task instance is submitted to a managed instance of an
 ExecutorService, the task becomes a contextual task. When the contextual
 task runs, the task behaves as if it were still running in the container
 it was submitted with.
 
-image:2.png[image]
+image::2.png[Contextual Task]
+*Figure 2‑2 Contextual Task*
 
-[#_Toc347301882 .anchor]##Figure 2‑2 Contextual Task
-
-===== Tasks and Contexts and Dependency Injection (CDI) 
+===== Tasks and Jakarta Contexts and Dependency Injection (CDI) 
 
 CDI beans can be used as tasks. Such tasks could make use of injection
 if they are themselves components or are created dynamically using
@@ -253,33 +250,33 @@ following when using CDI beans as tasks:
 
 * Tasks that are submitted to a managed instance of ExecutorService may
 still be running after the lifecycle of the submitting component.
-Therefore, CDI beans with a scope of @RequestScoped, @SessionScoped, or
-@ConversationScoped are not recommended to use as tasks as it cannot be
+Therefore, CDI beans with a scope of `@RequestScoped`, `@SessionScoped`, or
+`@ConversationScoped` are not recommended to use as tasks as it cannot be
 guaranteed that the tasks will complete before the CDI context is
 destroyed.
-* CDI beans with a scope of @ApplicationScoped or @Dependent can be used
+* CDI beans with a scope of `@ApplicationScoped` or `@Dependent` can be used
 as tasks. However, it is still possible that the task could be running
 beyond the lifecycle of the submitting component, such as when the
 component is destroyed.
 * The transitive closure of CDI beans that are injected into tasks
 should follow the above guidelines regarding their scopes.
 
-=== Usage with Java EE Connector Architecture
+=== Usage with Jakarta Connectors
 
-The Java EE Connector Architecture (Connectors) allows creating resource
-adapters that can plug into any compatible Java EE application server.
+The Jakarta Connectors allows creating resource
+adapters that can plug into any compatible Jakarta EE application server.
 The Connectors specification provides a WorkManager interface that
 allows asynchronous processing for the resource adapter. It does not
-provide a mechanism for Java EE applications to interact with an
+provide a mechanism for Jakarta EE applications to interact with an
 adapter’s WorkManager.
 
-This specification addresses the need for Java EE applications to run
+This specification addresses the need for Jakarta EE applications to run
 application business logic asynchronously using a
-javax.enterprise.concurrent.ManagedExecutorService or
-java.util.concurrent.ExecutorService with a
-javax.enterprise.concurrent.ManagedThreadFactory. It is the intent that
-Connectors javax.resource.work.WorkManager implementations may choose to
-utilize or wrap the java.util.concurrent.ExecutorService or other
+`jakarta.enterprise.concurrent.ManagedExecutorService` or
+`java.util.concurrent.ExecutorService` with a
+`jakarta.enterprise.concurrent.ManagedThreadFactory`. It is the intent that
+Connectors `jakarta.resource.work.WorkManager` implementations may choose to
+utilize or wrap the `java.util.concurrent.ExecutorService` or other
 functionalities within this specification when appropriate.
 
 Resource Adapters can access each of the Managed Objects described in
@@ -290,21 +287,21 @@ through the JNDI context of the accessing application (see section
 === Security
 
 This specification largely defers most security decisions to the
-container and Java EE Product Provider as defined in the Java EE
+container and Jakarta EE Product Provider as defined in the Jakarta EE
 Specification.
 
-If the container supports a security context, the Java EE Product
+If the container supports a security context, the Jakarta EE Product
 Provider must propagate that security context to the thread of
 execution.
 
 Application Component Providers should use the interfaces provided in
-this specification when interacting with threads. If the Java EE Product
+this specification when interacting with threads. If the Jakarta EE Product
 Provider has implemented a security manager, some operations may not be
 allowed.
 
 == Managed Objects
 
-This section introduces four programming interfaces for Java EE Product
+This section introduces four programming interfaces for Jakarta EE Product
 Providers to implement (see EE.2.11 for a detailed definition of each of
 the roles described here). Instances of these interfaces must be made
 available to application components through containers as managed
@@ -321,8 +318,8 @@ managed threads.
 
 === ManagedExecutorService
 
-The javax.enterprise.concurrent.ManagedExecutorService is an interface
-that extends the java.util.concurrent.ExecutorService interface. Java EE
+The `jakarta.enterprise.concurrent.ManagedExecutorService` is an interface
+that extends the `java.util.concurrent.ExecutorService` interface. Jakarta EE
 Product Providers provide implementations of this interface to allow
 application components to run tasks asynchronously.
 
@@ -341,7 +338,7 @@ follows:
 
 * Assign an entry in the application component’s environment to the
 reference using the reference type of:
-javax.enterprise.concurrent.ManagedExecutorService. (See EE.5.8.1.3 for
+`jakarta.enterprise.concurrent.ManagedExecutorService`. (See EE.5.8.1.3 for
 information on how resource environment references are declared in the
 deployment descriptor.)
 * Look up the managed object in the application component’s environment
@@ -351,26 +348,26 @@ Resource annotation (EE.5.8.1.1).
 This specification recommends, but does not require, that all resource
 environment references be organized in the appropriate subcontext of the
 component’s environment for the resource type. For example, all
-ManagedExecutorService references should be bound in the
-java:comp/env/concurrent subcontext.
+`ManagedExecutorService` references should be bound in the
+`java:comp/env/concurrent` subcontext.
 
-Components create task classes by implementing the java.lang.Runnable or
-java.util.concurrent.Callable interfaces. These task classes are
-typically stored with the Java EE application component.
+Components create task classes by implementing the `java.lang.Runnable` or
+`java.util.concurrent.Callable` interfaces. These task classes are
+typically stored with the Jakarta EE application component.
 
 Task classes can optionally implement the
-javax.enterprise.concurrent.ManagedTask interface to provide execution
+`jakarta.enterprise.concurrent.ManagedTask` interface to provide execution
 properties and to register a
-javax.enterprise.concurrent.ManagedTaskListener instance to receive
+`jakarta.enterprise.concurrent.ManagedTaskListener` instance to receive
 lifecycle events notifications. Execution properties allow configuration
 and control of various aspects of the task including whether to suspend
 any current transaction on the thread and to provide identity
 information.
 
-Task instances are submitted to a ManagedExecutorService instance using
-any of the defined submit(), execute(), invokeAll(), or invokeAny()
-methods. Task instances will run as an extension of the Java EE
-container instance that submitted the task and may interact with Java EE
+Task instances are submitted to a `ManagedExecutorService` instance using
+any of the defined `submit()`, `execute()`, `invokeAll()`, or `invokeAny()`
+methods. Task instances will run as an extension of the Jakarta EE
+container instance that submitted the task and may interact with Jakarta EE
 resources as defined in other sections of this specification.
 
 It is important for Application Component Providers to identify and
@@ -387,16 +384,16 @@ short-running tasks that parallelize access to different back-end
 databases (builders).
 
 Since each type of task has a completely different run profile, it makes
-sense to use two different ManagedExecutorService resource environment
+sense to use two different `ManagedExecutorService` resource environment
 references. The attributes of each reference are documented using the
-<description> tag within the deployment descriptor of the application
+`<description>` tag within the deployment descriptor of the application
 component and later mapped by the Deployer.
 
 ====== Reporter Task
 
 The Reporter Task is a long-running task that communicates with a
 database to generate a report. The task is run asynchronously using a
-ManagedExecutorService. The client can then poll the server for the
+`ManagedExecutorService`. The client can then poll the server for the
 results.
 
 ====== Resource Environment Reference - Reporter Task
@@ -406,79 +403,65 @@ file for the web component. The description reflects the desired
 configuration attributes (see 3.1.4.1 ). Alternatively, the Resource
 annotation can be used in the Servlet code.
 
-____
-_*Note* – Using the description for documenting the configuration
+[NOTE]
+====
+Using the description for documenting the configuration
 attributes of the managed object is optional. The format used here is
-only an example. Future revisions of Java EE specifications may
+only an example. Future revisions of Jakarta EE specifications may
 formalize usages such as this._
-____
+====
 
+[source,xml]
+----
 <resource-env-ref>
-
-<description>
-
-This executor is used for the application’s reporter task.
-
-This executor has the following requirements: +
-Context Info: Local Namespace +
-</description> +
-<resource-env-ref-name> +
-*concurrent/LongRunningTasksExecutor* +
-</resource-env-ref-name> +
-<resource-env-ref-type> +
-javax.enterprise.concurrent.ManagedExecutorService +
-</resource-env-ref-type> +
+  <description>
+    This executor is used for the application’s reporter task.
+    This executor has the following requirements:
+    Context Info: Local Namespace
+  </description> 
+  <resource-env-ref-name>
+    concurrent/LongRunningTasksExecutor
+  </resource-env-ref-name>
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ManagedExecutorService
+  </resource-env-ref-type>
 </resource-env-ref>
-
+----
 ====== Task Definition – Reporter Task
 
 The task itself simply uses a resource-reference to a JDBC data source,
 and uses a connect/use/close pattern when invoking the Datasource.
+[source,java]
+----
+public class ReporterTask implements Runnable {
+  String reportName;
 
-public class ReporterTask implements Runnable \{
+  public ReporterTask(String reportName) {
+    this.reportName = reportName;
+  }
 
-String reportName;
-
-public ReporterTask(String reportName) \{
-
-this.reportName = reportName;
-
-}
-
-public void run() \{
-
-// Run the named report
-
-if("TransactionReport".equals(reportName)) \{
-
-runTransactionReport();
-
-else if("SummaryReport".equals(reportName)) \{
-
-runSummaryReport();
-
-}
-
+public void run() {
+  // Run the named report
+  if("TransactionReport".equals(reportName)) {
+    runTransactionReport();
+  }
+  else if("SummaryReport".equals(reportName)) {
+    runSummaryReport();
+  }
 }
 
 Datasource ds = …;
 
-void runTransactionReport() \{
-
-try (Connection con = ds.getConnection(); ...) \{
-
-// Read/Write the data using our connection.
-
-...
-
-// Commit.
-
-con.commit();
-
+void runTransactionReport() {
+  try (Connection con = ds.getConnection(); ...) {
+  
+    // Read/Write the data using our connection.
+    ...
+    // Commit.
+    con.commit();
+  }
 }
-
-} +
-}
+----
 
 ====== Task Submission – Reporter Task
 
@@ -488,40 +471,34 @@ to the task (the Future) is cached so that the client can query the
 results of the report. The Future will contain the results once the task
 has completed.
 
-public class AppServlet extends HTTPServlet implements Servlet \{
+[source,java]
+----
+public class AppServlet extends HTTPServlet implements Servlet {
+  
+  // Cache our executor instance
+  @Resource(name=”concurrent/LongRunningTasksExecutor”)
+  ManagedExecutorService mes;
 
-// Cache our executor instance
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-@Resource(name=”*concurrent/LongRunningTasksExecutor”*) +
-ManagedExecutorService mes;
+    // Get the name of the report to run from the input params...
+    // Assemble the header for the response.
+    // Create a task instance
+    ReporterTask reporterTask = new ReporterTask(reportName);
 
-protected void doPost(HttpServletRequest req, HttpServletResponse +
-resp) throws ServletException, IOException \{
+    // Submit the task to the ManagedExecutorService
+    Future reportFuture = mes.submit(reporterTask);
 
-// Get the name of the report to run from the input params...
+    // Cache the future somewhere (like the client's session)
+    // The client can then poll the servlet to determine
+    // the status of the report.
+    ...
 
-// Assemble the header for the response.
-
-// Create a task instance
-
-ReporterTask reporterTask = new ReporterTask(reportName);
-
-// Submit the task to the ManagedExecutorService
-
-Future reportFuture = mes.submit(reporterTask);
-
-// Cache the future somewhere (like the client's session)
-
-// The client can then poll the servlet to determine
-
-// the status of the report.
-
-...
-
-// Tell the user that the report has been submitted. +
-... +
-} +
+    // Tell the user that the report has been submitted. +
+    ... 
+  } 
 }
+----
 
 ====== Builder Tasks
 
@@ -537,189 +514,147 @@ file for the web component. The description reflects the desired
 configuration attributes (see 3.1.4.1 ). Alternatively, the Resource
 annotation can be used in the Servlet code:
 
-____
-_*Note* – Using the description for documenting the configuration
+[NOTE]
+====
+Using the description for documenting the configuration
 attributes of the managed object is optional. The format used here is
-only an example. Future revisions of Java EE specifications may
+only an example. Future revisions of Jakarta EE specifications may
 formalize usages such as this._
-____
+====
 
-<resource-env-ref> +
-<description> +
-This executor is used for the application’s builder tasks. +
-This executor has the following requirements: +
-Context Info: Local Namespace, Security +
-</description> +
-<resource-env-ref-name> +
-*concurrent/BuilderExecutor* +
-</resource-env-ref-name> +
-<resource-env-ref-type> +
-javax.enterprise.concurrent.ManagedExecutorService +
-</resource-env-ref-type> +
-</resource-env>
+[source,xml]
+----
+<resource-env-ref>
+  <description>
+    This executor is used for the application’s builder tasks.
+    This executor has the following requirements:
+    Context Info: Local Namespace, Security
+  </description>
+  <resource-env-ref-name>
+    concurrent/BuilderExecutor
+  </resource-env-ref-name>
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ManagedExecutorService
+  </resource-env-ref-type>
+</resource-env-ref>
+----
 
 ====== Task Definition – Builder Tasks
 
 The task itself simply uses some mechanism such as JDBC queries to
 retrieve the data from the persistent store. The task implements the
-javax.enterprise.concurrent.ManagedTask interface and supplies an
+`jakarta.enterprise.concurrent.ManagedTask` interface and supplies an
 identifiable name through the IDENTITY_NAME property to allow system
 administrators to diagnose problems.
 
+[source,java]
+----
 public class AccountTask implements Callable<AccountInfo>, ManagedTask
-\{
+{
+  // The ID of the request to report on demand.
+  String reqID;
 
-// The ID of the request to report on demand.
+  String accountID;
+  Map<String, String> execProps;
 
-String reqID;
+  public AccountTask(String reqID, String accountID) {
+    this.reqID=reqID;
+    this.accountID=accountID;
+    execProps = new HashMap<>();
+    execProps.put(ManagedTask.IDENTITY_NAME, getIdentityName());
+  }
 
-String accountID;
+  public AccountInfo call() {
 
-Map<String, String> execProps;
+    // Retrieve account info for the account from some persistent store
+    AccountInfo info = ...;
+    return info;
+  }
 
-public AccountTask(String reqID, String accountID) \{
+  public String getIdentityName() {
+    return "AccountTask: ReqID=" + reqID + ", Acct=" + accountID;
+  }
 
-this.reqID=reqID;
+  public Map<String, String> getExecutionProperties() {
+    return execProps;
+  }
 
-this.accountID=accountID;
-
-execProps = new HashMap<>();
-
-execProps.put(ManagedTask.IDENTITY_NAME, getIdentityName());
-
+  public ManagedTaskListener getManagedTaskListener() {
+    return null;
+  }
 }
 
-public AccountInfo call() \{
+public class InsuranceTask implements Callable<InsuranceInfo>, ManagedTask {
+  
+  // The ID of the request to report on demand.
+  String reqID
 
-// Retrieve account info for the account from some persistent store
+  String accountID;
+  Map<String, String> execProps;
 
-AccountInfo info = ...;
+  public InsuranceTask (String reqID, String accountID) {
+    this.reqID=reqID;
+    this.accountID=accountID;
+    execProps = new HashMap<>();
 
-return info;
+    execProps.put(ManagedTask.IDENTITY_NAME, getIdentityName());
+  }
 
+  public InsuranceInfo call() {
+    // Retrieve the insurance info for the account from some persistent store
+    InsuranceInfo info = ...;
+    return info;
+  }
+
+  public String getIdentityName() {
+    return "InsuranceTask: ReqID=" + reqID + ", Acct=" + accountID;
+  }
+
+  public Map<String, String> getExecutionProperties() 
+    return execProps;
+  }
+
+  public ManagedTaskListener getManagedTaskListener() {
+    return null;
+  }
 }
-
-public String getIdentityName() \{
-
-return "AccountTask: ReqID=" + reqID + ", Acct=" + accountID;
-
-}
-
-public Map<String, String> getExecutionProperties() \{
-
-return execProps;
-
-}
-
-public ManagedTaskListener getManagedTaskListener() \{
-
-return null;
-
-}
-
-}
-
-public class InsuranceTask implements Callable<InsuranceInfo>,
-ManagedTask \{
-
-// The ID of the request to report on demand.
-
-String reqID;
-
-String accountID;
-
-Map<String, String> execProps;
-
-public InsuranceTask (String reqID, String accountID) \{
-
-this.reqID=reqID;
-
-this.accountID=accountID;
-
-execProps = new HashMap<>();
-
-execProps.put(ManagedTask.IDENTITY_NAME, getIdentityName());
-
-}
-
-public InsuranceInfo call() \{
-
-// Retrieve the insurance info for the account from some persistent
-store
-
-InsuranceInfo info = ...;
-
-return info;
-
-}
-
-public String getIdentityName() \{
-
-return "InsuranceTask: ReqID=" + reqID + ", Acct=" + accountID;
-
-}
-
-public Map<String, String> getExecutionProperties() \{
-
-return execProps;
-
-}
-
-public ManagedTaskListener getManagedTaskListener() \{
-
-return null;
-
-}
-
-}
+----
 
 ====== Task Invocation – Builder Tasks
 
 Tasks are created on demand by a request to the servlet from an HTTP
 client.
 
-public class AppServlet extends HttpServlet implements Servlet \{
+[source,java]
+----
+public class AppServlet extends HttpServlet implements Servlet {
 
-// Retrieve our executor instance.
+  // Retrieve our executor instance.
+  @Resource(name=”concurrent/BuilderExecutor”)
+  ManagedExecutorService mes;
 
-@Resource(name=”*concurrent/BuilderExecutor”*)
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    // Get our arguments from the request (accountNumber and
+    // requestID, in this case.
+    // Assemble the header for the response.
+    // Create and submit the task instances
 
-ManagedExecutorService mes;
+    Future<AccountInfo> acctFuture = mes.submit(new AccountTask(reqID, accountID));
 
-protected void doPost(HttpServletRequest req, HttpServletResponse
+    Future<InsuranceInfo> insFuture = mes.submit (new InsuranceTask(reqID, accountID));
 
-resp) throws ServletException, IOException \{
+    // Wait for the results.
+    AccountInfo accountInfo = acctFuture.get();
+    InsuranceInfo insInfo = insFuture.get();
 
-// Get our arguments from the request (accountNumber and
-
-// requestID, in this case.
-
-// Assemble the header for the response.
-
-// Create and submit the task instances
-
-Future<AccountInfo> acctFuture = mes.submit(new AccountTask(reqID,
-accountID));
-
-Future<InsuranceInfo> insFuture = mes.submit (new InsuranceTask(reqID,
-accountID));
-
-// Wait for the results.
-
-AccountInfo accountInfo = acctFuture.get();
-
-InsuranceInfo insInfo = insFuture.get();
-
-// Process the results
-
+    // Process the results
+  }
 }
-
-}
-
+----
 ==== Application Assembler’s Responsibilities 
 
 The Application Assembler (EE.2.11.3) is responsible for assembling the
-application components into a complete Java EE application and providing
+application components into a complete Jakarta EE application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
@@ -732,32 +667,32 @@ the dependencies defined by the Application Component Provider and
 Application Assembler to managed objects with the properly defined
 attributes. See EE.5.8.2 for details.
 
-==== Java EE Product Provider’s Responsibilities 
+==== Jakarta EE Product Provider’s Responsibilities 
 
-The Java EE Product Provider’s responsibilities are as defined in
+The Jakarta EE Product Provider’s responsibilities are as defined in
 EE.5.8.3.
 
-Java EE Product Providers may include other contexts (e.g. Locale) that
+Jakarta EE Product Providers may include other contexts (e.g. Locale) that
 may be propagated to a task or a thread that invokes the callback
-methods in the javax.enterprise.concurrent.ManagedTaskListener
-interface. ManagedExecutorService implementations may add any additional
+methods in the `jakarta.enterprise.concurrent.ManagedTaskListener`
+interface. `ManagedExecutorService` implementations may add any additional
 contexts and provide the means for configuration of those contexts in
 any way so long as these contexts do not violate the required aspects of
 this specification.
 
 The following section illustrates some possible configuration options
-that a Java EE Product Provider may want to provide.
+that a Jakarta EE Product Provider may want to provide.
 
 ===== ManagedExecutorService Configuration Attributes
 
 Each ManagedExecutorService may support one or more runtime behaviors as
-specified by configuration attributes. The Java EE Product Provider will
+specified by configuration attributes. The Jakarta EE Product Provider will
 determine both the appropriate attributes and the means of configuring
 those attributes for their product.
 
 ===== Configuration Examples 
 
-This section and subsections illustrate some examples of how a Java EE
+This section and subsections illustrate some examples of how a Jakarta EE
 Product Provider could configure a ManagedExecutorService and the
 possible options that such a service could provide.
 
@@ -772,14 +707,14 @@ reference.
 * *JNDI name*: The arbitrary, but required, name to identify the service
 instance. The deployer uses this value to map the service to the
 component’s resource environment reference.
-* *Context*: A reference to a ContextService instance (see section 3.3).
+* *Context*: A reference to a `ContextService` instance (see section 3.3).
 The context service can be used to define the context to propagate to
-the threads when running tasks. Having more than one ContextService,
+the threads when running tasks. Having more than one `ContextService`,
 each with a different policy may be desirable for some implementations.
 If both Context and ThreadFactory attributes are specified, the Context
 attribute of the ThreadFactory configuration should be ignored.
-* *ThreadFactory*: A reference to a ManagedThreadFactory instance (see
-section 3.4). The ManagedThreadFactory instance can create threads with
+* *ThreadFactory*: A reference to a `ManagedThreadFactory` instance (see
+section 3.4). The `ManagedThreadFactory` instance can create threads with
 different attributes (such as priority).
 * *Thread Use:* If the application intends to run short vs. long-running
 tasks they can specify to use pooled or daemon threads.
@@ -787,7 +722,7 @@ tasks they can specify to use pooled or daemon threads.
 can execute before it is considered hung.
 * *Pool Info*: If the executor is a thread pool, then the various thread
 pool attributes can be defined (this is based on the attributes for the
-Java java.util.concurrent.ThreadPoolExecutor class):
+Java `java.util.concurrent.ThreadPoolExecutor` class):
 **  *Core Size*: The number of threads to keep in the pool, even if they
 are idle.
 **  *Maximum Size*: The maximum number of threads to allow in the pool
@@ -834,7 +769,7 @@ Retry and Abort
 
 |===
 
-[#_Toc347301887 .anchor]##Table : Typical Thread Pool Configuration
+##Table : Typical Thread Pool Configuration
 Example
 
 ====== Thread Pool for Long-Running Tasks 
@@ -869,7 +804,7 @@ Retry and Abort
 
 |===
 
-[#_Toc347301888 .anchor]##Table : Long-Running Tasks Thread Pool
+##Table : Long-Running Tasks Thread Pool
 Configuration Example
 
 ====== OLTP Thread Pool 
@@ -906,14 +841,14 @@ Retry and Abort
 
 |===
 
-[#_Toc347301889 .anchor]##Table : OLTP Thread Pool Configuration Example
+##Table : OLTP Thread Pool Configuration Example
 
 ===== Default ManagedExecutorService
 
-The Java EE Product Provider must provide a preconfigured, default
+The Jakarta EE Product Provider must provide a preconfigured, default
 ManagedExecutorService for use by application components under the JNDI
-name java:comp/DefaultManagedExecutorService. The types of contexts to
-be propagated by this default ManagedExecutorService from a
+name `java:comp/DefaultManagedExecutorService`. The types of contexts to
+be propagated by this default `ManagedExecutorService` from a
 contextualizing application component must include naming context,
 classloader, and security information.
 
@@ -928,51 +863,49 @@ these duties may include:
 
 ==== Lifecycle
 
-The lifecycle of ManagedExecutorService instances are centrally managed
+The lifecycle of `ManagedExecutorService` instances are centrally managed
 by the application server and cannot be changed by an application.
 
-A ManagedExecutorService instance is intended to be used by multiple
+A `ManagedExecutorService` instance is intended to be used by multiple
 components and applications. When the executor runs a task, the context
 of the thread is changed to match the component instance that submitted
 the task. The context is then restored when the task is complete.
 
-In Figure 3‑1, a single ManagedExecutorService instance is used to run
+In Figure 3‑1, a single `ManagedExecutorService` instance is used to run
 tasks (in blue) from multiple application components (each denoted in a
 different color). Each task, when submitted to the
-ManagedExecutorService automatically retains the context of the
+`ManagedExecutorService` automatically retains the context of the
 submitting component and it becomes a Contextual Task. When the
-ManagedExecutorService runs the task, the task would be run in the
+`ManagedExecutorService` runs the task, the task would be run in the
 context of the submitting component (as noted by different colored boxes
 in the figure).
 
-image:3.png[image]
+image:3.png[Managed Thread Pool Executor Component Relationship]
+*Figure 3‑1 Managed Thread Pool Executor Component Relationship*
 
-[#_Ref346953160 .anchor]##Figure 3‑1 Managed Thread Pool Executor
-Component Relationship
-
-ManagedExecutorService instances may be terminated or suspended by the
+`ManagedExecutorService` instances may be terminated or suspended by the
 application server when applications or components are stopped or the
 application server itself is shutting down.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes additional requirements for
 ManagedExecutorService providers.
 
 [arabic]
-. All tasks, when executed from the ManagedExecutorService, will run
-with the Java EE component identity of the component that submitted the
+. All tasks, when executed from the `ManagedExecutorService`, will run
+with the Jakarta EE component identity of the component that submitted the
 task.
-. The lifecycle of a ManagedExecutorService is managed by an application
-server. All lifecycle operations on the ManagedExecutorService interface
-will throw a java.lang.IllegalStateException exception. This includes
+. The lifecycle of a `ManagedExecutorService` is managed by an application
+server. All lifecycle operations on the `ManagedExecutorService` interface
+will throw a `java.lang.IllegalStateException` exception. This includes
 the following methods that are defined in the
-java.util.concurrent.ExecutorService interface: awaitTermination(),
-isShutdown(), isTerminated(), shutdown(), and shutdownNow().
+`java.util.concurrent.ExecutorService` interface: `awaitTermination()`,
+`isShutdown()`, `isTerminated()`, `shutdown()`, and `shutdownNow()`.
 . No task submitted to an executor can run if task’s component is not
 started.
 
-When a ManagedExecutorService instance is being shutdown by the Java EE
+When a `ManagedExecutorService` instance is being shutdown by the Jakarta EE
 Product Provider:
 
 [arabic]
@@ -983,7 +916,7 @@ Product Provider:
 
 ==== Quality of Service 
 
-ManagedExecutorService implementations must support the at-most-once
+`ManagedExecutorService` implementations must support the at-most-once
 quality of service. The at-most-once quality of service guarantees that
 a task will run at most one time. This quality of service is the most
 efficient method to run tasks. Tasks submitted to an executor with this
@@ -995,35 +928,35 @@ specification.
 
 ==== Transaction Management 
 
-ManagedExecutorService implementations must support user-managed global
-transaction demarcation using the javax.transaction.UserTransaction
-interface, which is described in the Java Transaction API specification.
+`ManagedExecutorService` implementations must support user-managed global
+transaction demarcation using the `jakarta.transaction.UserTransaction`
+interface, which is described in the Jakarta Transactions specification.
 User-managed transactions allow components to manually control global
 transaction demarcation boundaries. Task implementations may optionally
 begin, commit, and roll-back a transaction. See EE.4 for details on
-transaction management in Java EE.
+transaction management in Jakarta EE.
 
 Task instances are run outside of the scope of the transaction of the
 submitting thread. Any transaction active in the executing thread will
 be suspended.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes the transaction management requirements of a
-ManagedExecutorService implementation.
+`ManagedExecutorService` implementation.
 
 [arabic]
-. The javax.transaction.UserTransaction interface must be made available
+. `The jakarta.transaction.UserTransaction` interface must be made available
 in the local JNDI namespace as environment entry:
-java:comp/UserTransaction (EE.5.10 and EE.4.2.1.1)
-. All resource managers must enlist with a UserTransaction instance when
-a transaction is active using the begin() method.
+`java:comp/UserTransaction` (EE.5.10 and EE.4.2.1.1)
+. All resource managers must enlist with a `UserTransaction` instance when
+a transaction is active using the `begin()` method.
 . The executor is responsible for coordinating commits and rollbacks
-when the transaction ends using commit() and rollback() methods.
+when the transaction ends using `commit()` and `rollback()` methods.
 . A task must have the same ability to use transactions as the component
 submitting the tasks. For example, tasks are allowed to call
 transactional enterprise beans, and managed beans that use the
-@Transactional interceptor as defined in the Java Transaction API
+`@Transactional` interceptor as defined in the Jakarta Transactions
 specification.
 
 ===== Application Component Provider’s Requirements 
@@ -1034,14 +967,14 @@ each task provider’s implementation.
 [arabic]
 . A task instance that starts a transaction must complete the
 transaction before starting a new transaction.
-. The task provider uses the javax.transaction.UserTransaction interface
+. The task provider uses the `jakarta.transaction.UserTransaction` interface
 to demarcate transactions.
-. Transactions are demarcated using the begin(), commit() and rollback()
-methods of the UserTransaction interface.
+. Transactions are demarcated using the `begin()`, `commit()` and `rollback()`
+methods of the `UserTransaction` interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g., if a
-javax.sql.Connection is enlisted in the transaction instance, the
-Connection.commit() and Connection.rollback() methods must not be used).
+`javax.sql.Connection` is enlisted in the transaction instance, the
+`Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
 
@@ -1050,49 +983,47 @@ ends.
 The following example illustrates how a task can interact with two
 XA-capable resources in a single transaction:
 
-public class TranTask implements Runnable \{
+[source,java]
+----
+public class TranTask implements Runnable {
 
-UserTransaction ut = …;
+  UserTransaction ut = …;
 
-public void run() \{
+  public void run() {
 
-// Start a transaction
+    // Start a transaction
+    ut.begin();
 
-ut.begin();
+    // Invoke an Jakarta Enterprise Bean
+    ...
 
-// Invoke an EJB
+    // 
+    Update a database using an XA capable JDBC DataSource
+    ...
 
-...
-
-// Update a database using an XA capable JDBC DataSource
-
-...
-
-// Commit the transaction
-
-ut.commit();
-
+    // Commit the transaction
+    ut.commit();
+  }
 }
-
-}
+----
 
 === ManagedScheduledExecutorService
 
-The javax.enterprise.concurrent.ManagedScheduledExecutorService is an
-interface that extends the java.util.concurrent.ScheduledExecutorService
-and javax.enterprise.concurrent.ManagedExecutorService interfaces. Java
+The `jakarta.enterprise.concurrent.ManagedScheduledExecutorService` is an
+interface that extends the `java.util.concurrent.ScheduledExecutorService`
+and `jakarta.enterprise.concurrent.ManagedExecutorService` interfaces. Jakarta
 EE Product Providers provide implementations of this interface to allow
 applications to run tasks at specified and periodic times.
 
-The ManagedScheduledExecutorService offers the same managed semantics as
-the ManagedExecutorService and includes the delay and periodic task
-running capabilities that the ScheduledExecutorService interface
-provides with the addition of Trigger and ManagedTaskListener.
+The `ManagedScheduledExecutorService` offers the same managed semantics as
+the `ManagedExecutorService` and includes the delay and periodic task
+running capabilities that the `ScheduledExecutorService` interface
+provides with the addition of `Trigger` and `ManagedTaskListener`.
 
 ==== Application Component Provider’s Responsibilities 
 
 Application Component Providers (application developers) (EE2.11.2) use
-a ManagedScheduledExecutorService instance and associated interfaces to
+a `ManagedScheduledExecutorService` instance and associated interfaces to
 develop application components that utilize the concurrency functions
 that these interfaces provide. Instances for these objects are retrieved
 using the Java Naming and Directory Interface (JNDI) Naming Context
@@ -1100,40 +1031,40 @@ using the Java Naming and Directory Interface (JNDI) Naming Context
 (EE.5.8.1.1).
 
 The Application Component Provider may use resource environment
-references to obtain references to a ManagedScheduledExecutorService
+references to obtain references to a `ManagedScheduledExecutorService`
 instance as follows:
 
 * Assign an entry in the application component’s environment to the
 reference using the reference type of:
-javax.enterprise.concurrent.ManagedScheduledExecutorService. (See
+`jakarta.enterprise.concurrent.ManagedScheduledExecutorService`. (See
 EE.5.8.1.2 for information on how resource environment references are
 declared in the deployment descriptor.)
 * Look up the managed object in the application component’s environment
 using JNDI (EE.5.2), or through resource injection by the use of the
-Resource annotation (EE.5.8.1.1).
+`@Resource` annotation (EE.5.8.1.1).
 
 This specification recommends, but does not require, that all resource
 environment references be organized in the appropriate subcontext of the
 component’s environment for the resource type. For example, all
-ManagedScheduledExecutorService references should be declared in the
-java:comp/env/concurrent subcontext.
+`ManagedScheduledExecutorService` references should be declared in the
+`java:comp/env/concurrent` subcontext.
 
-Components create task classes by implementing the java.lang.Runnable or
-java.util.concurrent.Callable interfaces. These task classes are
-typically stored with the Java EE application component.
+Components create task classes by implementing the `java.lang.Runnable` or
+`java.util.concurrent.Callable` interfaces. These task classes are
+typically stored with the Jakarta EE application component.
 
-Task instances are submitted to a ManagedScheduledExecutorService
-instance using any of the defined submit(), execute(), invokeAll(),
-invokeAny(), schedule(), scheduleAtFixedRate() or
-scheduleWithFixedDelay() methods. Task instances will run as an
-extension of the Java EE container instance that submitted the task and
-may interact with Java EE resources as defined in other sections of this
+Task instances are submitted to a `ManagedScheduledExecutorService`
+instance using any of the defined `submit()`, `execute()`, `invokeAll()`,
+`invokeAny()`, `schedule()`, `scheduleAtFixedRate()` or
+`scheduleWithFixedDelay()` methods. Task instances will run as an
+extension of the Jakarta EE container instance that submitted the task and
+may interact with Jakarta EE resources as defined in other sections of this
 specification.
 
 Task classes can optionally implement the
-javax.enterprise.concurrent.ManagedTask interface to provide execution
+`jakarta.enterprise.concurrent.ManagedTask` interface to provide execution
 properties and to register a
-javax.enterprise.concurrent.ManagedTaskListener instance to receive
+`jakarta.enterprise.concurrent.ManagedTaskListener` instance to receive
 lifecycle events notifications. Execution properties allow configuration
 and control of various aspects of the task including whether to suspend
 any current transaction on the thread and to provide identity
@@ -1141,17 +1072,17 @@ information.
 
 It is important for Application Component Providers to identify and
 document the required behaviors and service-level agreements for each
-required ManagedScheduledExecutorService. The following example
+required `ManagedScheduledExecutorService`. The following example
 illustrates how the component can describe and utilize a
-ManagedScheduledExecutorService.
+`ManagedScheduledExecutorService`.
 
 ===== Usage Example 
 
 In this example, an application component wants to use a timer to
 periodically write in- memory events to a database log.
 
-The attributes of the ManagedScheduledExecutorService reference is
-documented using the <description> tag within the deployment descriptor
+The attributes of the `ManagedScheduledExecutorService` reference is
+documented using the `<description>` tag within the deployment descriptor
 of the application component and later mapped by the Deployer.
 
 ====== Logger Timer Task 
@@ -1159,7 +1090,7 @@ of the application component and later mapped by the Deployer.
 The Logger Timer Task is a short-running, periodic task that has the
 same lifecycle as the servlet. It periodically wakes up and dumps a
 queue's contents to a database log. Its lifecycle is controlled using a
-javax.servlet.ServletContextListener.
+`jakarta.servlet.ServletContextListener`.
 
 ====== Resource Environment Reference 
 
@@ -1168,115 +1099,92 @@ file for the web component. The description reflects the desired
 configuration attributes (see 3.2.4.1 ). Alternatively, the Resource
 annotation can be used in the Servlet code.
 
-____
-_*Note* – Using the description for documenting the configuration
+[NOTE]
+====
+Using the description for documenting the configuration
 attributes of the managed object is optional. The format used here is
-only an example. Future revisions of Java EE specifications may
+only an example. Future revisions of Jakarta EE specifications may
 formalize usages such as this._
-____
+====
 
+[source,xml]
+----
 <resource-env-ref>
-
-<description>
-
-This executor is used for the application’s logger task.
-
-This executor has the following requirements:
-
-Context Info: Local Namespace
-
-</description>
-
-<resource-env-ref-name>
-
-*concurrent/ScheduledLoggerExecutor*
-
-</resource-env-ref-name>
-
-<resource-env-ref-type>
-
-javax.enterprise.concurrent.ManagedScheduledExecutorService
-
-</resource-env-ref-type>
-
+  <description>
+    This executor is used for the application’s logger task.
+    This executor has the following requirements:
+    Context Info: Local Namespace
+  </description>
+  <resource-env-ref-name>
+    concurrent/ScheduledLoggerExecutor
+  </resource-env-ref-name>
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ManagedScheduledExecutorService
+  </resource-env-ref-type>
 </resource-env-ref>
-
+----
 ====== Task Definition 
 
 The task itself simply uses a resource-reference to a JDBC data source,
 and uses a connect/use/close pattern when invoking the Datasource.
 
-public class LoggerTimer implements Runnable \{
+[source,java]
+----
+public class LoggerTimer implements Runnable {
+  DataSource ds = ...;
 
-DataSource ds = ...;
+  public void run() {
+    logEvents(getData(), ds);
+  }
 
-public void run() \{
+  void logEvents(Collection data, DataSource ds) {
 
-logEvents(getData(), ds);
+    // Iterate through the data and log each row.
+    for (...) {
+      try (Connection con = ds.getConnection(); ...) {
+      
+        // Write the data using our connection.
+        ...
 
+        // Commit.
+        con.commit();
+      }
+    }
+  }
 }
-
-void logEvents(Collection data, DataSource ds) \{
-
-// Iterate through the data and log each row.
-
-for (...) \{
-
-try (Connection con = ds.getConnection(); ...) \{
-
-// Write the data using our connection.
-
-...
-
-// Commit.
-
-con.commit();
-
-}
-
-}
-
-}
-
+----
 ====== Task Submission 
 
 The task is started and stopped by a
-javax.servlet.ServletContextListener.
+`jakarta.servlet.ServletContextListener`.
 
-public class CtxListener implements ServletContextListener \{
+[source,java]
+----
+public class CtxListener implements ServletContextListener {
+  
+  Future loggerHandle = null;
 
-Future loggerHandle = null;
+  @Resource(name=”concurrent/ScheduledLoggerExecutor”)
+  ManagedScheduledExecutorService mes;
 
-@Resource(name=”*concurrent/ScheduledLoggerExecutor*”)
+  public void contextInitialized(ServletContextEvent scEvent) {
+    LoggerTimer logger = new LoggerTimer();
+    loggerHandle = mes.scheduleAtFixedRate(logger, 5, TimeUnit.SECONDS);
+  }
 
-ManagedScheduledExecutorService mes;
+  public void contextDestroyed(ServletContextEvent scEvent) {
 
-public void contextInitialized(ServletContextEvent scEvent) \{
-
-LoggerTimer logger = new LoggerTimer();
-
-loggerHandle = mes.scheduleAtFixedRate(
-
-logger, 5, TimeUnit.SECONDS);
-
-public void contextDestroyed(ServletContextEvent scEvent) \{
-
-// Cancel and interrupt our logger task
-
-if(loggerHandle!=null) \{
-
-loggerHandle.cancel(true);
-
+    // Cancel and interrupt our logger task
+    if(loggerHandle!=null) {
+      loggerHandle.cancel(true);
+    }
+  }
 }
-
-}
-
-}
-
+----
 ==== Application Assembler’s Responsibilities 
 
 The Application Assembler (EE.2.11.3) is responsible for assembling the
-application components into a complete Java EE Application and providing
+application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
@@ -1289,31 +1197,31 @@ the dependencies defined by the Application Component Provider and
 Application Assembler to managed objects with the properly defined
 attributes. See EE.5.8.2 for details.
 
-==== Java EE Product Provider’s Responsibilities 
+==== Jakarta EE Product Provider’s Responsibilities 
 
-The Java EE Product Provider’s responsibilities are as defined in
+The Jakarta EE Product Provider’s responsibilities are as defined in
 EE.5.8.3.
 
-Java EE Product Providers may include other contexts that may be
-propagated to a task or javax.enterprise.concurrent.ManagedTaskListener
-thread (e.g. Locale). ManagedScheduledExecutorService implementations
+Jakarta EE Product Providers may include other contexts that may be
+propagated to a task or `jakarta.enterprise.concurrent.ManagedTaskListener`
+thread (e.g. Locale). `ManagedScheduledExecutorService` implementations
 may add any additional contexts and provide the means for configuration
 of those contexts in any way so long as these contexts do not violate
 the required aspects of this specification.
 
 The following section illustrates some possible configuration options
-that a Java EE Product Provider may want to provide.
+that a Jakarta EE Product Provider may want to provide.
 
 ===== ManagedScheduledExecutorService Configuration Attributes
 
-Each ManagedScheduledExecutorService may support one or more runtime
-behaviors as specified by configuration attributes. The Java EE Product
+Each `ManagedScheduledExecutorService` may support one or more runtime
+behaviors as specified by configuration attributes. The Jakarta EE Product
 Provider will determine both the appropriate attributes and the means of
 configuring those attributes for their product.
 
 ===== Configuration Examples 
 
-This section and subsections illustrate some examples of how a Java EE
+This section and subsections illustrate some examples of how a Jakarta EE
 Product Provider could configure a ManagedScheduledExecutorService and
 the possible options that such a service could provide.
 
@@ -1343,7 +1251,7 @@ tasks they can specify to use pooled or daemon threads.
 can execute before it is considered hung.
 * *Pool Info*: If the executor is a thread pool, then the various thread
 pool attributes can be defined (this is based on the attributes for the
-Java java.util.concurrent.ThreadPoolExecutor class):
+Java `java.util.concurrent.ThreadPoolExecutor` class):
 ** *Core Size*: The number of threads to keep in the pool, even if they
 are idle.
 ** *Maximum Size*: The maximum number of threads to allow in the pool
@@ -1358,14 +1266,15 @@ abort if it fails.
 
 ====== Typical Timer 
 
-____
+[NOTE]
+====
 This example describes a typical configuration for a
-ManagedScheduledExecutorService that uses a bounded thread pool. Only 10
+`ManagedScheduledExecutorService` that uses a bounded thread pool. Only 10
 timers can run simultaneously and are considered hung if they have run
 more than 5 seconds. An executor such as this can be shared between
 applications and is designed to run very short-duration tasks, for
 example, marking a transaction to rollback after a timeout.
-____
+====
 
 [cols=",",]
 |===
@@ -1394,15 +1303,15 @@ Retry and Abort
 
 |===
 
-[#_Toc347301890 .anchor]##Table : Typical Timer Configuration Example
+##Table : Typical Timer Configuration Example
 
 ===== Default ManagedScheduledExecutorService
 
-The Java EE Product Provider must provide a preconfigured, default
-ManagedScheduledExecutorService for use by application components under
-the JNDI name java:comp/DefaultManagedScheduledExecutorService. The
+The Jakarta EE Product Provider must provide a preconfigured, default
+`ManagedScheduledExecutorService` for use by application components under
+the JNDI name `java:comp/DefaultManagedScheduledExecutorService`. The
 types of contexts to be propagated by this default
-ManagedScheduledExecutorService from a contextualizing application
+`ManagedScheduledExecutorService` from a contextualizing application
 component must include naming context, class loader, and security
 information.
 
@@ -1417,51 +1326,51 @@ these duties may include:
 
 ==== Lifecycle
 
-The lifecycle of ManagedScheduledExecutorService instances are centrally
+The lifecycle of `ManagedScheduledExecutorService` instances are centrally
 managed by the application server and cannot be changed by an
 application.
 
-A ManagedScheduledExecutorService instance can be used by multiple
+A `ManagedScheduledExecutorService` instance can be used by multiple
 components and applications. When the executor runs a task, the context
 of the thread is changed to match the component instance that submitted
 the task. The context is then restored when the task is complete. See
 Figure 3‑1 Managed Thread Pool Executor Component Relationship.
 
-ManagedScheduledExecutorService instances may be terminated or suspended
+`ManagedScheduledExecutorService` instances may be terminated or suspended
 by the application server when applications or components are stopped or
 the application server itself is shutting down.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes requirements for
-ManagedScheduledExecutorService providers.
+`ManagedScheduledExecutorService` providers.
 
 [arabic]
-. All tasks, when executed from the ManagedScheduledExecutorService,
+. All tasks, when executed from the `ManagedScheduledExecutorService`,
 will run with the context of the application component that submitted
 the task.
-. The lifecycle of a ManagedScheduledExecutorService is managed by an
+. The lifecycle of a `ManagedScheduledExecutorService` is managed by an
 application server. All lifecycle operations on the
-ManagedScheduledExecutorService interface will throw a
-java.lang.IllegalStateException exception. This includes the following
-methods that are defined in the java.util.concurrent.ExecutorService
-interface: awaitTermination(), isShutdown(), isTerminated(), shutdown(),
-and shutdownNow().
+`ManagedScheduledExecutorService` interface will throw a
+`java.lang.IllegalStateException` exception. This includes the following
+methods that are defined in the `java.util.concurrent.ExecutorService`
+interface: `awaitTermination()`, `isShutdown()`, `isTerminated()`, `shutdown()`,
+and `shutdownNow()`.
 . All tasks submitted to an executor must not run if task’s component is
 not started.
 
-When a ManagedScheduledExecutorService instance is being shutdown by the
-Java EE Product Provider:
+When a `ManagedScheduledExecutorService` instance is being shutdown by the
+Jakarta EE Product Provider:
 
 [arabic]
 . All attempts to submit new tasks are rejected.
 . All submitted tasks are cancelled if not running.
 . All running task threads are interrupted.
-. All registered ManagedTaskListeners are invoked.
+. All registered `ManagedTaskListeners` are invoked.
 
 ==== Quality of Service 
 
-ManagedScheduledExecutorService implementations must support the
+`ManagedScheduledExecutorService` implementations must support the
 at-most-once quality of service. The at-most-once quality of service
 guarantees that a task will run at most, one time. This quality of
 service is the most efficient method to run tasks. Tasks submitted to an
@@ -1473,36 +1382,36 @@ specification.
 
 ==== Transaction Management 
 
-ManagedScheduledExecutorService implementations must support
+`ManagedScheduledExecutorService` implementations must support
 user-managed global transaction demarcation using the
-javax.transaction.UserTransaction interface, which is described in the
-Java Transaction API specification. User-managed transactions allow
+`jakarta.transaction.UserTransaction` interface, which is described in the
+Jakarta Transactions specification. User-managed transactions allow
 components to manually control global transaction demarcation
 boundaries. Task implementations may optionally begin, commit, and
 roll-back a transaction. See EE.4 for details on transaction management
-in Java EE.
+in Jakarta EE.
 
 Task instances are run outside of the scope of the transaction of the
 submitting thread. Any transaction active in the executing thread will
 be suspended.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes the transaction management requirements of a
-ManagedScheduledExecutorService implementation.
+`ManagedScheduledExecutorService` implementation.
 
 [arabic]
-. The javax.transaction.UserTransaction interface must be made available
+. The `jakarta.transaction.UserTransaction` interface must be made available
 in the local JNDI namespace as environment entry:
-java:comp/UserTransaction (J2EE.5.7 and J2EE.4.2.1.1)
-. All resource managers must enlist with a UserTransaction instance when
-a transaction is active using the begin() method.
+`java:comp/UserTransaction` (J2EE.5.7 and J2EE.4.2.1.1)
+. All resource managers must enlist with a `UserTransaction` instance when
+a transaction is active using the `begin()` method.
 . The executor is responsible for coordinating commits and rollbacks
-when the transaction ends using commit() and rollback() methods.
+when the transaction ends using `commit()` and `rollback()` methods.
 . A task must have the same ability to use transactions as the component
 submitting the tasks. For example, tasks are allowed to call
 transactional enterprise beans, and managed beans that use the
-@Transactional interceptor as defined in the Java Transaction API
+`@Transactional` interceptor as defined in the Jakarta Transactions
 specification.
 
 ===== Application Component Provider’s Requirements 
@@ -1513,26 +1422,26 @@ each task provider’s implementation.
 [arabic]
 . A task instance that starts a transaction must complete the
 transaction before starting a new transaction.
-. The task provider uses the javax.transaction.UserTransaction interface
+. The task provider uses the `jakarta.transaction.UserTransaction` interface
 to demarcate transactions.
-. Transactions are demarcated using the begin(), commit() and rollback()
-methods of the UserTransaction interface.
+. Transactions are demarcated using the `begin()`, `commit()` and `rollback()`
+methods of the `UserTransaction` interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g., if a
-java.sql.Connection is enlisted in the transaction instance, the
-Connection.commit() and Connection.rollback() methods must not be used).
+`java.sql.Connection` is enlisted in the transaction instance, the
+`Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
 
-See section 3.1.8.2.1 for an example on how to use a UserTransaction
+See section 3.1.8.2.1 for an example on how to use a `UserTransaction`
 within a task.
 
 === ContextService 
 
-The javax.enterprise.concurrent.ContextService allows applications to
+The `jakarta.enterprise.concurrent.ContextService` allows applications to
 create contextual objects without using a managed executor. The
-ContextService uses the dynamic proxy capabilities found in the
-java.lang.reflect package to associate the application component
+`ContextService` uses the dynamic proxy capabilities found in the
+`java.lang.reflect` package to associate the application component
 container context with an object instance. The object becomes a
 contextual object (see section 2.3.2 ) and whenever a method on the
 contextual object is invoked, the method executes with the thread
@@ -1540,12 +1449,12 @@ context of the associated application component instance.
 
 Contextual objects allow application components to develop a wide
 variety of applications and services that are not normally possible in
-the Java EE platform, such as workflow systems. When used in conjunction
-with a ManagedThreadFactory, customized Java SE platform ExecutorService
+the Jakarta EE platform, such as workflow systems. When used in conjunction
+with a `ManagedThreadFactory`, customized Java SE platform ExecutorService
 implementations can be used.
 
-The ContextService also allows non-Java EE service callbacks (such as
-JMS MessageListeners and JMX NotificationListeners) to run in the
+The ContextService also allows non-Jakarta EE service callbacks (such as
+Jakarta Messaging MessageListeners and JMX NotificationListeners) to run in the
 context of the listener registrant instead of the implementation
 provider's undefined thread context.).
 
@@ -1562,161 +1471,135 @@ references to obtain references to a ContextService instance as follows:
 
 * Assign an entry in the application component’s environment to the
 reference using the reference type of:
-javax.enterprise.concurrent.ContextService. (See EE.5.8.1.2 for
+`jakarta.enterprise.concurrent.ContextService`. (See EE.5.8.1.2 for
 information on how resource environment references are declared in the
 deployment descriptor.)
 * Look up the managed object in the application component’s environment
 using JNDI (EE.5.2), or through resource injection by the use of the
-Resource annotation (EE.5.8.1.1).
+`@Resource` annotation (EE.5.8.1.1).
 
 This specification recommends, but does not require, that all resource
 environment references be organized in the appropriate subcontext of the
 component’s environment for the resource type. For example, all
-ContextService references should be declared in the
-java:comp/env/concurrent subcontext.
+`ContextService` references should be declared in the
+`java:comp/env/concurrent` subcontext.
 
-* Contextual object proxy instances are created with a ContextService
-instance using the createContextualProxy() method. Contextual object
+* Contextual object proxy instances are created with a `ContextService`
+instance using the `createContextualProxy()` method. Contextual object
 proxies will run as an extension of the application component instance
-that created the proxy and may interact with Java EE container resources
+that created the proxy and may interact with Jakarta EE container resources
 as defined in other sections of this specification.
 
 It is important for Application Component Providers to identify and
 document the required behaviors and service-level agreements for each
-required ContextService. The following example illustrates how the
-component can describe and utilize a ContextService.
+required `ContextService`. The following example illustrates how the
+component can describe and utilize a `ContextService`.
 
 ===== Usage Example 
 
-This section provides an example that shows how a custom ExecutorService
+This section provides an example that shows how a custom `ExecutorService`
 can be utilized within an application component.
 
 ====== Custom ExecutorService
 
-This example demonstrates how a singleton Java SE ExecutorService
-implementation (such as the java.util.concurrent.ThreadPoolExecutor) can
-be used from an EJB. In this example, the reference ThreadPoolExecutor
+This example demonstrates how a singleton Java SE `ExecutorService`
+implementation (such as the `java.util.concurrent.ThreadPoolExecutor`) can
+be used from a Jakarta Enterprise Bean. In this example, the reference `ThreadPoolExecutor`
 implementation is used instead of the implementation supplied with the
-Java EE Product Provider.
+Jakarta EE Product Provider.
 
-A custom ExecutorService can be created like any Java object. For
+A custom `ExecutorService` can be created like any Java object. For
 applications to use an object, it can be accessed using a singleton or
 using a Connectors resource adapter. In this example, we use a singleton
 session bean.
 
-Since the ExecutorService is a singleton session bean, it can be
-accessed by several EJB or Servlet instances. The ExecutorService uses
-threads created from a ManagedThreadFactory (see section 3.4) provided
-by the Java EE Product Provider. The ContextService is used to guarantee
+Since the `ExecutorService` is a singleton session bean, it can be
+accessed by several Jakarta Enterprise Beans or Servlet instances. The `ExecutorService` uses
+threads created from a `ManagedThreadFactory` (see section 3.4) provided
+by the Jakarta EE Product Provider. The `ContextService` is used to guarantee
 that the task, when it runs on one of the worker threads in the pool,
 will have the correct component context available to it.
 
 ====== ExecutorService Singleton 
 
 Create a singleton session bean ExecutorAccessor with a getter for the
-ExecutorService. The ExecutorAccessor should be included with the EJB
+`ExecutorService`. The ExecutorAccessor should be included with the enterprise bean
 module or other jar that is in the scope of the application component.
 
+[source,java]
+----
 @Singleton
+public class ExecutorAccessor {
 
-public class ExecutorAccessor \{
+  private ExecutorService threadPoolExecutor = null;
 
-private ExecutorService threadPoolExecutor = null;
+  @Resource(name="concurrent/ThreadFactory")
+  ManagedThreadFactory threadFactory;
 
-@Resource(name="concurrent/ThreadFactory")
+  @PostConstruct
+  public void postConstruct() {
+    threadPoolExecutor = new ThreadPoolExecutor( 5, 10, 5, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10), threadFactory);
+  }
 
-ManagedThreadFactory threadFactory;
-
-@PostConstruct
-
-public void postConstruct() \{
-
-threadPoolExecutor = new ThreadPoolExecutor(
-
-5, 10, 5, TimeUnit.SECONDS,
-
-new ArrayBlockingQueue<Runnable>(10), threadFactory);
-
+  public ExecutorService getThreadPool() {
+    return threadPoolExecutor;
+  }
 }
-
-public ExecutorService getThreadPool() \{
-
-return threadPoolExecutor;
-
-}
-
-}
+----
 
 ====== CreditReport Task 
 
 The CreditReport task retrieves a credit report from a given credit
 agency for a given tax identification number. Multiple tasks are invoked
-in parallel by an EJB business method.
+in parallel by an Enterprise Bean business method.
 
 ====== Resource Environment References 
 
-This example refers to a ContextService and a ManagedThreadFactory.
+This example refers to a `ContextService` and a `ManagedThreadFactory`.
 
-____
-_*Note* – Using the description for documenting the configuration
+[NOTE]
+====
+Using the description for documenting the configuration
 attributes of the managed object is optional. The format used here is
-only an example. Future revisions of Java EE specifications may
+only an example. Future revisions of Jakarta EE specifications may
 formalize usages such as this._
-____
+====
 
+[source,xml]
+----
 <resource-env-ref>
+  <description>
+    This ThreadFactory is used for the singleton ThreadPoolExecutor.
+    Priority: Normal
+    Context Info: NA
+  </description>
 
-<description>
+  <resource-env-ref-name>
+    concurrent/ThreadFactory
+  </resource-env-ref-name>
 
-This ThreadFactory is used for the singleton ThreadPoolExecutor.
-
-Priority: Normal
-
-Context Info: NA
-
-</description>
-
-<resource-env-ref-name>
-
-*concurrent/ThreadFactory*
-
-</resource-env-ref-name>
-
-<resource-env-ref-type>
-
-javax.enterprise.concurrent.ManagedThreadFactory
-
-</resource-env-ref-type>
-
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ManagedThreadFactory
+  </resource-env-ref-type>
 </resource-env-ref>
 
 <resource-env-ref>
+  <description>
+    This ContextService is used in conjunction with the custom
+    ThreadPoolExecutor that the credit report component is using.
+    This ContextService has the following requirements:
+    Context Info: Local namespace, security
+  </description>
 
-<description>
+  <resource-env-ref-name>
+    concurrent/AllContexts
+  </resource-env-ref-name>
 
-This ContextService is used in conjunction with the custom
-
-ThreadPoolExecutor that the credit report component is using.
-
-This ContextService has the following requirements:
-
-Context Info: Local namespace, security
-
-</description>
-
-<resource-env-ref-name>
-
-*concurrent/AllContexts*
-
-</resource-env-ref-name>
-
-<resource-env-ref-type>
-
-javax.enterprise.concurrent.ContextService
-
-</resource-env-ref-type>
-
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ContextService
+  </resource-env-ref-type>
 </resource-env-ref>
+----
 
 ====== Task Definition 
 
@@ -1726,132 +1609,91 @@ the Java Authentication and Authorization API (JAAS) to retrieve the
 user's identity from the current thread in order to audit access to the
 credit report.
 
-public class CreditScoreTask implements Callable<Long> \{
+[source,java]
+----
+public class CreditScoreTask implements Callable<Long> {
+  private long taxID;
+  private int agency;
 
-private long taxID;
+  public CreditScoreTask(long taxID, int agency) {
+    this.taxID = taxID;
+    this.agency = agency;
+  }
 
-private int agency;
+  public Long call() {
+    // Log the request in a database using the identity of the user.
+    // Use the local namespace to locate the datasource
+    Subject currentSubject = Subject.getSubject(AccessController.getContext());
+    logCreditAccess(currentSubject, taxID, agency);
 
-public CreditScoreTask(long taxID, int agency) \{
+    // Use Web Services to retrieve the credit score from the
+    // specified agency.
+    return getCreditScore(taxID, agency);
+  }
 
-this.taxID = taxID;
-
-this.agency = agency;
-
+  ...
 }
-
-public Long call() \{
-
-// Log the request in a database using the identity of the user.
-
-// Use the local namespace to locate the datasource
-
-Subject currentSubject =
-
-Subject.getSubject(AccessController.getContext());
-
-logCreditAccess(currentSubject, taxID, agency);
-
-// Use Web Services to retrieve the credit score from the
-
-// specified agency.
-
-return getCreditScore(taxID, agency);
-
-}
-
-...
-
-}
+----
 
 ====== Task Invocation 
 
-The LoanCheckerBean is a stateless session EJB that has one method that
+The `LoanCheckerBean` is a stateless session bean that has one method that
 is used to retrieve the credit scores for one tax ID from three
 different agencies. It uses three threads to accomplish this, including
-the EJB thread.
+the enterprise bean thread.
 
-While the EJB thread is retrieving one credit score, two other threads
+While the enterprise bean thread is retrieving one credit score, two other threads
 are retrieving the other two scores.
 
-class LoanCheckerBean \{
+[source,java]
+----
+class LoanCheckerBean {
+  @Resource(name="concurrent/AllContexts")
+  ContextService ctxSvc;
 
-@Resource(name="*concurrent/AllContexts"*)
+  @EJB private ExecutorAccessor executorAccessor;
 
-ContextService ctxSvc;
+  public long[] getCreditScores(long taxID) {
+    // Retrieve our singleton threadpool, but wrap it in
+    // a ExecutorCompletionService
+    ExecutorCompletionService<Long> threadPool = new ExecutorCompletionService<Long>(executorAccessor.getThreadPool());
 
-@EJB private ExecutorAccessor executorAccessor;
+    // Use this thread to retrieve one credit score, and
+    // use two other threads to process the other two scores.
+    // Since we are using a custom executor and
+    // because our tasks depend upon the context in which this
+    // method is running, we use a contextual task.
+    CreditScoreTask agency1 = new CreditScoreTask(taxID, 1);
+    
+    Callable<Long> agency2 = ctxSvc.createContextualProxy( new CreditScoreTask(taxID, 2), Callable.class));
 
-public long[] getCreditScores(long taxID) \{
+    Callable<Long> agency3 = ctxSvc.createContextualProxy ( new CreditScoreTask(taxID, 3), Callable.class));
 
-// Retrieve our singleton threadpool, but wrap it in
+    threadPool.submit(agency2);
+    threadPool.submit(agency3);
 
-// a ExecutorCompletionService
+    long[] scores = {0,0,0};
+    try {
+      // Retrieve one credit score on this thread.
+      scores[0] = agency1.call();
 
-ExecutorCompletionService<Long> threadPool =
-
-new ExecutorCompletionService<Long>(
-
-executorAccessor.getThreadPool());
-
-// Use this thread to retrieve one credit score, and
-
-// use two other threads to process the other two scores.
-
-// Since we are using a custom executor and
-
-// because our tasks depend upon the context in which this
-
-// method is running, we use a contextual task.
-
-CreditScoreTask agency1 = new CreditScoreTask(taxID, 1);
-
-Callable<Long> agency2 = ctxSvc.createContextualProxy(
-
-new CreditScoreTask(taxID, 2), Callable.class);
-
-Callable<Long> agency3 = ctxSvc.createContextualProxy (
-
-new CreditScoreTask(taxID, 3), Callable.class);
-
-threadPool.submit(agency2);
-
-threadPool.submit(agency3);
-
-long[] scores = \{0,0,0};
-
-try \{
-
-// Retrieve one credit score on this thread.
-
-scores[0] = agency1.call();
-
-// Retrieve the other two credit scores
-
-scores[1] = threadPool.take().get();
-
-scores[2] = threadPool.take().get();
-
-} catch (InterruptedException e) \{
-
-// The app may be shutting down.
-
-} catch (ExecutionException e) \{
-
-// There was an error retrieving one of the asynch scores.
-
+      // Retrieve the other two credit scores
+      scores[1] = threadPool.take().get();
+      scores[2] = threadPool.take().get();
+    } catch (InterruptedException e) {
+      // The app may be shutting down.
+    } catch (ExecutionException e) {
+      // There was an error retrieving one of the asynch scores.
+    }
+    return scores;
+  }
 }
-
-return scores;
-
-}
-
-}
+----
 
 ==== Application Assembler’s Responsibilities 
 
 The Application Assembler (EE.2.11.3) is responsible for assembling the
-application components into a complete Java EE Application and providing
+application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
@@ -1864,50 +1706,50 @@ the dependencies defined by the Application Component Provider and
 Application Assembler to managed objects with the properly defined
 attributes. See EE.5.8.2 for details.
 
-All objects created by a ContextService instance are required to
-propagate Java EE container context information (see section 2.3) to the
+All objects created by a `ContextService` instance are required to
+propagate Jakarta EE container context information (see section 2.3) to the
 methods invoked on the proxied object.
 
-==== Java EE Product Provider’s Responsibilities 
+==== Jakarta EE Product Provider’s Responsibilities 
 
-The Java EE Product Provider’s responsibilities are as defined in
+The Jakarta EE Product Provider’s responsibilities are as defined in
 EE.5.8.3 and must provide an implementation of any behaviors defined in
 the following:
 
 * All invocation handlers for the contextual proxy implementation must
-implement java.io.Serializable.
+implement `java.io.Serializable`.
 
 * All invocations to any of the proxied interface methods will fail with
-a java.lang.IllegalStateException exception if the application component
+a `java.lang.IllegalStateException` exception if the application component
 is not started or deployed.
 
-Java EE Product Providers may add any additional container contexts to
-the managed ContextService and provide the means for configuration of
+Jakarta EE Product Providers may add any additional container contexts to
+the managed `ContextService` and provide the means for configuration of
 those contexts in any way so long as these contexts do not violate the
 required aspects of this specification.
 
 The following section illustrates some possible configuration options
-that a Java EE Product Provider may want to provide.
+that a Jakarta EE Product Provider may want to provide.
 
 ===== ContextService Configuration Attributes 
 
-Each ContextService may support one or more runtime behaviors as
-specified by configuration attributes. The Java EE Product Provider will
+Each `ContextService` may support one or more runtime behaviors as
+specified by configuration attributes. The Jakarta EE Product Provider will
 determine both the appropriate attributes and the means of configuring
 those attributes for their product.
 
 ===== Configuration Examples 
 
-This section and subsections illustrate some examples how a Java EE
-Product Provider could configure a ContextService and the possible
+This section and subsections illustrate some examples how a Jakarta EE
+Product Provider could configure a `ContextService` and the possible
 options that such a service could provide.
 
-The ContextService can be used directly by application components by
+The `ContextService` can be used directly by application components by
 using resource environment references or providers may choose to use the
 context information supplied as default context propagation policies for
-a ManagedExecutorService, ManagedScheduledExecutorService or
-ManagedThreadFactory. The configuration examples covered in sections
-3.1.4.2 3.2.4.2 and 3.4.4.2 refer to one of the ContextService
+a `ManagedExecutorService`, `ManagedScheduledExecutorService` or
+`ManagedThreadFactory`. The configuration examples covered in sections
+3.1.4.2 3.2.4.2 and 3.4.4.2 refer to one of the `ContextService`
 configuration examples that follow.
 
 Each of the examples has the following attributes:
@@ -1939,7 +1781,7 @@ propagated.
 
 |===
 
-[#_Toc347301891 .anchor]##Table : All Contexts Configuration Example
+##Table : All Contexts Configuration Example
 
 ====== OLTP Contexts 
 
@@ -1956,8 +1798,7 @@ Locale
  Custom
 
 |===
-
-[#_Toc347301892 .anchor]##Table : OLTP Contexts Configuration Example
+##Table : OLTP Contexts Configuration Example
 
 ====== No Contexts
 
@@ -1975,52 +1816,52 @@ Custom
 
 |===
 
-[#_Toc347301893 .anchor]##Table : No Contexts Configuration Example
+##Table : No Contexts Configuration Example
 
 ===== Default ContextService
 
-The Java EE Product Provider must provide a preconfigured, default
-ContextService for use by application components under the JNDI name
-java:comp/DefaultContextService. The types of contexts to be propagated
-by this default ContextService from a contextualizing application
+The Jakarta EE Product Provider must provide a preconfigured, default
+`ContextService` for use by application components under the JNDI name
+`java:comp/DefaultContextService`. The types of contexts to be propagated
+by this default `ContextService` from a contextualizing application
 component must include naming context, class loader, and security
 information.
 
 ==== Transaction Management 
 
 Contextual dynamic proxies support user-managed global transaction
-demarcation using the javax.transaction.UserTransaction interface, which
-is described in the Java Transaction API specification. By default,
+demarcation using the `jakarta.transaction.UserTransaction` interface, which
+is described in the Jakarta Transactions specification. By default,
 proxy methods suspend any transactional context on the thread and allow
 components to manually control global transaction demarcation
 boundaries. Context objects may optionally begin, commit, and rollback a
-transaction. See EE.4 for details on transaction management in Java EE.
+transaction. See EE.4 for details on transaction management in Jakarta EE.
 
 By using an execution property when creating the contextual proxy
 object, application components can choose to not suspend the
 transactional context on the thread, and any resources used by the task
 will be enlisted to that transaction. Refer to the Javadoc for the
-javax.enterprise.concurrent.ContextService interface for details and
+`jakarta.enterprise.concurrent.ContextService` interface for details and
 examples.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes the transaction management requirements of a
-ContextService implementation when transaction management is enabled
+`ContextService` implementation when transaction management is enabled
 (this is the default behavior).
 
 [arabic]
-. The javax.transaction.UserTransaction interface must be made available
+. The `jakarta.transaction.UserTransaction` interface must be made available
 in the local JNDI namespace as environment entry:
-java:comp/UserTransaction (EE.5.10 and EE.4.2.1.1)
-. All resource managers must enlist with a UserTransaction instance when
-a transaction is active using the begin() method.
+`java:comp/UserTransaction` (EE.5.10 and EE.4.2.1.1)
+. All resource managers must enlist with a `UserTransaction` instance when
+a transaction is active using the `begin()` method.
 . The executor is responsible for coordinating commits and rollbacks
-when the transaction ends using commit() and rollback() methods.
+when the transaction ends using `commit()` and `rollback()` methods.
 . A task must have the same ability to use transactions as the component
 submitting the tasks. For example, tasks are allowed to call
 transactional enterprise beans, and managed beans that use the
-@Transactional interceptor as defined in the Java Transaction API
+`@Transactional` interceptor as defined in the Jakarta Transactions
 specification.
 
 ===== Application Component Provider’s Requirements 
@@ -2032,14 +1873,14 @@ enabled (this is the default behavior).
 [arabic]
 . A task instance that starts a transaction must complete the
 transaction before starting a new transaction.
-. The task provider uses the javax.transaction.UserTransaction interface
+. The task provider uses the `jakarta.transaction.UserTransaction` interface
 to demarcate transactions.
-. Transactions are demarcated using the begin(), commit() and rollback()
-methods of the UserTransaction interface.
+. Transactions are demarcated using the `begin()`, `commit()` and `rollback()`
+methods of the `UserTransaction` interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g. if a
-javax.sql.Connection is enlisted in the transaction instance, the
-Connection.commit() and Connection.rollback() methods must not be used).
+`javax.sql.Connection` is enlisted in the transaction instance, the
+`Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
 
@@ -2048,63 +1889,64 @@ task.
 
 === ManagedThreadFactory 
 
-The javax.enterprise.concurrent.ManagedThreadFactory allows applications
-to create thread instances from a Java EE Product Provider without
-creating new java.lang.Thread instances directly. This object allows
+The `jakarta.enterprise.concurrent.ManagedThreadFactory` allows applications
+to create thread instances from a Jakarta EE Product Provider without
+creating new `java.lang.Thread` instances directly. This object allows
 Application Component Providers to use custom executors such as the
-java.util.concurrent.ThreadPoolExecutor when advanced, specialized
+`java.util.concurrent.ThreadPoolExecutor` when advanced, specialized
 execution patterns are required.
 
-Java EE Product Providers can provide custom Thread implementations to
+Jakarta EE Product Providers can provide custom `Thread` implementations to
 add management capabilities and container contextual information to the
 thread.
 
 ==== Application Component Provider’s Responsibilities 
 
 Application Component Providers (application developers) (EE2.11.2) use
-a javax.enterprise.concurrent.ManagedThreadFactory instance to create
-manageable threads. ManagedThreadFactory instances are retrieved using
+a `jakarta.enterprise.concurrent.ManagedThreadFactory` instance to create
+manageable threads. `ManagedThreadFactory` instances are retrieved using
 the Java Naming and Directory Interface (JNDI) Naming Context (EE.5) or
 through injection of resource environment references (EE.5.8.1.1).
 
 The Application Component Provider may use resource environment
-references to obtain references to a ManagedThreadFactory instance as
+references to obtain references to a `ManagedThreadFactory` instance as
 follows:
 
 * Assign an entry in the application component’s environment to the
 reference using the reference type of:
-javax.enterprise.concurrent.ManagedThreadFactory. (See EE.5.8.1.2 for
+`jakarta.enterprise.concurrent.ManagedThreadFactory`. (See EE.5.8.1.2 for
 information on how resource environment references are declared in the
 deployment descriptor.)
 * This specification recommends, but does not require, that all resource
 environment references be organized in the appropriate subcontext of the
 component’s environment for the resource type. For Example, all
-ManagedThreadFactory references should be declared in the
-java:comp/env/concurrent subcontext.
+`ManagedThreadFactory` references should be declared in the
+`java:comp/env/concurrent` subcontext.
 * Look up the managed object in the application component’s environment
 using JNDI (EE.5), or through resource injection by the use of the
-Resource annotation (EE.5.8.1.1).
-* New threads are created using the newThread(Runnable r) method on the
-java.util.concurrent.ThreadFactory interface.
+`@Resource` annotation (EE.5.8.1.1).
+* New threads are created using the `newThread(Runnable r)` method on the
+`java.util.concurrent.ThreadFactory` interface.
 * The application component thread has permission to interrupt the
 thread. All other modifications to the thread are subject to the
 security manager, if present.
 * All Threads are contextual (see section 2.3). When the thread is
-started using the Thread.start() method, the Runnable that is executed
+started using the `Thread.start()` method, the `Runnable` that is executed
 will run with the context of the application component instance that
-created the ManagedThreadFactory instance.
+created the `ManagedThreadFactory` instance.
 
-____
-_*Note* – The ManagedThreadFactory instance may be invoked from several
+[NOTE]
+====
+The `ManagedThreadFactory` instance may be invoked from several
 threads in the application component, each with a different container
 context (for example, user identity). By always applying the context of
-the ManagedThreadFactory creator, each thread has a consistent context.
+the `ManagedThreadFactory` creator, each thread has a consistent context.
 If a different context is required for each thread, use the
-ContextService to create a contextual object (see section_ _3.3)._
-____
+`ContextService` to create a contextual object (see section_ _3.3)._
+====
 
-* If a ManagedThreadFactory instance is stopped, all subsequent calls to
-newThread() must throw a java.lang.IllegalStateException
+* If a `ManagedThreadFactory` instance is stopped, all subsequent calls to
+`newThread()` must throw a `java.lang.IllegalStateException`
 
 ===== Usage Example
 
@@ -2112,8 +1954,8 @@ In this example, an application component uses a background daemon task
 to dump in-memory events to a database log, similar to the timer usage
 example in section 3.2.1.1.1 .
 
-The attributes of the ManagedThreadFactory reference is documented using
-the <description> tag within the deployment descriptor of the
+The attributes of the `ManagedThreadFactory` reference is documented using
+the `<description>` tag within the deployment descriptor of the
 application component and later mapped by the Deployer.
 
 ====== Logger Task 
@@ -2121,138 +1963,108 @@ application component and later mapped by the Deployer.
 The Logger Task is a long-running task that has the same lifecycle as
 the servlet. It continually monitors a queue and waits for events to a
 database log. Its lifecycle is controlled using a
-javax.servlet.ServletContextListener.
+`jakarta.servlet.ServletContextListener`.
 
 ====== Resource Environment Reference 
 
 The following resource environment reference is added to the web.xml
 file for the web component. The description reflects the desired
 configuration attributes (see section 3.4.4.2 ). Alternatively, the
-Resource annotation can be used in the Servlet code.
+`@Resource` annotation can be used in the Servlet code.
 
-____
-_*Note* – Using the description for documenting the configuration
+[NOTE]
+====
+Using the description for documenting the configuration
 attributes of the managed object is optional. The format used here is
-only an example. Future revisions of Java EE specifications may
+only an example. Future revisions of Jakarta EE specifications may
 formalize usages such as this._
-____
+====
 
+[source,xml]
+----
 <resource-env-ref>
+  <description>
+    This ManagedThreadFactory is used to create a thread for for the
+    application’s logger task.
+    This ManagedThreadFactory has the following requirements:
+    Context Info: Local Namespace
+  </description>
 
-<description>
+  <resource-env-ref-name>
+    concurrent/LoggerThreadFactory
+  </resource-env-ref-name>
 
-This ManagedThreadFactory is used to create a thread for for the
-
-application’s logger task.
-
-This ManagedThreadFactory has the following requirements:
-
-Context Info: Local Namespace
-
-</description>
-
-<resource-env-ref-name>
-
-*concurrent/LoggerThreadFactory*
-
-</resource-env-ref-name>
-
-<resource-env-ref-type>
-
-javax.enterprise.concurrent.ManagedThreadFactory
-
-</resource-env-ref-type>
-
+  <resource-env-ref-type>
+    jakarta.enterprise.concurrent.ManagedThreadFactory
+  </resource-env-ref-type>
 </resource-env-ref>
-
+----
 ====== Task Definition 
 
 The task itself simply uses a resource-reference to a JDBC data source,
 and uses a connect/use/close pattern when invoking the Datasource.
 
-public class LoggerTask implements Runnable \{
+[source,java]
+----
+public class LoggerTask implements Runnable {
 
-DatsSource ds = ...;
+  DataSource ds = ...;
 
-public void run() \{
+  public void run() {
+    // Wait for data and log it.
+    while (!Thread.interrupted()) {
+      logEvents(getData(), ds);
+    }
+  }
 
-// Wait for data and log it.
+  void logEvents(Collection data, DataSource ds) {
+    // Iterate through the data and log each row.
+    for (...) {
+      try (Connection con = ds.getConnection();... {
 
-while (!Thread.interrupted()) \{
+        // Write the data using our connection.
+        ...
 
-logEvents(getData(), ds);
-
+        // Commit.
+        con.commit();
+      }
+    }
+  }
 }
-
-}
-
-void logEvents(Collection data, DataSource ds) \{
-
-// Iterate through the data and log each row.
-
-for (...) \{
-
-try (Connection con = ds.getConnection();... \{
-
-// Write the data using our connection.
-
-...
-
-// Commit.
-
-con.commit();
-
-}
-
-}
-
-}
-
-}
-
+----
 ====== Task Submission 
 
 The task is started and stopped by a
-javax.servlet.ServletContextListener.
+`jakarta.servlet.ServletContextListener`.
 
-public class CtxListener implments ServletContextListener \{
+[source,java]
+----
+public class CtxListener implments ServletContextListener {
 
-Thread loggerThread = null;
+  Thread loggerThread = null;
 
-@Resource(name=”*concurrent/LoggerThreadFactory*”)
+  @Resource(name=”concurrent/LoggerThreadFactory”)
+  ManagedThreadFactory threadFactory;
 
-ManagedThreadFactory threadFactory;
+  public void contextInitialized(ServletContextEvent scEvent) {
+    LoggerTask logger = new LoggerTask();
+    Thread loggerThread = threadFactory.newThread(logger);
+    loggerThread.start();
+  }
 
-public void contextInitialized(ServletContextEvent scEvent) \{
-
-LoggerTask logger = new LoggerTask();
-
-Thread loggerThread = threadFactory.newThread(logger);
-
-loggerThread.start();
-
+  public void contextDestroyed(ServletContextEvent scEvent) {
+    // Interrupt our logger task since it is no longer available.
+    // Note: The server will do this for us as well.
+    if (loggerThread!=null) {
+      loggerThread.interrupt();
+    }
+  }
 }
-
-public void contextDestroyed(ServletContextEvent scEvent) \{
-
-// Interrupt our logger task since it is no longer available.
-
-// Note: The server will do this for us as well.
-
-if (loggerThread!=null) \{
-
-loggerThread.interrupt();
-
-}
-
-}
-
-}
-
+----
 ==== Application Assembler’s Responsibilities 
 
 The Application Assembler (EE.2.11.3) is responsible for assembling the
-application components into a complete Java EE Application and providing
+application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
@@ -2265,60 +2077,61 @@ the dependencies defined by the Application Component Provider and
 Application Assembler to managed objects with the properly defined
 attributes. See EE.5.8.2 for details.
 
-==== Java EE Product Provider’s Responsibilities 
+==== Jakarta EE Product Provider’s Responsibilities 
 
-The Java EE Product Provider’s responsibilities are as defined in
+The Jakarta EE Product Provider’s responsibilities are as defined in
 EE.5.8.3 and must support the following:
 
-* Threads returned by the newThread() method must implement the
-ManageableThread interface.
-* When a ManagedThreadFactory instance is stopped, such as when the
+* Threads returned by the `newThread()` method must implement the
+`ManageableThread` interface.
+* When a `ManagedThreadFactory` instance is stopped, such as when the
 component that created it is stopped or when the application server is
-shutting down, all threads that it has created using the newThread()
-method are interrupted. Calls to the isShutdown() method in the
-ManageableThread interface on these threads must return true.
+shutting down, all threads that it has created using the `newThread()`
+method are interrupted. Calls to the `isShutdown()` method in the
+`ManageableThread` interface on these threads must return true.
 
-____
-_*Note* – The intent is to prevent access to components that are no
+[NOTE]
+====
+The intent is to prevent access to components that are no
 longer available._
-____
+====
 
-* Threads that are created by a ManagedThreadFactory instance but are
-started after the ManagedThreadFactory has shut down is required to
-start with an interrupted status. Calls to the isShutdown() method in
-the ManageableThread interface on these threads must return true.
+* Threads that are created by a `ManagedThreadFactory` instance but are
+started after the `ManagedThreadFactory` has shut down is required to
+start with an interrupted status. Calls to the `isShutdown()` method in
+the `ManageableThread` interface on these threads must return true.
 
-All threads created by a ManagedThreadFactory instance are required to
+All threads created by a `ManagedThreadFactory` instance are required to
 propagate container context information (see section 2.3) to the
-thread’s Runnable.
+thread’s `Runnable`.
 
-Java EE Product Providers may add any additional container contexts to
-the managed ManagedThreadFactory and provide the means for configuration
+Jakarta EE Product Providers may add any additional container contexts to
+the managed `ManagedThreadFactory` and provide the means for configuration
 of those contexts in any way so long as these contexts do not violate
 the required aspects of this specification.
 
 The following section illustrates some possible configuration options
-that a Java EE Product Provider may want to provide.
+that a Jakarta EE Product Provider may want to provide.
 
 ===== ManagedThreadFactory Configuration Attributes 
 
-Each managed ManagedThreadFactory may support one or more runtime
-behaviors as specified by configuration attributes. The Java EE Product
+Each managed `ManagedThreadFactory` may support one or more runtime
+behaviors as specified by configuration attributes. The Jakarta EE Product
 Provider will determine both the appropriate attributes and the means of
 configuring those attributes for their product.
 
 ===== Configuration Examples 
 
-This section and subsections illustrate some examples of how a Java EE
-Product Provider could configure a ManagedThreadFactory and the possible
+This section and subsections illustrate some examples of how a Jakarta EE
+Product Provider could configure a `ManagedThreadFactory` and the possible
 options that such a service could provide.
 
-A ManagedThreadFactory can be used directly by application components by
+A `ManagedThreadFactory` can be used directly by application components by
 using resource environment references, or providers may choose to use
 the context information supplied as default context propagation policies
-for ManagedExecutorService, or ManagedScheduledExecutorService
+for `ManagedExecutorService`, or `ManagedScheduledExecutorService`
 instances. The configuration examples covered in sections 3.1.4.2 and
-3.2.4.2 refer to one of the ManagedThreadFactory configuration examples
+3.2.4.2 refer to one of the `ManagedThreadFactory` configuration examples
 that follow.
 
 Each of the examples has the following attributes:
@@ -2328,18 +2141,18 @@ reference.
 * *JNDI name*: The arbitrary, but required, name to identify the service
 instance. The deployer uses this value to map the service to the
 component’s resource environment reference.
-* *Context*: A reference to a ContextService instance (see section 3.3).
+* *Context*: A reference to a `ContextService` instance (see section 3.3).
 The context service can be used to define the context to propagate to
-the threads when running tasks. Having multiple ContextService
+the threads when running tasks. Having multiple `ContextService`
 instances, each with a different policy may be desirable for some
 implementations.
 * *Priority*: The priority to assign to the thread (the higher the
-number, the higher the priority). See the java.lang.Thread Javadoc for
+number, the higher the priority). See the `java.lang.Thread` Javadoc for
 details on how this value can be used.
 
 ====== Normal Threads 
 
-This configuration example illustrates a typical ManagedThreadFactory
+This configuration example illustrates a typical `ManagedThreadFactory`
 that creates normal priority threads with all available context
 information.
 
@@ -2352,7 +2165,7 @@ information.
 |Priority: |5 (Normal)
 |===
 
-[#_Toc347301894 .anchor]##Table : Normal ManagedThreadFactory
+##Table : Normal ManagedThreadFactory
 Configuration Example
 
 ====== OLTP Threads 
@@ -2370,12 +2183,12 @@ OLTP-type requests.
 |Priority: |6
 |===
 
-[#_Toc347301895 .anchor]##Table : OLTP ManagedThreadFactory
+##Table : OLTP ManagedThreadFactory
 Configuration Example
 
 ====== Threads for Long-Running Tasks 
 
-This configuration example describes a ManagedThreadFactory that creates
+This configuration example describes a `ManagedThreadFactory` that creates
 lower-priority threads that can be used for background, long-running
 tasks.
 
@@ -2388,15 +2201,15 @@ tasks.
 |Priority: |4
 |===
 
-[#_Toc347301896 .anchor]##Table : Long-Running Tasks
+##Table : Long-Running Tasks
 ManagedThreadFactory Configuration Example
 
 ===== Default ManagedThreadFactory
 
-The Java EE Product Provider must provide a preconfigured, default
-ManagedThreadFactory for use by application components under the JNDI
-name java:comp/DefaultManagedThreadFactory. The types of contexts to be
-propagated by this default ManagedThreadFactory from a contextualizing
+The Jakarta EE Product Provider must provide a preconfigured, default
+`ManagedThreadFactory` for use by application components under the JNDI
+name `java:comp/DefaultManagedThreadFactory`. The types of contexts to be
+propagated by this default `ManagedThreadFactory` from a contextualizing
 application component must include naming context, class loader, and
 security information.
 
@@ -2411,37 +2224,37 @@ these duties may include:
 
 ==== Transaction Management 
 
-ManagedThreadFactory implementations must support user-managed global
-transaction demarcation using the javax.transaction.UserTransaction
-interface, which is described in the Java Transaction API specification
-s with similar semantics to EJB bean-managed transaction demarcation
-(see the Enterprise JavaBeans specification). User-managed transactions
+`ManagedThreadFactory` implementations must support user-managed global
+transaction demarcation using the `jakarta.transaction.UserTransaction`
+interface, which is described in the Jakarta Transactions specification
+s with similar semantics to Jakarta Enterprise Beans bean-managed transaction demarcation
+(see the Jakarta Enterprise Beans specification). User-managed transactions
 allow components to manually control global transaction demarcation
 boundaries. Task implementations may optionally begin, commit, and
 roll-back a transaction. See EE.4 for details on transaction management
-in Java EE.
+in Jakarta EE.
 
 Task instances are run outside of the scope of the transaction of the
 submitting thread. Any transaction active in the executing thread will
 be suspended.
 
-===== Java EE Product Provider Requirements 
+===== Jakarta EE Product Provider Requirements 
 
 This subsection describes the transaction management requirements of a
 ManagedThreadFactory implementation.
 
 [arabic]
-. The javax.transaction.UserTransaction interface must be made available
+. The `jakarta.transaction.UserTransaction` interface must be made available
 in the local JNDI namespace as environment entry:
-java:comp/UserTransaction (EE.5.10 and EE.4.2.1.1)
-. All resource managers must enlist with a UserTransaction instance when
-a transaction is active using the begin() method.
+`java:comp/UserTransaction` (EE.5.10 and EE.4.2.1.1)
+. All resource managers must enlist with a `UserTransaction` instance when
+a transaction is active using the `begin()` method.
 . The executor is responsible for coordinating commits and rollbacks
-when the transaction ends using commit() and rollback() methods.
+when the transaction ends using `commit()` and `rollback()` methods.
 . A task must have the same ability to use transactions as the component
 submitting the tasks. For example, tasks are allowed to call
 transactional enterprise beans, and managed beans that use the
-@Transactional interceptor as defined in the Java Transaction API
+`@Transactional` interceptor as defined in the Jakarta Transactions
 specification.
 
 ===== Application Component Provider’s Requirements 
@@ -2452,16 +2265,16 @@ each task provider’s implementation.
 [arabic]
 . A task instance that starts a transaction must complete the
 transaction before starting a new transaction.
-. The task provider uses the javax.transaction.UserTransaction interface
+. The task provider uses the `jakarta.transaction.UserTransaction` interface
 to demarcate transactions.
-. Transactions are demarcated using the begin(), commit() , and
-rollback() methods of the UserTransaction interface.
+. Transactions are demarcated using the `begin()`, `commit()` , and
+`rollback()` methods of the UserTransaction interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g. if a
-javax.sql.Connection is enlisted in the transaction instance, the
-Connection.commit() and Connection.rollback() methods must not be used).
+`javax.sql.Connection` is enlisted in the transaction instance, the
+`Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
 
-See section 3.1.8.2.1 for an example of using a UserTransaction within a
+See section 3.1.8.2.1 for an example of using a `UserTransaction` within a
 task.
