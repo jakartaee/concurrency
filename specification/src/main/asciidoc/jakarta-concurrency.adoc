@@ -973,7 +973,7 @@ to demarcate transactions.
 methods of the `UserTransaction` interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g., if a
-`javax.sql.Connection` is enlisted in the transaction instance, the
+`java.sql.Connection` is enlisted in the transaction instance, the
 `Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
@@ -1879,7 +1879,7 @@ to demarcate transactions.
 methods of the `UserTransaction` interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g. if a
-`javax.sql.Connection` is enlisted in the transaction instance, the
+`java.sql.Connection` is enlisted in the transaction instance, the
 `Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
@@ -2271,7 +2271,7 @@ to demarcate transactions.
 `rollback()` methods of the UserTransaction interface.
 . While an instance is in an active transaction, resource-specific
 transaction demarcation APIs must not be used (e.g. if a
-`javax.sql.Connection` is enlisted in the transaction instance, the
+`java.sql.Connection` is enlisted in the transaction instance, the
 `Connection.commit()` and `Connection.rollback()` methods must not be used).
 . The task instance must complete the transaction before the task method
 ends.
