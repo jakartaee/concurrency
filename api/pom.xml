@@ -143,29 +143,27 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- First sets properties for the maven-bundle-plugin and later checks if they are indeed used. -->
             <plugin>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>spec-version-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
-                    <specMode>jakarta</specMode>
                     <spec>
-                        <nonFinal>${non.final}</nonFinal>
-                        <jarType>api</jarType>
                         <specVersion>${spec.version}</specVersion>
-                        <newSpecVersion>${new.spec.version}</newSpecVersion>
-                        <specBuild>${build_number}</specBuild>
                         <specImplVersion>2.0.0-RC1</specImplVersion>
                         <apiPackage>${api_package}</apiPackage>
+                        
+                        <nonFinal>${non.final}</nonFinal>
+                        <newSpecVersion>${new.spec.version}</newSpecVersion>
+                        <specBuild>${build_number}</specBuild>
                     </spec>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>set-spec-properties</goal>
-<!-- reenable before 2.0 release after plugin is fixed 
                             <goal>check-module</goal>
--->
                         </goals>
                     </execution>
                 </executions>
