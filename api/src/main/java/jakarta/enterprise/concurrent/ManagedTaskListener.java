@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * Each listener method will run with unspecified context.
  * All listeners run without an explicit transaction 
  * (they do not enlist in the application component's transaction).  If a transaction is required, use a
- * {@link javax.transaction.UserTransaction} instance.
+ * {@link jakarta.transaction.UserTransaction} instance.
  * <p>
  *
  * Each listener instance will be invoked within the same process in which the listener was registered.

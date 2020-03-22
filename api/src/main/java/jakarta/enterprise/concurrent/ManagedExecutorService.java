@@ -44,9 +44,9 @@ import java.util.concurrent.ExecutorService;
  * and are run within the application component context that submitted the task. 
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
- * {@link javax.transaction.UserTransaction} instance.  A UserTransaction instance is
+ * {@link jakarta.transaction.UserTransaction} instance.  A UserTransaction instance is
  * available in JNDI using the name: &quot;java:comp/UserTransaction&quot; or by
- * requesting an injection of a {@link javax.transaction.UserTransaction} object
+ * requesting an injection of a {@link jakarta.transaction.UserTransaction} object
  * using the {@code Resource} annotation.
  * <p>
  * Example:
@@ -104,7 +104,7 @@ import java.util.concurrent.ExecutorService;
  * &#47;**
  *  * Retrieve all accounts from several account databases in parallel.
  *  * Resource Mappings:
- *  *  type:      javax.enterprise.concurrent.ManagedExecutorService
+ *  *  type:      jakarta.enterprise.concurrent.ManagedExecutorService
  *  *  jndi-name: concurrent/ThreadPool
  *  *&#47;
  * public List&lt;Account&gt; getAccounts(long accountId) {
