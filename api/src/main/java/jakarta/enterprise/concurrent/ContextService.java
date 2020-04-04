@@ -44,7 +44,7 @@ import java.util.Map;
  * <li>The proxied object instance must implement
  *     {@link java.io.Serializable} if the proxy instance is serialized.
  * <li>Execution properties can be stored with the proxy instance. Custom
- *     property keys must not begin with "javax.enterprise.concurrent.".
+ *     property keys must not begin with "jakarta.enterprise.concurrent.".
  * <li>Execution properties are to be used for controlling how various contextual
  *     information is retrieved and applied to the thread. Although application
  *     components can store arbitrary property keys and values, it is not
