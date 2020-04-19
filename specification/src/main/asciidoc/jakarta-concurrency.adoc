@@ -180,7 +180,7 @@ contracts.
 The arrows in the diagram illustrate various flows from one part of the
 Jakarta EE platform to another.
 
-image:1.png[image]
+image:2.jpg[image]
 *Figure 2‑1 Concurrency Utilities for Jakarta EE Architecture Diagram*
 
 ==== Contextual Invocation Points
@@ -238,7 +238,7 @@ ExecutorService, the task becomes a contextual task. When the contextual
 task runs, the task behaves as if it were still running in the container
 it was submitted with.
 
-image::2.png[Contextual Task]
+image::3.jpg[Contextual Task]
 *Figure 2‑2 Contextual Task*
 
 ===== Tasks and Jakarta Contexts and Dependency Injection (CDI) 
@@ -880,7 +880,7 @@ submitting component and it becomes a Contextual Task. When the
 context of the submitting component (as noted by different colored boxes
 in the figure).
 
-image:3.png[Managed Thread Pool Executor Component Relationship]
+image:1.jpg[Managed Thread Pool Executor Component Relationship]
 *Figure 3‑1 Managed Thread Pool Executor Component Relationship*
 
 `ManagedExecutorService` instances may be terminated or suspended by the
