@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
+// Copyright (c) 2017, 2020 Contributors to the Eclipse Foundation
 //
 
 = Jakarta Concurrency
@@ -26,4 +26,5 @@ include::license-efsl.adoc[]
 // == Jakarta Concurrency
 :sectnums:
 include::jakarta-concurrency.adoc[]
+
 

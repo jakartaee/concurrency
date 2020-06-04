@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package javax.enterprise.concurrent;
+package jakarta.enterprise.concurrent;
 
 import java.util.concurrent.ThreadFactory;
 
@@ -43,7 +43,7 @@ import java.util.concurrent.ThreadFactory;
  *
  * The task runs without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
- * <CODE>javax.transaction.UserTransaction</CODE> instance.  A UserTransaction instance is
+ * <CODE>jakarta.transaction.UserTransaction</CODE> instance.  A UserTransaction instance is
  * available in JNDI using the name: &QUOT;java:comp/UserTransaction&QUOT<p>
  *
  * Example:
@@ -66,7 +66,7 @@ import java.util.concurrent.ThreadFactory;
  * &#47;**
  * * Create a ThreadPoolExecutor using a ManagedThreadFactory.
  * * Resource Mappings:
- * *  type:      javax.enterprise.concurrent.ManagedThreadFactory
+ * *  type:      jakarta.enterprise.concurrent.ManagedThreadFactory
  * *  jndi-name: concurrent/tf/DefaultThreadFactory
  * *&#47;
  *

@@ -1,7 +1,7 @@
 Jakarta Concurrency Specification
-============================
+=================================
 
-This project generates the Jakarta Concurrency 1.0 Specification.
+This project generates the Jakarta Concurrency Specification.
 
 Building
 --------
@@ -16,7 +16,7 @@ Run the full build:
 `mvn install`
 
 Locate the html files:
-- target/generated-docs/jakarta-concurrency-spec.html
+- target/generated-docs/Concurrency.html
 
 Locate the PDF files:
-- target/generated-docs/jakarta-concurrency-spec.pdf
+- target/generated-docs/Concurrency.pdf
