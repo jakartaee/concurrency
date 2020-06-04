@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package javax.enterprise.concurrent;
+package jakarta.enterprise.concurrent;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  * a {@link ManagedTaskListener} to get notification of lifecycle events of
  * the task, or to provide additional execution properties.
  * <p>
- * See also {@link ManagedExecutors#managedTask(java.util.concurrent.Callable, java.util.Map, javax.enterprise.concurrent.ManagedTaskListener) ManagedExecutors.managedTask()}.
+ * See also {@link ManagedExecutors#managedTask(java.util.concurrent.Callable, java.util.Map, jakarta.enterprise.concurrent.ManagedTaskListener) ManagedExecutors.managedTask()}.
  * <p>
  * 
  * @since 1.0
@@ -40,7 +40,7 @@ public interface ManagedTask {
    * decide how to allocate thread resource for running this task.
    * Valid values are "true" or "false".
    */
-  public static final String LONGRUNNING_HINT = "javax.enterprise.concurrent.LONGRUNNING_HINT";
+  public static final String LONGRUNNING_HINT = "jakarta.enterprise.concurrent.LONGRUNNING_HINT";
   
   /**
    * Execution property to be returned in {@link #getExecutionProperties()} or
@@ -53,7 +53,7 @@ public interface ManagedTask {
    * <p>
    * "SUSPEND" (the default if unspecified) - Any transaction that is currently
    * active on the thread will be suspended and a 
-   * {@link javax.transaction.UserTransaction} (accessible in the local 
+   * {@link jakarta.transaction.UserTransaction} (accessible in the local 
    * JNDI namespace as "java:comp/UserTransaction") will be available. The 
    * original transaction, if any was active on the thread, will be resumed
    * when the task or contextual proxy object method returns.
@@ -61,16 +61,16 @@ public interface ManagedTask {
    * <p>
    * "USE_TRANSACTION_OF_EXECUTION_THREAD" - The contextual proxy object method
    * will run within the transaction (if any) of the execution thread. A
-   * {@link javax.transaction.UserTransaction} will only be available if it is 
+   * {@link jakarta.transaction.UserTransaction} will only be available if it is 
    * also available in the execution thread (for example, when the proxy method
    * is invoked from a Servlet or Bean Managed Transaction). When there is
    * no existing transaction on the execution thread, such as when running tasks
    * that are submitted to a {@link ManagedExecutorService} or a
    * {@link ManagedScheduledExecutorService}, a 
-   * {@link javax.transaction.UserTransaction} will be available.
+   * {@link jakarta.transaction.UserTransaction} will be available.
    * <P>
    */
-  public static final String TRANSACTION = "javax.enterprise.concurrent.TRANSACTION";
+  public static final String TRANSACTION = "jakarta.enterprise.concurrent.TRANSACTION";
 
   /**
    * Constant for the "SUSPEND" value of the TRANSACTION execution property.
@@ -94,7 +94,7 @@ public interface ManagedTask {
    * any thread execution context and should typically return only 
    * readily-available instance data to identify the task.
    */
-  public static final String IDENTITY_NAME = "javax.enterprise.concurrent.IDENTITY_NAME";
+  public static final String IDENTITY_NAME = "jakarta.enterprise.concurrent.IDENTITY_NAME";
   
   /**
    * The {@link ManagedTaskListener} to receive notification of lifecycle
@@ -112,7 +112,7 @@ public interface ManagedTask {
    * 
    * Some standard property keys are defined in this class. 
    * Custom property keys may be defined but must not begin with 
-   * "javax.enterprise.concurrent.".
+   * "jakarta.enterprise.concurrent.".
    * 
    * @return A Map&lt;String, String&gt; containing additional execution properties, or
    * null if no additional information is provided for this task.

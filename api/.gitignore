@@ -1,9 +1,0 @@
-.classpath
-.project
-.settings/
-target/
-*~
-*.iml
-*nbactions.xml
-.vscode/
-.idea

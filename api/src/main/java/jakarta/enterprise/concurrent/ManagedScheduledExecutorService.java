@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package javax.enterprise.concurrent;
+package jakarta.enterprise.concurrent;
 
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -40,9 +40,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * and are run within the application component context that submitted the task.
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
- * {@code javax.transaction.UserTransaction} instance.  A UserTransaction instance is
+ * {@code jakarta.transaction.UserTransaction} instance.  A UserTransaction instance is
  * available in JNDI using the name: &QUOT;java:comp/UserTransaction&QUOT or by
- * requesting an injection of a {@link javax.transaction.UserTransaction} object
+ * requesting an injection of a {@link jakarta.transaction.UserTransaction} object
  * using the {@code Resource} annotation.<p>
  *
  * Example:
