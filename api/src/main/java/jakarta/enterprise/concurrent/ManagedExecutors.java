@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,7 +17,6 @@
 package jakarta.enterprise.concurrent;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -128,6 +127,7 @@ public class ManagedExecutors {
      * implements {@code ManagedTask}, and {@code taskListener} is not 
      * {@code null}, the {@code ManagedTaskListener} interface methods of the 
      * task will not be called.
+     * @param <V> the return type of the Callable
      * @return a Callable object
      * @throws IllegalArgumentException if {@code task} is {@code null}
      */
@@ -144,6 +144,7 @@ public class ManagedExecutors {
      * {@link ManagedScheduledExecutorService}.
      * 
      * @param task the task to have the given ManagedTaskListener associated with
+     * @param <V> the result type of the Callable
      * @param taskListener (optional) the {@code ManagedTaskListener} to receive  
      * lifecycle events notification when the task is submitted. If {@code task} 
      * implements {@code ManagedTask}, and {@code taskListener} is not 

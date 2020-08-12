@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -51,7 +51,7 @@ import java.util.Map;
  *     recommended. Jakarta EE product providers may impose limits to the 
  *     size of the keys and values.
  * </ul>
- * <P>
+ * <p>
  * 
  * @since 1.0
  */
@@ -72,7 +72,7 @@ public interface ContextService {
    *  <p>
    * For example, to execute a Runnable which is contextualized with the 
    * creator's context using a Java&trade; SE ExecutorService:
-   * <P>
+   *
    * <pre>
    *  public class MyRunnable implements Runnable {
    *      public void run() {
@@ -95,10 +95,11 @@ public interface ContextService {
    *
    *  Future f = exSvc.submit(rProxy);
    * </pre>
-   * <P>
+   * <p>
    * 
    * @param instance the instance of the object to proxy.
    * @param intf the interface that the proxy should implement.
+   * @param <T> the type of the instance to proxy
    * @return a proxy for the input object that implements the specified interface.
    * @throws java.lang.IllegalArgumentException - if the {@code intf} argument 
    * is null or the instance does not implement the specified 
@@ -113,9 +114,9 @@ public interface ContextService {
    * This method is similar to {@code <T> T createContextualProxy(T instance, Class<T> intf)}
    * except that this method can be used if the proxy has to support multiple
    * interfaces.
-   *  <p>
+   *  </p>
    * Example:
-   * <P>
+   * 
    * <pre>
    *  public class MyRunnableWork implements Runnable, SomeWorkInterface {
    *      public void run() {
@@ -143,7 +144,7 @@ public interface ContextService {
    *  // submit the proxy as a Runnable to the ExecutorService 
    *  Future f = exSvc.submit( (Runnable)proxy);
    * </pre>
-   * <P>
+   * 
    * 
    * @param instance the instance of the object to proxy.
    * @param interfaces the interfaces that the proxy should implement.
@@ -174,7 +175,7 @@ public interface ContextService {
    * 
    * For example, to call a Message Driven Bean (MDB) with the sender's
    * context, but within the MDB's transaction:
-   * <P>
+   * 
    * <pre>
    * public class MyServlet ... {
    *     public void doPost() throws NamingException, JMSException {
@@ -234,12 +235,13 @@ public interface ContextService {
    *      }
    *  }
    *</pre>
-   *<P>
+   *
    *
    * @param instance the instance of the object to proxy.
    * @param executionProperties the properties to use when creating and running the context
    *                          object.
    * @param intf the interface that the proxy should implement.
+   * @param <T> the type of the interface
    * @return a proxy for the input object that implements the specified interface.
    *
    * @throws java.lang.IllegalArgumentException - if the {@code intf} argument
