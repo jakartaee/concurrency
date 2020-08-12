@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,7 @@ package jakarta.enterprise.concurrent;
 import java.util.concurrent.ThreadFactory;
 
 /**
- * A manageable version of a <CODE>ThreadFactory</CODE>.<p>
+ * A manageable version of a <code>ThreadFactory</code>.<p>
  *
  * A ManagedThreadFactory extends the Java&trade; SE ThreadFactory to provide 
  * a method for creating threads for execution in a Jakarta&trade; EE environment.
@@ -43,8 +43,8 @@ import java.util.concurrent.ThreadFactory;
  *
  * The task runs without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
- * <CODE>jakarta.transaction.UserTransaction</CODE> instance.  A UserTransaction instance is
- * available in JNDI using the name: &QUOT;java:comp/UserTransaction&QUOT<p>
+ * <code>jakarta.transaction.UserTransaction</code> instance.  A UserTransaction instance is
+ * available in JNDI using the name: &quot;java:comp/UserTransaction&quot;<p>
  *
  * Example:
  * <pre>
@@ -57,7 +57,7 @@ import java.util.concurrent.ThreadFactory;
  *   // Perform transactional business logic
  *
  *   ut.commit();
- * }</PRE>
+ * }</pre>
  *
  * A ManagedThreadFactory can be used with Java SE ExecutorService implementations directly.<p>
  *
@@ -77,7 +77,7 @@ import java.util.concurrent.ThreadFactory;
  *
  *   // All threads will run as part of this application component.
  *   return new ThreadPoolExecutor(5, 10, 5, TimeUnit.SECONDS,
- *       new ArrayBlockingQueue&LT;Runnable&GT;(10), tf);
+ *       new ArrayBlockingQueue&lt;Runnable&gt;(10), tf);
  * }
  * </pre>
  * <P>

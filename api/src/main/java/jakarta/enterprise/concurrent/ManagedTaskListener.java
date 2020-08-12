@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
  * Each listener method will run with unspecified context.
  * All listeners run without an explicit transaction 
  * (they do not enlist in the application component's transaction).  If a transaction is required, use a
- * {@link jakarta.transaction.UserTransaction} instance.
+ * {@code jakarta.transaction.UserTransaction} instance.
  * <p>
  *
  * Each listener instance will be invoked within the same process in which the listener was registered.
@@ -43,10 +43,10 @@ import java.util.concurrent.Future;
  * ManagedTaskListener is associated with a task.  Each method is invoked
  * when the state of the {@link Future} moves from one state to another.
  * <p>
- * <img src="doc-files/TaskListener_StateDiagram.gif"><p>
+ * <img src="doc-files/TaskListener_StateDiagram.gif" alt="Task Listener State Diagram"><p>
  *
  * <b>A. The task runs normally:</b>
- * <table>
+ * <table summary="Task Listener State Normal">
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
  *
  * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
@@ -56,7 +56,7 @@ import java.util.concurrent.Future;
  * </table><p>
  *
  * <b>B. The task is cancelled during taskSubmitted():</b>
- * <table>
+ * <table summary="Task Listener State Cancelled during taskSubmitted">
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
  * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted<br>Future is cancelled.</td><td valign="top">Cancelling</td></tr>
  *
@@ -66,7 +66,7 @@ import java.util.concurrent.Future;
  *
  * <b>C. The task is cancelled or aborted after submitted, but before started:</b>
  *
- * <table>
+ * <table summary="Task Listener State Cancelled after submitted but before started">
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
  * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
  * <tr><td valign="top">2.</td><td valign="top">Submitted</td><td valign="top">cancel() or abort</td><td valign="top">taskAborted</td><td valign="top">Cancelled</td></tr>
@@ -75,7 +75,7 @@ import java.util.concurrent.Future;
  * </table> <p>
  *
  * <b>D. The task is cancelled when it is starting:</b>
- * <table>
+ * <table summary="Task Listener State Cancelled when starting">
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
  *
  * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>

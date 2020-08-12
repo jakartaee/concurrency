@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -53,7 +53,7 @@ public interface ManagedTask {
    * <p>
    * "SUSPEND" (the default if unspecified) - Any transaction that is currently
    * active on the thread will be suspended and a 
-   * {@link jakarta.transaction.UserTransaction} (accessible in the local 
+   * {@code jakarta.transaction.UserTransaction} (accessible in the local 
    * JNDI namespace as "java:comp/UserTransaction") will be available. The 
    * original transaction, if any was active on the thread, will be resumed
    * when the task or contextual proxy object method returns.
@@ -61,14 +61,14 @@ public interface ManagedTask {
    * <p>
    * "USE_TRANSACTION_OF_EXECUTION_THREAD" - The contextual proxy object method
    * will run within the transaction (if any) of the execution thread. A
-   * {@link jakarta.transaction.UserTransaction} will only be available if it is 
+   * {@code jakarta.transaction.UserTransaction} will only be available if it is 
    * also available in the execution thread (for example, when the proxy method
    * is invoked from a Servlet or Bean Managed Transaction). When there is
    * no existing transaction on the execution thread, such as when running tasks
    * that are submitted to a {@link ManagedExecutorService} or a
    * {@link ManagedScheduledExecutorService}, a 
-   * {@link jakarta.transaction.UserTransaction} will be available.
-   * <P>
+   * {@code jakarta.transaction.UserTransaction} will be available.
+   * </p>
    */
   public static final String TRANSACTION = "jakarta.enterprise.concurrent.TRANSACTION";
 

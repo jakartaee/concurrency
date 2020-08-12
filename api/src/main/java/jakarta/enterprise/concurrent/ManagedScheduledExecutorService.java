@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -41,8 +41,8 @@ import java.util.concurrent.ScheduledExecutorService;
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
  * {@code jakarta.transaction.UserTransaction} instance.  A UserTransaction instance is
- * available in JNDI using the name: &QUOT;java:comp/UserTransaction&QUOT or by
- * requesting an injection of a {@link jakarta.transaction.UserTransaction} object
+ * available in JNDI using the name: &quot;java:comp/UserTransaction&quot; or by
+ * requesting an injection of a {@code jakarta.transaction.UserTransaction} object
  * using the {@code Resource} annotation.<p>
  *
  * Example:
@@ -58,19 +58,19 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  *   ut.commit();
  * }
- * </PRE>
+ * </pre>
  * Tasks can optionally provide an {@link ManagedTaskListener} to receive 
  * notifications of lifecycle events, through the use of {@link ManagedTask}
  * interface.
  * <p>
  *
  * Asynchronous tasks are typically submitted to the ManagedScheduledExecutorService using one
- * of the <code>submit</code> or <code>schedule</code>methods, each of which return a <CODE>Future</CODE>
+ * of the <code>submit</code> or <code>schedule</code>methods, each of which return a <code>Future</code>
  * instance.  The Future represents the result of the task and can also be used to
  * check if the task is complete or wait for its completion.<p>
  *
  * If the task is cancelled, the result for the task is a
- * <CODE>CancellationException</CODE> exception.  If the task is unable
+ * <code>CancellationException</code> exception.  If the task is unable
  * to run due to start due to a reason other than cancellation, the result is a
  * {@link AbortedException} exception.  If the task is scheduled
  * with a {@link Trigger} and the Trigger forces the task to be skipped,
@@ -84,9 +84,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * and multiple results are expected.<p>
  *
  * For example, if a task is repeating, the lifecycle of the task would be:<br>
- * (Note:  See {@link ManagedTaskListener} for task lifecycle management details.)<p>
+ * (Note:  See {@link ManagedTaskListener} for task lifecycle management details.)
  *
- * <table>
+ * <table summary="Task Lifecycle">
  * <tr><td valign="top"><strong>Sequence</strong></td><td valign="top"><strong>State</strong></td><td valign="top"><strong>Action</strong></td><td valign="top"><strong>Listener</strong></td><td valign="top"><strong>Next state</strong></td></tr>
  *
  * <tr><td valign="top">1A.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
@@ -98,7 +98,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * <tr><td valign="top">3B.</td><td valign="top">Started</td><td valign="top">Exit run()</td><td valign="top">taskDone</td><td valign="top">Reschedule</td></tr>
  *
  * </table>
- * <P>
+ * 
  *
  * @since 1.0
  */
@@ -127,6 +127,7 @@ public interface ManagedScheduledExecutorService extends
    * 
    * @param callable the function to execute.
    * @param trigger the trigger that determines when the task should fire.
+   * @param <V> the return type of the <code>Callable</code>
    * 
    * @return a ScheduledFuture that can be used to extract result or cancel.
    * 
