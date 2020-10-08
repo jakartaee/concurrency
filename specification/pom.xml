@@ -27,7 +27,7 @@
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>concurrency-spec</artifactId>
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>Jakarta Concurrency Specification</name>
 
     <properties>
@@ -37,8 +37,10 @@
         <asciidoctorj.version>1.6.2</asciidoctorj.version>
         <asciidoctorj.pdf.version>1.5.0-alpha.16</asciidoctorj.pdf.version>
         <jruby.version>9.2.6.0</jruby.version>
-        <!-- status: DRAFT, BETA, etc., or blank for final -->
-        <status>DRAFT</status>
+        <!-- status: DRAFT, BETA, Final Release -->
+        <status>Final Release</status>
+        <revisiondate>${maven.build.timestamp}</revisiondate>
+        <revision.number>2.0</revision.number>
     </properties>
 
     <scm>
@@ -153,7 +155,7 @@
                     <sourceDocumentName>jakarta-concurrency-spec.adoc</sourceDocumentName>
                     <sourceHighlighter>coderay</sourceHighlighter>
                     <attributes>
-                        <revnumber>${project.version}</revnumber>
+                        <revnumber>${revision.number}</revnumber>
                         <revremark>${status}</revremark>
                         <revdate>${revisiondate}</revdate>
                     </attributes>
