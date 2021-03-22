@@ -1441,7 +1441,8 @@ within a task.
 The `jakarta.enterprise.concurrent.ContextService` allows applications to
 create contextual objects without using a managed executor. The
 `ContextService` uses the dynamic proxy capabilities found in the
-`java.lang.reflect` package to associate the application component
+`java.lang.reflect` package or creates proxy instances in a
+non-dynamic manner to associate the application component
 container context with an object instance. The object becomes a
 contextual object (see section 2.3.2 ) and whenever a method on the
 contextual object is invoked, the method executes with the thread
@@ -1485,7 +1486,7 @@ component’s environment for the resource type. For example, all
 `java:comp/env/concurrent` subcontext.
 
 * Contextual object proxy instances are created with a `ContextService`
-instance using the `createContextualProxy()` method. Contextual object
+instance using the `createContextualProxy()` or `contextual*()` methods. Contextual object
 proxies will run as an extension of the application component instance
 that created the proxy and may interact with Jakarta EE container resources
 as defined in other sections of this specification.
