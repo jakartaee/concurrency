@@ -1491,6 +1491,10 @@ proxies will run as an extension of the application component instance
 that created the proxy and may interact with Jakarta EE container resources
 as defined in other sections of this specification.
 
+* Specialized contextual proxies for unmanaged `CompletionStage` and
+`CompletableFuture` instances are created with the `withContextCapture()`
+methods, enabling context propagation to all dependent stages.
+
 It is important for Application Component Providers to identify and
 document the required behaviors and service-level agreements for each
 required `ContextService`. The following example illustrates how the

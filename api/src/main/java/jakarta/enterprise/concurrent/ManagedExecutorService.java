@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -167,5 +167,13 @@ import java.util.concurrent.ExecutorService;
  * @since 1.0
  */
 public interface ManagedExecutorService extends ExecutorService {
-
+    /**
+     * Returns a {@link ContextService} which has the same propagation settings as this <code>ManagedExecutorService</code>
+     * and uses this <code>ManagedExecutorService</code> as the default asynchronous execution facility for
+     * {@link java.util.concurrent.CompletionStage} and {@link java.util.concurrent.CompletableFuture} instances
+     * that it creates via the <code>withContextCapture</code> methods.
+     *
+     * @return a <code>ContextService</code> with the same propagation settings as this <code>ManagedExecutorService</code>.
+     */
+    public ContextService getContextService();
 }
