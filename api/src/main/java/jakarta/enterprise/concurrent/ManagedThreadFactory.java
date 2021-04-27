@@ -16,6 +16,10 @@
 
 package jakarta.enterprise.concurrent;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ThreadFactory;
 
 /**
@@ -40,6 +44,14 @@ import java.util.concurrent.ThreadFactory;
  * {@link ThreadFactory#newThread(Runnable)} method
  * will run with the application component context of the component instance
  * that created (looked-up) this ManagedThreadFactory instance.<p>
+ *
+ * Tasks that run on the {@link ForkJoinWorkerThread} that is created by the
+ * {@link ForkJoinWorkerThreadFactory#newThread(ForkJoinPool)} method
+ * run with the application component context of the component instance
+ * that created (looked-up) this ManagedThreadFactory instance.
+ * The Jakarta EE Product Provider establishes the context once per
+ * <code>ForkJoinWorkerThread</code> and does not reset the context
+ * between operations that run on the {@link ForkJoinWorkerThread}.<p>
  *
  * The task runs without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
@@ -82,8 +94,39 @@ import java.util.concurrent.ThreadFactory;
  * </pre>
  * <P>
  *
+ * ForkJoinPool Example:
+ * <pre>
+ * ManagedThreadFactory threadFactory =
+ *   InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
+ *
+ * ForkJoinPool pool = new ForkJoinPool(
+ *     Runtime.getRuntime().availableProcessors(), threadFactory, null, false);
+ *
+ * ForkJoinTask&lt;Double&gt; totals = pool.submit(() -&gt; orders
+ *     .parallelStream()
+ *     .map(order -&gt; {
+ *         if (order.total == 0.0) {
+ *             // lookups require application component namespace:
+ *             try (Connection con = ((DataSource)
+ *                     InitialContext.doLookup(
+ *                             "java:comp/env/jdbc/ds1"))
+ *                     .getConnection()) {
+ *                 order.total = ...
+ *             } catch (NamingException | SQLException x) {
+ *                 throw new CompletionException(x);
+ *             }
+ *         }
+ *         return order.total;
+ *      })
+ *     .reduce(0.0, Double::sum));
+ *
+ * System.out.println("Sum is: " + totals.join());
+ * pool.shutdown();
+ * </pre>
+ * <P>
+ *
  * @since 1.0
  */
-public interface ManagedThreadFactory extends ThreadFactory {
+public interface ManagedThreadFactory extends ThreadFactory, ForkJoinWorkerThreadFactory {
 
 }
