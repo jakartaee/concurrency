@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +16,8 @@
 
 package jakarta.enterprise.concurrent;
 
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -47,24 +49,76 @@ public interface LastExecution {
 
    /**
     * The last time in which task was scheduled to run.
-    * 
+    * <p>
+    * The default implementation delegates to the method signature that
+    * accepts a <code>ZoneId</code>.
+    *
     * @return The last date/time in which the task was scheduled to run.
     */
-   public Date getScheduledStart();
+   public default Date getScheduledStart() {
+       return Date.from(getScheduledStart(ZoneId.systemDefault()).toInstant());
+   }
+
+   /**
+    * The time, in the specified time-zone, at which the
+    * most recent execution of the task was expected to start, per its schedule.
+    *
+    * @param zone time-zone ID.
+    * @return the date/time, in the specified time-zone, at which the
+    * most recent execution of the task was expected to start, per its schedule.
+    * @since 3.0
+    */
+   public ZonedDateTime getScheduledStart(ZoneId zone);
 
    /** 
-    * The last time in which the task started running. 
-    * 
-    * @return the last date/time in which the task started running, or 
+    * The last time in which the task started running.
+    * <p>
+    * The default implementation delegates to the method signature that
+    * accepts a <code>ZoneId</code>.
+    *
+    * @return the last date/time in which the task started running, or
     *         null if the task was canceled before it was started.
     */
-   public Date getRunStart();
+   public default Date getRunStart() {
+       ZonedDateTime runStart = getRunStart(ZoneId.systemDefault());
+       return runStart == null ? null : Date.from(runStart.toInstant());
+   }
+
+   /**
+    * The time, in the specified time-zone, at which the
+    * most recent execution of the task started running.
+    *
+    * @param zone time-zone ID.
+    * @return the date/time, in the specified time-zone, at which the
+    *         most recent execution of the task started running, or
+    *         null if the task was canceled before it was started.
+    * @since 3.0
+    */
+   public ZonedDateTime getRunStart(ZoneId zone);
 
    /** 
     * The last time in which the task was completed. 
+    * <p>
+    * The default implementation delegates to the method signature that
+    * accepts a <code>ZoneId</code>.
     * 
-    * @return the last date/time in which the task was completed, or 
+    * @return the last date/time in which the task was completed, or
     *         null if the task was canceled before it was completed.
     */
-   public Date getRunEnd();
+   public default Date getRunEnd() {
+       ZonedDateTime runEnd = getRunEnd(ZoneId.systemDefault());
+       return runEnd == null ? null : Date.from(runEnd.toInstant());
+   }
+
+   /**
+    * The time, in the specified time-zone, at which the
+    * most recent execution of the task completed running.
+    *
+    * @param zone time-zone ID.
+    * @return the date/time, in the specified time-zone, at which the
+    *         most recent execution of the task completed, or
+    *         null if the task was canceled before it was completed.
+    * @since 3.0
+    */
+   public ZonedDateTime getRunEnd(ZoneId zone);
 }
