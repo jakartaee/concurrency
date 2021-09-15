@@ -18,6 +18,8 @@ package jakarta.enterprise.concurrent;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -458,4 +460,53 @@ public interface ContextService {
    *                                            {@code createContextualProxy} method.
    */
   public Map<String, String> getExecutionProperties(Object contextualProxy);
+
+  /**
+   * <p>Returns a new {@link java.util.concurrent.CompletableFuture} that is completed by the completion of the
+   * specified stage.</p>
+   *
+   * <p>The new completable future gets its default asynchronous execution facility from this <code>ContextService</code>,
+   * using the same {@link ManagedExecutorService} if this <code>ContextService</code>
+   * was obtained by {@link ManagedExecutorService#getContextService()}.</p>
+   *
+   * <p>When dependent stages are created from the new completable future,
+   * and from the dependent stages of those stages, and so on, thread context is captured
+   * and/or cleared by the <code>ContextService</code>. This guarantees that the action
+   * performed by each stage always runs under the thread context of the code that creates the stage,
+   * unless the user explicitly overrides by supplying a pre-contextualized action.</p>
+   *
+   * <p>Invocation of this method does not impact thread context propagation for the originally supplied
+   * completable future or any other dependent stages directly created from it (not using this method).</p>
+   *
+   * @param <T> completable future result type.
+   * @param stage a completable future whose completion triggers completion of the new completable
+   *        future that is created by this method.
+   * @return the new completable future.
+   */
+  public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage);
+
+  /**
+   * <p>Returns a new {@link java.util.concurrent.CompletionStage} that is completed by the completion of the
+   * specified stage.</p>
+   *
+   * <p>The new completion stage gets its default asynchronous execution facility from this <code>ContextService</code>,
+   * using the same {@link ManagedExecutorService} if this <code>ContextService</code>
+   * was obtained by {@link ManagedExecutorService#getContextService()},
+   * otherwise using the DefaultManagedExecutorService.</p>
+   *
+   * <p>When dependent stages are created from the new completion stage,
+   * and from the dependent stages of those stages, and so on, thread context is captured
+   * and/or cleared by the <code>ContextService</code>. This guarantees that the action
+   * performed by each stage always runs under the thread context of the code that creates the stage,
+   * unless the user explicitly overrides by supplying a pre-contextualized action.</p>
+   *
+   * <p>Invocation of this method does not impact thread context propagation for the originally supplied
+   * stage or any other dependent stages directly created from it (not using this method).</p>
+   *
+   * @param <T> completion stage result type.
+   * @param stage a completion stage whose completion triggers completion of the new stage
+   *        that is created by this method.
+   * @return the new completion stage.
+   */
+  public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage);
 }
