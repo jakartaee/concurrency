@@ -16,7 +16,10 @@
 
 package jakarta.enterprise.concurrent;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Supplier;
 
 /**
  * A manageable version of a {@link java.util.concurrent.ExecutorService}.
@@ -162,11 +165,187 @@ import java.util.concurrent.ExecutorService;
  *     // Some account data...
  * }
  * </pre>
- * <p>
- * 
+ *
+ * <p>ManagedExecutorService provides various methods which correspond to the
+ * static methods of {@link java.util.concurrent.CompletableFuture} and its
+ * constructor/<code>newIncompleteFuture</code> method,
+ * enabling you to create completion stages that are backed by the <code>ManagedExecutorService</code>
+ * as the default asynchronous execution facility, both for those stages
+ * as well as all dependent stages that are created from those, and so on.
+ * This allows you to create pipelines of completion stage actions that run
+ * with consistent and predictable thread context, regardless of which thread each
+ * dependent action ends up running on.</p>
+ *
+ * <p>Example:</p>
+ * <pre>
+ * <code>ManagedExectorService executor = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+ * ...
+ * CompletableFuture&lt;Integer&gt; future = executor
+ *    .supplyAsync(supplier)
+ *    .thenApply(function1)
+ *    .thenApplyAsync(function2)
+ *    ...
+ * </code>
+ * </pre>
+ *
+ * <p>Context propagation to completion stages that are backed by a
+ * <code>ManagedExecutorService</code> must be done in a consistent
+ * and predictable manner, which is defined as follows,</p>
+ *
+ * <ul>
+ * <li>
+ * If the supplied action is already contextual, (for example,
+ * <code>contextService.createContextualProxy(action, Runnable.class)</code>),
+ * then the action runs with the already-captured context.
+ * </li>
+ * <li>
+ * Otherwise, each type of thread context is either propagated from the thread
+ * that creates the completion stage or the context is marked to be cleared, according to the
+ * configuration of the <code>ManagedExecutorService</code> that is the default asynchronous execution facility
+ * for the new stage and its parent stage. In the case that a <code>ManagedExecutorService</code> is supplied
+ * as the <code>executor</code> argument to a <code>*Async</code> method, the supplied
+ * <code>ManagedExecutorService</code> is used to run the action, but not to determine the thread context
+ * propagation and clearing.
+ * </li>
+ * </ul>
+ *
+ * <p>Each type of thread context is applied (either as cleared or previously captured)
+ * to the thread that runs the action. The applied thread context is removed after the action
+ * completes, whether successfully or exceptionally, restoring the thread's prior context.</p>
+ *
+ * <p>When dependent stages are created from the completion stage, and likewise from any dependent stages
+ * created from those, and so on, thread context is captured or cleared in the same manner.
+ * This guarantees that the action performed by each stage always runs under the thread context
+ * of the code that creates the completion stage, unless the user explicitly overrides this by supplying a
+ * pre-contextualized action.</p>
+ *
+ * <p>Completion stages that are backed by a <code>ManagedExecutorService</code> must raise
+ * {@link java.lang.IllegalArgumentException} if supplied with an action that implements
+ * {@link ManagedTask}.</p>
+ *
  * @since 1.0
  */
 public interface ManagedExecutorService extends ExecutorService {
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletableFuture}
+     * that is already completed with the specified value.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param value result with which the completable future is completed.
+     * @param <U> result type of the completable future.
+     * @return the new completable future.
+     */
+    <U> CompletableFuture<U> completedFuture(U value);
+
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletionStage}
+     * that is already completed with the specified value.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param value result with which the completion stage is completed.
+     * @param <U> result type of the completion stage.
+     * @return the new completion stage.
+     */
+    <U> CompletionStage<U> completedStage(U value);
+
+    /**
+     * <p>
+     * Returns a new {@link java.util.concurrent.CompletableFuture}
+     * that is completed by the completion of the
+     * specified stage.
+     * </p>
+     *
+     * <p>
+     * The new completable future is backed by the <code>ManagedExecutorService</code> upon which copy is invoked,
+     * which serves as the default asynchronous execution facility
+     * for the new stage and all dependent stages created from it, and so forth.
+     * </p>
+     *
+     * <p>
+     * When dependent stages are created from the new completable future, thread context is captured
+     * and/or cleared by the <code>ManagedExecutorService</code>. This guarantees that the action
+     * performed by each stage always runs under the thread context of the code that creates the stage,
+     * unless the user explicitly overrides by supplying a pre-contextualized action.
+     * </p>
+     *
+     * <p>
+     * Invocation of this method does not impact thread context propagation for the supplied
+     * completable future or any other dependent stages directly created from it.
+     * </p>
+     *
+     * @param <T> completable future result type.
+     * @param stage a completable future whose completion triggers completion of the new completable
+     *        future that is created by this method.
+     * @return the new completable future.
+     */
+    <T> CompletableFuture<T> copy(CompletableFuture<T> stage);
+
+    /**
+     * <p>
+     * Returns a new {@link java.util.concurrent.CompletionStage}
+     * that is completed by the completion of the
+     * specified stage.
+     * </p>
+     *
+     * <p>
+     * The new completion stage is backed by the <code>ManagedExecutorService</code> upon which copy is invoked,
+     * which serves as the default asynchronous execution facility
+     * for the new stage and all dependent stages created from it, and so forth.
+     * </p>
+     *
+     * <p>
+     * When dependent stages are created from the new completion stage, thread context is captured
+     * and/or cleared by the <code>ManagedExecutorService</code>. This guarantees that the action
+     * performed by each stage always runs under the thread context of the code that creates the stage,
+     * unless the user explicitly overrides by supplying a pre-contextualized action.
+     * </p>
+     *
+     * <p>
+     * Invocation of this method does not impact thread context propagation for the supplied
+     * stage or any other dependent stages directly created from it.
+     * </p>
+     *
+     * @param <T> completion stage result type.
+     * @param stage a completion stage whose completion triggers completion of the new stage
+     *        that is created by this method.
+     * @return the new completion stage.
+     */
+    <T> CompletionStage<T> copy(CompletionStage<T> stage);
+
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletableFuture}
+     * that is already exceptionally completed with the specified <code>Throwable</code>.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param ex exception or error with which the completable future is completed.
+     * @param <U> result type of the completable future.
+     * @return the new completable future.
+     */
+    <U> CompletableFuture<U> failedFuture(Throwable ex);
+
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletionStage}
+     * that is already exceptionally completed with the specified <code>Throwable</code>.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param ex exception or error with which the completion stage is completed.
+     * @param <U> result type of the completion stage.
+     * @return the new completion stage.
+     */
+    <U> CompletionStage<U> failedStage(Throwable ex);
+
     /**
      * Returns a {@link ContextService} which has the same propagation settings as this <code>ManagedExecutorService</code>
      * and uses this <code>ManagedExecutorService</code> as the default asynchronous execution facility for
@@ -176,4 +355,45 @@ public interface ManagedExecutorService extends ExecutorService {
      * @return a <code>ContextService</code> with the same propagation settings as this <code>ManagedExecutorService</code>.
      */
     public ContextService getContextService();
+
+    /**
+     * <p>Returns a new incomplete {@link java.util.concurrent.CompletableFuture}.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param <U> result type of the completable future.
+     * @return the new completable future.
+     */
+    <U> CompletableFuture<U> newIncompleteFuture();
+
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletableFuture}
+     * that is completed by a task running in this executor
+     * after it runs the given action.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param runnable the action to run before completing the returned completion stage.
+     * @return the new completable future.
+     */
+    CompletableFuture<Void> runAsync(Runnable runnable);
+
+    /**
+     * <p>Returns a new {@link java.util.concurrent.CompletableFuture}
+     * that is completed by a task running in this executor
+     * after it runs the given action.</p>
+     *
+     * <p>This executor is the default asynchronous execution facility for the new completion stage
+     * that is returned by this method and all dependent stages that are created from it,
+     * and all dependent stages that are created from those, as so forth.</p>
+     *
+     * @param supplier an action returning the value to be used to complete the returned completion stage.
+     * @param <U> result type of the supplier and returned completable stage.
+     * @return the new completable future.
+     */
+    <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier);
 }

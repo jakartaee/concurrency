@@ -1,7 +1,7 @@
 :sectnums:
 = Jakarta Concurrency Specification, Version 2.0
 
-Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
@@ -194,6 +194,16 @@ as "tasks" will be referred to throughout the specification:
 ** `call()`
 * `java.lang.Runnable`
 ** `run()`
+* `java.util.function.BiConsumer`
+** `accept(T, U)`
+* `java.util.function.BiFunction`
+** `apply(T, U)`
+* `java.util.function.Consumer`
+** `accept(T)`
+* `java.util.function.Function`
+** `apply(T)`
+* `java.util.function.Supplier`
+** `get()`
 
 ===== Optional Contextual Invocation Points
 
@@ -219,7 +229,9 @@ methods. These methods can be made contextual through the ContextService
 
 Tasks are concrete implementations of the Java SE
 `java.util.concurrent.Callable` and `java.lang.Runnable` interfaces (see the
-Javadoc for `java.util.concurrent.ExecutorService`). Tasks are units of
+Javadoc for `java.util.concurrent.ExecutorService`) as well as the various
+functional interfaces that serve as completion stage actions (see the
+JavaDoc for `java.util.concurrent.CompletionStage`). Tasks are units of
 work that represent a computation or some business logic.
 
 A contextual object is any Java object instance that has a particular
@@ -234,7 +246,8 @@ using CDI beans as tasks._
 ====
 
 When a task instance is submitted to a managed instance of an
-ExecutorService, the task becomes a contextual task. When the contextual
+ExecutorService or a managed CompletionStage,
+the task becomes a contextual task. When the contextual
 task runs, the task behaves as if it were still running in the container
 it was submitted with.
 
@@ -352,7 +365,9 @@ component’s environment for the resource type. For example, all
 `java:comp/env/concurrent` subcontext.
 
 Components create task classes by implementing the `java.lang.Runnable` or
-`java.util.concurrent.Callable` interfaces. These task classes are
+`java.util.concurrent.Callable` interfaces, or any of the functional
+interfaces that can be supplied to a `java.util.concurrent.CompletionStage`.
+These task classes are
 typically stored with the Jakarta EE application component.
 
 Task classes can optionally implement the
@@ -365,8 +380,10 @@ any current transaction on the thread and to provide identity
 information.
 
 Task instances are submitted to a `ManagedExecutorService` instance using
-any of the defined `submit()`, `execute()`, `invokeAll()`, or `invokeAny()`
-methods. Task instances will run as an extension of the Jakarta EE
+any of the defined `submit()`, `execute()`, `invokeAll()`, `invokeAny()`,
+`runAsync()`, or `supplyAsync()` methods. Task instances can also be
+submitted to a `CompletionStage` that is backed by a `ManagedExecutorService`.
+Task instances will run as an extension of the Jakarta EE
 container instance that submitted the task and may interact with Jakarta EE
 resources as defined in other sections of this specification.
 
@@ -1055,8 +1072,10 @@ typically stored with the Jakarta EE application component.
 
 Task instances are submitted to a `ManagedScheduledExecutorService`
 instance using any of the defined `submit()`, `execute()`, `invokeAll()`,
-`invokeAny()`, `schedule()`, `scheduleAtFixedRate()` or
-`scheduleWithFixedDelay()` methods. Task instances will run as an
+`invokeAny()`, `runAsync()`, `supplyAsync()`, `schedule()`,
+`scheduleAtFixedRate()`, or `scheduleWithFixedDelay()`  methods.
+Task instances can also be submitted to a `CompletionStage` that is
+backed by a `ManagedScheduledExecutorService`. Task instances will run as an
 extension of the Jakarta EE container instance that submitted the task and
 may interact with Jakarta EE resources as defined in other sections of this
 specification.
