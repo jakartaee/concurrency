@@ -45,9 +45,9 @@ import java.util.concurrent.ThreadFactory;
  * will run with the application component context of the component instance
  * that created (looked-up) this ManagedThreadFactory instance.<p>
  *
- * Tasks that run on the {@link ForkJoinWorkerThread} that is created by the
+ * The {@link ForkJoinWorkerThread} that is created by the
  * {@link ForkJoinWorkerThreadFactory#newThread(ForkJoinPool)} method
- * run with the application component context of the component instance
+ * runs tasks with the application component context of the component instance
  * that created (looked-up) this ManagedThreadFactory instance.
  * The Jakarta EE Product Provider establishes the context once per
  * <code>ForkJoinWorkerThread</code> and does not reset the context
