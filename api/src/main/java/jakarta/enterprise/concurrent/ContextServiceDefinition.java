@@ -52,7 +52,7 @@ import jakarta.transaction.UserTransaction;
  * <pre>
  * &lt;resource-env-ref&gt;
  *    &lt;resource-env-ref-name&gt;java:app/env/concurrent/MyContextRef&lt;/resource-env-ref-name&gt;
- *    &lt;resource-env-ref-type&gt;javax.enterprise.concurrent.ContextService&lt;/resource-env-ref-type&gt;
+ *    &lt;resource-env-ref-type&gt;jakarta.enterprise.concurrent.ContextService&lt;/resource-env-ref-type&gt;
  *    &lt;lookup-name&gt;java:app/concurrent/MyContext&lt;/lookup-name&gt;
  * &lt;/resource-env-ref&gt;
  * </pre>
@@ -81,7 +81,7 @@ import jakarta.transaction.UserTransaction;
 public @interface ContextServiceDefinition {
     /**
      * <p>JNDI name of the {@link ContextService} instance being defined.
-     * The JNDI name must must be in a valid Jakarta EE namespace,
+     * The JNDI name must be in a valid Jakarta EE namespace,
      * such as,</p>
      *
      * <ul>

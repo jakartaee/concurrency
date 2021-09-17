@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
  * <pre>
  * &lt;resource-env-ref&gt;
  *    &lt;resource-env-ref-name&gt;java:module/env/concurrent/MyExecutorRef&lt;/resource-env-ref-name&gt;
- *    &lt;resource-env-ref-type&gt;javax.enterprise.concurrent.ManagedExecutorService&lt;/resource-env-ref-type&gt;
+ *    &lt;resource-env-ref-type&gt;jakarta.enterprise.concurrent.ManagedExecutorService&lt;/resource-env-ref-type&gt;
  *    &lt;lookup-name&gt;java:module/concurrent/MyExecutor&lt;/lookup-name&gt;
  * &lt;/resource-env-ref&gt;
  * </pre>
@@ -66,7 +66,7 @@ import java.lang.annotation.Target;
 public @interface ManagedExecutorDefinition {
     /**
      * JNDI name of the {@link ManagedExecutorService} instance.
-     * The JNDI name must must be in a valid Jakarta EE namespace,
+     * The JNDI name must be in a valid Jakarta EE namespace,
      * such as,
      * <ul>
      * <li>java:comp</li>
@@ -96,7 +96,7 @@ public @interface ManagedExecutorDefinition {
      * <p>The amount of time in milliseconds that a task or action
      * can execute before it is considered hung.</p>
      *
-     * <p>The default value of <code>-1</code> indicates unknown.</p>
+     * <p>The default value of <code>-1</code> indicates unlimited.</p>
      *
      * @return number of milliseconds after which a task or action
      *         is considered hung.
