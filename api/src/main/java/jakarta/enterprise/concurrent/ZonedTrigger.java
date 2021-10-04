@@ -82,7 +82,7 @@ public interface ZonedTrigger extends Trigger {
      *                          method was invoked to schedule the task.
      * @return the date/time after which the next execution of the task should start.
      */
-    ZonedDateTime getNextRunTime(LastExecution lastExecutionInfo, ZonedDateTime taskScheduledTime);
+    public ZonedDateTime getNextRunTime(LastExecution lastExecutionInfo, ZonedDateTime taskScheduledTime);
 
     /**
      * Retrieve the next time that the task should run after.
@@ -99,7 +99,7 @@ public interface ZonedTrigger extends Trigger {
      * @return the date/time after which the next execution of the task should start.
      * @throws IllegalArgumentException if the next run time is too large to represent as a <code>Date</code>.
      */
-    default Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public default Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
         ZonedDateTime nextTime = getNextRunTime(lastExecutionInfo, taskScheduledTime.toInstant().atZone(getZoneId()));
         return Date.from(nextTime.toInstant());
     }
@@ -117,7 +117,7 @@ public interface ZonedTrigger extends Trigger {
      *
      * @return timezone to use for operations on this trigger.
      */
-    default ZoneId getZoneId() {
+    public default ZoneId getZoneId() {
         return ZoneId.systemDefault();
     }
 
@@ -140,7 +140,7 @@ public interface ZonedTrigger extends Trigger {
      *                          is scheduled to start.
      * @return true if the task should be skipped and rescheduled.
      */
-    default boolean skipRun(LastExecution lastExecutionInfo, ZonedDateTime scheduledRunTime) {
+    public default boolean skipRun(LastExecution lastExecutionInfo, ZonedDateTime scheduledRunTime) {
         return false;
     }
 
@@ -157,7 +157,7 @@ public interface ZonedTrigger extends Trigger {
      *                          is scheduled to start.
      * @return true if the task should be skipped and rescheduled.
      */
-    default boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+    public default boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
         return skipRun(lastExecutionInfo, scheduledRunTime.toInstant().atZone(getZoneId()));
     }
 }
