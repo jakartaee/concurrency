@@ -191,6 +191,7 @@ public class CronTrigger implements ZonedTrigger {
      * @return the date/time after which the next execution of the task should start.
      * @throws DateTimeException if a next time cannot be determined from the cron expression.
      */
+    @Override
     public ZonedDateTime getNextRunTime(LastExecution lastExecutionInfo, ZonedDateTime taskScheduledTime) {
         return next(lastExecutionInfo == null ? taskScheduledTime : lastExecutionInfo.getRunEnd(zone));
     }
@@ -203,6 +204,7 @@ public class CronTrigger implements ZonedTrigger {
      *
      * @return timezone to use for operations on this trigger.
      */
+    @Override
     public final ZoneId getZoneId() {
         return zone;
     }
@@ -353,6 +355,7 @@ public class CronTrigger implements ZonedTrigger {
      *
      * @return readable representation of the parsed cron expression.
      */
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder("CronTrigger@").append(Integer.toHexString(hashCode()));
         toStringBuilder(s, "seconds", seconds, 60);
