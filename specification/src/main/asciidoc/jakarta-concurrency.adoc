@@ -2306,8 +2306,7 @@ task.
 == Asynchronous Methods
 
 The `jakarta.enterprise.concurrent.Async` annotation annotates a
-CDI managed bean method to run asynchronously or annotates a
-CDI managed bean class with methods to run asynchronously.
+CDI managed bean method to run asynchronously.
 
 Each asynchronous method execution corresponds to a managed
 `java.util.concurrent.CompletableFuture` instance that is backed by a
@@ -2327,11 +2326,7 @@ specify the `jakarta.enterprise.concurrent.Async` annotation on
 CDI managed bean methods with return type of
 `java.util.concurrent.CompletableFuture`,
 `java.util.concurrent.CompletionStage`, or `void` to designate them for
-asynchronous execution. Alternatively, the
-`jakarta.enterprise.concurrent.Async` annotation can be specified on a
-CDI managed bean class to designate all methods with return type of
-`java.util.concurrent.CompletableFuture` or
-`java.util.concurrent.CompletionStage` for asynchronous execution.
+asynchronous execution.
 
 The Application Component Provider supplies the implementation of the
 asynchronous method. If the method has return type of
@@ -2443,10 +2438,18 @@ for any reason after this point, it completes the
 
 ==== Transaction Management
 
-Asynchronous method can be annotated with
-`jakarta.transaction.Transactional` types of
-`jakarta.transaction.Transactional.TxType.REQUIRES_NEW` or
-`jakarta.transaction.Transactional.TxType.NOT_SUPPORTED`.
+When an asynchronous method is also annotated with
+`jakarta.transaction.Transactional`, the transactional types which can be
+used are:
+
+* `jakarta.transaction.Transactional.TxType.REQUIRES_NEW` -
+which causes the method to run in a new transaction
+* `jakarta.transaction.Transactional.TxType.NOT_SUPPORTED` -
+which causes the method to run with no transaction
+
+All other transaction attributes must result in
+`java.lang.UnsupportedOperationException` upon invocation of the
+asynchronous method.
 
 When an asynchronous method is not annotated as
 `jakarta.transaction.Transactional` or the transaction type is set to

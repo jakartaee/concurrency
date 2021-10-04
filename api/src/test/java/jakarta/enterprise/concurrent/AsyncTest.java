@@ -43,7 +43,6 @@ import org.junit.Test;
  * for asychronous methods, verifying that they compile.
  * The Async.Result class is also tested.
  */
-@Async(executor = "java:module/env/concurrent/class-level-async-executor")
 public class AsyncTest {
     /**
      * Example from the section on Asynchronous Methods in the Concurrency spec.
@@ -193,17 +192,6 @@ public class AsyncTest {
         List<Itinerary> flightsTo() {
             return Collections.emptyList();
         }
-    }
-
-    /**
-     * Verify that the Async annotation can be configured at class level
-     * and that its executor field is populated with the specified value.
-     */
-    @Test
-    public void testAsyncClassLevelAnnotation() throws Exception {
-        Async anno = AsyncTest.class.getAnnotation(Async.class);
-        assertNotNull(anno);
-        assertEquals("java:module/env/concurrent/class-level-async-executor", anno.executor());
     }
 
     /**

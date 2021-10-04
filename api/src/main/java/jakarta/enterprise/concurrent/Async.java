@@ -28,8 +28,7 @@ import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
 /**
- * Annotates a CDI managed bean method (or CDI managed bean class containing suitable methods)
- * to run asynchronously.
+ * Annotates a CDI managed bean method to run asynchronously.
  * <p>
  * The Jakarta EE Product Provider runs the method on a {@link ManagedExecutorService}
  * and returns to the caller a {@link java.util.concurrent.CompletableFuture CompletableFuture}
@@ -101,26 +100,21 @@ import jakarta.interceptor.InterceptorBinding;
  * </pre>
  *
  * <p>
- * When annotating asynchronous methods at the method level, methods
- * can have any of the following return types, with all other return types resulting in
- * {@link java.lang.UnsupportedOperationException UnsupportedOperationException}:
+ * Methods with the following return types can be annotated to be
+ * asynchronous methods:
  * <ul>
  * <li>{@link java.util.concurrent.CompletableFuture CompletableFuture}</li>
  * <li>{@link java.util.concurrent.CompletionStage CompletionStage}</li>
  * <li><code>void</code></li>
  * </ul>
  * <p>
- * When annotating asynchronous methods at the class level, methods with
- * any of the following return types are considered asynchronous methods,
- * whereas methods with other return types are treated as normal
- * (non-asynchronous) methods:
- * <ul>
- * <li>{@link java.util.concurrent.CompletableFuture CompletableFuture}</li>
- * <li>{@link java.util.concurrent.CompletionStage CompletionStage}</li>
- * </ul>
- * <p>
- * If the <code>Async</code> annotation is present at both the method and class
- * level, the annotation that is specified at the method level takes precedence.
+ * The Jakarta EE Product Provider raises
+ * {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
+ * if other return types are used or if the annotation is placed at the class
+ * level. The injection target of <code>ElementType.TYPE</code> is to be used only
+ * by the CDI extension that is implemented by the Jakarta EE Product Provider to
+ * register the asynchronous method interceptor. Applications must only use the
+ * asynchronous method annotation at method level.
  * <p>
  * Exceptions that are raised by asynchronous methods are not raised directly
  * to the caller because the method runs asynchronously to the caller.
@@ -152,9 +146,11 @@ import jakarta.interceptor.InterceptorBinding;
  * Interceptors with a lower priority, such as <code>Transactional</code>, must run on
  * the thread where the asynchronous method executes, rather than on the submitting thread.
  * When an asynchronous method is annotated as <code>Transactional</code>,
- * the transactional types <code>TxType.REQUIRES_NEW</code> and
- * <code>TxType.NOT_SUPPORTED</code> can be used. All other transaction attributes must
- * result in {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
+ * the transactional types which can be used are:
+ * <code>TxType.REQUIRES_NEW</code>, which causes the method to run in a new transaction, and
+ * <code>TxType.NOT_SUPPORTED</code>, which causes the method to run with no transaction.
+ * All other transaction attributes must result in
+ * {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
  * upon invocation of the asynchronous method.
  *
  * @since 3.0
