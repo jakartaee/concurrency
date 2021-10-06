@@ -21,21 +21,21 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * Triggers allow application developers to plug in rules for when 
- * and how often a task should run. The trigger can be as simple as 
- * a single, absolute date-time or can include Jakarta&trade; EE business 
- * calendar logic. A trigger implementation is created by the 
- * application developer (or may be supplied to the application 
- * externally) and is registered with a task when it is submitted 
- * to a {@link ManagedScheduledExecutorService} using any of the 
- * schedule methods. Each method will run with unspecified context. 
+ * Triggers allow application developers to plug in rules for when
+ * and how often a task should run. The trigger can be as simple as
+ * a single, absolute date-time or can include Jakarta&trade; EE business
+ * calendar logic. A trigger implementation is created by the
+ * application developer (or may be supplied to the application
+ * externally) and is registered with a task when it is submitted
+ * to a {@link ManagedScheduledExecutorService} using any of the
+ * schedule methods. Each method will run with unspecified context.
  * The methods can be made contextual through creating contextual
  * proxy objects using {@link ContextService}.
  * <p>
- * Each trigger instance will be invoked within the same process 
+ * Each trigger instance will be invoked within the same process
  * in which it was registered.
  * <p>
- * 
+ *
  * Example:
  * <pre>
  * &#47;**
@@ -75,7 +75,7 @@ public interface ZonedTrigger extends Trigger {
     /**
      * Retrieve the next time that the task should run after.
      *
-     * @param lastExecutionInfo information about the last execution of the task. 
+     * @param lastExecutionInfo information about the last execution of the task.
      *                          This value will be null if the task has not yet run.
      * @param taskScheduledTime the date/time at which the
      *                          {@code ManagedScheduledExecutorService.schedule}
@@ -91,7 +91,7 @@ public interface ZonedTrigger extends Trigger {
      * implemented. The default implementation delegates to the method signature that
      * accepts and returns <code>ZonedDateTime</code>.
      *
-     * @param lastExecutionInfo information about the last execution of the task. 
+     * @param lastExecutionInfo information about the last execution of the task.
      *                          This value will be null if the task has not yet run.
      * @param taskScheduledTime the date/time at which the
      *                          {@code ManagedScheduledExecutorService.schedule}
@@ -124,17 +124,17 @@ public interface ZonedTrigger extends Trigger {
     /**
      * Return true if this run instance should be skipped.
      * <p>
-     * This is useful if the task shouldn't run because it is late or if the task 
+     * This is useful if the task shouldn't run because it is late or if the task
      * is paused or suspended.
      * <p>
-     * Once this task is skipped, the state of its Future's result will throw a 
-     * {@link SkippedException}. Unchecked exceptions will be wrapped in a 
+     * Once this task is skipped, the state of its Future's result will throw a
+     * {@link SkippedException}. Unchecked exceptions will be wrapped in a
      * <code>SkippedException</code>.
      * <p>
      * The default implementation returns <code>false</code>, making it optional to
      * implement this method if you do not require support for skipped executions.
      *
-     * @param lastExecutionInfo information about the last execution of the task. 
+     * @param lastExecutionInfo information about the last execution of the task.
      *                          This value will be null if the task has not yet run.
      * @param scheduledRunTime  the date/time after which the execution of the task
      *                          is scheduled to start.
@@ -151,7 +151,7 @@ public interface ZonedTrigger extends Trigger {
      * implemented. The default implementation delegates to the method signature that
      * accepts <code>ZonedDateTime</code>.
      *
-     * @param lastExecutionInfo information about the last execution of the task. 
+     * @param lastExecutionInfo information about the last execution of the task.
      *                          This value will be null if the task has not yet run.
      * @param scheduledRunTime  the date/time after which the execution of the task
      *                          is scheduled to start.

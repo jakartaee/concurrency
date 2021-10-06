@@ -19,7 +19,7 @@ package jakarta.enterprise.concurrent;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Exception indicating that the result of a task cannot be retrieved 
+ * Exception indicating that the result of a task cannot be retrieved
  * because the task failed to run for some reason other than being cancelled.
  * <p>
  * Use the {@link Throwable#getCause()} method to determine why the task was aborted.
@@ -31,51 +31,51 @@ public class AbortedException extends ExecutionException implements java.io.Seri
   private static final long serialVersionUID = -8248124070283019190L;
 
 /**
-   * Constructs an AbortedException with <code>null</code> as its detail message. 
-   * 
-   * The cause is not initialized, and may subsequently be initialized by a call to 
+   * Constructs an AbortedException with <code>null</code> as its detail message.
+   *
+   * The cause is not initialized, and may subsequently be initialized by a call to
    * {@link Throwable#initCause(java.lang.Throwable)}.
    */
   public AbortedException() {
-	super();
+    super();
   }
 
   /**
    * Constructs an AbortedException exception with the specified detail message and cause.
    * <p>
-   * Note that the detail message associated with cause is not automatically incorporated 
+   * Note that the detail message associated with cause is not automatically incorporated
    * in this exception's detail message.
-   *  
+   *
    * @param message the detail message (which is saved for later retrieval by the {@link Throwable#getMessage()}
    *                method).
-   * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method). 
+   * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
    *              (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
    */
-  public AbortedException(String message, Throwable cause) {
-	super(message, cause);  
+  public AbortedException(final String message, final Throwable cause) {
+    super(message, cause);
   }
-  
+
   /**
    * Constructs an AbortedException exception with the specified detail message.
    * <p>
-   * The cause is not initialized, and may subsequently be initialized by a call to 
+   * The cause is not initialized, and may subsequently be initialized by a call to
    * {@link Throwable#initCause(java.lang.Throwable)}.
-   *  
+   *
    * @param message the detail message (which is saved for later retrieval by the {@link Throwable#getMessage()}
    *                method).
    */
-  public AbortedException(String message) {
-	super(message);  
+  public AbortedException(final String message) {
+    super(message);
   }
   
   /**
-   * Constructs an AbortedException exception with the specified cause and a detail message of 
+   * Constructs an AbortedException exception with the specified cause and a detail message of
    * (cause==null ? null : cause.toString()) (which typically contains the class and detail message of cause).
-   * 
-   * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method). 
+   *
+   * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
    *              (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
    */
-  public AbortedException(Throwable cause) {
-	super(cause);  
+  public AbortedException(final Throwable cause) {
+    super(cause);
   }
 }

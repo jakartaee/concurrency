@@ -17,21 +17,21 @@
 package jakarta.enterprise.concurrent;
 
 /**
- * Triggers allow application developers to plug in rules for when 
- * and how often a task should run. The trigger can be as simple as 
- * a single, absolute date-time or can include Jakarta&trade; EE business 
- * calendar logic. A Trigger implementation is created by the 
- * application developer (or may be supplied to the application 
- * externally) and is registered with a task when it is submitted 
- * to a {@link ManagedScheduledExecutorService} using any of the 
- * schedule methods. Each method will run with unspecified context. 
+ * Triggers allow application developers to plug in rules for when
+ * and how often a task should run. The trigger can be as simple as
+ * a single, absolute date-time or can include Jakarta&trade; EE business
+ * calendar logic. A Trigger implementation is created by the
+ * application developer (or may be supplied to the application
+ * externally) and is registered with a task when it is submitted
+ * to a {@link ManagedScheduledExecutorService} using any of the
+ * schedule methods. Each method will run with unspecified context.
  * The methods can be made contextual through creating contextual
  * proxy objects using {@link ContextService}.
  * <p>
- * Each Trigger instance will be invoked within the same process 
+ * Each Trigger instance will be invoked within the same process
  * in which it was registered.
  * <p>
- * 
+ *
  * Example:
  * <pre>
  * &#47;**
@@ -39,14 +39,14 @@ package jakarta.enterprise.concurrent;
  *  *&#47;
  *  public class SingleDateTrigger implements Trigger {
  *      private Date fireTime;
- *      
+ *
  *      public TriggerSingleDate(Date newDate) {
  *          fireTime = newDate;
  *      }
  *
  *      public Date getNextRunTime(
  *         LastExecution lastExecutionInfo, Date taskScheduledTime) {
- *         
+ *
  *         if(taskScheduledTime.after(fireTime)) {
  *             return null;
  *         }
@@ -74,7 +74,7 @@ package jakarta.enterprise.concurrent;
  *          this.latencyAllowance = latencyAllowance;
  *      }
  *
- *      public Date getNextRunTime(LastExecution lastExecutionInfo, 
+ *      public Date getNextRunTime(LastExecution lastExecutionInfo,
  *                                 Date taskScheduledTime) {
  *          if(lastExecutionInfo==null) {
  *              return startTime;
@@ -96,13 +96,13 @@ public interface Trigger {
 
   /**
    * Retrieve the next time that the task should run after.
-   * 
-   * @param lastExecutionInfo information about the last execution of the task. 
+   *
+   * @param lastExecutionInfo information about the last execution of the task.
    *                   This value will be null if the task has not yet run.
    * @param taskScheduledTime the date/time in which the task was scheduled using
-   *                          the {@code ManagedScheduledExecutorService.schedule} 
+   *                          the {@code ManagedScheduledExecutorService.schedule}
    *                          method.
-   * @return the date/time in which the next task iteration should execute on or 
+   * @return the date/time in which the next task iteration should execute on or
    *         after.
 
 
@@ -113,16 +113,16 @@ public interface Trigger {
   /**
    * Return true if this run instance should be skipped.
    * <p>
-   * This is useful if the task shouldn't run because it is late or if the task 
+   * This is useful if the task shouldn't run because it is late or if the task
    * is paused or suspended.
    * <p>
-   * Once this task is skipped, the state of it's Future's result will throw a 
-   * {@link SkippedException}. Unchecked exceptions will be wrapped in a 
+   * Once this task is skipped, the state of it's Future's result will throw a
+   * {@link SkippedException}. Unchecked exceptions will be wrapped in a
    * <code>SkippedException</code>.
-   * 
-   * @param lastExecutionInfo information about the last execution of the task. 
+   *
+   * @param lastExecutionInfo information about the last execution of the task.
    *                   This value will be null if the task has not yet run.
-   * @param scheduledRunTime the date/time that the task was originally scheduled 
+   * @param scheduledRunTime the date/time that the task was originally scheduled
    *                         to run.
    * @return true if the task should be skipped and rescheduled.
    */

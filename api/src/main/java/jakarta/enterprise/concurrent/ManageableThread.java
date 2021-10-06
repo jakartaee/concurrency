@@ -19,20 +19,20 @@ package jakarta.enterprise.concurrent;
 /**
  *
  * Interface to be implemented by the Jakarta&trade; EE product providers on threads
- * that are created by calling 
+ * that are created by calling
  * {@link ManagedThreadFactory#newThread(java.lang.Runnable) }.
- * 
+ *
  * @since 1.0
  */
 public interface ManageableThread {
 
     /**
-     * This method is used by the application component provider to check 
-     * whether a thread created by the {@code newThread} method of 
-     * {@link ManagedThreadFactory} has been marked for shut down. 
+     * This method is used by the application component provider to check
+     * whether a thread created by the {@code newThread} method of
+     * {@link ManagedThreadFactory} has been marked for shut down.
      * If the value is true, the application component provider should finish
      * any work on this thread as soon as possible.
-     * 
+     *
      * @return true if this thread has been marked for shutdown.
      */
     public boolean isShutdown();

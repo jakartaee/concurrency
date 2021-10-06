@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,13 @@
 
 package jakarta.enterprise.concurrent;
 
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinPool.ForkJoinWorkerThreadFactory;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ThreadFactory;
 
 /**
  * A manageable version of a <code>ThreadFactory</code>.<p>
  *
- * A ManagedThreadFactory extends the Java&trade; SE ThreadFactory to provide 
+ * A ManagedThreadFactory extends the Java&trade; SE ThreadFactory to provide
  * a method for creating threads for execution in a Jakarta&trade; EE environment.
  * Implementations of the ManagedThreadFactory are
  * provided by a Jakarta EE Product Provider.  Application Component Providers
@@ -39,19 +36,19 @@ import java.util.concurrent.ThreadFactory;
  *
  * Threads returned from the {@code newThread()} method should implement the
  * {@link ManageableThread} interface.
- * 
+ *
  * The Runnable task that is allocated to the new thread using the
  * {@link ThreadFactory#newThread(Runnable)} method
  * will run with the application component context of the component instance
  * that created (looked-up) this ManagedThreadFactory instance.<p>
  *
- * The {@link ForkJoinWorkerThread} that is created by the
+ * The {@link java.util.concurrent.ForkJoinWorkerThread} that is created by the
  * {@link ForkJoinWorkerThreadFactory#newThread(ForkJoinPool)} method
  * runs tasks with the application component context of the component instance
  * that created (looked-up) this ManagedThreadFactory instance.
  * The Jakarta EE Product Provider establishes the context once per
  * <code>ForkJoinWorkerThread</code> and does not reset the context
- * between operations that run on the {@link ForkJoinWorkerThread}.<p>
+ * between operations that run on the {@link java.util.concurrent.ForkJoinWorkerThread}.<p>
  *
  * The task runs without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
@@ -84,7 +81,7 @@ import java.util.concurrent.ThreadFactory;
  *
  * &#64;Resource(name="concurrent/tf/DefaultThreadFactory")
  * ManagedThreadFactory tf;
- * 
+ *
  * public ExecutorService getManagedThreadPool() {
  *
  *   // All threads will run as part of this application component.

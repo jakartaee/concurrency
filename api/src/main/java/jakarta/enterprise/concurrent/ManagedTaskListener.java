@@ -21,10 +21,10 @@ import java.util.concurrent.Future;
 /**
  * A ManagedTaskListener is used to monitor the state of a task's Future.
  * It can be registered with a {@link ManagedExecutorService} using the
- * <code>submit</code> methods and will be invoked when the state of the 
+ * <code>submit</code> methods and will be invoked when the state of the
  * {@link Future} changes.
  * Each listener method will run with unspecified context.
- * All listeners run without an explicit transaction 
+ * All listeners run without an explicit transaction
  * (they do not enlist in the application component's transaction).  If a transaction is required, use a
  * {@code jakarta.transaction.UserTransaction} instance.
  * <p>
@@ -47,57 +47,120 @@ import java.util.concurrent.Future;
  *
  * <b>A. The task runs normally:</b>
  * <table summary="Task Listener State Normal">
- * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
+ * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
+ *     <td valign="top"><strong><u>State</u></strong></td>
+ *     <td valign="top"><strong><u>Action</u></strong></td>
+ *     <td valign="top"><strong><u>Listener</u></strong></td>
+ *     <td valign="top"><strong><u>Next state</u></strong></td></tr>
  *
- * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
- * <tr><td valign="top">2.</td><td valign="top">Submitted</td><td valign="top">About to call run()</td><td valign="top">taskStarting</td><td valign="top">Started</td></tr>
- * <tr><td valign="top">3.</td><td valign="top">Started</td><td valign="top">Exit run()</td><td valign="top">taskDone</td><td valign="top">Done</td></tr>
+ * <tr><td valign="top">1.</td><td valign="top">None</td>
+ *     <td valign="top">submit()</td><td valign="top">taskSubmitted</td>
+ *     <td valign="top">Submitted</td></tr>
+ * <tr><td valign="top">2.</td><td valign="top">Submitted</td>
+ *     <td valign="top">About to call run()</td>
+ *     <td valign="top">taskStarting</td>
+ *     <td valign="top">Started</td></tr>
+ * <tr><td valign="top">3.</td>
+ *     <td valign="top">Started</td>
+ *     <td valign="top">Exit run()</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Done</td></tr>
  *
  * </table><p>
  *
  * <b>B. The task is cancelled during taskSubmitted():</b>
  * <table summary="Task Listener State Cancelled during taskSubmitted">
- * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
- * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted<br>Future is cancelled.</td><td valign="top">Cancelling</td></tr>
+ * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
+ *     <td valign="top"><strong><u>State</u></strong></td>
+ *     <td valign="top"><strong><u>Action</u></strong></td>
+ *     <td valign="top"><strong><u>Listener</u></strong></td>
+ *     <td valign="top"><strong><u>Next state</u></strong></td></tr>
+ * <tr><td valign="top">1.</td><td valign="top">None</td>
+ *     <td valign="top">submit()</td>
+ *     <td valign="top">taskSubmitted<br>Future is cancelled.</td>
+ *     <td valign="top">Cancelling</td></tr>
  *
- * <tr><td valign="top">2.</td><td valign="top">Cancelling</td><td valign="top">&nbsp;</td><td valign="top">taskAborted</td><td valign="top">Cancelled</td></tr>
- * <tr><td valign="top">3.</td><td valign="top">Cancelled</td><td valign="top">&nbsp;</td><td valign="top">taskDone</td><td valign="top">Done</td></tr>
+ * <tr><td valign="top">2.</td>
+ *     <td valign="top">Cancelling</td>
+ *     <td valign="top">&nbsp;</td>
+ *     <td valign="top">taskAborted</td>
+ *     <td valign="top">Cancelled</td></tr>
+ * <tr><td valign="top">3.</td>
+ *     <td valign="top">Cancelled</td>
+ *     <td valign="top">&nbsp;</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Done</td></tr>
  * </table><p>
  *
  * <b>C. The task is cancelled or aborted after submitted, but before started:</b>
  *
  * <table summary="Task Listener State Cancelled after submitted but before started">
- * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
- * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
- * <tr><td valign="top">2.</td><td valign="top">Submitted</td><td valign="top">cancel() or abort</td><td valign="top">taskAborted</td><td valign="top">Cancelled</td></tr>
+ * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
+ *     <td valign="top"><strong><u>State</u></strong></td>
+ *     <td valign="top"><strong><u>Action</u></strong></td>
+ *     <td valign="top"><strong><u>Listener</u></strong></td>
+ *     <td valign="top"><strong><u>Next state</u></strong></td></tr>
+ * <tr><td valign="top">1.</td>
+ *     <td valign="top">None</td>
+ *     <td valign="top">submit()</td>
+ *     <td valign="top">taskSubmitted</td>
+ *     <td valign="top">Submitted</td></tr>
+ * <tr><td valign="top">2.</td>
+ *     <td valign="top">Submitted</td>
+ *     <td valign="top">cancel() or abort</td>
+ *     <td valign="top">taskAborted</td>
+ *     <td valign="top">Cancelled</td></tr>
  *
- * <tr><td valign="top">3.</td><td valign="top">Cancelled</td><td valign="top">&nbsp;</td><td valign="top">taskDone</td><td valign="top">Done</td></tr>
+ * <tr><td valign="top">3.</td>
+ *     <td valign="top">Cancelled</td>
+ *     <td valign="top">&nbsp;</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Done</td></tr>
  * </table> <p>
  *
  * <b>D. The task is cancelled when it is starting:</b>
  * <table summary="Task Listener State Cancelled when starting">
- * <tr><td valign="top"><strong><u>Sequence</u></strong></td><td valign="top"><strong><u>State</u></strong></td><td valign="top"><strong><u>Action</u></strong></td><td valign="top"><strong><u>Listener</u></strong></td><td valign="top"><strong><u>Next state</u></strong></td></tr>
+ * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
+ *     <td valign="top"><strong><u>State</u></strong></td>
+ *     <td valign="top"><strong><u>Action</u></strong></td>
+ *     <td valign="top"><strong><u>Listener</u></strong></td>
+ *     <td valign="top"><strong><u>Next state</u></strong></td></tr>
  *
- * <tr><td valign="top">1.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
- * <tr><td valign="top">2.</td><td valign="top">Submitted</td><td valign="top">About to call run()</td><td valign="top">taskStarting<br>Future is cancelled.</td><td valign="top">Cancelling</td></tr>
- * <tr><td valign="top">3.</td><td valign="top">Cancelling</td><td valign="top">&nbsp;</td><td valign="top">taskAborted</td><td valign="top">Cancelled</td></tr>
+ * <tr><td valign="top">1.</td><td valign="top">None</td>
+ *     <td valign="top">submit()</td>
+ *     <td valign="top">taskSubmitted</td>
+ *     <td valign="top">Submitted</td></tr>
+ * <tr><td valign="top">2.</td>
+ *     <td valign="top">Submitted</td>
+ *     <td valign="top">About to call run()</td>
+ *     <td valign="top">taskStarting<br>Future is cancelled.</td>
+ *     <td valign="top">Cancelling</td></tr>
+ * <tr><td valign="top">3.</td>
+ *     <td valign="top">Cancelling</td>
+ *     <td valign="top">&nbsp;</td>
+ *     <td valign="top">taskAborted</td>
+ *     <td valign="top">Cancelled</td></tr>
  *
- * <tr><td valign="top">4.</td><td valign="top">Cancelled</td><td valign="top">&nbsp;</td><td valign="top">taskDone</td><td valign="top">Done</td></tr>
+ * <tr><td valign="top">4.</td>
+ *     <td valign="top">Cancelled</td>
+ *     <td valign="top">&nbsp;</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Done</td></tr>
  * </table>
  * <P>
- * 
+ *
  * @since 1.0
  */
 public interface ManagedTaskListener {
 
   /**
-   * Called after the task has been submitted to the Executor. The task will not enter the 
-   * starting state until the taskSubmitted listener has completed. 
+   * Called after the task has been submitted to the Executor. The task will not enter the
+   * starting state until the taskSubmitted listener has completed.
    * This method may be called from the same thread that the task was submitted with.
    * <p>
    * This event does not indicate that the task has been scheduled for execution.
-   *  
-   * @param future the <code>Future</code> instance that was created when the task was submitted. 
+   *
+   * @param future the <code>Future</code> instance that was created when the task was submitted.
    * @param executor the executor used to run the associated Future.
    * @param task the task that was submitted.
    */
@@ -107,19 +170,19 @@ public interface ManagedTaskListener {
   
   /**
    * Called when a task's Future has been cancelled anytime during the life of a task.
-   * This method may be called after taskDone(). The {@link Future#isCancelled()} 
-   * method returns false if the task was aborted through another means other than 
-   * {@link Future#cancel(boolean) }. 
+   * This method may be called after taskDone(). The {@link Future#isCancelled()}
+   * method returns false if the task was aborted through another means other than
+   * {@link Future#cancel(boolean) }.
    * The exception argument will represent the cause of the cancellation:
    * <ul>
    * <li>{@link java.util.concurrent.CancellationException} if the task was cancelled,
    * <li>{@link SkippedException} if the task was skipped or
-   * <li>{@link AbortedException} if the task failed to start for another reason. 
+   * <li>{@link AbortedException} if the task failed to start for another reason.
    * </ul>
-   * The <code>AbortedException.getCause()</code> method will return the exception that 
-   * caused the task to fail to start. 
-   * 
-   * @param future the {@link Future} instance that was created when the task was submitted. 
+   * The <code>AbortedException.getCause()</code> method will return the exception that
+   * caused the task to fail to start.
+   *
+   * @param future the {@link Future} instance that was created when the task was submitted.
    * @param executor the executor used to run the associated Future.
    * @param task the task that was submitted.
    * @param exception the cause of the task abort.
@@ -133,8 +196,8 @@ public interface ManagedTaskListener {
    * Called when a submitted task has completed running, either successfully or
    * failed due to any exception thrown from the task, task being cancelled,
    * rejected, or aborted.
-   *  
-   * @param future the {@link Future} instance that was created when the task was submitted. 
+   *
+   * @param future the {@link Future} instance that was created when the task was submitted.
    * @param executor the executor used to run the associated Future.
    * @param task the task that was submitted.
    * @param exception if not null, the exception that caused the task to fail.
@@ -143,13 +206,13 @@ public interface ManagedTaskListener {
                        ManagedExecutorService executor,
                        Object task,
                        java.lang.Throwable exception);
-  
+
   /**
    * This method is called before the task is about to start. The task will
-   * not enter the starting state until the taskSubmitted listener has completed. This method 
+   * not enter the starting state until the taskSubmitted listener has completed. This method
    * may be called from the same thread that the task was submitted with.
-   *  
-   * @param future the {@link Future} instance that was created when the task was submitted. 
+   *
+   * @param future the {@link Future} instance that was created when the task was submitted.
    * @param executor the executor used to run the associated Future.
    * @param task the task that was submitted.
    */
