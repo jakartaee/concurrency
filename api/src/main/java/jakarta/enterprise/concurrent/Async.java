@@ -29,6 +29,9 @@ import jakarta.interceptor.InterceptorBinding;
 
 /**
  * Annotates a CDI managed bean method to run asynchronously.
+ * The CDI managed bean must not be an EJB or JSF managed bean,
+ * and neither the method nor its class can be annotated with
+ * the MicroProfile Asynchronous annotation.
  * <p>
  * The Jakarta EE Product Provider runs the method on a {@link ManagedExecutorService}
  * and returns to the caller a {@link java.util.concurrent.CompletableFuture CompletableFuture}
