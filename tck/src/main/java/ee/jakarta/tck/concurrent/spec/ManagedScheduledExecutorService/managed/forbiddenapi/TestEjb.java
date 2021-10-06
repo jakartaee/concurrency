@@ -14,13 +14,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 
-import com.sun.ts.tests.concurrency.api.common.Util;
+import jakarta.enterprise.concurrent.api.common.Util;
 
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;

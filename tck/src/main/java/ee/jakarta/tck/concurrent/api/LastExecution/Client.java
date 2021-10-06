@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.LastExecution;
+package jakarta.enterprise.concurrent.api.LastExecution;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +25,11 @@ import javax.naming.InitialContext;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.ServiceEETest;
-import com.sun.ts.lib.util.TestUtil;
-import com.sun.ts.tests.concurrency.api.common.Util;
-import com.sun.ts.tests.concurrency.common.counter.CounterCallableTask;
-import com.sun.ts.tests.concurrency.common.counter.CounterRunnableTask;
-import com.sun.ts.tests.concurrency.common.counter.StaticCounter;
+import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.api.common.Util;
+import jakarta.enterprise.concurrent.common.counter.CounterCallableTask;
+import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
+import jakarta.enterprise.concurrent.common.counter.StaticCounter;
 
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;

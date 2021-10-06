@@ -14,14 +14,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
 
 import java.util.Properties;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.EETest;
-import com.sun.ts.lib.util.TestUtil;
-import com.sun.ts.tests.concurrency.common.ConcurrencyTestUtils;
+import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
 
 public class Client extends EETest {
 

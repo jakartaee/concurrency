@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
+package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -25,7 +25,7 @@ import java.util.Properties;
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.EETest;
 import com.sun.ts.lib.porting.TSURL;
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 public class Client extends EETest {
 

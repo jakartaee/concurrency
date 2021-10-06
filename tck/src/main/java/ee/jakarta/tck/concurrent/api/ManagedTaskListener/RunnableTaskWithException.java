@@ -14,10 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.ManagedTaskListener;
+package jakarta.enterprise.concurrent.api.ManagedTaskListener;
 
-import com.sun.ts.tests.concurrency.api.common.managedTaskListener.ListenerEvent;
-import com.sun.ts.tests.concurrency.api.common.managedTaskListener.ManagedTaskListenerImpl;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 public class RunnableTaskWithException implements Runnable {
   private final ManagedTaskListenerImpl listener;

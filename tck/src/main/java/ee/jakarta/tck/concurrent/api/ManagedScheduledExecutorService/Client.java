@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.ManagedScheduledExecutorService;
+package jakarta.enterprise.concurrent.api.ManagedScheduledExecutorService;
 
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -24,11 +24,11 @@ import javax.naming.InitialContext;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.ServiceEETest;
-import com.sun.ts.lib.util.TestUtil;
-import com.sun.ts.tests.concurrency.api.common.CallableTask;
-import com.sun.ts.tests.concurrency.api.common.CommonTriggers;
-import com.sun.ts.tests.concurrency.api.common.RunnableTask;
-import com.sun.ts.tests.concurrency.api.common.Util;
+import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.api.common.CallableTask;
+import jakarta.enterprise.concurrent.api.common.CommonTriggers;
+import jakarta.enterprise.concurrent.api.common.RunnableTask;
+import jakarta.enterprise.concurrent.api.common.Util;
 
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 

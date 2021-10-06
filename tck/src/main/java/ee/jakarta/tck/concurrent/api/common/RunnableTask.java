@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.common;
+package jakarta.enterprise.concurrent.api.common;
 
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +22,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 /**
  * the Runnable Task to check the context related job. it verifies : 1, load

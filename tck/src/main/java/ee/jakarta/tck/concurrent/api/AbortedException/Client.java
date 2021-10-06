@@ -14,13 +14,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.AbortedException;
+package jakarta.enterprise.concurrent.api.AbortedException;
 
 import java.util.Properties;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.ServiceEETest;
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.AbortedException;
 

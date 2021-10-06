@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.ManagedTask;
+package jakarta.enterprise.concurrent.api.ManagedTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,9 +22,9 @@ import java.util.Properties;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.ServiceEETest;
-import com.sun.ts.lib.util.TestUtil;
-import com.sun.ts.tests.concurrency.api.common.RunnableTask;
-import com.sun.ts.tests.concurrency.api.common.managedTaskListener.ManagedTaskListenerImpl;
+import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.api.common.RunnableTask;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;

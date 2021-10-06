@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ContextService.tx;
+package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,7 +26,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.transaction.Transaction;

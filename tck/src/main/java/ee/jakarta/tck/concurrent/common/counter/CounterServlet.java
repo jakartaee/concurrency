@@ -14,12 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.common.counter;
+package jakarta.enterprise.concurrent.common.counter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import com.sun.ts.tests.concurrency.common.ConcurrencyTestUtils;
+import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

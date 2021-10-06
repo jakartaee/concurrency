@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
+package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
 
 import java.io.IOException;
 import java.io.PrintWriter;

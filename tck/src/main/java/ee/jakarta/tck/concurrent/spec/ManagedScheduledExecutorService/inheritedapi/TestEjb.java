@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.inheritedapi;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,10 @@ import java.util.concurrent.TimeoutException;
 
 import javax.naming.InitialContext;
 
-import com.sun.ts.tests.concurrency.api.common.CommonTasks;
-import com.sun.ts.tests.concurrency.api.common.Util;
-import com.sun.ts.tests.concurrency.api.common.counter.CounterRemote;
-import com.sun.ts.tests.concurrency.api.common.counter.CounterRunnableTask;
+import jakarta.enterprise.concurrent.api.common.CommonTasks;
+import jakarta.enterprise.concurrent.api.common.Util;
+import jakarta.enterprise.concurrent.api.common.counter.CounterRemote;
+import jakarta.enterprise.concurrent.api.common.counter.CounterRunnableTask;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;

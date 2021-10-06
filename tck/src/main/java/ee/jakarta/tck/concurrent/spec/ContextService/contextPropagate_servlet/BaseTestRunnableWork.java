@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ContextService.contextPropagate_servlet;
+package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servlet;
 
 import java.io.Serializable;
 

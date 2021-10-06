@@ -43,9 +43,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        
         <jakarta.concurrent.version>2.0.0</jakarta.concurrent.version>
+        <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
+        <jakarta.ejb.version>4.0.0</jakarta.ejb.version>
+        <jakarta.annotation.version>2.0.0</jakarta.annotation.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
@@ -53,6 +58,24 @@
             <version>${jakarta.concurrent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+    		<groupId>jakarta.servlet</groupId>
+    		<artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+		    <groupId>jakarta.ejb</groupId>
+		    <artifactId>jakarta.ejb-api</artifactId>
+		    <version>${jakarta.ejb.version}</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>jakarta.annotation</groupId>
+		    <artifactId>jakarta.annotation-api</artifactId>
+		    <version>${jakarta.annotation.version}</version>
+		    <scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

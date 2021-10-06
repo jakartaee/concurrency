@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.sun.ts.tests.concurrency.common.CommonTasks;
-import com.sun.ts.tests.concurrency.common.ConcurrencyTestUtils;
-import com.sun.ts.tests.concurrency.common.counter.CounterRunnableTask;
-import com.sun.ts.tests.concurrency.common.counter.CounterServlet;
-import com.sun.ts.tests.concurrency.common.counter.StaticCounter;
+import jakarta.enterprise.concurrent.common.CommonTasks;
+import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
+import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
+import jakarta.enterprise.concurrent.common.counter.CounterServlet;
+import jakarta.enterprise.concurrent.common.counter.StaticCounter;
 
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.servlet.annotation.WebServlet;

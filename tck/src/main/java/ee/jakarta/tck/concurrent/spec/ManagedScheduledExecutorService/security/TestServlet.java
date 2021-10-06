@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.security;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,8 +22,8 @@ import java.util.concurrent.ScheduledFuture;
 
 import javax.naming.InitialContext;
 
-import com.sun.ts.tests.concurrency.api.common.CommonTriggers;
-import com.sun.ts.tests.concurrency.api.common.Util;
+import jakarta.enterprise.concurrent.api.common.CommonTriggers;
+import jakarta.enterprise.concurrent.api.common.Util;
 
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.servlet.ServletException;

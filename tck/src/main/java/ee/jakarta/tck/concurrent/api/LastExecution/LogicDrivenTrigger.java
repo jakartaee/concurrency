@@ -14,11 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.LastExecution;
+package jakarta.enterprise.concurrent.api.LastExecution;
 
 import java.util.Date;
 
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;

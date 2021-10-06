@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ContextService.contextPropagate_servlet;
+package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servlet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import javax.naming.NamingException;
 
 import com.sun.ts.lib.porting.TSURL;
 import com.sun.ts.lib.util.BASE64Encoder;
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

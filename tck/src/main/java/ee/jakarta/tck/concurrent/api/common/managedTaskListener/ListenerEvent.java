@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.common.managedTaskListener;
+package jakarta.enterprise.concurrent.api.common.managedTaskListener;
 
 public enum ListenerEvent {
   SUBMITTED, STARTING, TASK_RUN, DONE, ABORTED;

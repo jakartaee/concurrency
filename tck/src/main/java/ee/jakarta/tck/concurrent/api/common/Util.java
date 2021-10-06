@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.common;
+package jakarta.enterprise.concurrent.api.common;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -26,9 +26,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.sun.ts.lib.harness.EETest.Fault;
-import com.sun.ts.lib.util.TestUtil;
-import com.sun.ts.tests.concurrency.api.common.managedTaskListener.ListenerEvent;
-import com.sun.ts.tests.concurrency.api.common.managedTaskListener.ManagedTaskListenerImpl;
+import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 

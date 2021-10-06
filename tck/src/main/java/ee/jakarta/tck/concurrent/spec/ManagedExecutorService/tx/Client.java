@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedExecutorService.tx;
+package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,7 +31,7 @@ import javax.sql.DataSource;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.EETest;
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.annotation.Resource;
 

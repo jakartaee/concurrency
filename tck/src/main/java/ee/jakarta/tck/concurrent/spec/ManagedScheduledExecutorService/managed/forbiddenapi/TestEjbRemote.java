@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
 import jakarta.ejb.Remote;
 

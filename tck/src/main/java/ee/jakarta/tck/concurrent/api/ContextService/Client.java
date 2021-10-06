@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.api.ContextService;
+package jakarta.enterprise.concurrent.api.ContextService;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import javax.naming.NamingException;
 
 import com.sun.javatest.Status;
 import com.sun.ts.lib.harness.ServiceEETest;
-import com.sun.ts.lib.util.TestUtil;
+import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;

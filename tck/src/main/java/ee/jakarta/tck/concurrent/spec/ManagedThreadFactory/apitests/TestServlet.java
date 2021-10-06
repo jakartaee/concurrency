@@ -14,14 +14,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package com.sun.ts.tests.concurrency.spec.ManagedThreadFactory.apitests;
+package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.apitests;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.naming.InitialContext;
 
-import com.sun.ts.tests.concurrency.api.common.Util;
+import jakarta.enterprise.concurrent.api.common.Util;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManageableThread;
