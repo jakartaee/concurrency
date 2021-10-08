@@ -233,7 +233,7 @@ public @interface Async {
      * @since 3.0
      */
     public static class Result {
-        private static final ThreadLocal<CompletableFuture<?>> futures = new ThreadLocal<CompletableFuture<?>>();
+        private static final ThreadLocal<CompletableFuture<?>> FUTURES = new ThreadLocal<CompletableFuture<?>>();
 
         /**
          * Completes the {@link java.util.concurrent.CompletableFuture CompletableFuture}
@@ -248,11 +248,12 @@ public @interface Async {
          * @throws IllegalStateException if the <code>CompletableFuture</code> for an asynchronous
          *                                   method is not present on the thread.
          */
-        public static <T> CompletableFuture<T> complete(T result) {
+        public static <T> CompletableFuture<T> complete(final T result) {
             @SuppressWarnings("unchecked")
-            CompletableFuture<T> future = (CompletableFuture<T>) futures.get();
-            if (future == null)
+            CompletableFuture<T> future = (CompletableFuture<T>) FUTURES.get();
+            if (future == null) {
                 throw new IllegalStateException();
+            }
             future.complete(result);
             return future;
         }
@@ -271,9 +272,10 @@ public @interface Async {
          */
         public static <T> CompletableFuture<T> getFuture() {
             @SuppressWarnings("unchecked")
-            CompletableFuture<T> future = (CompletableFuture<T>) futures.get();
-            if (future == null)
+            CompletableFuture<T> future = (CompletableFuture<T>) FUTURES.get();
+            if (future == null) {
                 throw new IllegalStateException();
+            }
             return future;
         }
 
@@ -293,11 +295,12 @@ public @interface Async {
          * @param future <code>CompletableFuture</code> that the container returns to the caller,
          *               or <code>null</code> to clear it.
          */
-        public static <T> void setFuture(CompletableFuture<T> future) {
-            if (future == null)
-                futures.remove();
-            else
-                futures.set(future);
+        public static <T> void setFuture(final CompletableFuture<T> future) {
+            if (future == null) {
+                FUTURES.remove();
+            } else {
+                FUTURES.set(future);
+            }
         }
     }
 }
