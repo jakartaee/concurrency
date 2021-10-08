@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * A manageable version of a {@link java.util.concurrent.ExecutorService}.
  * <p>
  * A ManagedExecutorService extends the Java&trade; SE ExecutorService to provide
- * methods for submitting tasks for execution in a Jakarta&trade; EE environment. 
+ * methods for submitting tasks for execution in a Jakarta&trade; EE environment.
  * Implementations of the ManagedExecutorService are
  * provided by a Jakarta EE Product Provider.  Application Component Providers
  * use the Java Naming and Directory Interface&trade; (JNDI) to look-up instances of one
@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  * supports asynchronous processing.
  * <p>
  * Tasks are run in managed threads provided by the Jakarta EE Product Provider
- * and are run within the application component context that submitted the task. 
+ * and are run within the application component context that submitted the task.
  * All tasks run without an explicit transaction (they do not enlist in the application
  * component's transaction).  If a transaction is required, use a
  * {@code jakarta.transaction.UserTransaction} instance.  A UserTransaction instance is
@@ -66,7 +66,7 @@ import java.util.function.Supplier;
  * }
  * </pre>
  *
- * Tasks can optionally provide an {@link ManagedTaskListener} to receive 
+ * Tasks can optionally provide an {@link ManagedTaskListener} to receive
  * notifications of lifecycle events, through the use of {@link ManagedTask}
  * interface.
  * <p>
@@ -77,19 +77,19 @@ import java.util.function.Supplier;
  *   public void run() {
  *     ...
  *   }
- * 
+ *
  *   public ManagedTaskListener getManagedTaskListener() {
  *     return myManagedTaskListener;
  *   }
  *   ...
  * }
- * 
+ *
  * MyRunnable task = ...;
  * ManagedExecutorService executor = ...;
- * 
+ *
  * executor.submit(task); // lifecycle events will be notified to myManagedTaskListener
  * </pre>
- * 
+ *
  * Asynchronous tasks are typically submitted to the ManagedExecutorService using one
  * of the {@code submit} methods, each of which return a {@link java.util.concurrent.Future}
  * instance.  The {@code Future} represents the result of the task and can also be used to
@@ -352,7 +352,8 @@ public interface ManagedExecutorService extends ExecutorService {
      * {@link java.util.concurrent.CompletionStage} and {@link java.util.concurrent.CompletableFuture} instances
      * that it creates via the <code>withContextCapture</code> methods.
      *
-     * @return a <code>ContextService</code> with the same propagation settings as this <code>ManagedExecutorService</code>.
+     * @return a <code>ContextService</code> with the same propagation settings
+     *         as this <code>ManagedExecutorService</code>.
      */
     public ContextService getContextService();
 

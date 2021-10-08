@@ -33,14 +33,14 @@ public interface LastExecution {
    * The name or ID of the identifiable object, as specified in the
    * {@link ManagedTask#IDENTITY_NAME} execution property of the task if
    * it also implements the {@code ManagedTask} interface.
-   * 
+   *
    * @return the name or ID of the identifiable object.
    */
   public String getIdentityName();
 
   /**
     * Result of the last execution.
-    * 
+    *
     * @return The result of the last execution. It could return null if
     *         the last execution did not complete, or the result of the task
     *         was null.
@@ -70,7 +70,7 @@ public interface LastExecution {
     */
    public ZonedDateTime getScheduledStart(ZoneId zone);
 
-   /** 
+   /**
     * The last time in which the task started running.
     * <p>
     * The default implementation delegates to the method signature that
@@ -96,12 +96,12 @@ public interface LastExecution {
     */
    public ZonedDateTime getRunStart(ZoneId zone);
 
-   /** 
-    * The last time in which the task was completed. 
+   /**
+    * The last time in which the task was completed.
     * <p>
     * The default implementation delegates to the method signature that
     * accepts a <code>ZoneId</code>.
-    * 
+    *
     * @return the last date/time in which the task was completed, or
     *         null if the task was canceled before it was completed.
     */

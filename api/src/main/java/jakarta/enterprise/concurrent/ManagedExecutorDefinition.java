@@ -107,7 +107,7 @@ public @interface ManagedExecutorDefinition {
      * <p>Upper bound on contextual tasks and actions that this executor
      * will simultaneously execute asynchronously. This constraint does
      * not apply to tasks and actions that the executor runs inline,
-     * such as when a thread requests 
+     * such as when a thread requests
      * {@link java.util.concurrent.CompletableFuture#join()} and the
      * action runs inline if it has not yet started.</p>
      *

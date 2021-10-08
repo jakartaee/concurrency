@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * (such as {@link java.util.function.Function}) that can be used as
  * completion stage actions. Proxy objects run with
  * the addition of context typically associated with applications executing in a
- * Jakarta&trade; EE environment. 
+ * Jakarta&trade; EE environment.
  * Examples of such context are classloading, namespace, security, etc.
  * <p>
  *
@@ -45,12 +45,12 @@ import java.util.function.Supplier;
  *     thread.
  * <li>The proxy instance will implement all of the interfaces specified on the
  *     {@code createContextualProxy} methods.
- * <li>The object to have a proxy instance created for should not be a 
+ * <li>The object to have a proxy instance created for should not be a
  *     component managed by the Jakarta EE Product Provider, such as a web
  *     component or a Jakarta Enterprise Bean.
  * <li>All interface method invocations on a proxy instance run in the
- *     creator's context with the exception of {@code hashCode}, 
- *     {@code equals}, {@code toString} and all other methods declared in 
+ *     creator's context with the exception of {@code hashCode},
+ *     {@code equals}, {@code toString} and all other methods declared in
  *     {@link java.lang.Object}.
  * <li>The proxy instance must implement {@link java.io.Serializable}
  *     if the proxied object instance is serializable.
@@ -61,7 +61,7 @@ import java.util.function.Supplier;
  * <li>Execution properties are to be used for controlling how various contextual
  *     information is retrieved and applied to the thread. Although application
  *     components can store arbitrary property keys and values, it is not
- *     recommended. Jakarta EE product providers may impose limits to the 
+ *     recommended. Jakarta EE product providers may impose limits to the
  *     size of the keys and values.
  * </ul>
  * <p>
@@ -80,7 +80,7 @@ import java.util.function.Supplier;
  * }));
  * </pre>
  * <p>
- * 
+ *
  * @since 1.0
  */
 public interface ContextService {
@@ -222,7 +222,7 @@ public interface ContextService {
    * deployed, all methods on reflected interfaces may throw an
    * {@link java.lang.IllegalStateException}.
    *  <p>
-   * For example, to execute a Runnable which is contextualized with the 
+   * For example, to execute a Runnable which is contextualized with the
    * creator's context using a Java&trade; SE ExecutorService:
    *
    * <pre>
@@ -231,16 +231,16 @@ public interface ContextService {
    *          System.out.println(&quot;MyRunnable.run with Jakarta EE Context available.&quot;);
    *      }
    *  }
-   *  
+   *
    *  InitialContext ctx = new InitialContext();
    *  ThreadFactory threadFactory = (ThreadFactory) ctx
    *           .lookup(&quot;java:comp/env/concurrent/ThreadFactory&quot;);
-   *           
+   *
    *  ContextService ctxService = (ContextService) ctx
    *           .lookup(&quot;java:comp/env/concurrent/ContextService&quot;);
    *
    *  MyRunnable myRunnableInstance = ...;
-   * 
+   *
    *  Runnable rProxy = ctxService.createContextualProxy(myRunnableInstance, Runnable.class);
    *
    *  ExecutorService exSvc = Executors.newThreadPool(10, threadFactory);
@@ -248,15 +248,15 @@ public interface ContextService {
    *  Future f = exSvc.submit(rProxy);
    * </pre>
    * <p>
-   * 
+   *
    * @param instance the instance of the object to proxy.
    * @param intf the interface that the proxy should implement.
    * @param <T> the type of the instance to proxy
    * @return a proxy for the input object that implements the specified interface.
-   * @throws java.lang.IllegalArgumentException - if the {@code intf} argument 
-   * is null or the instance does not implement the specified 
+   * @throws java.lang.IllegalArgumentException - if the {@code intf} argument
+   * is null or the instance does not implement the specified
    * interface.
-   *         
+   *
    */
   public <T> T createContextualProxy(T instance, Class<T> intf);
 
@@ -268,7 +268,7 @@ public interface ContextService {
    * interfaces.
    *  </p>
    * Example:
-   * 
+   *
    * <pre>
    *  public class MyRunnableWork implements Runnable, SomeWorkInterface {
    *      public void run() {
@@ -278,26 +278,26 @@ public interface ContextService {
    *          ...
    *      }
    *  }
-   *  
+   *
    *  ThreadFactory threadFactory = ...;
-   *           
+   *
    *  ContextService ctxService = ...;
    *
    *  MyRunnableWork myRunnableWorkInstance = ...;
-   * 
-   *  Object proxy = ctxService.createContextualProxy(myRunnableWorkInstance, 
+   *
+   *  Object proxy = ctxService.createContextualProxy(myRunnableWorkInstance,
    *                                   Runnable.class, SomeWorkInterface.class);
    *
    *  // call SomeWorkInterface method on the proxy
    *  ((SomeWorkInterface) proxy).someWorkInterfaceMethod();
-   * 
+   *
    *  ExecutorService exSvc = Executors.newThreadPool(10, threadFactory);
    *
-   *  // submit the proxy as a Runnable to the ExecutorService 
+   *  // submit the proxy as a Runnable to the ExecutorService
    *  Future f = exSvc.submit( (Runnable)proxy);
    * </pre>
-   * 
-   * 
+   *
+   *
    * @param instance the instance of the object to proxy.
    * @param interfaces the interfaces that the proxy should implement.
    * @return a proxy for the input object that implements all of the specified
@@ -305,7 +305,7 @@ public interface ContextService {
    * @throws java.lang.IllegalArgumentException - if the {@code interfaces}
    * argument is null or the instance does not implement
    * all the specified interfaces.
-   *         
+   *
    */
   public Object createContextualProxy(Object instance, Class<?>... interfaces);
 
@@ -324,15 +324,15 @@ public interface ContextService {
    * when creating the contextual object. The specified properties will remain
    * with the contextual object.
    * <p>
-   * 
+   *
    * For example, to call a Message Driven Bean (MDB) with the sender's
    * context, but within the MDB's transaction:
-   * 
+   *
    * <pre>
    * public class MyServlet ... {
    *     public void doPost() throws NamingException, JMSException {
    *        InitialContext ctx = new InitialContext();
-   *     
+   *
    *        // Get the ContextService that only propagates
    *        // security context.
    *        ContextService ctxSvc = (ContextService)
@@ -341,7 +341,7 @@ public interface ContextService {
    *        // Set any custom context data through execution properties
    *        Map&lt;String, String&gt; execProps = new HashMap&lt;&gt;();
    *        execProps.put(&quot;vendor_a.security.tokenexpiration&quot;, &quot;15000&quot;);
-   *        // Specify that contextual object should run inside the current 
+   *        // Specify that contextual object should run inside the current
    *        // transaction.  If we have a failure, we don't want to consume
    *        // the message.
    *        execProps.put(ManagedTask.TRANSACTION, &quot;USE_TRANSACTION_OF_EXECUTION_THREAD&quot;);
@@ -369,7 +369,7 @@ public interface ContextService {
    *        // Get the ProcessMessage contextual object from the message.
    *        ObjectMessage omsg = (ObjectMessage)msg;
    *        ProcessMessage msgProcessor = (ProcessMessage)omsg.getObject();
-   *        
+   *
    *        // Process the message in the specified context.
    *        msgProcessor.processMessage(msg);
    *    }
@@ -406,7 +406,8 @@ public interface ContextService {
   /**
    * Creates a new contextual object proxy for the input object instance.
    * <p>
-   * This method is similar to {@code <T> T createContextualProxy(T instance, Map<String, String> executionProperties, Class<T> intf)}
+   * This method is similar to
+   * {@code <T> T createContextualProxy(T instance, Map<String, String> executionProperties, Class<T> intf)}
    * except that this method can be used if the proxy has to support multiple
    * interfaces.
    *
@@ -418,7 +419,7 @@ public interface ContextService {
    *         interfaces.
    *
    * @throws java.lang.IllegalArgumentException - if the {@code interfaces}
-   * argument is null or the instance does not implement all the specified 
+   * argument is null or the instance does not implement all the specified
    * interfaces.
    */
   public Object createContextualProxy(Object instance,
@@ -450,13 +451,13 @@ public interface ContextService {
 
   /**
    * Gets the current execution properties on the context proxy instance.
-   * 
+   *
    * @param contextualProxy the contextual proxy instance to retrieve the execution properties.
    * @return A copy of the current contextual object execution properties, or null if
    *         the contextualProxy is created without specifying any execution properties.
-   * 
-   * @throws java.lang.IllegalArgumentException thrown if the input contextualProxy is not a valid 
-   *                                            contextual object proxy created with the 
+   *
+   * @throws java.lang.IllegalArgumentException thrown if the input contextualProxy is not a valid
+   *                                            contextual object proxy created with the
    *                                            {@code createContextualProxy} method.
    */
   public Map<String, String> getExecutionProperties(Object contextualProxy);
@@ -465,7 +466,8 @@ public interface ContextService {
    * <p>Returns a new {@link java.util.concurrent.CompletableFuture} that is completed by the completion of the
    * specified stage.</p>
    *
-   * <p>The new completable future gets its default asynchronous execution facility from this <code>ContextService</code>,
+   * <p>The new completable future gets its default asynchronous execution facility
+   * from this <code>ContextService</code>,
    * using the same {@link ManagedExecutorService} if this <code>ContextService</code>
    * was obtained by {@link ManagedExecutorService#getContextService()}.</p>
    *

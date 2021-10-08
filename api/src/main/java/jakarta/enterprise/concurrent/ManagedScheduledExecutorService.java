@@ -59,7 +59,7 @@ import java.util.concurrent.ScheduledExecutorService;
  *   ut.commit();
  * }
  * </pre>
- * Tasks can optionally provide an {@link ManagedTaskListener} to receive 
+ * Tasks can optionally provide an {@link ManagedTaskListener} to receive
  * notifications of lifecycle events, through the use of {@link ManagedTask}
  * interface.
  * <p>
@@ -87,18 +87,46 @@ import java.util.concurrent.ScheduledExecutorService;
  * (Note:  See {@link ManagedTaskListener} for task lifecycle management details.)
  *
  * <table summary="Task Lifecycle">
- * <tr><td valign="top"><strong>Sequence</strong></td><td valign="top"><strong>State</strong></td><td valign="top"><strong>Action</strong></td><td valign="top"><strong>Listener</strong></td><td valign="top"><strong>Next state</strong></td></tr>
+ * <tr><td valign="top"><strong>Sequence</strong></td>
+ *     <td valign="top"><strong>State</strong></td>
+ *     <td valign="top"><strong>Action</strong></td>
+ *     <td valign="top"><strong>Listener</strong></td>
+ *     <td valign="top"><strong>Next state</strong></td></tr>
  *
- * <tr><td valign="top">1A.</td><td valign="top">None</td><td valign="top">submit()</td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
- * <tr><td valign="top">2A.</td><td valign="top">Submitted</td><td valign="top">About to call run()</td><td valign="top">taskStarting</td><td valign="top">Started</td></tr>
- * <tr><td valign="top">3A.</td><td valign="top">Started</td><td valign="top">Exit run()</td><td valign="top">taskDone</td><td valign="top">Reschedule</td></tr>
+ * <tr><td valign="top">1A.</td>
+ *     <td valign="top">None</td>
+ *     <td valign="top">submit()</td>
+ *     <td valign="top">taskSubmitted</td>
+ *     <td valign="top">Submitted</td></tr>
+ * <tr><td valign="top">2A.</td>
+ *     <td valign="top">Submitted</td>
+ *     <td valign="top">About to call run()</td>
+ *     <td valign="top">taskStarting</td>
+ *     <td valign="top">Started</td></tr>
+ * <tr><td valign="top">3A.</td>
+ *     <td valign="top">Started</td>
+ *     <td valign="top">Exit run()</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Reschedule</td></tr>
  *
- * <tr><td valign="top">1B.</td><td valign="top">Reschedule</td><td valign="top"></td><td valign="top">taskSubmitted</td><td valign="top">Submitted</td></tr>
- * <tr><td valign="top">2B.</td><td valign="top">Submitted</td><td valign="top">About to call run()</td><td valign="top">taskStarting</td><td valign="top">Started</td></tr>
- * <tr><td valign="top">3B.</td><td valign="top">Started</td><td valign="top">Exit run()</td><td valign="top">taskDone</td><td valign="top">Reschedule</td></tr>
+ * <tr><td valign="top">1B.</td>
+ *     <td valign="top">Reschedule</td>
+ *     <td valign="top"></td>
+ *     <td valign="top">taskSubmitted</td>
+ *     <td valign="top">Submitted</td></tr>
+ * <tr><td valign="top">2B.</td>
+ *     <td valign="top">Submitted</td>
+ *     <td valign="top">About to call run()</td>
+ *     <td valign="top">taskStarting</td>
+ *     <td valign="top">Started</td></tr>
+ * <tr><td valign="top">3B.</td>
+ *     <td valign="top">Started</td>
+ *     <td valign="top">Exit run()</td>
+ *     <td valign="top">taskDone</td>
+ *     <td valign="top">Reschedule</td></tr>
  *
  * </table>
- * 
+ *
  *
  * @since 1.0
  */
@@ -106,36 +134,36 @@ public interface ManagedScheduledExecutorService extends
     ManagedExecutorService, ScheduledExecutorService {
 
   /**
-   * Creates and executes a task based on a Trigger. The Trigger determines when the task 
+   * Creates and executes a task based on a Trigger. The Trigger determines when the task
    * should run and how often.
-   *  
+   *
    * @param command the task to execute.
    * @param trigger the trigger that determines when the task should fire.
-   * 
-   * @return a Future representing pending completion of the task, and whose <code>get()</code> 
-   *         method will return <code>null</code> upon completion. 
-   * 
+   *
+   * @return a Future representing pending completion of the task, and whose <code>get()</code>
+   *         method will return <code>null</code> upon completion.
+   *
    * @throws java.util.concurrent.RejectedExecutionException if task cannot be scheduled for execution.
    * @throws java.lang.NullPointerException if command is null.
    */
   public java.util.concurrent.ScheduledFuture<?> schedule(java.lang.Runnable command,
-	                                                  Trigger trigger);
+                                                          Trigger trigger);
   
   /**
-   * Creates and executes a task based on a Trigger. The Trigger determines when the task should 
-   * run and how often. 
-   * 
+   * Creates and executes a task based on a Trigger. The Trigger determines when the task should
+   * run and how often.
+   *
    * @param callable the function to execute.
    * @param trigger the trigger that determines when the task should fire.
    * @param <V> the return type of the <code>Callable</code>
-   * 
+   *
    * @return a ScheduledFuture that can be used to extract result or cancel.
-   * 
+   *
    * @throws java.util.concurrent.RejectedExecutionException if task cannot be scheduled for execution.
    * @throws java.lang.NullPointerException if callable is null.
-   * 
+   *
    */
   public <V> java.util.concurrent.ScheduledFuture<V> schedule(java.util.concurrent.Callable<V> callable,
                                                               Trigger trigger);
-    
+
 }

@@ -23,8 +23,6 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import jakarta.transaction.UserTransaction;
-
 /**
  * <p>Defines a {@link ContextService}
  * to be registered in JNDI by the container
@@ -164,7 +162,7 @@ public @interface ContextServiceDefinition {
      */
     static final String APPLICATION = "Application";
 
-    // TODO: CDI context is the topic of
+    // TODO CDI context is the topic of
     // https://github.com/eclipse-ee4j/concurrency-api/issues/105
 
     /**

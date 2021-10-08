@@ -15,6 +15,6 @@
  */
 
 /**
- * Classes and interfaces that make up the Jakarta Concurrency specification. 
+ * Classes and interfaces that make up the Jakarta Concurrency specification.
  */
 package jakarta.enterprise.concurrent;
