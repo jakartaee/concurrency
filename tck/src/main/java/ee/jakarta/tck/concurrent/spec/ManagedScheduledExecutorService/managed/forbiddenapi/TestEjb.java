@@ -28,64 +28,64 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 @Stateless
 public class TestEjb implements TestEjbRemote {
 
-  private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
+	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-  private ManagedScheduledExecutorService getService() {
-    try {
-      InitialContext context = new InitialContext();
-      ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-          .lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-      return executorService;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+	private ManagedScheduledExecutorService getService() {
+		try {
+			InitialContext context = new InitialContext();
+			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
+					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
+			return executorService;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-  public void testAwaitTermination() {
-    try {
-      getService().awaitTermination(10, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalStateException e) {
-      return;
-    }
-    throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-  }
+	public void testAwaitTermination() {
+		try {
+			getService().awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
-  public void testIsShutdown() {
-    try {
-      getService().isShutdown();
-    } catch (IllegalStateException e) {
-      return;
-    }
-    throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-  }
+	public void testIsShutdown() {
+		try {
+			getService().isShutdown();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
-  public void testIsTerminated() {
-    try {
-      getService().isTerminated();
-    } catch (IllegalStateException e) {
-      return;
-    }
-    throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-  }
+	public void testIsTerminated() {
+		try {
+			getService().isTerminated();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
-  public void testShutdown() {
-    try {
-      getService().shutdown();
-    } catch (IllegalStateException e) {
-      return;
-    }
-    throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-  }
+	public void testShutdown() {
+		try {
+			getService().shutdown();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
-  public void testShutdownNow() {
-    try {
-      getService().shutdownNow();
-    } catch (IllegalStateException e) {
-      return;
-    }
-    throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-  }
+	public void testShutdownNow() {
+		try {
+			getService().shutdownNow();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
 }

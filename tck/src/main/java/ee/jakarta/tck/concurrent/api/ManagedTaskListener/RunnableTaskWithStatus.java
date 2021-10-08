@@ -22,28 +22,28 @@ import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEven
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 public class RunnableTaskWithStatus implements Runnable {
-  private final ManagedTaskListenerImpl listener;
+	private final ManagedTaskListenerImpl listener;
 
-  private final int blockTime;
+	private final int blockTime;
 
-  public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
-    this.listener = listener;
-    blockTime = 0;
-  }
+	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
+		this.listener = listener;
+		blockTime = 0;
+	}
 
-  RunnableTaskWithStatus(ManagedTaskListenerImpl listener, int blockTime) {
-    this.listener = listener;
-    this.blockTime = blockTime;
-  }
+	RunnableTaskWithStatus(ManagedTaskListenerImpl listener, int blockTime) {
+		this.listener = listener;
+		this.blockTime = blockTime;
+	}
 
-  public void run() {
-    listener.update(ListenerEvent.TASK_RUN);
-    if (blockTime > 0) {
-      try {
-        TimeUnit.SECONDS.sleep(blockTime);
-      } catch (InterruptedException e) {
-      }
-    }
-  }
+	public void run() {
+		listener.update(ListenerEvent.TASK_RUN);
+		if (blockTime > 0) {
+			try {
+				TimeUnit.SECONDS.sleep(blockTime);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
 
 }

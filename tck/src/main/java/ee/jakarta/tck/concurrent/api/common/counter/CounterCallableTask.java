@@ -22,23 +22,22 @@ import javax.naming.InitialContext;
 
 public class CounterCallableTask implements Callable {
 
-    private String countSingletionJndi = "";
+	private String countSingletionJndi = "";
 
-    public CounterCallableTask(String countSingletionJndi) {
-	this.countSingletionJndi = countSingletionJndi;
-    }
-
-    public Integer call() {
-	try {
-	    InitialContext context = new InitialContext();
-	    CounterRemote counter = (CounterRemote) context
-		    .lookup(countSingletionJndi);
-	    counter.inc();
-	    return counter.getCount();
-
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
+	public CounterCallableTask(String countSingletionJndi) {
+		this.countSingletionJndi = countSingletionJndi;
 	}
 
-    }
+	public Integer call() {
+		try {
+			InitialContext context = new InitialContext();
+			CounterRemote counter = (CounterRemote) context.lookup(countSingletionJndi);
+			counter.inc();
+			return counter.getCount();
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 }

@@ -20,40 +20,40 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Task<T> implements Runnable, Callable<T> {
-  protected boolean ran;
+	protected boolean ran;
 
-  protected final int taskId;
+	protected final int taskId;
 
-  protected final AtomicInteger count = new AtomicInteger(0);
+	protected final AtomicInteger count = new AtomicInteger(0);
 
-  public Task(int id) {
-    taskId = id;
-  }
+	public Task(int id) {
+		taskId = id;
+	}
 
-  boolean isRan() {
-    return ran;
-  }
+	boolean isRan() {
+		return ran;
+	}
 
-  public int runCount() {
-    return count.get();
-  }
+	public int runCount() {
+		return count.get();
+	}
 
-  static class CommonTask extends Task<Integer> {
-    public CommonTask(int id) {
-      super(id);
-    }
+	static class CommonTask extends Task<Integer> {
+		public CommonTask(int id) {
+			super(id);
+		}
 
-    @Override
-    public void run() {
-      // each time add count when run called
-      count.incrementAndGet();
-      ran = true;
-    }
+		@Override
+		public void run() {
+			// each time add count when run called
+			count.incrementAndGet();
+			ran = true;
+		}
 
-    @Override
-    public Integer call() throws Exception {
-      ran = true;
-      return taskId;
-    }
-  }
+		@Override
+		public Integer call() throws Exception {
+			ran = true;
+			return taskId;
+		}
+	}
 }

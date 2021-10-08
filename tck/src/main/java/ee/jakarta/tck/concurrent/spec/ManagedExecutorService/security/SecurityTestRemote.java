@@ -18,8 +18,8 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.security;
 
 public interface SecurityTestRemote {
 
-  public static final String MANAGERMETHOD1_RETURN_STR = "ok";
+	public static final String MANAGERMETHOD1_RETURN_STR = "ok";
 
-  public String managerMethod1();
+	public String managerMethod1();
 
 }

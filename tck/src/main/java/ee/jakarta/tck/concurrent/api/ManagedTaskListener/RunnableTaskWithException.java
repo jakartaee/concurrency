@@ -20,15 +20,15 @@ import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEven
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 public class RunnableTaskWithException implements Runnable {
-  private final ManagedTaskListenerImpl listener;
+	private final ManagedTaskListenerImpl listener;
 
-  public RunnableTaskWithException(ManagedTaskListenerImpl listener) {
-    this.listener = listener;
-  }
+	public RunnableTaskWithException(ManagedTaskListenerImpl listener) {
+		this.listener = listener;
+	}
 
-  @Override
-  public void run() {
-    listener.update(ListenerEvent.TASK_RUN);
-    throw new RuntimeException("wrong happend");
-  }
+	@Override
+	public void run() {
+		listener.update(ListenerEvent.TASK_RUN);
+		throw new RuntimeException("wrong happend");
+	}
 }

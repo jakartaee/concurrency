@@ -20,56 +20,56 @@ import java.util.concurrent.Callable;
 
 public class CommonTasks {
 
-  public static final String SIMPLE_RETURN_STRING = "ok";
+	public static final String SIMPLE_RETURN_STRING = "ok";
 
-  public static class SimpleCallable implements Callable {
-    private long waitTime = 0;
+	public static class SimpleCallable implements Callable {
+		private long waitTime = 0;
 
-    public SimpleCallable() {
-    }
+		public SimpleCallable() {
+		}
 
-    public SimpleCallable(long argWaitTime) {
-      this.waitTime = argWaitTime;
-    }
+		public SimpleCallable(long argWaitTime) {
+			this.waitTime = argWaitTime;
+		}
 
-    public String call() {
-      try {
-        if (waitTime != 0) {
-          Thread.sleep(waitTime);
-        } else {
-          Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
-        }
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      return SIMPLE_RETURN_STRING;
-    }
-  }
+		public String call() {
+			try {
+				if (waitTime != 0) {
+					Thread.sleep(waitTime);
+				} else {
+					Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return SIMPLE_RETURN_STRING;
+		}
+	}
 
-  public static class SimpleRunnable implements Runnable {
-    public void run() {
-      try {
-        Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+	public static class SimpleRunnable implements Runnable {
+		public void run() {
+			try {
+				Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
 
-  public static class SimpleArgCallable implements Callable {
-    private int value = -1;
+	public static class SimpleArgCallable implements Callable {
+		private int value = -1;
 
-    public SimpleArgCallable(int arg) {
-      value = arg;
-    }
+		public SimpleArgCallable(int arg) {
+			value = arg;
+		}
 
-    public Integer call() {
-      try {
-        Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-      return value;
-    }
-  }
+		public Integer call() {
+			try {
+				Thread.sleep(ConcurrencyTestUtils.COMMON_CHECK_INTERVAL);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			return value;
+		}
+	}
 }

@@ -36,195 +36,190 @@ import javax.sql.DataSource;
 import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 public class Util {
 
-  private static final String MANAGED_THREAD_FACTORY_SVC_JNDI_NAME = "java:comp/DefaultManagedThreadFactory";
+	private static final TestLogger log = TestLogger.get(Util.class);
 
-  private Connection conn;
+	private static final String MANAGED_THREAD_FACTORY_SVC_JNDI_NAME = "java:comp/DefaultManagedThreadFactory";
 
-  private Util() {
-  }
+	private Connection conn;
 
-  public static <T> T waitForTaskComplete(final Future<T> future,
-      final int maxTaskWaitTime)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    T result = null;
-    result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
-    return result;
-  }
+	private Util() {
+	}
 
-  public static ManagedThreadFactory getManagedThreadFactory() {
-    return lookup(MANAGED_THREAD_FACTORY_SVC_JNDI_NAME);
-  }
+	public static <T> T waitForTaskComplete(final Future<T> future, final int maxTaskWaitTime)
+			throws InterruptedException, ExecutionException, TimeoutException {
+		T result = null;
+		result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
+		return result;
+	}
 
-  public static <T> T lookup(String jndiName) {
-    Context ctx = null;
-    T targetObject = null;
-    try {
-      ctx = new InitialContext();
-      targetObject = (T) ctx.lookup(jndiName);
-    } catch (Exception e) {
-    } finally {
-      try {
-        ctx.close();
-      } catch (NamingException e) {
-        TestUtil.logErr("failed to lookup resource.", e);
-      }
-    }
-    return targetObject;
-  }
+	public static ManagedThreadFactory getManagedThreadFactory() {
+		return lookup(MANAGED_THREAD_FACTORY_SVC_JNDI_NAME);
+	}
 
-  public static Connection getConnection(DataSource ds, String user, String pwd,
-      boolean autoCommit) {
-    Connection conn = null;
-    try {
-      conn = ds.getConnection(); // Try without user password for EE case
-      if (conn == null) {
-        conn = ds.getConnection(user, pwd); // For standalone cases
-      }
-      if (null != conn) {
-        conn.setAutoCommit(autoCommit);
-      }
-    } catch (SQLException e) {
-      TestUtil.logErr("failed to get connection.", e);
-    }
-    return conn;
-  }
+	public static <T> T lookup(String jndiName) {
+		Context ctx = null;
+		T targetObject = null;
+		try {
+			ctx = new InitialContext();
+			targetObject = (T) ctx.lookup(jndiName);
+		} catch (Exception e) {
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+				log.severe("failed to lookup resource.", e);
+			}
+		}
+		return targetObject;
+	}
 
-  public static String getUrl(String servletUri, String host, int port) {
-    return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
-  }
+	public static Connection getConnection(DataSource ds, String user, String pwd, boolean autoCommit) {
+		Connection conn = null;
+		try {
+			conn = ds.getConnection(); // Try without user password for EE case
+			if (conn == null) {
+				conn = ds.getConnection(user, pwd); // For standalone cases
+			}
+			if (null != conn) {
+				conn.setAutoCommit(autoCommit);
+			}
+		} catch (SQLException e) {
+			log.severe("failed to get connection.", e);
+		}
+		return conn;
+	}
 
-  public static int getCount(String tableName, String username,
-      String password) {
-    Connection conn = getConnection(true, username, password);
-    Statement stmt = null;
-    try {
-      final String queryStr = "select count(*) from " + tableName;
-      stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(queryStr);
-      if (rs.next()) {
-        return rs.getInt(1);
-      }
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    } finally {
-      try {
-        if (stmt != null)
-          stmt.close();
-        if (conn != null)
-          conn.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    }
-    return -1;
-  }
+	public static String getUrl(String servletUri, String host, int port) {
+		return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
+	}
 
-  /**
-   * get count by specifying connection. the caller should take care of closing
-   * connection.
-   * 
-   * @param conn
-   * @param tableName
-   * @param username
-   * @param password
-   * @return
-   */
-  public static int getCount(Connection conn, String tableName, String username,
-      String password) {
-    Statement stmt = null;
-    try {
-      final String queryStr = "select count(*) from " + tableName;
-      stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery(queryStr);
-      if (rs.next()) {
-        return rs.getInt(1);
-      }
-    } catch (SQLException e1) {
-      e1.printStackTrace();
-    } finally {
-      try {
-        stmt.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    }
-    return -1;
-  }
+	public static int getCount(String tableName, String username, String password) {
+		Connection conn = getConnection(true, username, password);
+		Statement stmt = null;
+		try {
+			final String queryStr = "select count(*) from " + tableName;
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(queryStr);
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null)
+					stmt.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
+	}
 
-  public static Connection getConnection(boolean autoCommit, String username,
-      String password) {
-    DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
-    Connection conn = Util.getConnection(ds, username, password, autoCommit);
-    return conn;
-  }
+	/**
+	 * get count by specifying connection. the caller should take care of closing
+	 * connection.
+	 * 
+	 * @param conn
+	 * @param tableName
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static int getCount(Connection conn, String tableName, String username, String password) {
+		Statement stmt = null;
+		try {
+			final String queryStr = "select count(*) from " + tableName;
+			stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(queryStr);
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
+	}
 
-  public static Connection getConnection(String dbURL, String propsString,
-      boolean autoCommit) {
-    Connection conn = null;
-    try {
+	public static Connection getConnection(boolean autoCommit, String username, String password) {
+		DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
+		Connection conn = Util.getConnection(ds, username, password, autoCommit);
+		return conn;
+	}
 
-      conn = DriverManager.getConnection(dbURL, strToProps(propsString));
-      if (conn != null) {
-        conn.setAutoCommit(autoCommit);
-      }
+	public static Connection getConnection(String dbURL, String propsString, boolean autoCommit) {
+		Connection conn = null;
+		try {
 
-    } catch (SQLException sqle) {
-      TestUtil.logErr("failed to get connection.", sqle);
-    }
-    return conn;
-  }
+			conn = DriverManager.getConnection(dbURL, strToProps(propsString));
+			if (conn != null) {
+				conn.setAutoCommit(autoCommit);
+			}
 
-  public static Properties strToProps(String strProps) {
+		} catch (SQLException sqle) {
+			log.severe("failed to get connection.", sqle);
+		}
+		return conn;
+	}
 
-    Properties props = new Properties();
-    TestUtil.logTrace("Props String = " + strProps);
-    String strArray[] = strProps.split(":"); // Split the given string into
-                                             // array of key value pairs
+	public static Properties strToProps(String strProps) {
 
-    for (String keyValuePair : strArray) {
-      String strArray2[] = keyValuePair.split("="); // Take the key value pair
-                                                    // and store it into
-                                                    // properties
-      TestUtil
-          .logTrace("Setting property " + strArray2[0] + " = " + strArray2[1]);
-      props.setProperty(strArray2[0], strArray2[1]);
-    }
+		Properties props = new Properties();
+		log.info("Props String = " + strProps);
+		String strArray[] = strProps.split(":"); // Split the given string into
+													// array of key value pairs
 
-    // printProperties(props);
-    return props;
+		for (String keyValuePair : strArray) {
+			String strArray2[] = keyValuePair.split("="); // Take the key value pair
+															// and store it into
+															// properties
+			log.info("Setting property " + strArray2[0] + " = " + strArray2[1]);
+			props.setProperty(strArray2[0], strArray2[1]);
+		}
 
-  }
+		// printProperties(props);
+		return props;
 
-  private static void printProperties(Properties props) {
-    Set<String> propertyNames = props.stringPropertyNames();
-    for (String key : propertyNames) {
-      TestUtil.logTrace(key + " = " + props.getProperty(key));
-    }
-  }
+	}
 
-  public static void waitForTransactionBegan(CancelledTransactedTask pp,
-      long maxListenerWaitTime, int poolInterval) {
-    final long stopTime = System.currentTimeMillis() + maxListenerWaitTime;
-    while (!pp.transactionBegin() && System.currentTimeMillis() < stopTime) {
-      TestUtil.sleep(poolInterval);
-    }
-  }
+	private static void printProperties(Properties props) {
+		Set<String> propertyNames = props.stringPropertyNames();
+		for (String key : propertyNames) {
+			log.info(key + " = " + props.getProperty(key));
+		}
+	}
 
-  public static void waitTillThreadFinish(Thread thread) {
-    long start = System.currentTimeMillis();
+	public static void waitForTransactionBegan(CancelledTransactedTask pp, long maxListenerWaitTime, int poolInterval) {
+		final long stopTime = System.currentTimeMillis() + maxListenerWaitTime;
+		while (!pp.transactionBegin() && System.currentTimeMillis() < stopTime) {
+			TestUtil.sleep(poolInterval);
+		}
+	}
 
-    while (thread.isAlive()) {
-      try {
-        Thread.sleep(5 * 1000);
-      } catch (InterruptedException ignore) {
-      }
+	public static void waitTillThreadFinish(Thread thread) {
+		long start = System.currentTimeMillis();
 
-      if ((System.currentTimeMillis() - start) > 30 * 1000) {
-        throw new RuntimeException("wait task timeout");
-      }
-    }
-  }
+		while (thread.isAlive()) {
+			try {
+				Thread.sleep(5 * 1000);
+			} catch (InterruptedException ignore) {
+			}
+
+			if ((System.currentTimeMillis() - start) > 30 * 1000) {
+				throw new RuntimeException("wait task timeout");
+			}
+		}
+	}
 }

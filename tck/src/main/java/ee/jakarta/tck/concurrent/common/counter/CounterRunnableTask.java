@@ -17,24 +17,24 @@
 package jakarta.enterprise.concurrent.common.counter;
 
 public class CounterRunnableTask implements Runnable {
-  private long sleepTime = 0;
+	private long sleepTime = 0;
 
-  public CounterRunnableTask() {
-  }
+	public CounterRunnableTask() {
+	}
 
-  public CounterRunnableTask(long sleepTime) {
-    this.sleepTime = sleepTime;
-  }
+	public CounterRunnableTask(long sleepTime) {
+		this.sleepTime = sleepTime;
+	}
 
-  public void run() {
-    try {
-      if (sleepTime > 0) {
-        Thread.sleep(sleepTime);
-      }
-      StaticCounter.inc();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+	public void run() {
+		try {
+			if (sleepTime > 0) {
+				Thread.sleep(sleepTime);
+			}
+			StaticCounter.inc();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
-  }
+	}
 }

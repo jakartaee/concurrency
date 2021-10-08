@@ -18,22 +18,21 @@ package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servl
 
 import java.io.Serializable;
 
-public abstract class BaseTestRunnableWork
-    implements Serializable, Runnable, TestWorkInterface {
-  private String message;
+public abstract class BaseTestRunnableWork implements Serializable, Runnable, TestWorkInterface {
+	private String message;
 
-  public void run() {
-    message = work();
-  }
+	public void run() {
+		message = work();
+	}
 
-  public String doSomeWork() {
-    message = work();
-    return message;
-  }
+	public String doSomeWork() {
+		message = work();
+		return message;
+	}
 
-  public String getResult() {
-    return message;
-  }
+	public String getResult() {
+		return message;
+	}
 
-  protected abstract String work();
+	protected abstract String work();
 }

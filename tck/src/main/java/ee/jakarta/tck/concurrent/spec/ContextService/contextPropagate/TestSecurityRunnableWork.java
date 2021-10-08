@@ -21,15 +21,14 @@ import javax.naming.NamingException;
 
 public class TestSecurityRunnableWork extends BaseTestRunnableWork {
 
-  @Override
-  protected String work() {
-    try {
-      InitialContext ctx = new InitialContext();
-      return ((LimitedInterface) ctx
-          .lookup("java:app/ContextPropagate_ejb/LimitedBean")).doSomething();
+	@Override
+	protected String work() {
+		try {
+			InitialContext ctx = new InitialContext();
+			return ((LimitedInterface) ctx.lookup("java:app/ContextPropagate_ejb/LimitedBean")).doSomething();
 
-    } catch (NamingException e) {
-      throw new RuntimeException(e);
-    }
-  }
+		} catch (NamingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

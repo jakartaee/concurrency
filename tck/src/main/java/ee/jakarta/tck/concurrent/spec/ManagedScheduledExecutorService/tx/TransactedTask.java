@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,80 +19,76 @@ package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.tx;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
-
 import jakarta.transaction.UserTransaction;
 
 public class TransactedTask implements Runnable {
-  private final boolean isCommit;
+	private final boolean isCommit;
 
-  private final String username, password, sqlTemplate;
+	private final String username, password, sqlTemplate;
 
-  public TransactedTask(boolean commitOrRollback, String username,
-      String password, String sqlTemplate) {
-    this.username = username;
-    this.password = password;
-    this.sqlTemplate = sqlTemplate;
-    isCommit = commitOrRollback;
-  }
+	public TransactedTask(boolean commitOrRollback, String username, String password, String sqlTemplate) {
+		this.username = username;
+		this.password = password;
+		this.sqlTemplate = sqlTemplate;
+		isCommit = commitOrRollback;
+	}
 
-  @Override
-  public void run() {
-    boolean pass = false;
-    Connection conn = null;
-    String tableName = TestUtil.getProperty(Constants.TABLE_P,
-        Constants.DEFAULT_PTABLE);
-    int originCount = Util.getCount(tableName, username, password);
+	@Override
+	public void run() {
+		boolean pass = false;
+		Connection conn = null;
+//    String tableName = TestUtil.getProperty(Constants.TABLE_P,
+//    Constants.DEFAULT_PTABLE); //TODO figure out way to get this property
+		String tableName = "placeholder";
+		int originCount = Util.getCount(tableName, username, password);
 
-    UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
-    if (ut == null) {
-      // error if no transaction can be obtained in task.
-      throw new RuntimeException(
-          "didn't get user transaction inside the submitted task.");
-    } else {
-      PreparedStatement pStmt = null;
-      try {
-        ut.begin();
-        conn = Util.getConnection(false, username, password);
-        pStmt = conn.prepareStatement(sqlTemplate);
-        String sTypeDesc = "Type-99";
-        int newType = 99;
-        pStmt.setInt(1, newType);
-        pStmt.setString(2, sTypeDesc);
-        pStmt.executeUpdate();
-        // commit or roll back transaction.
-        if (isCommit) {
-          ut.commit();
-        } else {
-          ut.rollback();
-        }
-        // check status.
-        int afterTransacted = Util.getCount(tableName, username, password);
-        if (isCommit) {
-          pass = (afterTransacted == originCount + 1);
-        } else {
-          pass = (afterTransacted == originCount);
-        }
-      } catch (Exception e) {
-        try {
-          ut.rollback();
-        } catch (Exception e1) {
-          e1.printStackTrace();
-        }
-        e.printStackTrace();
-      } finally {
-        try {
-          pStmt.close();
-          conn.close();
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-      if (!pass) {
-        throw new RuntimeException(
-            "didn't get expected result with transacted task.");
-      }
-    }
-  }
+		UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
+		if (ut == null) {
+			// error if no transaction can be obtained in task.
+			throw new RuntimeException("didn't get user transaction inside the submitted task.");
+		} else {
+			PreparedStatement pStmt = null;
+			try {
+				ut.begin();
+				conn = Util.getConnection(false, username, password);
+				pStmt = conn.prepareStatement(sqlTemplate);
+				String sTypeDesc = "Type-99";
+				int newType = 99;
+				pStmt.setInt(1, newType);
+				pStmt.setString(2, sTypeDesc);
+				pStmt.executeUpdate();
+				// commit or roll back transaction.
+				if (isCommit) {
+					ut.commit();
+				} else {
+					ut.rollback();
+				}
+				// check status.
+				int afterTransacted = Util.getCount(tableName, username, password);
+				if (isCommit) {
+					pass = (afterTransacted == originCount + 1);
+				} else {
+					pass = (afterTransacted == originCount);
+				}
+			} catch (Exception e) {
+				try {
+					ut.rollback();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			} finally {
+				try {
+					pStmt.close();
+					conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			if (!pass) {
+				throw new RuntimeException("didn't get expected result with transacted task.");
+			}
+		}
+	}
 
 }

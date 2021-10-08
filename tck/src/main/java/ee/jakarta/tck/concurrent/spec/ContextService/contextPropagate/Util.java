@@ -23,16 +23,14 @@ import jakarta.enterprise.concurrent.ContextService;
 
 public class Util {
 
-  public static ContextService lookupDefaultContextService()
-      throws NamingException {
-    try {
-      InitialContext ctx = new InitialContext();
-      ContextService cs = (ContextService) ctx
-          .lookup("java:comp/DefaultContextService");
-      return cs;
+	public static ContextService lookupDefaultContextService() throws NamingException {
+		try {
+			InitialContext ctx = new InitialContext();
+			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
+			return cs;
 
-    } catch (NamingException e) {
-      throw e;
-    }
-  }
+		} catch (NamingException e) {
+			throw e;
+		}
+	}
 }

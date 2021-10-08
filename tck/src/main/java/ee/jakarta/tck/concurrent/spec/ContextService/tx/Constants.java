@@ -17,17 +17,17 @@
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
 final public class Constants {
-  private Constants() {
-  };
+	private Constants() {
+	};
 
-  public static final String DS_JNDI_NAME = "jdbc/DB1";
+	public static final String DS_JNDI_NAME = "jdbc/DB1";
 
-  public static final String TABLE_P = "concurrencetable";
+	public static final String TABLE_P = "concurrencetable";
 
-  public static final String USERNAME = "user1";
+	public static final String USERNAME = "user1";
 
-  public static final String PASSWORD = "password1";
+	public static final String PASSWORD = "password1";
 
-  public static final String SQL_TEMPLATE = "Dbschema_Concur_Insert";
+	public static final String SQL_TEMPLATE = "Dbschema_Concur_Insert";
 
 }

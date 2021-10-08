@@ -25,53 +25,51 @@ import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 public class ManagedTaskListenerImpl implements ManagedTaskListener {
 
-  private final List<ListenerEvent> events = Collections
-      .synchronizedList(new ArrayList<ListenerEvent>());
+	private static final TestLogger log = TestLogger.get(ManagedTaskListenerImpl.class);
 
-  @Override
-  public void taskAborted(Future<?> future, ManagedExecutorService mes,
-      Object arg2, Throwable arg3) {
-    events.add(ListenerEvent.ABORTED);
-    TestUtil.logTrace("task aborted");
-  }
+	private final List<ListenerEvent> events = Collections.synchronizedList(new ArrayList<ListenerEvent>());
 
-  @Override
-  public void taskDone(Future<?> future, ManagedExecutorService mes,
-      Object arg2, Throwable arg3) {
-    events.add(ListenerEvent.DONE);
-    TestUtil.logTrace("task done");
-  }
+	@Override
+	public void taskAborted(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+		events.add(ListenerEvent.ABORTED);
+		log.info("task aborted");
+	}
 
-  @Override
-  public void taskStarting(Future<?> future, ManagedExecutorService mes,
-      Object arg2) {
-    events.add(ListenerEvent.STARTING);
-    TestUtil.logTrace("task starting");
-  }
+	@Override
+	public void taskDone(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+		events.add(ListenerEvent.DONE);
+		log.info("task done");
+	}
 
-  @Override
-  public void taskSubmitted(Future<?> future, ManagedExecutorService mes,
-      Object arg2) {
-    events.add(ListenerEvent.SUBMITTED);
-    TestUtil.logTrace("task submitted");
-  }
+	@Override
+	public void taskStarting(Future<?> future, ManagedExecutorService mes, Object arg2) {
+		events.add(ListenerEvent.STARTING);
+		log.info("task starting");
+	}
 
-  public boolean eventCalled(ListenerEvent event) {
-    return events.contains(event);
-  }
+	@Override
+	public void taskSubmitted(Future<?> future, ManagedExecutorService mes, Object arg2) {
+		events.add(ListenerEvent.SUBMITTED);
+		log.info("task submitted");
+	}
 
-  public void clearEvents() {
-    events.clear();
-  }
+	public boolean eventCalled(ListenerEvent event) {
+		return events.contains(event);
+	}
 
-  public void update(ListenerEvent event) {
-    events.add(event);
-  }
+	public void clearEvents() {
+		events.clear();
+	}
 
-  public List<ListenerEvent> events() {
-    return events;
-  }
+	public void update(ListenerEvent event) {
+		events.add(event);
+	}
+
+	public List<ListenerEvent> events() {
+		return events;
+	}
 }

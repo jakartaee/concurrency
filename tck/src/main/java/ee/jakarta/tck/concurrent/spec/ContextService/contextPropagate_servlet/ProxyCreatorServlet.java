@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,8 +26,7 @@ import java.util.Properties;
 
 import javax.naming.NamingException;
 
-import com.sun.ts.lib.porting.TSURL;
-import com.sun.ts.lib.util.BASE64Encoder;
+import java.util.Base64;
 import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.servlet.ServletException;
@@ -36,53 +35,49 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/ProxyCreatorServlet")
 public class ProxyCreatorServlet extends HttpServlet {
 
-  @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-    String action = req.getParameter("action");
-    Object proxy = true;
-    String result = null;
-    URL url = new URL("http://" + req.getServerName() + ":"
-        + req.getServerPort() + "/ContextPropagate_servlet2_web/TestServlet");
-    ;
-    TSURL ctsurl = new TSURL();
-    if ("createJNDIWork".equals(action)) {
-      try {
-        proxy = Util.lookupDefaultContextService().createContextualProxy(
-            new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
-            Serializable.class);
-      } catch (NamingException e) {
-        throw new ServletException(e);
-      }
-    }
+		String action = req.getParameter("action");
+		Object proxy = true;
+		String result = null;
+		URL url = new URL("http://" + req.getServerName() + ":" + req.getServerPort()
+				+ "/ContextPropagate_servlet2_web/TestServlet");
+		;
+		if ("createJNDIWork".equals(action)) {
+			try {
+				proxy = Util.lookupDefaultContextService().createContextualProxy(new TestJNDIRunnableWork(),
+						Runnable.class, TestWorkInterface.class, Serializable.class);
+			} catch (NamingException e) {
+				throw new ServletException(e);
+			}
+		}
 
-    if ("createClassloaderWork".equals(action)) {
-      try {
-        proxy = Util.lookupDefaultContextService().createContextualProxy(
-            new TestClassloaderRunnableWork(), Runnable.class,
-            TestWorkInterface.class, Serializable.class);
-      } catch (NamingException e) {
-        throw new ServletException(e);
-      }
-    }
+		if ("createClassloaderWork".equals(action)) {
+			try {
+				proxy = Util.lookupDefaultContextService().createContextualProxy(new TestClassloaderRunnableWork(),
+						Runnable.class, TestWorkInterface.class, Serializable.class);
+			} catch (NamingException e) {
+				throw new ServletException(e);
+			}
+		}
 
-    Properties p = new Properties();
-    p.setProperty("proxy", proxyToString(proxy));
-    URLConnection urlConn = TestUtil.sendPostData(p, url);
-    result = TestUtil.getResponse(urlConn);
-    resp.getWriter().write(result);
-  }
+		Properties p = new Properties();
+		p.setProperty("proxy", proxyToString(proxy));
+		URLConnection urlConn = TestUtil.sendPostData(p, url);
+		result = TestUtil.getResponse(urlConn);
+		resp.getWriter().write(result);
+	}
 
-  private String proxyToString(Object proxy) throws IOException {
-    ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    ObjectOutputStream out = new ObjectOutputStream(bout);
-    out.writeObject(proxy);
-    out.close();
-    BASE64Encoder encoder = new BASE64Encoder();
-    return encoder.encode(bout.toByteArray());
-  }
+	private String proxyToString(Object proxy) throws IOException {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		ObjectOutputStream out = new ObjectOutputStream(bout);
+		out.writeObject(proxy);
+		out.close();
+		return Base64.getEncoder().encodeToString(bout.toByteArray());
+	}
 }

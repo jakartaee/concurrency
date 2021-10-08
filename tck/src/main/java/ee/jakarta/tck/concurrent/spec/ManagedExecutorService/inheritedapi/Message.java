@@ -17,10 +17,10 @@
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
 
 public final class Message {
-  private Message() {
-  }
+	private Message() {
+	}
 
-  public static final String SUCCESSMESSAGE = "Successfull!";
+	public static final String SUCCESSMESSAGE = "Successfull!";
 
-  public static final String FAILMESSAGE = "Fail!";
+	public static final String FAILMESSAGE = "Fail!";
 }

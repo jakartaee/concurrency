@@ -17,5 +17,5 @@
 package jakarta.enterprise.concurrent.api.ContextService;
 
 public interface TestWorkInterface {
-  public String doSomeWork();
+	public String doSomeWork();
 }

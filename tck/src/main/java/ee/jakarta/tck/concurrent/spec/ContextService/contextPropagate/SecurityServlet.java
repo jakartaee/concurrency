@@ -31,26 +31,23 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends HttpServlet {
 
-  @EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
-  private ContextPropagateInterface intf;
+	@EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
+	private ContextPropagateInterface intf;
 
-  @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-    req.login("javajoe", "javajoe");
+		req.login("javajoe", "javajoe");
 
-    String result = null;
-    try {
-      result = intf
-          .executeWorker((TestWorkInterface) Util.lookupDefaultContextService()
-              .createContextualProxy(new TestSecurityRunnableWork(),
-                  Runnable.class, TestWorkInterface.class, Serializable.class));
+		String result = null;
+		try {
+			result = intf.executeWorker((TestWorkInterface) Util.lookupDefaultContextService().createContextualProxy(
+					new TestSecurityRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
 
-    } catch (NamingException e) {
-      throw new ServletException(e);
-    }
+		} catch (NamingException e) {
+			throw new ServletException(e);
+		}
 
-    resp.getWriter().println(result);
-  }
+		resp.getWriter().println(result);
+	}
 }

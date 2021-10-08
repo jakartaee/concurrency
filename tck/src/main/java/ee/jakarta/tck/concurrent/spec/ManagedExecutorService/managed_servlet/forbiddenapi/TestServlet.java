@@ -30,115 +30,113 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(Constants.SERVLET_TEST_URL)
 public class TestServlet extends HttpServlet {
-  @Resource
-  private ManagedExecutorService mes;
+	@Resource
+	private ManagedExecutorService mes;
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doPost(req, res);
-  }
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doPost(req, res);
+	}
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    String operation = req.getParameter(Constants.OP_NAME);
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		String operation = req.getParameter(Constants.OP_NAME);
 
-    if (Constants.OP_AWAITTERMINATION.equals(operation)) {
-      testAwaitTermination(res);
-    } else if (Constants.OP_ISSHUTDOWN.equals(operation)) {
-      testIsShutdown(res);
-    } else if (Constants.OP_ISTERMINATED.equals(operation)) {
-      testIsTerminated(res);
-    } else if (Constants.OP_SHUTDOWN.equals(operation)) {
-      testShutdown(res);
-    } else if (Constants.OP_SHUTDOWNNOW.equals(operation)) {
-      testShutdownNow(res);
-    }
+		if (Constants.OP_AWAITTERMINATION.equals(operation)) {
+			testAwaitTermination(res);
+		} else if (Constants.OP_ISSHUTDOWN.equals(operation)) {
+			testIsShutdown(res);
+		} else if (Constants.OP_ISTERMINATED.equals(operation)) {
+			testIsTerminated(res);
+		} else if (Constants.OP_SHUTDOWN.equals(operation)) {
+			testShutdown(res);
+		} else if (Constants.OP_SHUTDOWNNOW.equals(operation)) {
+			testShutdownNow(res);
+		}
 
-  }
+	}
 
-  public void testAwaitTermination(HttpServletResponse res) {
-    boolean passed = false;
-    try {
-      mes.awaitTermination(10, TimeUnit.SECONDS);
-    } catch (IllegalStateException e) { // what expected.
-      passed = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("+++ kick 1");
-    returnMsg(res, passed);
-  }
+	public void testAwaitTermination(HttpServletResponse res) {
+		boolean passed = false;
+		try {
+			mes.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (IllegalStateException e) { // what expected.
+			passed = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("+++ kick 1");
+		returnMsg(res, passed);
+	}
 
-  public void testIsShutdown(HttpServletResponse res) {
-    boolean passed = false;
+	public void testIsShutdown(HttpServletResponse res) {
+		boolean passed = false;
 
-    try {
-      mes.isShutdown();
-    } catch (IllegalStateException e) { // what expected
-      passed = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("+++ kick 2");
-    returnMsg(res, passed);
-  }
+		try {
+			mes.isShutdown();
+		} catch (IllegalStateException e) { // what expected
+			passed = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("+++ kick 2");
+		returnMsg(res, passed);
+	}
 
-  public void testIsTerminated(HttpServletResponse res) {
-    boolean passed = false;
-    try {
-      mes.isTerminated();
-    } catch (IllegalStateException e) { // what expected
-      passed = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("+++ kick 3");
-    returnMsg(res, passed);
-  }
+	public void testIsTerminated(HttpServletResponse res) {
+		boolean passed = false;
+		try {
+			mes.isTerminated();
+		} catch (IllegalStateException e) { // what expected
+			passed = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("+++ kick 3");
+		returnMsg(res, passed);
+	}
 
-  public void testShutdown(HttpServletResponse res) {
-    boolean passed = false;
-    try {
-      mes.shutdown();
-    } catch (IllegalStateException e) { // what expected
-      passed = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("+++ kick 4");
-    returnMsg(res, passed);
-  }
+	public void testShutdown(HttpServletResponse res) {
+		boolean passed = false;
+		try {
+			mes.shutdown();
+		} catch (IllegalStateException e) { // what expected
+			passed = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("+++ kick 4");
+		returnMsg(res, passed);
+	}
 
-  public void testShutdownNow(HttpServletResponse res) {
-    boolean passed = false;
-    try {
-      mes.shutdownNow();
-    } catch (IllegalStateException e) { // what expected
-      passed = true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("+++ kick 5");
-    returnMsg(res, passed);
-  }
+	public void testShutdownNow(HttpServletResponse res) {
+		boolean passed = false;
+		try {
+			mes.shutdownNow();
+		} catch (IllegalStateException e) { // what expected
+			passed = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("+++ kick 5");
+		returnMsg(res, passed);
+	}
 
-  private void returnMsg(HttpServletResponse res, boolean passed) {
-    if (passed) {
-      print(res, Constants.SUCCESSMESSAGE);
-    } else {
-      print(res, Constants.FAILMESSAGE);
-    }
-  }
+	private void returnMsg(HttpServletResponse res, boolean passed) {
+		if (passed) {
+			print(res, Constants.SUCCESSMESSAGE);
+		} else {
+			print(res, Constants.FAILMESSAGE);
+		}
+	}
 
-  private void print(HttpServletResponse res, String msg) {
-    PrintWriter pw = null;
-    try {
-      pw = res.getWriter();
-      pw.print(msg);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      pw.close();
-    }
-  }
+	private void print(HttpServletResponse res, String msg) {
+		PrintWriter pw = null;
+		try {
+			pw = res.getWriter();
+			pw.print(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			pw.close();
+		}
+	}
 }

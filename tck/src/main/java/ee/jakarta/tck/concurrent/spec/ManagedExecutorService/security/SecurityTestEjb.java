@@ -18,7 +18,7 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.security;
 
 public class SecurityTestEjb implements SecurityTestRemote {
 
-  public String managerMethod1() {
-    return SecurityTestRemote.MANAGERMETHOD1_RETURN_STR;
-  }
+	public String managerMethod1() {
+		return SecurityTestRemote.MANAGERMETHOD1_RETURN_STR;
+	}
 }

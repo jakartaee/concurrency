@@ -18,17 +18,17 @@ package jakarta.enterprise.concurrent.api.common.counter;
 
 public class CounterSingleton implements CounterRemote {
 
-    private int count = 0;
+	private int count = 0;
 
-    public void inc() {
-	count++;
-    }
+	public void inc() {
+		count++;
+	}
 
-    public int getCount() {
-	return count;
-    }
+	public int getCount() {
+		return count;
+	}
 
-    public void reset() {
-	count = 0;
-    }
+	public void reset() {
+		count = 0;
+	}
 }

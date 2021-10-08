@@ -17,5 +17,5 @@
 package jakarta.enterprise.concurrent.api.common.managedTaskListener;
 
 public enum ListenerEvent {
-  SUBMITTED, STARTING, TASK_RUN, DONE, ABORTED;
+	SUBMITTED, STARTING, TASK_RUN, DONE, ABORTED;
 }

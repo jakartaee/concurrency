@@ -23,7 +23,7 @@ import jakarta.ejb.Stateless;
 @Stateless
 public class LimitedBean implements LimitedInterface {
 
-  public String doSomething() {
-    return "success";
-  }
+	public String doSomething() {
+		return "success";
+	}
 }

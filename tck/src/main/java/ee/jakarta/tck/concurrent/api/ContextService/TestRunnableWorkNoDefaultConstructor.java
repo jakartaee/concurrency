@@ -16,23 +16,22 @@
 
 package jakarta.enterprise.concurrent.api.ContextService;
 
-public class TestRunnableWorkNoDefaultConstructor
-    implements Runnable, TestWorkInterface {
+public class TestRunnableWorkNoDefaultConstructor implements Runnable, TestWorkInterface {
 
-  private TestRunnableWorkNoDefaultConstructor(String s) {
+	private TestRunnableWorkNoDefaultConstructor(String s) {
 
-  }
+	}
 
-  public static TestRunnableWorkNoDefaultConstructor getInstance() {
-    return new TestRunnableWorkNoDefaultConstructor("test");
-  }
+	public static TestRunnableWorkNoDefaultConstructor getInstance() {
+		return new TestRunnableWorkNoDefaultConstructor("test");
+	}
 
-  @Override
-  public void run() {
-  }
+	@Override
+	public void run() {
+	}
 
-  @Override
-  public String doSomeWork() {
-    return null;
-  }
+	@Override
+	public String doSomeWork() {
+		return null;
+	}
 }

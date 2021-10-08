@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,8 +19,7 @@ package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servl
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
-import com.sun.ts.lib.util.BASE64Decoder;
+import java.util.Base64;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,21 +27,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/TestServlet")
 public class TestServlet extends HttpServlet {
 
-  @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    BASE64Decoder decoder = new BASE64Decoder();
-    byte[] proxyAsBytes = decoder.decodeBuffer(req.getParameter("proxy"));
-    ObjectInputStream in = new ObjectInputStream(
-        new ByteArrayInputStream(proxyAsBytes));
-    try {
-      Object proxy = in.readObject();
-      resp.getWriter().write(((TestWorkInterface) proxy).doSomeWork());
-    } catch (Exception e) {
-      throw new ServletException(e);
-    }
-  }
+	@Override
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		byte[] proxyAsBytes = Base64.getDecoder().decode(req.getParameter("proxy"));
+		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(proxyAsBytes));
+		try {
+			Object proxy = in.readObject();
+			resp.getWriter().write(((TestWorkInterface) proxy).doSomeWork());
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+	}
 }

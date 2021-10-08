@@ -18,9 +18,9 @@ package jakarta.enterprise.concurrent.api.common.counter;
 
 public interface CounterRemote {
 
-    public void inc();
+	public void inc();
 
-    public int getCount();
+	public int getCount();
 
-    public void reset();
+	public void reset();
 }

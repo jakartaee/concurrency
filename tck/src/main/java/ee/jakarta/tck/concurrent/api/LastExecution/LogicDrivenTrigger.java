@@ -22,6 +22,7 @@ import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 /**
  * A trigger that driven by test logic. This trigger is used for test the logic
@@ -32,124 +33,111 @@ import jakarta.enterprise.concurrent.Trigger;
  */
 public class LogicDrivenTrigger implements Trigger {
 
-  private long delta;
+	private static final TestLogger log = TestLogger.get(LogicDrivenTrigger.class);
 
-  private String testName;
+	private long delta;
 
-  private boolean moreThanTwice = false;
+	private String testName;
 
-  private Date startTime;
+	private boolean moreThanTwice = false;
 
-  private static final long TIME_COMPARE_INACCURACY = 2 * 1000;
+	private Date startTime;
 
-  public static final long LASTEXECUTIONGETRUNNINGTIMETEST_SLEEP_TIME = 5
-      * 1000;
+	private static final long TIME_COMPARE_INACCURACY = 2 * 1000;
 
-  public static final int RIGHT_COUNT = 2;
+	public static final long LASTEXECUTIONGETRUNNINGTIMETEST_SLEEP_TIME = 5 * 1000;
 
-  public static final int WRONG_COUNT = 1;
+	public static final int RIGHT_COUNT = 2;
 
-  public static final String TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST = "lastExecutionGetIdentityNameTest";
+	public static final int WRONG_COUNT = 1;
 
-  public static final String TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE = "lastExecutionGetResultTest_runnable";
+	public static final String TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST = "lastExecutionGetIdentityNameTest";
 
-  public static final String TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE = "lastExecutionGetResultTest_callable";
+	public static final String TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE = "lastExecutionGetResultTest_runnable";
 
-  public static final String TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST = "lastExecutionGetRunningTimeTest";
+	public static final String TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE = "lastExecutionGetResultTest_callable";
 
-  public LogicDrivenTrigger(long delta, String testName) {
-    this.delta = delta;
-    this.testName = testName;
-    this.startTime = new Date();
-  }
+	public static final String TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST = "lastExecutionGetRunningTimeTest";
 
-  private String getErrStr4NotEqual(String testName, Object expected,
-      Object real) {
-    String result = testName + "failed, ";
-    result += "expected " + expected + ",";
-    result += "but got " + real;
-    return result;
-  }
+	public LogicDrivenTrigger(long delta, String testName) {
+		this.delta = delta;
+		this.testName = testName;
+		this.startTime = new Date();
+	}
 
-  private boolean validateDateTimeEquals(Date time1, Date time2) {
-    long diff = time1.getTime() - time2.getTime();
+	private String getErrStr4NotEqual(String testName, Object expected, Object real) {
+		String result = testName + "failed, ";
+		result += "expected " + expected + ",";
+		result += "but got " + real;
+		return result;
+	}
 
-    if (Math.abs(diff) < TIME_COMPARE_INACCURACY) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+	private boolean validateDateTimeEquals(Date time1, Date time2) {
+		long diff = time1.getTime() - time2.getTime();
 
-  public Date getNextRunTime(LastExecution lastExecutionInfo,
-      Date taskScheduledTime) {
-    if (lastExecutionInfo == null) {
-      return new Date();
-    } else {
-      // we do all test logic check here
-      if (!moreThanTwice) {
-        if (TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST.equals(testName)) {
-          if (!Client.IDENTITY_NAME_TEST_ID
-              .equals(lastExecutionInfo.getIdentityName())) {
-            TestUtil.logErr(
-                getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST,
-                    Client.IDENTITY_NAME_TEST_ID,
-                    lastExecutionInfo.getIdentityName()));
-            return null;
-          }
+		if (Math.abs(diff) < TIME_COMPARE_INACCURACY) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-        } else if (TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE
-            .equals(testName)) {
-          if (lastExecutionInfo.getResult() != null) {
-            TestUtil.logErr(getErrStr4NotEqual(
-                TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE, null,
-                lastExecutionInfo.getResult()));
-            return null;
-          }
+	public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+		if (lastExecutionInfo == null) {
+			return new Date();
+		} else {
+			// we do all test logic check here
+			if (!moreThanTwice) {
+				if (TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST.equals(testName)) {
+					if (!LastExecutionTests.IDENTITY_NAME_TEST_ID.equals(lastExecutionInfo.getIdentityName())) {
+						log.warning(getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST,
+								LastExecutionTests.IDENTITY_NAME_TEST_ID, lastExecutionInfo.getIdentityName()));
+						return null;
+					}
 
-        } else if (TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE
-            .equals(testName)) {
-          if (!Integer.valueOf(1).equals(lastExecutionInfo.getResult())) {
-            TestUtil.logErr(getErrStr4NotEqual(
-                TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE, 1,
-                lastExecutionInfo.getResult()));
-            return null;
-          }
+				} else if (TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE.equals(testName)) {
+					if (lastExecutionInfo.getResult() != null) {
+						log.warning(getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE, null,
+								lastExecutionInfo.getResult()));
+						return null;
+					}
 
-        } else if (TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST.equals(testName)) {
-          if (!validateDateTimeEquals(this.startTime,
-              lastExecutionInfo.getScheduledStart())) {
-            TestUtil.logErr(
-                getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST,
-                    this.startTime, lastExecutionInfo.getScheduledStart()));
-            return null;
-          }
-          if (lastExecutionInfo.getScheduledStart()
-              .getTime() > lastExecutionInfo.getRunStart().getTime()) {
-            TestUtil.logErr(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST
-                + "failed, getRunStart time should not be earlier than getScheduledStart");
-            return null;
-          }
-          if ((lastExecutionInfo.getRunEnd().getTime()
-              - lastExecutionInfo.getRunStart()
-                  .getTime()) < LASTEXECUTIONGETRUNNINGTIMETEST_SLEEP_TIME) {
-            TestUtil.logErr(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST
-                + "failed, the difference between getRunEnd and getRunStart"
-                + "is shorter than the real running time");
-            return null;
-          }
-        }
-        moreThanTwice = true;
-        return new Date(new Date().getTime() + delta);
+				} else if (TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE.equals(testName)) {
+					if (!Integer.valueOf(1).equals(lastExecutionInfo.getResult())) {
+						log.warning(getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE, 1,
+								lastExecutionInfo.getResult()));
+						return null;
+					}
 
-      } else {
-        return null;
-      }
-    }
-  }
+				} else if (TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST.equals(testName)) {
+					if (!validateDateTimeEquals(this.startTime, lastExecutionInfo.getScheduledStart())) {
+						log.warning(getErrStr4NotEqual(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST, this.startTime,
+								lastExecutionInfo.getScheduledStart()));
+						return null;
+					}
+					if (lastExecutionInfo.getScheduledStart().getTime() > lastExecutionInfo.getRunStart().getTime()) {
+						log.warning(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST
+								+ "failed, getRunStart time should not be earlier than getScheduledStart");
+						return null;
+					}
+					if ((lastExecutionInfo.getRunEnd().getTime()
+							- lastExecutionInfo.getRunStart().getTime()) < LASTEXECUTIONGETRUNNINGTIMETEST_SLEEP_TIME) {
+						log.warning(TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST
+								+ "failed, the difference between getRunEnd and getRunStart"
+								+ "is shorter than the real running time");
+						return null;
+					}
+				}
+				moreThanTwice = true;
+				return new Date(new Date().getTime() + delta);
 
-  public boolean skipRun(LastExecution lastExecutionInfo,
-      Date scheduledRunTime) {
-    return false;
-  }
+			} else {
+				return null;
+			}
+		}
+	}
+
+	public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+		return false;
+	}
 }

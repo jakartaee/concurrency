@@ -18,7 +18,7 @@ package jakarta.enterprise.concurrent.api.ManageableThread;
 
 public class TestRunnableWork implements Runnable {
 
-  public void run() {
+	public void run() {
 
-  }
+	}
 }

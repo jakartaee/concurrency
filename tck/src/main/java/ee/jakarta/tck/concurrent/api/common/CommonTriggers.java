@@ -23,83 +23,77 @@ import jakarta.enterprise.concurrent.Trigger;
 
 public class CommonTriggers {
 
-  /**
-   * A trigger that only run once.
-   */
-  public static class OnceTrigger implements Trigger {
-    public Date getNextRunTime(LastExecution lastExecutionInfo,
-        Date taskScheduledTime) {
-      if (lastExecutionInfo != null) {
-        return null;
-      }
-      return new Date();
-    }
+	/**
+	 * A trigger that only run once.
+	 */
+	public static class OnceTrigger implements Trigger {
+		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+			if (lastExecutionInfo != null) {
+				return null;
+			}
+			return new Date();
+		}
 
-    public boolean skipRun(LastExecution lastExecutionInfo,
-        Date scheduledRunTime) {
-      return false;
-    }
-  }
+		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+			return false;
+		}
+	}
 
-  /**
-   * A trigger that will skip.
-   */
-  public static class OnceTriggerDelaySkip implements Trigger {
+	/**
+	 * A trigger that will skip.
+	 */
+	public static class OnceTriggerDelaySkip implements Trigger {
 
-    public OnceTriggerDelaySkip(long argDelay) {
-      delay = argDelay;
-    }
+		public OnceTriggerDelaySkip(long argDelay) {
+			delay = argDelay;
+		}
 
-    private long delay;
+		private long delay;
 
-    public Date getNextRunTime(LastExecution lastExecutionInfo,
-        Date taskScheduledTime) {
-      if (lastExecutionInfo != null) {
-        return null;
-      }
-      return new Date(new Date().getTime() + delay);
-    }
+		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+			if (lastExecutionInfo != null) {
+				return null;
+			}
+			return new Date(new Date().getTime() + delay);
+		}
 
-    public boolean skipRun(LastExecution lastExecutionInfo,
-        Date scheduledRunTime) {
-      return true;
-    }
-  }
+		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+			return true;
+		}
+	}
 
-  /**
-   * A fixed-rate trigger
-   */
-  public static class TriggerFixedRate implements Trigger {
-    private Date startTime;
+	/**
+	 * A fixed-rate trigger
+	 */
+	public static class TriggerFixedRate implements Trigger {
+		private Date startTime;
 
-    private long delta;
+		private long delta;
 
-    private int executionCount = 0;
+		private int executionCount = 0;
 
-    private static final int executionCountLimit = 10;
+		private static final int executionCountLimit = 10;
 
-    public TriggerFixedRate(Date startTime, long delta) {
-      this.startTime = startTime;
-      this.delta = delta;
-    }
+		public TriggerFixedRate(Date startTime, long delta) {
+			this.startTime = startTime;
+			this.delta = delta;
+		}
 
-    public Date getNextRunTime(LastExecution lastExecutionInfo,
-        Date taskScheduledTime) {
-      executionCount++;
-      if (executionCount > executionCountLimit) {
-        return null;
-      }
+		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+			executionCount++;
+			if (executionCount > executionCountLimit) {
+				return null;
+			}
 
-      if (lastExecutionInfo == null) {
-        return new Date(startTime.getTime() + delta);
-      }
-      return new Date(lastExecutionInfo.getScheduledStart().getTime() + delta);
-    }
+			if (lastExecutionInfo == null) {
+				return new Date(startTime.getTime() + delta);
+			}
+			return new Date(lastExecutionInfo.getScheduledStart().getTime() + delta);
+		}
 
-    public boolean skipRun(LastExecution lastExecutionInfo,
-        Date scheduledRunTime) {
-      return false;
-    }
-  }
+		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+			return false;
+		}
+	}
 
 }

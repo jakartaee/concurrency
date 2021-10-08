@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,72 +32,71 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/testServlet")
 public class TestServlet extends HttpServlet {
 
-  @Resource(lookup = "java:comp/DefaultManagedThreadFactory")
-  private ManagedThreadFactory factory;
+	@Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+	private ManagedThreadFactory factory;
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doPost(req, res);
-  }
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doPost(req, res);
+	}
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    PrintWriter out = null;
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = null;
 
-    try {
-      res.setContentType("text/plain");
-      out = res.getWriter();
+		try {
+			res.setContentType("text/plain");
+			out = res.getWriter();
 
-      InitialContext context = new InitialContext();
+			InitialContext context = new InitialContext();
 
-      String opName = req.getParameter(Client.SERVLET_OP_ATTR_NAME);
-      if (Client.SERVLET_OP_INTERRUPTTHREADAPITEST.equals(opName)) {
-        CounterRunnable task = new CounterRunnable();
-        Thread thread = factory.newThread(task);
-        thread.start();
-        thread.interrupt();
-        Util.waitTillThreadFinish(thread);
+			String opName = req.getParameter(APITests.SERVLET_OP_ATTR_NAME);
+			if (APITests.SERVLET_OP_INTERRUPTTHREADAPITEST.equals(opName)) {
+				CounterRunnable task = new CounterRunnable();
+				Thread thread = factory.newThread(task);
+				thread.start();
+				thread.interrupt();
+				Util.waitTillThreadFinish(thread);
 
-        Util.assertEquals(0, task.getCount());
-      } else {
-        CounterRunnable task = new CounterRunnable();
-        Thread thread = factory.newThread(task);
-        if (!(thread instanceof ManageableThread)) {
-          throw new RuntimeException(
-              "The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
-        }
-      }
+				Util.assertEquals(0, task.getCount());
+			} else {
+				CounterRunnable task = new CounterRunnable();
+				Thread thread = factory.newThread(task);
+				if (!(thread instanceof ManageableThread)) {
+					throw new RuntimeException(
+							"The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
+				}
+			}
 
-      out.println(Util.SERVLET_RETURN_SUCCESS);
-    } catch (Exception e) {
-      if (out != null) {
-        out.println(Util.SERVLET_RETURN_FAIL);
-        out.println(e);
-      }
-    } finally {
-      if (null != out) {
-        out.close();
-      }
-    }
-  }
+			out.println(Util.SERVLET_RETURN_SUCCESS);
+		} catch (Exception e) {
+			if (out != null) {
+				out.println(Util.SERVLET_RETURN_FAIL);
+				out.println(e);
+			}
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
 
-  public static class CounterRunnable implements Runnable {
-    private volatile int count = 0;
+	public static class CounterRunnable implements Runnable {
+		private volatile int count = 0;
 
-    public int getCount() {
-      return count;
-    }
+		public int getCount() {
+			return count;
+		}
 
-    public void run() {
-      try {
-        Thread.sleep(Util.COMMON_CHECK_INTERVAL);
-        count++;
-      } catch (InterruptedException ignore) {
-        return;
-      }
-    }
-  }
+		public void run() {
+			try {
+				Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+				count++;
+			} catch (InterruptedException ignore) {
+				return;
+			}
+		}
+	}
 }

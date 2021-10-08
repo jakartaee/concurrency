@@ -20,9 +20,9 @@ import java.util.concurrent.Callable;
 
 public class CounterCallableTask implements Callable {
 
-  public Integer call() {
-    StaticCounter.inc();
-    return StaticCounter.getCount();
-  }
+	public Integer call() {
+		StaticCounter.inc();
+		return StaticCounter.getCount();
+	}
 
 }

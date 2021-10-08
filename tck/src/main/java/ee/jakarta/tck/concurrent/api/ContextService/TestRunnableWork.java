@@ -18,11 +18,11 @@ package jakarta.enterprise.concurrent.api.ContextService;
 
 public class TestRunnableWork implements Runnable, TestWorkInterface {
 
-  public void run() {
+	public void run() {
 
-  }
+	}
 
-  public String doSomeWork() {
-    return "pass";
-  }
+	public String doSomeWork() {
+		return "pass";
+	}
 }

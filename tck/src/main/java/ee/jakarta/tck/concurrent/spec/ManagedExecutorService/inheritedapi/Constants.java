@@ -17,20 +17,20 @@
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
 
 final public class Constants {
-  private Constants() {
-  };
+	private Constants() {
+	};
 
-  public static final String CONTEXT_PATH = "/concurrency_spec_managedExecutorService_inheritedapi_web";
+	public static final String CONTEXT_PATH = "/concurrency_spec_managedExecutorService_inheritedapi_web";
 
-  public static final String HOST_KEY = "webServerHost";
+	public static final String HOST_KEY = "webServerHost";
 
-  public static final String PORT_KEY = "webServerPort";
+	public static final String PORT_KEY = "webServerPort";
 
-  public static final String COMMON_SERVLET_NAME = "common";
+	public static final String COMMON_SERVLET_NAME = "common";
 
-  public static final String COMMON_SERVLET_URI = "/common";
+	public static final String COMMON_SERVLET_URI = "/common";
 
-  public static final String TASK_RAN = "task ran";
+	public static final String TASK_RAN = "task ran";
 
-  public static final int MAX_WAIT_TIME = 3; // (s)
+	public static final int MAX_WAIT_TIME = 3; // (s)
 }

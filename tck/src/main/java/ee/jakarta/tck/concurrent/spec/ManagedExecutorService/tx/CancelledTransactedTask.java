@@ -24,77 +24,75 @@ import jakarta.enterprise.concurrent.util.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 public class CancelledTransactedTask implements Runnable {
-  private volatile boolean runFlag;
+	private volatile boolean runFlag;
 
-  private volatile boolean transactionBegan;
+	private volatile boolean transactionBegan;
 
-  private volatile boolean cancelled;
+	private volatile boolean cancelled;
 
-  private final String username, password, sqlTemplate;
+	private final String username, password, sqlTemplate;
 
-  public CancelledTransactedTask(String username, String password,
-      String sqlTemplate) {
-    this.username = username;
-    this.password = password;
-    this.sqlTemplate = sqlTemplate;
-  }
+	public CancelledTransactedTask(String username, String password, String sqlTemplate) {
+		this.username = username;
+		this.password = password;
+		this.sqlTemplate = sqlTemplate;
+	}
 
-  public void resume() {
-    runFlag = true;
-  }
+	public void resume() {
+		runFlag = true;
+	}
 
-  public void cancelTask() {
-    cancelled = true;
-  }
+	public void cancelTask() {
+		cancelled = true;
+	}
 
-  public boolean transactionBegin() {
-    return transactionBegan;
-  }
+	public boolean transactionBegin() {
+		return transactionBegan;
+	}
 
-  @Override
-  public void run() {
-    Connection conn = Util.getConnection(false, username, password);
-    UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
-    if (ut == null) {
-      // error if no transaction can be obtained in task.
-      throw new RuntimeException(
-          "didn't get user transaction inside the submitted task.");
-    } else {
-      PreparedStatement pStmt = null;
-      try {
-        ut.begin();
-        transactionBegan = true;
-        while (!runFlag) {
-          TestUtil.sleep(500);
-        }
-        pStmt = conn.prepareStatement(sqlTemplate);
-        String sTypeDesc = "Type-Cancelled-99";
-        int newType = 991;
-        pStmt.setInt(1, newType);
-        pStmt.setString(2, sTypeDesc);
-        pStmt.executeUpdate();
-        // check if it is cancelled here
-        if (cancelled) {
-          ut.rollback();
-          return;
-        }
-        ut.commit();
-      } catch (Exception e) {
-        try {
-          ut.rollback();
-        } catch (Exception e1) {
-          e1.printStackTrace();
-        }
-        e.printStackTrace();
-      } finally {
-        try {
-          pStmt.close();
-          conn.close();
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }
-  }
+	@Override
+	public void run() {
+		Connection conn = Util.getConnection(false, username, password);
+		UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
+		if (ut == null) {
+			// error if no transaction can be obtained in task.
+			throw new RuntimeException("didn't get user transaction inside the submitted task.");
+		} else {
+			PreparedStatement pStmt = null;
+			try {
+				ut.begin();
+				transactionBegan = true;
+				while (!runFlag) {
+					TestUtil.sleep(500);
+				}
+				pStmt = conn.prepareStatement(sqlTemplate);
+				String sTypeDesc = "Type-Cancelled-99";
+				int newType = 991;
+				pStmt.setInt(1, newType);
+				pStmt.setString(2, sTypeDesc);
+				pStmt.executeUpdate();
+				// check if it is cancelled here
+				if (cancelled) {
+					ut.rollback();
+					return;
+				}
+				ut.commit();
+			} catch (Exception e) {
+				try {
+					ut.rollback();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			} finally {
+				try {
+					pStmt.close();
+					conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 }

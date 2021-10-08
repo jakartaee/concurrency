@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,53 +26,49 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 public class CounterServlet extends HttpServlet {
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doPost(req, res);
-  }
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doPost(req, res);
+	}
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    PrintWriter out = null;
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = null;
 
-    try {
-      res.setContentType("text/plain");
-      out = res.getWriter();
+		try {
+			res.setContentType("text/plain");
+			out = res.getWriter();
 
-      String opName = req
-          .getParameter(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME);
-      if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_GETCOUNT.equals(opName)) {
-        out.println(StaticCounter.getCount());
-      } else if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_INC.equals(opName)) {
-        StaticCounter.inc();
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-      } else if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_RESET.equals(opName)) {
-        StaticCounter.reset();
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-      } else {
-        setupTest(req, res);
-        doTest(req, res);
-      }
-    } catch (Exception e) {
-      if (out != null) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_FAIL);
-        out.println(e);
-      }
-    } finally {
-      if (null != out) {
-        out.close();
-      }
-    }
-  }
+			String opName = req.getParameter(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME);
+			if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_GETCOUNT.equals(opName)) {
+				out.println(StaticCounter.getCount());
+			} else if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_INC.equals(opName)) {
+				StaticCounter.inc();
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+			} else if (ConcurrencyTestUtils.SERVLET_OP_COUNTER_RESET.equals(opName)) {
+				StaticCounter.reset();
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+			} else {
+				setupTest(req, res);
+				doTest(req, res);
+			}
+		} catch (Exception e) {
+			if (out != null) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_FAIL);
+				out.println(e);
+			}
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
 
-  protected void doTest(HttpServletRequest req, HttpServletResponse res)
-      throws Exception {
-  }
+	protected void doTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	}
 
-  protected void setupTest(HttpServletRequest req, HttpServletResponse res)
-      throws Exception {
-  }
+	protected void setupTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	}
 
 }

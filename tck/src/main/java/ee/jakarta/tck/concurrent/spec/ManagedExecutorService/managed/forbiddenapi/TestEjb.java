@@ -24,44 +24,44 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
-  @Resource
-  private ManagedExecutorService mes;
+	@Resource
+	private ManagedExecutorService mes;
 
-  public void testAwaitTermination() {
-    try {
-      mes.awaitTermination(10, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalStateException e) {
-    }
-  }
+	public void testAwaitTermination() {
+		try {
+			mes.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalStateException e) {
+		}
+	}
 
-  public void testIsShutdown() {
-    try {
-      mes.isShutdown();
-    } catch (IllegalStateException e) {
-    }
-  }
+	public void testIsShutdown() {
+		try {
+			mes.isShutdown();
+		} catch (IllegalStateException e) {
+		}
+	}
 
-  public void testIsTerminated() {
-    try {
-      mes.isTerminated();
-    } catch (IllegalStateException e) {
-    }
-  }
+	public void testIsTerminated() {
+		try {
+			mes.isTerminated();
+		} catch (IllegalStateException e) {
+		}
+	}
 
-  public void testShutdown() {
-    try {
-      mes.shutdown();
-    } catch (IllegalStateException e) {
-    }
-  }
+	public void testShutdown() {
+		try {
+			mes.shutdown();
+		} catch (IllegalStateException e) {
+		}
+	}
 
-  public void testShutdownNow() {
-    try {
-      mes.shutdownNow();
-    } catch (IllegalStateException e) {
-    }
-  }
+	public void testShutdownNow() {
+		try {
+			mes.shutdownNow();
+		} catch (IllegalStateException e) {
+		}
+	}
 
 }

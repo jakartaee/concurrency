@@ -19,7 +19,7 @@ package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servl
 import java.io.Serializable;
 
 public interface TestWorkInterface extends Runnable, Serializable {
-  public String doSomeWork();
+	public String doSomeWork();
 
-  public String getResult();
+	public String getResult();
 }

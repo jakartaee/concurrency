@@ -20,21 +20,21 @@ import java.io.Serializable;
 import java.sql.Connection;
 
 public interface TestWorkInterface extends Runnable, Serializable {
-  public void doSomeWork();
+	public void doSomeWork();
 
-  public String getResult();
+	public String getResult();
 
-  public void setConnection(Connection conn);
+	public void setConnection(Connection conn);
 
-  public void setSQLTemplate(String sqlTemplate);
+	public void setSQLTemplate(String sqlTemplate);
 
-  public void needBeginTx(boolean beginTx);
+	public void needBeginTx(boolean beginTx);
 
-  public void needCommit(boolean commit);
+	public void needCommit(boolean commit);
 
-  public void needRollback(boolean rollback);
+	public void needRollback(boolean rollback);
 
-  public void setUserName(String name);
+	public void setUserName(String name);
 
-  public void setPassword(String pass);
+	public void setPassword(String pass);
 }

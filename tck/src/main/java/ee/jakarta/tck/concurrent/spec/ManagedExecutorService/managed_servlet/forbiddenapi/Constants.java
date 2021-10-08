@@ -17,27 +17,27 @@
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
 
 public class Constants {
-  private Constants() {
+	private Constants() {
 
-  }
+	}
 
-  public static final String SERVLET_TEST_NAME = "test";
+	public static final String SERVLET_TEST_NAME = "test";
 
-  public static final String SERVLET_TEST_URL = "/test";
+	public static final String SERVLET_TEST_URL = "/test";
 
-  public static final String OP_NAME = "opts";
+	public static final String OP_NAME = "opts";
 
-  public static final String OP_AWAITTERMINATION = "OP_AwaitTermination";
+	public static final String OP_AWAITTERMINATION = "OP_AwaitTermination";
 
-  public static final String OP_ISSHUTDOWN = "OP_IsShutdown";
+	public static final String OP_ISSHUTDOWN = "OP_IsShutdown";
 
-  public static final String OP_ISTERMINATED = "OP_IsTerminated";
+	public static final String OP_ISTERMINATED = "OP_IsTerminated";
 
-  public static final String OP_SHUTDOWN = "OP_Shutdown";
+	public static final String OP_SHUTDOWN = "OP_Shutdown";
 
-  public static final String OP_SHUTDOWNNOW = "OP_ShutdownNOW";
+	public static final String OP_SHUTDOWNNOW = "OP_ShutdownNOW";
 
-  public static final String SUCCESSMESSAGE = "Successfull!";
+	public static final String SUCCESSMESSAGE = "Successfull!";
 
-  public static final String FAILMESSAGE = "Fail!";
+	public static final String FAILMESSAGE = "Fail!";
 }

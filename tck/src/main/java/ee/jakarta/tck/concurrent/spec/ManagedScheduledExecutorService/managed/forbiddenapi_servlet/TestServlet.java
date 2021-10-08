@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,73 +28,66 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/testServlet")
 public class TestServlet extends CounterServlet {
 
-  private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
+	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-  protected void setupTest(HttpServletRequest req, HttpServletResponse res)
-      throws Exception {
-    StaticCounter.reset();
-  }
+	protected void setupTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		StaticCounter.reset();
+	}
 
-  protected void doTest(HttpServletRequest req, HttpServletResponse res)
-      throws Exception {
+	protected void doTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-    res.setContentType("text/plain");
-    PrintWriter out = res.getWriter();
-    String opName = req.getParameter(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME);
-    ManagedScheduledExecutorService service = ConcurrencyTestUtils
-        .getManagedScheduledExecutorService();
+		res.setContentType("text/plain");
+		PrintWriter out = res.getWriter();
+		String opName = req.getParameter(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME);
+		ManagedScheduledExecutorService service = ConcurrencyTestUtils.getManagedScheduledExecutorService();
 
-    if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTAWAITTERMINATION
-        .equals(opName)) {
-      try {
-        service.awaitTermination(10, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      } catch (IllegalStateException e) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-        return;
-      }
-      throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-    } else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISSHUTDOWN
-        .equals(opName)) {
-      try {
-        service.isShutdown();
-      } catch (IllegalStateException e) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-        return;
-      }
-      throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-    } else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISTERMINATED
-        .equals(opName)) {
-      try {
-        service.isTerminated();
-      } catch (IllegalStateException e) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-        return;
-      }
-      throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-    } else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWN
-        .equals(opName)) {
-      try {
-        service.shutdown();
-      } catch (IllegalStateException e) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-        return;
-      }
-      throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-    } else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWNNOW
-        .equals(opName)) {
-      try {
-        service.shutdownNow();
-      } catch (IllegalStateException e) {
-        out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-        return;
-      }
-      throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-    }
-  }
+		if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTAWAITTERMINATION.equals(opName)) {
+			try {
+				service.awaitTermination(10, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalStateException e) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+				return;
+			}
+			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISSHUTDOWN.equals(opName)) {
+			try {
+				service.isShutdown();
+			} catch (IllegalStateException e) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+				return;
+			}
+			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISTERMINATED.equals(opName)) {
+			try {
+				service.isTerminated();
+			} catch (IllegalStateException e) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+				return;
+			}
+			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWN.equals(opName)) {
+			try {
+				service.shutdown();
+			} catch (IllegalStateException e) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+				return;
+			}
+			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWNNOW.equals(opName)) {
+			try {
+				service.shutdownNow();
+			} catch (IllegalStateException e) {
+				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
+				return;
+			}
+			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		}
+	}
 
 }

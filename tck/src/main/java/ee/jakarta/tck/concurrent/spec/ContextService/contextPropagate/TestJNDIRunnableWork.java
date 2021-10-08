@@ -21,14 +21,14 @@ import javax.naming.NamingException;
 
 public class TestJNDIRunnableWork extends BaseTestRunnableWork {
 
-  @Override
-  protected String work() {
-    try {
-      InitialContext ctx = new InitialContext();
-      return (String) ctx.lookup("java:comp/env/myMessage");
+	@Override
+	protected String work() {
+		try {
+			InitialContext ctx = new InitialContext();
+			return (String) ctx.lookup("java:comp/env/myMessage");
 
-    } catch (NamingException e) {
-      throw new RuntimeException(e);
-    }
-  }
+		} catch (NamingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

@@ -21,18 +21,18 @@ import jakarta.ejb.Remote;
 @Remote
 public interface TestEjbRemote {
 
-  public void testApiSubmit();
+	public void testApiSubmit();
 
-  public void testApiExecute();
+	public void testApiExecute();
 
-  public void testApiInvokeAll();
+	public void testApiInvokeAll();
 
-  public void testApiInvokeAny();
+	public void testApiInvokeAny();
 
-  public void testApiSchedule();
+	public void testApiSchedule();
 
-  public void testApiScheduleAtFixedRate();
+	public void testApiScheduleAtFixedRate();
 
-  public void testApiScheduleWithFixedDelay();
+	public void testApiScheduleWithFixedDelay();
 
 }

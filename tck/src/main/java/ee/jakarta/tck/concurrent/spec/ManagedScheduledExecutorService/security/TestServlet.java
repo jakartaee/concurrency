@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,43 +32,40 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/testServlet")
 public class TestServlet extends HttpServlet {
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doPost(req, res);
-  }
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		doPost(req, res);
+	}
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    PrintWriter out = null;
-    req.login("javajoe", "javajoe");
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		PrintWriter out = null;
+		req.login("javajoe", "javajoe");
 
-    try {
-      res.setContentType("text/plain");
-      out = res.getWriter();
+		try {
+			res.setContentType("text/plain");
+			out = res.getWriter();
 
-      InitialContext context = new InitialContext();
-      ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-          .lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-      ScheduledFuture future = executorService.schedule(new SecurityTestTask(),
-          new CommonTriggers.OnceTrigger());
+			InitialContext context = new InitialContext();
+			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
+					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
+			ScheduledFuture future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
 
-      Object result = Util.waitForTaskComplete(future,
-          Util.COMMON_TASK_TIMEOUT_IN_SECOND);
-      Util.assertEquals(SecurityTestRemote.MANAGERMETHOD1_RETURN_STR, result);
-      out.println(Util.SERVLET_RETURN_SUCCESS);
-    } catch (Exception e) {
-      if (out != null) {
-        out.println(Util.SERVLET_RETURN_FAIL);
-        out.println(e);
-      }
-    } finally {
-      if (null != out) {
-        out.close();
-      }
-    }
-  }
+			Object result = Util.waitForTaskComplete(future, Util.COMMON_TASK_TIMEOUT_IN_SECOND);
+			Util.assertEquals(SecurityTestRemote.MANAGERMETHOD1_RETURN_STR, result);
+			out.println(Util.SERVLET_RETURN_SUCCESS);
+		} catch (Exception e) {
+			if (out != null) {
+				out.println(Util.SERVLET_RETURN_FAIL);
+				out.println(e);
+			}
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
 
 }

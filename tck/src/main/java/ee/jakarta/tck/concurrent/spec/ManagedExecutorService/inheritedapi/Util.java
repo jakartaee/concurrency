@@ -28,45 +28,47 @@ import javax.naming.NamingException;
 import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 public class Util {
 
-  private static final String MANAGED_EXECUTOR_SVC_JNDI_NAME = "java:comp/DefaultManagedExecutorService";
+	private static final TestLogger log = TestLogger.get(Util.class);
 
-  private Util() {
-  }
+	private static final String MANAGED_EXECUTOR_SVC_JNDI_NAME = "java:comp/DefaultManagedExecutorService";
 
-  public static <T> T waitForTaskComplete(final Future<T> future,
-      final int maxTaskWaitTime)
-      throws InterruptedException, ExecutionException, TimeoutException {
-    T result = null;
-    result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
-    return result;
-  }
+	private Util() {
+	}
 
-  public static ManagedExecutorService getManagedExecutorService() {
-    return lookup(MANAGED_EXECUTOR_SVC_JNDI_NAME);
-  }
+	public static <T> T waitForTaskComplete(final Future<T> future, final int maxTaskWaitTime)
+			throws InterruptedException, ExecutionException, TimeoutException {
+		T result = null;
+		result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
+		return result;
+	}
 
-  public static <T> T lookup(String jndiName) {
-    Context ctx = null;
-    T targetObject = null;
-    try {
-      ctx = new InitialContext();
-      targetObject = (T) ctx.lookup(jndiName);
-    } catch (Exception e) {
-    } finally {
-      try {
-        ctx.close();
-      } catch (NamingException e) {
-        TestUtil.logErr("failed to lookup resource.", e);
-      }
-    }
-    return targetObject;
-  }
+	public static ManagedExecutorService getManagedExecutorService() {
+		return lookup(MANAGED_EXECUTOR_SVC_JNDI_NAME);
+	}
 
-  public static String getUrl(String servletUri, String host, int port) {
-    return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
-  }
+	public static <T> T lookup(String jndiName) {
+		Context ctx = null;
+		T targetObject = null;
+		try {
+			ctx = new InitialContext();
+			targetObject = (T) ctx.lookup(jndiName);
+		} catch (Exception e) {
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
+				log.severe("failed to lookup resource.", e);
+			}
+		}
+		return targetObject;
+	}
+
+	public static String getUrl(String servletUri, String host, int port) {
+		return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
+	}
 
 }

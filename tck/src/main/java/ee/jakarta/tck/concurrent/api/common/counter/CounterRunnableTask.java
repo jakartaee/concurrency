@@ -20,32 +20,31 @@ import javax.naming.InitialContext;
 
 public class CounterRunnableTask implements Runnable {
 
-    private String countSingletionJndi = "";
-    private long sleepTime = 0;
+	private String countSingletionJndi = "";
+	private long sleepTime = 0;
 
-    public CounterRunnableTask(String countSingletionJndi) {
-	this.countSingletionJndi = countSingletionJndi;
-    }
-
-    public CounterRunnableTask(String countSingletionJndi, long sleepTime) {
-	this.countSingletionJndi = countSingletionJndi;
-	this.sleepTime = sleepTime;
-    }
-
-    public void run() {
-	try {
-	    if (sleepTime > 0) {
-		Thread.sleep(sleepTime);
-	    }
-
-	    InitialContext context = new InitialContext();
-	    CounterRemote counter = (CounterRemote) context
-		    .lookup(countSingletionJndi);
-	    counter.inc();
-
-	} catch (Exception e) {
-	    throw new RuntimeException(e);
+	public CounterRunnableTask(String countSingletionJndi) {
+		this.countSingletionJndi = countSingletionJndi;
 	}
 
-    }
+	public CounterRunnableTask(String countSingletionJndi, long sleepTime) {
+		this.countSingletionJndi = countSingletionJndi;
+		this.sleepTime = sleepTime;
+	}
+
+	public void run() {
+		try {
+			if (sleepTime > 0) {
+				Thread.sleep(sleepTime);
+			}
+
+			InitialContext context = new InitialContext();
+			CounterRemote counter = (CounterRemote) context.lookup(countSingletionJndi);
+			counter.inc();
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 }

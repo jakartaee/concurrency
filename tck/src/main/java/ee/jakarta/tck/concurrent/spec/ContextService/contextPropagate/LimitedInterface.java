@@ -17,5 +17,5 @@
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
 public interface LimitedInterface {
-  public String doSomething();
+	public String doSomething();
 }

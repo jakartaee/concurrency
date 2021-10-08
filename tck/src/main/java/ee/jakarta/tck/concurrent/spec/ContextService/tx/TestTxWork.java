@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,108 +23,109 @@ import java.sql.SQLException;
 
 import jakarta.transaction.UserTransaction;
 
+@SuppressWarnings("serial")
 public class TestTxWork implements TestWorkInterface, Serializable {
 
-  protected String result;
+	protected String result;
 
-  protected Connection con;
+	protected Connection con;
 
-  protected String sqlTemplate;
+	protected String sqlTemplate;
 
-  protected boolean beginTran = false;
+	protected boolean beginTran = false;
 
-  protected boolean commit = false;
+	protected boolean commit = false;
 
-  protected boolean rollback = false;
+	protected boolean rollback = false;
 
-  protected String userName;
+	protected String userName;
 
-  protected String password;
+	protected String password;
 
-  @Override
-  public void doSomeWork() {
-    UserTransaction ut = null;
+	@Override
+	public void doSomeWork() {
+		UserTransaction ut = null;
 
-    if (beginTran) {
-      try {
-        ut = Util.lookup("java:comp/UserTransaction");
-        ut.begin();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-    PreparedStatement pStmt = null;
-    try {
-      con = Util.getConnection(false, userName, password);
-      pStmt = con.prepareStatement(sqlTemplate);
-      String sTypeDesc = "Type-98";
-      int newType = 98;
-      pStmt.setInt(1, newType);
-      pStmt.setString(2, sTypeDesc);
-      pStmt.executeUpdate();
+		if (beginTran) {
+			try {
+				ut = Util.lookup("java:comp/UserTransaction");
+				ut.begin();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		PreparedStatement pStmt = null;
+		try {
+			con = Util.getConnection(false, userName, password);
+			pStmt = con.prepareStatement(sqlTemplate);
+			String sTypeDesc = "Type-98";
+			int newType = 98;
+			pStmt.setInt(1, newType);
+			pStmt.setString(2, sTypeDesc);
+			pStmt.executeUpdate();
 
-      if (commit) {
-        ut.commit();
-      }
+			if (commit) {
+				ut.commit();
+			}
 
-      if (rollback) {
-        ut.rollback();
-      }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        if (pStmt != null)
-          pStmt.close();
-        if (con != null)
-          con.close();
-      } catch (SQLException se) {
-      }
-    }
-  }
+			if (rollback) {
+				ut.rollback();
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (pStmt != null)
+					pStmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+	}
 
-  @Override
-  public String getResult() {
-    return result;
-  }
+	@Override
+	public String getResult() {
+		return result;
+	}
 
-  @Override
-  public void setConnection(Connection con) {
-    this.con = con;
-  }
+	@Override
+	public void setConnection(Connection con) {
+		this.con = con;
+	}
 
-  @Override
-  public void setSQLTemplate(String sqlTemplate) {
-    this.sqlTemplate = sqlTemplate;
-  }
+	@Override
+	public void setSQLTemplate(String sqlTemplate) {
+		this.sqlTemplate = sqlTemplate;
+	}
 
-  @Override
-  public void needBeginTx(boolean beginTx) {
-    this.beginTran = beginTx;
-  }
+	@Override
+	public void needBeginTx(boolean beginTx) {
+		this.beginTran = beginTx;
+	}
 
-  @Override
-  public void needCommit(boolean commit) {
-    this.commit = commit;
-  }
+	@Override
+	public void needCommit(boolean commit) {
+		this.commit = commit;
+	}
 
-  @Override
-  public void needRollback(boolean rollback) {
-    this.rollback = rollback;
-  }
+	@Override
+	public void needRollback(boolean rollback) {
+		this.rollback = rollback;
+	}
 
-  @Override
-  public void run() {
-    doSomeWork();
-  }
+	@Override
+	public void run() {
+		doSomeWork();
+	}
 
-  @Override
-  public void setUserName(String name) {
-    this.userName = name;
-  }
+	@Override
+	public void setUserName(String name) {
+		this.userName = name;
+	}
 
-  @Override
-  public void setPassword(String pass) {
-    this.password = pass;
-  }
+	@Override
+	public void setPassword(String pass) {
+		this.password = pass;
+	}
 }
