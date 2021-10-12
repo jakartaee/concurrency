@@ -15,7 +15,6 @@
  */
 package jakarta.enterprise.concurrent.spi;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -39,11 +38,6 @@ import java.util.Map;
  * the fully qualified name of a {@code ThreadContextProvider} implementation
  * that is provided within the JAR file.
  * <p>
- * {@code ThreadContextProvider} implementations can return a
- * {@link ThreadContextSnapshot} that is also {@link java.io.Serializable Serializable}
- * from the {@link #currentContext} and {@link #clearedContext} methods
- * to allow for {@code Serializable} contextual proxies.
- * <p>
  * The Jakarta EE Product Provider must use the
  * {@code ServiceLoader} to identify all available implementations of
  * {@code ThreadContextProvider} that can participate in thread context capture
@@ -56,9 +50,6 @@ import java.util.Map;
  *
  * @since 3.0
  */
-// TODO Should we include the second-to-last paragraph above allowing for captured context
-// to be serialized across JVMs? This might be useful for persistent timers/batch, but it is
-// also a lot of extra complexity that would be simpler to leave out.
 public interface ThreadContextProvider {
     /**
      * Captures from the current thread a snapshot of the provided thread context type.
@@ -96,21 +87,6 @@ public interface ThreadContextProvider {
      * @return immutable empty/default context of the provided type.
      */
     public ThreadContextSnapshot clearedContext(Map<String, String> props);
-
-    // Similar to previous TODO comment, consider if we really want to support
-    // serializable contextual proxies for third-party context types.
-    /**
-     * Deserializes a previously serialized {@link ThreadContextSnapshot}.
-     *
-     * @param bytes a {@code ThreadContextSnapshot} from this provider
-     *        that was serialized to an array of bytes by an
-     *        {@link java.io.ObjectOutputStream ObjectOutputStream}.
-     * @return immutable snapshot of the provided type of context, deserialized
-     *         from the byte array.
-     * @throws ClassNotFoundException if an error occurs during deserialization.
-     * @throws IOException if an error occurs during deserialization.
-     */
-    public ThreadContextSnapshot deserialize(byte[] bytes) throws ClassNotFoundException, IOException;
 
     /**
      * Returns a human readable identifier for the type of thread context that is

@@ -23,11 +23,6 @@ import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Map;
 
@@ -94,29 +89,6 @@ public class ThreadContextProviderTest {
         restorer.endContext();
 
         assertEquals(8, Thread.currentThread().getPriority());
-    }
-
-    @Test
-    public void testSerializeThreadContext() throws Exception {
-        ThreadContextProvider provider = new ThreadPriorityContextProvider();
-       
-        Thread.currentThread().setPriority(7);
-        ThreadContextSnapshot snapshot = provider.currentContext(Collections.emptyMap());
-
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bout);
-        out.writeObject(snapshot);
-        byte[] bytes = bout.toByteArray();
-        out.close();
-
-        Thread.currentThread().setPriority(6);
-
-        snapshot = provider.deserialize(bytes);
-        ThreadContextRestorer restorer = snapshot.begin();
-        assertEquals(7, Thread.currentThread().getPriority());
-        restorer.endContext();
-
-        assertEquals(6, Thread.currentThread().getPriority());
     }
 
     /**

@@ -18,13 +18,12 @@ package jakarta.enterprise.concurrent;
 
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
-import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * ThreadContextSnapshot and ThreadContexRestorer example from the specification.
  */
-public class ThreadPrioritySnapshot implements ThreadContextSnapshot, Serializable {
+public class ThreadPrioritySnapshot implements ThreadContextSnapshot {
     final int priority;
 
     ThreadPrioritySnapshot(int priority) {

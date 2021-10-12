@@ -20,9 +20,6 @@ import static org.junit.Assert.*;
 
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Map;
 
 /**
@@ -39,12 +36,5 @@ public class ThreadPriorityContextProvider implements ThreadContextProvider {
 
     public ThreadContextSnapshot clearedContext(Map<String, String> props) {
         return new ThreadPrioritySnapshot(Thread.NORM_PRIORITY);
-    }
-
-    public ThreadContextSnapshot deserialize(byte[] bytes)
-        throws ClassNotFoundException, IOException {
-        try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-            return (ThreadPrioritySnapshot) in.readObject();
-        }
     }
 }
