@@ -263,7 +263,9 @@ public interface ContextService {
    * @throws java.lang.IllegalArgumentException - if the {@code intf} argument
    * is null or the instance does not implement the specified
    * interface.
-   *
+   * @throws java.lang.UnsupportedOperationException - if the {@code intf}
+   * interface is {@link java.io.Serializable serializable}
+   * but a thread context type does not support serialization.
    */
   public <T> T createContextualProxy(T instance, Class<T> intf);
 
@@ -312,7 +314,9 @@ public interface ContextService {
    * @throws java.lang.IllegalArgumentException - if the {@code interfaces}
    * argument is null or the instance does not implement
    * all the specified interfaces.
-   *
+   * @throws java.lang.UnsupportedOperationException - if any of the {@code interfaces}
+   * are {@link java.io.Serializable serializable} but a thread context type
+   * does not support serialization.
    */
   public Object createContextualProxy(Object instance, Class<?>... interfaces);
 
@@ -405,6 +409,9 @@ public interface ContextService {
    *
    * @throws java.lang.IllegalArgumentException - if the {@code intf} argument
    * null or the instance does not implement the specified interface.
+   * @throws java.lang.UnsupportedOperationException - if the {@code intf}
+   * interface is {@link java.io.Serializable serializable}
+   * but a thread context type does not support serialization.
    */
   public <T> T createContextualProxy(T instance,
                                      Map<String, String> executionProperties,
@@ -428,6 +435,9 @@ public interface ContextService {
    * @throws java.lang.IllegalArgumentException - if the {@code interfaces}
    * argument is null or the instance does not implement all the specified
    * interfaces.
+   * @throws java.lang.UnsupportedOperationException - if any of the {@code interfaces}
+   * are {@link java.io.Serializable serializable} but a thread context type
+   * does not support serialization.
    */
   public Object createContextualProxy(Object instance,
                                       Map<String, String> executionProperties,
