@@ -99,6 +99,7 @@ public interface ContextService {
    * @param callable instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>call</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>Callable</code> is supplied to this method.
+   * @since 3.0
    */
   public <R> Callable<R> contextualCallable(Callable<R> callable);
 
@@ -117,6 +118,7 @@ public interface ContextService {
    * @param consumer instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>accept</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>BiConsumer</code> is supplied to this method.
+   * @since 3.0
    */
   public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer);
 
@@ -134,6 +136,7 @@ public interface ContextService {
    * @param consumer instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>accept</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>Consumer</code> is supplied to this method.
+   * @since 3.0
    */
   public <T> Consumer<T> contextualConsumer(Consumer<T> consumer);
 
@@ -154,6 +157,7 @@ public interface ContextService {
    * @param function instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>apply</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>BiFunction</code> is supplied to this method.
+   * @since 3.0
    */
   public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function);
 
@@ -173,6 +177,7 @@ public interface ContextService {
    * @param function instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>apply</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>Function</code> is supplied to this method.
+   * @since 3.0
    */
   public <T, R> Function<T, R> contextualFunction(Function<T, R> function);
 
@@ -189,6 +194,7 @@ public interface ContextService {
    * @param runnable instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>run</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>Runnable</code> is supplied to this method.
+   * @since 3.0
    */
   public Runnable contextualRunnable(Runnable runnable);
 
@@ -206,6 +212,7 @@ public interface ContextService {
    * @param supplier instance to contextualize.
    * @return contextualized proxy instance that wraps execution of the <code>supply</code> method with context.
    * @throws IllegalArgumentException if an already-contextualized <code>Supplier</code> is supplied to this method.
+   * @since 3.0
    */
   public <R> Supplier<R> contextualSupplier(Supplier<R> supplier);
 
@@ -446,6 +453,7 @@ public interface ContextService {
    * <code>execute</code> method.</p>
    *
    * @return an executor that wraps the <code>execute</code> method with context.
+   * @since 3.0
    */
   public Executor currentContextExecutor();
 
@@ -484,6 +492,7 @@ public interface ContextService {
    * @param stage a completable future whose completion triggers completion of the new completable
    *        future that is created by this method.
    * @return the new completable future.
+   * @since 3.0
    */
   public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage);
 
@@ -509,6 +518,7 @@ public interface ContextService {
    * @param stage a completion stage whose completion triggers completion of the new stage
    *        that is created by this method.
    * @return the new completion stage.
+   * @since 3.0
    */
   public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage);
 }
