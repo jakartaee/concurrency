@@ -2307,7 +2307,7 @@ task.
 
 The `jakarta.enterprise.concurrent.Async` annotation annotates a
 CDI managed bean method to run asynchronously. The CDI managed bean must
-not be an EJB or JSF managed bean, and neither the method nor its class
+not be a Jakarta Enterprise Bean, and neither the method nor its class
 can be annotated with the MicroProfile Asynchronous annotation.
 
 Each asynchronous method execution corresponds to a managed

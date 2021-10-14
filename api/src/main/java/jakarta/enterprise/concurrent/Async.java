@@ -29,7 +29,7 @@ import jakarta.interceptor.InterceptorBinding;
 
 /**
  * Annotates a CDI managed bean method to run asynchronously.
- * The CDI managed bean must not be an EJB or JSF managed bean,
+ * The CDI managed bean must not be a Jakarta Enterprise Bean,
  * and neither the method nor its class can be annotated with
  * the MicroProfile Asynchronous annotation.
  * <p>
