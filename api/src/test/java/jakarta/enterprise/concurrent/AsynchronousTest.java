@@ -41,13 +41,13 @@ import org.junit.Test;
 /**
  * This test includes the code examples from the specification and JavaDoc
  * for asychronous methods, verifying that they compile.
- * The Async.Result class is also tested.
+ * The Asynchronous.Result class is also tested.
  */
-public class AsyncTest {
+public class AsynchronousTest {
     /**
      * Example from the section on Asynchronous Methods in the Concurrency spec.
      */
-    @Async(executor = "java:module/env/concurrent/myExecutorRef")
+    @Asynchronous(executor = "java:module/env/concurrent/myExecutorRef")
     public CompletableFuture<Set<Item>> findSimilar(Cart cart, History h) {
         Set<Item> combined = new LinkedHashSet<Item>();
         for (Item item : cart.items())
@@ -65,13 +65,13 @@ public class AsyncTest {
         } catch (NamingException | SQLException x) {
             throw new CompletionException(x);
         }
-        return Async.Result.complete(combined);
+        return Asynchronous.Result.complete(combined);
     }
 
     /**
-     * Second example from the Async class JavaDoc.
+     * Second example from the Asynchronous class JavaDoc.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<List<Itinerary>> findSingleLayoverFlights(Location source, Location dest) {
         try {
             ManagedExecutorService executor = InitialContext.doLookup(
@@ -86,27 +86,27 @@ public class AsyncTest {
     }
 
     /**
-     * First example from the Async class JavaDoc.
+     * First example from the Asynchronous class JavaDoc.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<Double> hoursWorked(LocalDate from, LocalDate to) {
         // Application component's context is made available to the async method,
         try (Connection con = ((DataSource) InitialContext.doLookup(
             "java:comp/env/jdbc/timesheetDB")).getConnection()) {
             // ...
             double total = 40.0; // added to make the example compile
-            return Async.Result.complete(total);
+            return Asynchronous.Result.complete(total);
         } catch (NamingException | SQLException x) {
             throw new CompletionException(x);
         }
     }
 
     /**
-     * Example from the Async.Result class JavaDoc.
+     * Example from the Asynchronous.Result class JavaDoc.
      */
-    @Async
+    @Asynchronous
     public CompletableFuture<Double> hoursWorked(LocalDateTime from, LocalDateTime to) {
-        CompletableFuture<Double> future = Async.Result.getFuture();
+        CompletableFuture<Double> future = Asynchronous.Result.getFuture();
         if (future.isDone())
             return future;
 
@@ -169,7 +169,7 @@ public class AsyncTest {
     }
 
     /**
-     * Used by example from Async class JavaDoc.
+     * Used by example from Asynchronous class JavaDoc.
      * This code doesn't do anything; we only need the method signatures to verify compilation of the example.
      */
     static class Itinerary {
@@ -182,7 +182,7 @@ public class AsyncTest {
     }
 
     /**
-     * Used by example from Async class JavaDoc.
+     * Used by example from Asynchronous class JavaDoc.
      * This code doesn't do anything; we only need the method signatures to verify compilation of the example.
      */
     static class Location {
@@ -195,17 +195,17 @@ public class AsyncTest {
     }
 
     /**
-     * Verify that the first usage example in the Async class JavaDoc compiles.
+     * Verify that the first usage example in the Asynchronous class JavaDoc compiles.
      */
     @Test
-    public void testAsyncJavaDocUsageExample1() {
+    public void testAsynchronousJavaDocUsageExample1() {
         LocalDateTime mon = LocalDateTime.of(2021, 9, 13, 0, 0, 0);
         LocalDateTime fri = LocalDateTime.of(2021, 9, 17, 23, 59, 59);
 
         // Normally, the Jakarta EE Product Provider would do this on the same
         // thread where the asynchronous method executes, just before it starts.
         CompletableFuture<Double> future = new CompletableFuture<Double>();
-        Async.Result.setFuture(future);
+        Asynchronous.Result.setFuture(future);
 
         // There is no interceptor when running these tests, so this won't actually run async.
         try {
@@ -221,7 +221,7 @@ public class AsyncTest {
         } finally {
             // Normally, the Jakarta EE Product Provider would do this on the same
             // thread where the asynchronous method executes, just after it ends.
-            Async.Result.setFuture(null);
+            Asynchronous.Result.setFuture(null);
         }
 
         // Naming lookup will have failed,
@@ -229,10 +229,10 @@ public class AsyncTest {
     }
 
     /**
-     * Verify that the second usage example in the Async class JavaDoc compiles.
+     * Verify that the second usage example in the Asynchronous class JavaDoc compiles.
      */
     @Test
-    public void testAsyncJavaDocUsageExample2() {
+    public void testAsynchronousJavaDocUsageExample2() {
         Location RST = new Location();
         Location DEN = new Location();
 
@@ -245,65 +245,66 @@ public class AsyncTest {
     }
 
     /**
-     * Verify that the Async annotation can be configured at method level
+     * Verify that the Asynchronous annotation can be configured at method level
      * and that its executor field defaults to the JNDI name of the
      * built-in ManagedExecutorService that is provided by the Jakarta EE platform.
      */
     @Test
-    public void testAsyncMethodLevelAnnotation() throws Exception {
-        Async anno = AsyncTest.class.getMethod("hoursWorked", LocalDate.class, LocalDate.class)
-                                    .getAnnotation(Async.class);
+    public void testAsynchronousMethodLevelAnnotation() throws Exception {
+        Asynchronous anno = AsynchronousTest.class
+                .getMethod("hoursWorked", LocalDate.class, LocalDate.class)
+                .getAnnotation(Asynchronous.class);
         assertNotNull(anno);
         assertEquals("java:comp/DefaultManagedExecutorService", anno.executor());
     }
 
     /**
-     * Invoke all of the static methods of Async.Result.
+     * Invoke all of the static methods of Asynchronous.Result.
      */
     @Test
-    public void testAsyncResult() {
+    public void testAsynchronousResult() {
         try {
-            fail("Must not be present by default: " + Async.Result.getFuture());
+            fail("Must not be present by default: " + Asynchronous.Result.getFuture());
         } catch (IllegalStateException x) {
             // Pass - detected that this was not invoked from an async method
         }
 
         CompletableFuture<String> stringFuture = new CompletableFuture<String>();
-        Async.Result.setFuture(stringFuture);
-        assertEquals(stringFuture, Async.Result.getFuture());
-        Async.Result.setFuture(null);
+        Asynchronous.Result.setFuture(stringFuture);
+        assertEquals(stringFuture, Asynchronous.Result.getFuture());
+        Asynchronous.Result.setFuture(null);
         try {
-            fail("Must not be present after removing: " + Async.Result.getFuture());
+            fail("Must not be present after removing: " + Asynchronous.Result.getFuture());
         } catch (IllegalStateException x) {
             // Pass - detected that this was not invoked from an async method
         }
 
         CompletableFuture<Integer> intFuture = new CompletableFuture<Integer>();
-        Async.Result.setFuture(intFuture);
-        assertEquals(intFuture, Async.Result.complete(100));
-        Async.Result.setFuture(null);
+        Asynchronous.Result.setFuture(intFuture);
+        assertEquals(intFuture, Asynchronous.Result.complete(100));
+        Asynchronous.Result.setFuture(null);
         try {
-            fail("Must not be present after removing: " + Async.Result.getFuture());
+            fail("Must not be present after removing: " + Asynchronous.Result.getFuture());
         } catch (IllegalStateException x) {
             // Pass - detected that this was not invoked from an async method
         }
 
         CompletableFuture<Boolean> booleanFuture = new CompletableFuture<Boolean>();
-        Async.Result.setFuture(booleanFuture);
-        assertEquals(booleanFuture, Async.Result.getFuture());
-        assertEquals(booleanFuture, Async.Result.complete(true));
-        Async.Result.setFuture(null);
+        Asynchronous.Result.setFuture(booleanFuture);
+        assertEquals(booleanFuture, Asynchronous.Result.getFuture());
+        assertEquals(booleanFuture, Asynchronous.Result.complete(true));
+        Asynchronous.Result.setFuture(null);
         try {
-            fail("Must not be present after removing: " + Async.Result.getFuture());
+            fail("Must not be present after removing: " + Asynchronous.Result.getFuture());
         } catch (IllegalStateException x) {
             // Pass - detected that this was not invoked from an async method
         }
 
         CompletableFuture<Void> unusedFuture = new CompletableFuture<Void>();
-        Async.Result.setFuture(unusedFuture);
-        Async.Result.setFuture(null);
+        Asynchronous.Result.setFuture(unusedFuture);
+        Asynchronous.Result.setFuture(null);
         try {
-            fail("Must not be present after removing: " + Async.Result.getFuture());
+            fail("Must not be present after removing: " + Asynchronous.Result.getFuture());
         } catch (IllegalStateException x) {
             // Pass - detected that this was not invoked from an async method
         }
@@ -314,7 +315,7 @@ public class AsyncTest {
      * Concurrency spec compiles.
      */
     @Test
-    public void testAsyncUsageExampleFromSpec() throws Exception {
+    public void testAsynchronousUsageExampleFromSpec() throws Exception {
         Customer cust = new Customer();
 
         try {

@@ -42,19 +42,19 @@ import jakarta.interceptor.InterceptorBinding;
  * as defined by the <code>ManagedExecutorService</code> JavaDoc API.
  * The Jakarta EE Product Provider makes this <code>CompletableFuture</code> available
  * to the asynchronous method implementation via the
- * {@link Result#getFuture Async.Result.getFuture} and
- * {@link Result#complete Async.Result.complete} methods.
+ * {@link Result#getFuture Asynchronous.Result.getFuture} and
+ * {@link Result#complete Asynchronous.Result.complete} methods.
  * <p>
  * For example,
  *
  * <pre>
- * {@literal @}Async
+ * {@literal @}Asynchronous
  * public CompletableFuture{@literal <Double>} hoursWorked(LocalDate from, LocalDate to) {
  *     // Application component's context is made available to the async method,
  *     try (Connection con = ((DataSource) InitialContext.doLookup(
  *         "java:comp/env/jdbc/timesheetDB")).getConnection()) {
  *         ...
- *         return Async.Result.complete(total);
+ *         return Asynchronous.Result.complete(total);
  *     } catch (NamingException | SQLException x) {
  *         throw new CompletionException(x);
  *     }
@@ -81,7 +81,7 @@ import jakarta.interceptor.InterceptorBinding;
  * For example,
  *
  * <pre>
- * {@literal @}Async
+ * {@literal @}Asynchronous
  * public CompletableFuture{@literal <List<Itinerary>>} findSingleLayoverFlights(Location source, Location dest) {
  *     try {
  *         ManagedExecutorService executor = InitialContext.doLookup(
@@ -165,7 +165,7 @@ import jakarta.interceptor.InterceptorBinding;
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface Async {
+public @interface Asynchronous {
     /**
      * JNDI name of a {@link ManagedExecutorService} or {@link ManagedScheduledExecutorService}
      * upon which to run the asynchronous method.
@@ -207,9 +207,9 @@ public @interface Async {
      * For example,
      *
      * <pre>
-     * {@literal @}Async
+     * {@literal @}Asynchronous
      * public CompletableFuture{@literal <Double>} hoursWorked(LocalDateTime from, LocalDateTime to) {
-     *     CompletableFuture{@literal <Double>} future = Async.Result.getFuture();
+     *     CompletableFuture{@literal <Double>} future = Asynchronous.Result.getFuture();
      *     if (future.isDone())
      *         return future;
      *
