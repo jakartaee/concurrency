@@ -237,6 +237,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param value result with which the completable future is completed.
      * @param <U> result type of the completable future.
      * @return the new completable future.
+     * @since 3.0
      */
     <U> CompletableFuture<U> completedFuture(U value);
 
@@ -251,6 +252,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param value result with which the completion stage is completed.
      * @param <U> result type of the completion stage.
      * @return the new completion stage.
+     * @since 3.0
      */
     <U> CompletionStage<U> completedStage(U value);
 
@@ -283,6 +285,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param stage a completable future whose completion triggers completion of the new completable
      *        future that is created by this method.
      * @return the new completable future.
+     * @since 3.0
      */
     <T> CompletableFuture<T> copy(CompletableFuture<T> stage);
 
@@ -315,6 +318,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param stage a completion stage whose completion triggers completion of the new stage
      *        that is created by this method.
      * @return the new completion stage.
+     * @since 3.0
      */
     <T> CompletionStage<T> copy(CompletionStage<T> stage);
 
@@ -329,6 +333,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param ex exception or error with which the completable future is completed.
      * @param <U> result type of the completable future.
      * @return the new completable future.
+     * @since 3.0
      */
     <U> CompletableFuture<U> failedFuture(Throwable ex);
 
@@ -343,6 +348,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param ex exception or error with which the completion stage is completed.
      * @param <U> result type of the completion stage.
      * @return the new completion stage.
+     * @since 3.0
      */
     <U> CompletionStage<U> failedStage(Throwable ex);
 
@@ -354,6 +360,7 @@ public interface ManagedExecutorService extends ExecutorService {
      *
      * @return a <code>ContextService</code> with the same propagation settings
      *         as this <code>ManagedExecutorService</code>.
+     * @since 3.0
      */
     public ContextService getContextService();
 
@@ -366,6 +373,7 @@ public interface ManagedExecutorService extends ExecutorService {
      *
      * @param <U> result type of the completable future.
      * @return the new completable future.
+     * @since 3.0
      */
     <U> CompletableFuture<U> newIncompleteFuture();
 
@@ -380,6 +388,7 @@ public interface ManagedExecutorService extends ExecutorService {
      *
      * @param runnable the action to run before completing the returned completion stage.
      * @return the new completable future.
+     * @since 3.0
      */
     CompletableFuture<Void> runAsync(Runnable runnable);
 
@@ -395,6 +404,7 @@ public interface ManagedExecutorService extends ExecutorService {
      * @param supplier an action returning the value to be used to complete the returned completion stage.
      * @param <U> result type of the supplier and returned completable stage.
      * @return the new completable future.
+     * @since 3.0
      */
     <U> CompletableFuture<U> supplyAsync(Supplier<U> supplier);
 }

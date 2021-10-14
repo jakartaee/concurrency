@@ -29,7 +29,7 @@
 
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>jakarta.enterprise.concurrent-api</name>
     <description>Jakarta Concurrency</description>
     <url>https://github.com/eclipse-ee4j/concurrency-api</url>
@@ -64,11 +64,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <api_package>jakarta.enterprise.concurrent</api_package>
-        <non.final>false</non.final>
+        <non.final>true</non.final>
         <last.spec_version>1.1</last.spec_version>
         <next.spec_version>2.0</next.spec_version>
         <spec.version>${next.spec_version}</spec.version>
-        <new.spec.version />
+        <new.spec.version>3.0</new.spec.version>
         <build_number />
         <packages.export>jakarta.enterprise.concurrent.*; version=${spec.bundle.version}</packages.export>
     </properties>
@@ -151,7 +151,7 @@
                 <configuration>
                     <spec>
                         <specVersion>${spec.version}</specVersion>
-                        <specImplVersion>2.0.0</specImplVersion>
+                        <specImplVersion>3.0.0</specImplVersion>
                         <apiPackage>${api_package}</apiPackage>
                         
                         <nonFinal>${non.final}</nonFinal>
