@@ -27,11 +27,12 @@ import org.junit.Test;
 
 @ManagedScheduledExecutorDefinition( // from ManagedScheduledExecutorDefinition JavaDoc
         name = "java:comp/concurrent/MyScheduledExecutor",
+        context = "java:comp/concurrent/MyScheduledExecutorContext",
         hungTaskThreshold = 30000,
-        maxAsync = 3,
-        context = @ContextServiceDefinition(
-                  name = "java:comp/concurrent/MyScheduledExecutorContext",
-                  propagated = APPLICATION))
+        maxAsync = 3)
+@ContextServiceDefinition( // from ManagedScheduledExecutorDefinition JavaDoc, used by above
+        name = "java:comp/concurrent/MyScheduledExecutorContext",
+        propagated = APPLICATION)
 @ManagedScheduledExecutorDefinition(
         name = "java:global/concurrent/ManagedScheduledExecutorDefinitionDefaults")
 public class ManagedScheduledExecutorDefinitionTest {
@@ -54,11 +55,7 @@ public class ManagedScheduledExecutorDefinitionTest {
         assertNotNull(def);
         assertEquals(-1, def.hungTaskThreshold());
         assertEquals(-1, def.maxAsync());
-        ContextServiceDefinition csd = def.context();
-        assertEquals("java:comp/DefaultContextService", csd.name());
-        assertArrayEquals(new String[] { TRANSACTION }, csd.cleared());
-        assertArrayEquals(new String[] {}, csd.unchanged());
-        assertArrayEquals(new String[] { ALL_REMAINING }, csd.propagated());
+        assertEquals("java:comp/DefaultContextService", def.context());
     }
 
     /**
@@ -74,10 +71,6 @@ public class ManagedScheduledExecutorDefinitionTest {
         assertNotNull(def);
         assertEquals(30000, def.hungTaskThreshold());
         assertEquals(3, def.maxAsync());
-        ContextServiceDefinition csd = def.context();
-        assertEquals("java:comp/concurrent/MyScheduledExecutorContext", csd.name());
-        assertArrayEquals(new String[] { APPLICATION }, csd.propagated());
-        assertArrayEquals(new String[] { TRANSACTION }, csd.cleared());
-        assertArrayEquals(new String[] {}, csd.unchanged());
+        assertEquals("java:comp/concurrent/MyScheduledExecutorContext", def.context());
     }
 }

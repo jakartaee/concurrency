@@ -33,14 +33,16 @@ import java.lang.annotation.Target;
  * {@link jakarta.annotation.Resource#lookup() lookup} attribute of a
  * {@link jakarta.annotation.Resource} annotation,</p>
  *
- * <pre>{@literal @}ManagedScheduledExecutorDefinition(
+ * <pre>
+ * {@literal @}ManagedScheduledExecutorDefinition(
  *     name = "java:comp/concurrent/MyScheduledExecutor",
+ *     context = "java:comp/concurrent/MyScheduledExecutorContext",
  *     hungTaskThreshold = 30000,
- *     maxAsync = 3,
- *     context ={@literal @}ContextServiceDefinition(
- *               name = "java:comp/concurrent/MyScheduledExecutorContext",
- *               propagated = APPLICATION))
- * public class MyServlet extends HttpServlet {
+ *     maxAsync = 3)
+ * {@literal @}ContextServiceDefinition(
+ *     name = "java:comp/concurrent/MyScheduledExecutorContext",
+ *     propagated = APPLICATION)
+ *  public class MyServlet extends HttpServlet {
  *    {@literal @}Resource(lookup = "java:comp/concurrent/MyScheduledExecutor",
  *               name = "java:comp/concurrent/env/MyScheduledExecutorRef")
  *     ManagedScheduledExecutorService myScheduledExecutor;
@@ -57,9 +59,27 @@ import java.lang.annotation.Target;
  * &lt;/resource-env-ref&gt;
  * </pre>
  *
+ * You can also define a {@code ManagedScheduledExecutorService} with the
+ * {@code <managed-scheduled-executor>} deployment descriptor element.
+ * For example,
+ *
+ * <pre>
+ * &lt;managed-scheduled-executor&gt;
+ *    &lt;name&gt;java:module/concurrent/MyExecutor&lt;/name&gt;
+ *    &lt;context-service-ref&gt;java:module/concurrent/MyExecutorContext&lt;/context-service-ref&gt;
+ *    &lt;hung-task-threshold&gt;120000&lt;/hung-task-threshold&gt;
+ *    &lt;max-async&gt;5&lt;/max-async&gt;
+ * &lt;/managed-scheduled-executor&gt;
+ * </pre>
+ *
+ * If a {@code managed-scheduled-executor} and {@code ManagedScheduledExecutorDefinition}
+ * have the same name, their attributes are merged to define a single
+ * {@code ManagedScheduledExecutorService} definition, with each attribute that is specified
+ * in the {@code managed-scheduled-executor} deployment descriptor entry taking
+ * precedence over the corresponding attribute of the annotation.
+ *
  * @since 3.0
  */
-//TODO could mention relation with <managed-scheduled-executor> definition in deployment descriptor once that is added
 @Repeatable(ManagedScheduledExecutorDefinition.List.class)
 @Retention(RUNTIME)
 @Target(TYPE)
@@ -80,17 +100,22 @@ public @interface ManagedScheduledExecutorDefinition {
     String name();
 
     /**
-     * <p>Determines how context is applied to tasks and actions that
-     * run on this executor.</p>
+     * The name of a {@link ContextService} instance which
+     * determines how context is applied to tasks and actions that
+     * run on this executor.
+     * <p>
+     * The name can be the name of a {@link ContextServiceDefinition} or
+     * the name of a {@code context-service} deployment descriptor element
+     * or the JNDI name of the Jakarta EE default {@code ContextService}
+     * instance, {@code java:comp/DefaultContextService}.
+     * <p>
+     * The default value, {@code java:comp/DefaultContextService}, is the
+     * JNDI name of the Jakarta EE default {@code ContextService}.
      *
-     * <p>The default value indicates to use the default instance of
-     * {@link ContextService} by specifying a
-     * {@link ContextServiceDefinition} with the name
-     * <code>java:comp/DefaultContextService</code>.</p>
-     *
-     * @return instructions for capturing and propagating or clearing context.
+     * @return name of the {@code ContextService} for
+     *         capturing and propagating or clearing context.
      */
-    ContextServiceDefinition context() default @ContextServiceDefinition(name = "java:comp/DefaultContextService");
+    String context() default "java:comp/DefaultContextService";
 
     /**
      * <p>The amount of time in milliseconds that a task or action

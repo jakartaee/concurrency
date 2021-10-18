@@ -33,13 +33,15 @@ import java.lang.annotation.Target;
  * {@link jakarta.annotation.Resource#lookup() lookup} attribute of a
  * {@link jakarta.annotation.Resource} annotation,</p>
  *
- * <pre>{@literal @}ManagedThreadFactoryDefinition(
+ * <pre>
+ * {@literal @}ManagedThreadFactoryDefinition(
  *     name = "java:global/concurrent/MyThreadFactory",
- *     priority = "4",
- *     context ={@literal @}ContextServiceDefinition(
- *               name = "java:global/concurrent/MyThreadFactoryContext",
- *               propagated = APPLICATION))
- * public class MyServlet extends HttpServlet {
+ *     context = "java:global/concurrent/MyThreadFactoryContext",
+ *     priority = 4)
+ * {@literal @}ContextServiceDefinition(
+ *     name = "java:global/concurrent/MyThreadFactoryContext",
+ *     propagated = APPLICATION)
+ *  public class MyServlet extends HttpServlet {
  *    {@literal @}Resource(lookup = "java:global/concurrent/MyThreadFactory",
  *               name = "java:module/concurrent/env/MyThreadFactoryRef")
  *     ManagedThreadFactory myThreadFactory;
@@ -56,9 +58,26 @@ import java.lang.annotation.Target;
  * &lt;/resource-env-ref&gt;
  * </pre>
  *
+ * You can also define a {@code ManagedThreadFactory} with the
+ * {@code <managed-thread-factory>} deployment descriptor element.
+ * For example,
+ *
+ * <pre>
+ * &lt;managed-thread-factory&gt;
+ *    &lt;name&gt;java:global/concurrent/MyThreadFactory&lt;/name&gt;
+ *    &lt;context-service-ref&gt;java:global/concurrent/MyThreadFactoryContext&lt;/context-service-ref&gt;
+ *    &lt;priority&gt;4&lt;/priority&gt;
+ * &lt;/managed-thread-factory&gt;
+ * </pre>
+ *
+ * If a {@code managed-thread-factory} and {@code ManagedThreadFactoryDefinition}
+ * have the same name, their attributes are merged to define a single
+ * {@code ManagedThreadFactory} definition, with each attribute that is specified
+ * in the {@code managed-thread-factory} deployment descriptor entry taking
+ * precedence over the corresponding attribute of the annotation.
+ *
  * @since 3.0
  */
-//TODO could mention relation with <managed-thread-factory> definition in deployment descriptor once that is added
 @Repeatable(ManagedThreadFactoryDefinition.List.class)
 @Retention(RUNTIME)
 @Target(TYPE)
@@ -89,7 +108,7 @@ public @interface ManagedThreadFactoryDefinition {
      *
      * @return instructions for capturing and propagating or clearing context.
      */
-    ContextServiceDefinition context() default @ContextServiceDefinition(name = "java:comp/DefaultContextService");
+    String context() default "java:comp/DefaultContextService";
 
     /**
      * <p>Priority for threads created by this thread factory.</p>

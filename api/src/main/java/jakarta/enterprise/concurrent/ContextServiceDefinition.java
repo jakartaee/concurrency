@@ -70,9 +70,28 @@ import java.lang.annotation.Target;
  * If {@link #ALL_REMAINING} is not present in any of the lists, it is
  * implicitly appended to the {@link #cleared()} context types.</p>
  *
+ * You can also define a {@code ContextService} with the
+ * {@code <context-service>} deployment descriptor element.
+ * For example,
+ *
+ * <pre>
+ * &lt;context-service&gt;
+ *    &lt;name&gt;java:app/concurrent/MyContext&lt;/name&gt;
+ *    &lt;cleared&gt;Security&lt;/cleared&gt;
+ *    &lt;cleared&gt;Transaction&lt;/cleared&gt;
+ *    &lt;propagated&gt;Application&lt;/propagated&gt;
+ *    &lt;unchanged&gt;Remaining&lt;/unchanged&gt;
+ * &lt;/context-service&gt;
+ * </pre>
+ *
+ * If a {@code context-service} and {@code ContextServiceDefinition}
+ * have the same name, their attributes are merged to define a single
+ * {@code ContextService} definition, with each attribute that is specified
+ * in the {@code context-service} deployment descriptor entry taking
+ * precedence over the corresponding attribute of the annotation.
+ *
  * @since 3.0
  */
-// TODO could mention relation with <context-service> definition in deployment descriptor once that is added
 @Repeatable(ContextServiceDefinition.List.class)
 @Retention(RUNTIME)
 @Target(TYPE)
