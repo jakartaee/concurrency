@@ -2303,6 +2303,218 @@ ends.
 See section 3.1.8.2.1 for an example of using a `UserTransaction` within a
 task.
 
+== Thread Context Providers
+
+The `ThreadContextProvider` SPI standardizes the interaction between
+third-party providers of thread context and the Jakarta EE Product
+Provider, enabling third-party thread context types to be captured and
+propagated alongside the Jakarta EE Product Provider's built-in
+thread context types.
+
+This is useful for the model where a Jakarta EE Product Provider
+pieces together various third-party artifacts, together with its own,
+to produce a Jakarta EE compliant product.
+
+A `ThreadContextProvider` indicates its provided thread context type,
+provides a way to capture snapshots of that thread context type,
+provides a way for applying empty/cleared context of that type to threads,
+and provides a way to restore the previous thread context after a
+contextual task or action completes.
+
+===== Third-Party Context Provider’s Requirements
+
+This subsection describes the requirements of a third-party provider
+of thread context.
+
+[arabic]
+. Implement the
+`jakarta.enterpise.concurrent.spi.ThreadContextProvider` interface.
+. Include a file with location and name of +
+`META-INF/services/jakarta.enterprise.concurrent.spi.ThreadContextProvider`
+within its JAR file. The content of this file must be one or more lines,
+each specifying the fully qualified name of a `ThreadContextProvider`
+implementation that is provided within the JAR file.
+. Capture or produce snapshots of the provided type of thread context
+when `ThreadContextProvider` methods are invoked.
+. Apply a snapshot of the provided type of thread context to a thread,
+upon request from the Jakarta EE Product Provider.
+. Remove a snapshot of the provided type of thread context from the
+thread, restoring the previous thread context, upon request from the
+Jakarta EE Product Provider.
+
+===== Jakarta EE Product Provider’s Requirements
+
+This subsection describes the requirements of the Jakarta EE Product
+Provider.
+
+[arabic]
+. Use the `java.util.ServiceLoader` to load available
+`jakarta.enterprise.concurrent.spi.ThreadContextProvider` implementations
+from the thread context class loader.
+. Read configuration, which could be from a
+`jakarta.enterprise.ContextServiceDefinition`
+or a vendor-specific configuration mechanism,
+to identify which context types to propagate, clear, and ignore.
+. Invoke the `ThreadContextProvider.currentContext` method to capture
+context that is configured to be propagated from the current thread
+to the thread that will run the contextual task or action.
+. Invoke the `ThreadContextProvider.clearedContext` method to generate
+a snapshot of context that is configured to be cleared from the
+thread that will run the contextual task or action.
+. Invoke the `ThreadContextSnapshot.begin` method to establish context
+on a thread that will run the contextual task or action.
+. Invoke the `ThreadContextRestorer.endContext` method to restore the
+previous context after the contextual task or action completes.
+
+===== Usage Example
+
+This example supplies a `ThreadContextProvider` that turns priority
+(from `java.lang.Thread`) into a third-party context type.
+Although not useful in practice (it is better to let priority be
+managed by the managed executor service), this example is chosen
+because the concept of thread priority is simple, well understood,
+and already built into Java, allowing the reader to focus on the
+mechanisms of thread context capture/propagation/restore rather than the
+details of the context type itself. 
+
+====== Example of Custom ThreadContextProvider
+
+The interface, `jakarta.enterprise.concurrent.spi.ThreadContextProvider`,
+is the means by which the Jakarta EE Product Provider requests the
+capturing of a particular context type from the current thread.
+It also provides a way to obtain a snapshot of empty/cleared context
+of this type and identifies the name by which the user refers to this
+context type when configuring a `ContextServiceDefinition`.
+
+[source,java]
+----
+package example.jakarta.concurrency.priority;
+
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
+import java.util.Map;
+
+public class ThreadPriorityContextProvider implements ThreadContextProvider {
+   public String getThreadContextType() {
+      return "ThreadPriority";
+   }
+
+   public ThreadContextSnapshot currentContext(Map<String, String> props) {
+      return new ThreadPrioritySnapshot(Thread.currentThread().getPriority());
+   }
+
+   public ThreadContextSnapshot clearedContext(Map<String, String> props) {
+      return new ThreadPrioritySnapshot(Thread.NORM_PRIORITY);
+   }
+}
+----
+
+====== Example of Custom ThreadContextSnapshot and ThreadContextRestorer
+
+The interface, `jakarta.enterprise.concurrent.spi.ThreadContextSnapshot`,
+represents a snapshot of thread context. The Jakarta EE Product Provider
+can request the context represented by this snapshot be applied to any
+number of threads by invoking the `begin` method. An instance of
+`jakarta.enterprise.concurrent.spi.ThreadContextRestorer`, which is
+returned by the begin method, stores the previous context of the thread.
+The `ThreadContextRestorer` instance is provided for one-time use by the
+Jakarta EE Product Provider to restore the previous context after the
+context represented by the snapshot is no longer needed on the thread.
+
+[source,java]
+----
+package example.jakarta.concurrency.priority;
+
+import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
+import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class ThreadPrioritySnapshot implements ThreadContextSnapshot {
+   final int priority;
+
+   ThreadPrioritySnapshot(int priority) {
+      this.priority = priority;
+   }
+
+   public ThreadContextRestorer begin() {
+      Thread thread = Thread.currentThread();
+      int priorityToRestore = thread.getPriority();
+      AtomicBoolean restored = new AtomicBoolean();
+
+      ThreadContextRestorer contextRestorer = () -> {
+         if (restored.compareAndSet(false, true))
+            thread.setPriority(priorityToRestore);
+         else
+            throw new IllegalStateException();
+      };
+
+      thread.setPriority(priority);
+
+      return contextRestorer;
+   }
+}
+----
+
+====== ServiceLoader Entry
+
+To make the `ThreadContextProvider` implementation available to the
+`ServiceLoader`, the provider JAR includes a file of the following name
+and location,
+
+[source]
+----
+META-INF/services/jakarta.enterprise.concurrent.spi.ThreadContextProvider
+----
+
+which contains the following line,
+
+[source]
+----
+example.jakarta.concurrency.priority.ThreadPriorityContextProvider
+----
+
+====== Usage of the Custom Context Type from a Servlet
+
+The following example shows application code that uses a
+`ManagedExecutorService` that propagates the example context type.
+If the provider is implemented correctly and made available on the
+application’s thread context class loader, the async `Runnable`
+should report that it is running with a priority of 3.
+
+[source,java]
+----
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@ManagedExecutorDefinition(
+        name = "java:module/concurrent/PriorityExec",
+        context = @ContextServiceDefinition(
+                  name = "java:module/concurrent/PriorityContext",
+                  propagated = "ThreadPriority"))
+public class MyServlet extends HttpServlet {
+   @Resource(lookup = "java:module/concurrent/PriorityExec")
+   ManagedExecutorService executor;
+
+   protected void doGet(HttpServletRequest req, HttpServletResponse res)
+      throws ServletException, IOException {
+
+      Thread.currentThread().setPriority(3);
+
+      executor.runAsync(() -> {
+         System.out.println("Running with priority of " +
+            Thread.currentThread().getPriority());
+      });
+   }
+}
+----
+
 == Asynchronous Methods
 
 The `jakarta.enterprise.concurrent.Asynchronous` annotation annotates a
