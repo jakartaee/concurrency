@@ -2302,3 +2302,164 @@ ends.
 
 See section 3.1.8.2.1 for an example of using a `UserTransaction` within a
 task.
+
+== Asynchronous Methods
+
+The `jakarta.enterprise.concurrent.Asynchronous` annotation annotates a
+CDI managed bean method to run asynchronously. The CDI managed bean must
+not be a Jakarta Enterprise Bean, and neither the method nor its class
+can be annotated with the MicroProfile Asynchronous annotation.
+
+Each asynchronous method execution corresponds to a managed
+`java.util.concurrent.CompletableFuture` instance that is backed by a
+`jakarta.enterprise.concurrent.ManagedExecutorService` as its default
+asynchronous execution facility. Its dependent stages
+(and all dependent stages that are created from those, and so on)
+continue to be backed by the managed executor service,
+which also manages the propagation of context to completion stage actions.
+Application code, including from within the asynchronous method, can query
+the status of the completable future instance and can choose to complete
+it at any time and by any means.
+
+==== Application Component Provider’s Responsibilities
+
+Application Component Providers (application developers) (EE2.11.2)
+specify the `jakarta.enterprise.concurrent.Asynchronous` annotation on
+CDI managed bean methods with return type of
+`java.util.concurrent.CompletableFuture`,
+`java.util.concurrent.CompletionStage`, or `void` to designate them for
+asynchronous execution.
+
+The Application Component Provider supplies the implementation of the
+asynchronous method. If the method has return type of
+`java.util.concurrent.CompletableFuture` or
+`java.util.concurrent.CompletionStage`, its implementation arranges for the
+completion of a completable future or completion stage, which it returns
+as the method result. The asynchronous method can create or obtain a new
+completion stage for this purpose, or it can use the
+`jakarta.enterprise.concurrent.Asynchronous.Result` API to obtain the same
+instance that is being returned to the caller of the asynchronous method.
+
+===== Usage Example
+
+In this example, an application component wants to asynchronously identify
+similar items that a customer might wish to purchase.
+
+====== Asynchronous Method Definition
+
+To check if the recommended similar items are currently available for
+purchase, this asynchronous method relies on an external database that
+is accessible via a resource reference that is defined in the application
+component's java:comp namespace, which must be made available to the
+asynchronous method.
+
+[source,java]
+----
+public class ProductRecommendations {
+   @Asynchronous(executor = "java:module/env/concurrent/myExecutorRef")
+   public CompletableFuture<Set<Item>> findSimilar(Cart cart, History h) {
+      Set<Item> combined = new LinkedHashSet<Item>();
+      for (Item item : cart.items())
+         combined.addAll(item.similar());
+      for (Item item : h.recentlyViewed(3))
+         combined.addAll(item.similar());
+      combined.removeAll(cart.items());
+
+      try (Connection con = ((DataSource) InitialContext.doLookup(
+                            "java:comp/env/jdbc/ds1")).getConnection()) {
+         PreparedStatement stmt = con.prepareStatement(CHECK_AVAILABILITY);
+         for (Item item : combined) {
+            ... Remove if the similar item is unavailable
+         }
+      } catch (NamingException | SQLException x) {
+         throw new CompletionException(x);
+      }
+      return Asynchronous.Result.complete(combined);
+   }
+}
+----
+====== Asynchronous Method Invocation
+
+The CDI managed bean with the asynchronous method is injected into a
+a `Servlet`, which uses it to asynchronously determine the product
+recommendations.
+
+[source,java]
+----
+public class CheckoutServlet extends HttpServlet {
+   @Inject
+   ProductRecommendations recommendations;
+
+   @Resource(name=”java:comp/env/jdbc/ds1”, lookup="jdbc/ds1")
+   DataSource ds;
+
+   public void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException {
+      ...
+      recommendations.findSimilar(cust.getCart(), cust.getHistory())
+                     .thenAccept(recommended -> {
+                        ... Update page with recommendations
+                     });
+      ...
+   }
+}
+----
+
+==== Jakarta EE Product Provider’s Responsibilities
+
+The Jakarta EE Product Provider’s responsibilities are as defined in
+EE.5.8.3.
+
+The Jakarta EE Product Provider registers a CDI interceptor
+to arrange for the invocation of asynchronous methods on the
+`jakarta.enterprise.concurrent.ManagedExecutorService` or
+`jakarta.enterprise.concurrent.ManagedScheduledExecutorService`
+that is specified by the `jakarta.enterprise.concurrent.Asynchronous`
+annotation.
+
+The Jakarta EE Product Provider creates a
+`java.util.concurrent.CompletableFuture` instance to associate with each
+asynchronous method invocation, returning this same instance to the caller
+of the asynchronous method, and providing it to the asynchronous method
+implementation by means of the
+`jakarta.enterprise.concurrent.Asynchronous.Result` API. The Jakarta EE Product
+Provider completes this instance upon completion of the completion stage
+that is returned by the asynchronous method implementation, which is a
+no-op when the asynchronous method implementation chooses to return the
+same instance. If the asynchronous method return type is `void` or if the
+asynchronous method implementation raises an error or exception, the
+Jakarta EE Product Provider completes this instance upon return from the
+asynchronous method implementation. The Jakarta EE Product Provider
+raises `java.util.concurrent.RejectedExecutionException` to the caller of
+the asynchronous method if it cannot accept a method for asynchronous
+execution, for example if supplied with an invalid JNDI name.
+If the Jakarta EE Product Provider cannot start the asynchronous method
+for any reason after this point, it completes the
+`java.util.concurrent.CompletableFuture` instance with a
+`java.util.concurrent.CancellationException`.
+
+==== Transaction Management
+
+When an asynchronous method is also annotated with
+`jakarta.transaction.Transactional`, the transactional types which can be
+used are:
+
+* `jakarta.transaction.Transactional.TxType.REQUIRES_NEW` -
+which causes the method to run in a new transaction
+* `jakarta.transaction.Transactional.TxType.NOT_SUPPORTED` -
+which causes the method to run with no transaction
+
+All other transaction attributes must result in
+`java.lang.UnsupportedOperationException` upon invocation of the
+asynchronous method.
+
+When an asynchronous method is not annotated as
+`jakarta.transaction.Transactional` or the transaction type is set to
+`TxType.NOT_SUPPORTED`, the Jakarta EE Product Provider
+must support user-managed global transaction demarcation using the
+`jakarta.transaction.UserTransaction` interface, which is described in the
+Jakarta Transactions specification. User-managed transactions allow
+components to manually control global transaction demarcation
+boundaries. Task implementations may optionally begin, commit, and
+roll-back a transaction. See EE.4 for details on transaction management
+in Jakarta EE.
