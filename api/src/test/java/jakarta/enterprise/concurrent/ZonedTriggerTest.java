@@ -238,6 +238,22 @@ public class ZonedTriggerTest {
     }
 
     /**
+     * Ensure that the default method for getNextRunTime(LastExecution, Date) can
+     * cope with a null being returned by getNextRunTime(LastExecution, ZonedDateTime).
+     */
+    @Test
+    public void testNullNextRunTime() {
+        ZonedTrigger trigger = new ZonedTrigger() {
+            @Override
+            public ZonedDateTime getNextRunTime(LastExecution lastExec, ZonedDateTime taskScheduledTime) {
+                return null;
+            }
+        };
+
+        assertNull(trigger.getNextRunTime(null, new Date()));
+    }
+
+    /**
      * Test the default implementation of ZonedTrigger.skipRun(LastExecution, Date),
      * which ought to delegate to skipRun(LastExecution, ZonedDateTime).
      */
