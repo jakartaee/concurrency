@@ -112,14 +112,11 @@ public interface ThreadContextProvider {
      * <p>
      * For example:
      * <pre>
-     * {@code @ManagedExecutorDefinition(}
-     *  name = "java:module/concurrent/MyCustomContextExecutor",
-     *  maxAsync = 3,
-     *  context = {@code @ContextServiceDefinition(}
-     *             name = "java:module/concurrent/MyCustomContext",
-     *             propagated = MyCustomContextProvider.CONTEXT_NAME,
-     *             cleared = { ContextServiceDefinition.SECURITY, ContextServiceDefinition.TRANSACTION },
-     *             unchanged = ContextServiceDefinition.ALL_REMAINING))
+     * {@code @ContextServiceDefinition(}
+     *    name = "java:module/concurrent/MyCustomContext",
+     *    propagated = MyCustomContextProvider.CONTEXT_NAME,
+     *    cleared = { ContextServiceDefinition.SECURITY, ContextServiceDefinition.TRANSACTION },
+     *    unchanged = ContextServiceDefinition.ALL_REMAINING)
      * </pre>
      * <p>
      * It is an error for multiple thread context providers of an identical type to be

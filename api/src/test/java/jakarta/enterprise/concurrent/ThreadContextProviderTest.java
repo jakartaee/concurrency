@@ -31,19 +31,17 @@ import org.junit.Test;
 /**
  * Tests of the ThreadContextProvider examples from the specification and JavaDoc.
  */
-@ManagedExecutorDefinition( // from JavaDoc
-        name = "java:module/concurrent/MyCustomContextExecutor",
-        maxAsync = 3,
-        context = @ContextServiceDefinition(
-                  name = "java:module/concurrent/MyCustomContext",
-                  propagated = ThreadContextProviderTest.CONTEXT_NAME,
-                  cleared = { ContextServiceDefinition.SECURITY, ContextServiceDefinition.TRANSACTION },
-                  unchanged = ContextServiceDefinition.ALL_REMAINING))
+@ContextServiceDefinition( // from JavaDoc
+        name = "java:module/concurrent/MyCustomContext",
+        propagated = ThreadContextProviderTest.CONTEXT_NAME,
+        cleared = { ContextServiceDefinition.SECURITY, ContextServiceDefinition.TRANSACTION },
+        unchanged = ContextServiceDefinition.ALL_REMAINING)
+@ContextServiceDefinition( // from spec ThreadContextProvider example
+        name = "java:module/concurrent/PriorityContext",
+        propagated = "ThreadPriority")
 @ManagedExecutorDefinition( // from spec ThreadContextProvider example
         name = "java:module/concurrent/PriorityExec",
-        context = @ContextServiceDefinition(
-                  name = "java:module/concurrent/PriorityContext",
-                  propagated = "ThreadPriority"))
+        context = "java:module/concurrent/PriorityContext")
 public class ThreadContextProviderTest {
     public static final String CONTEXT_NAME = "MyCustomContext";
 
@@ -103,8 +101,13 @@ public class ThreadContextProviderTest {
         assertNotNull(def);
         assertEquals(-1, def.hungTaskThreshold());
         assertEquals(-1, def.maxAsync());
-        ContextServiceDefinition csd = def.context();
-        assertEquals("java:module/concurrent/PriorityContext", csd.name());
+        assertEquals("java:module/concurrent/PriorityContext", def.context());
+
+        ContextServiceDefinition csd = null;
+        for (ContextServiceDefinition anno : getClass().getAnnotationsByType(ContextServiceDefinition.class))
+            if ("java:module/concurrent/PriorityContext".equals(anno.name()))
+                csd = anno;
+        assertNotNull(csd);
         assertArrayEquals(new String[] { "ThreadPriority" }, csd.propagated());
         assertArrayEquals(new String[] { TRANSACTION }, csd.cleared());
         assertArrayEquals(new String[] {}, csd.unchanged());

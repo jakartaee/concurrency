@@ -2493,11 +2493,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@ContextServiceDefinition(
+        name = "java:module/concurrent/PriorityContext",
+        propagated = "ThreadPriority")
 @ManagedExecutorDefinition(
         name = "java:module/concurrent/PriorityExec",
-        context = @ContextServiceDefinition(
-                  name = "java:module/concurrent/PriorityContext",
-                  propagated = "ThreadPriority"))
+        context = "java:module/concurrent/PriorityContext")
 public class MyServlet extends HttpServlet {
    @Resource(lookup = "java:module/concurrent/PriorityExec")
    ManagedExecutorService executor;

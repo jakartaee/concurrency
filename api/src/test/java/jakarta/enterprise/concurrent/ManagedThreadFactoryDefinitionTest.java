@@ -27,10 +27,11 @@ import org.junit.Test;
 
 @ManagedThreadFactoryDefinition( // from ManagedThreadFactoryDefinition JavaDoc
         name = "java:global/concurrent/MyThreadFactory",
-        priority = 4,
-        context = @ContextServiceDefinition(
-                  name = "java:global/concurrent/MyThreadFactoryContext",
-                  propagated = APPLICATION))
+        context = "java:global/concurrent/MyThreadFactoryContext",
+        priority = 4)
+@ContextServiceDefinition( // from ManagedThreadFactoryDefinition JavaDoc, used by above
+        name = "java:global/concurrent/MyThreadFactoryContext",
+        propagated = APPLICATION)
 @ManagedThreadFactoryDefinition(
         name = "java:comp/concurrent/ManagedThreadFactoryDefinitionDefaults")
 public class ManagedThreadFactoryDefinitionTest {
@@ -52,11 +53,7 @@ public class ManagedThreadFactoryDefinitionTest {
                 def = anno;
         assertNotNull(def);
         assertEquals(Thread.NORM_PRIORITY, def.priority());
-        ContextServiceDefinition csd = def.context();
-        assertEquals("java:comp/DefaultContextService", csd.name());
-        assertArrayEquals(new String[] { TRANSACTION }, csd.cleared());
-        assertArrayEquals(new String[] {}, csd.unchanged());
-        assertArrayEquals(new String[] { ALL_REMAINING }, csd.propagated());
+        assertEquals("java:comp/DefaultContextService", def.context());
     }
 
     /**
@@ -71,10 +68,6 @@ public class ManagedThreadFactoryDefinitionTest {
                 def = anno;
         assertNotNull(def);
         assertEquals(4, def.priority());
-        ContextServiceDefinition csd = def.context();
-        assertEquals("java:global/concurrent/MyThreadFactoryContext", csd.name());
-        assertArrayEquals(new String[] { APPLICATION }, csd.propagated());
-        assertArrayEquals(new String[] { TRANSACTION }, csd.cleared());
-        assertArrayEquals(new String[] {}, csd.unchanged());
+        assertEquals("java:global/concurrent/MyThreadFactoryContext", def.context());
     }
 }
