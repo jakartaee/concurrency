@@ -101,7 +101,7 @@ public interface ZonedTrigger extends Trigger {
      */
     public default Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
         ZonedDateTime nextTime = getNextRunTime(lastExecutionInfo, taskScheduledTime.toInstant().atZone(getZoneId()));
-        return Date.from(nextTime.toInstant());
+        return nextTime == null ? null : Date.from(nextTime.toInstant());
     }
 
     /**
