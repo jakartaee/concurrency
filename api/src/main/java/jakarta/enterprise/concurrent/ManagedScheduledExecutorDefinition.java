@@ -109,6 +109,13 @@ public @interface ManagedScheduledExecutorDefinition {
      * or the JNDI name of the Jakarta EE default {@code ContextService}
      * instance, {@code java:comp/DefaultContextService}.
      * <p>
+     * The name of the {@code ContextService} must be no more granular
+     * than the name of this {@code ManagedScheduledExecutorDefinition}. For example,
+     * if this {@code ManagedScheduledExecutorDefinition} has a name in {@code java:app},
+     * the {@code ContextService} can be in {@code java:app} or {@code java:global},
+     * but not in {@code java:module} which would be ambiguous as to which
+     * module's {@code ContextService} definition should be used.
+     * <p>
      * The default value, {@code java:comp/DefaultContextService}, is the
      * JNDI name of the Jakarta EE default {@code ContextService}.
      *
