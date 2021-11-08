@@ -98,13 +98,23 @@ public @interface ManagedThreadFactoryDefinition {
     String name();
 
     /**
-     * <p>Determines how context is applied to threads from this
-     * thread factory.</p>
-     *
-     * <p>The default value indicates to use the default instance of
-     * {@link ContextService} by specifying a
-     * {@link ContextServiceDefinition} with the name
-     * <code>java:comp/DefaultContextService</code>.</p>
+     * Determines how context is applied to threads from this
+     * thread factory.
+     * <p>
+     * The name can be the name of a {@link ContextServiceDefinition} or
+     * the name of a {@code context-service} deployment descriptor element
+     * or the JNDI name of the Jakarta EE default {@code ContextService}
+     * instance, {@code java:comp/DefaultContextService}.
+     * <p>
+     * The name of the {@code ContextService} must be no more granular
+     * than the name of this {@code ManagedThreadFactoryDefinition}. For example,
+     * if this {@code ManagedThreadFactoryDefinition} has a name in {@code java:app},
+     * the {@code ContextService} can be in {@code java:app} or {@code java:global},
+     * but not in {@code java:module} which would be ambiguous as to which
+     * module's {@code ContextService} definition should be used.
+     * <p>
+     * The default value, {@code java:comp/DefaultContextService}, is the
+     * JNDI name of the Jakarta EE default {@code ContextService}.
      *
      * @return instructions for capturing and propagating or clearing context.
      */
