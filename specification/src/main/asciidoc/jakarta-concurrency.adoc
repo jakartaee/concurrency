@@ -2366,6 +2366,15 @@ on a thread that will run the contextual task or action.
 . Invoke the `ThreadContextRestorer.endContext` method to restore the
 previous context after the contextual task or action completes.
 
+===== Third-Party Context and Serializable Contextual Proxies
+
+The SPI for third-party context providers does not permit the
+serialization of context. Therefore, when a contextual proxy is
+serialized, the Jakarta EE Product Provider does not serialize
+third-party context types. When the contextual proxy is deserialized,
+third-party context types that were configured to be propagated
+are ignored.
+
 ===== Usage Example
 
 This example supplies a `ThreadContextProvider` that turns priority
