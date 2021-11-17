@@ -21,18 +21,17 @@ import java.io.PrintWriter;
 import java.util.concurrent.Future;
 
 import jakarta.enterprise.concurrent.api.common.Util;
-
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/testServlet")
-public class TestServlet extends HttpServlet {
+@WebServlet("/SecurityServlet")
+public class SecurityServlet extends TestServlet {
 
 	@Resource
 	private ManagedExecutorService mes;

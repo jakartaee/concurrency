@@ -19,23 +19,17 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class InheritedAPITests extends TestClient {
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup(String[] args, Properties p) {
-		loadServerProperties();
-	}
+	
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testBasicManagedExecutorService
@@ -55,11 +49,9 @@ public class InheritedAPITests extends TestClient {
 	 */
 	@Test
 	public void testBasicManagedExecutorService() {
-		URL url;
 		String resp = null;
 		try {
-			url = new URL(Util.getUrl(Constants.COMMON_SERVLET_URI, host, port));
-			resp = TestUtil.getResponse(url.openConnection());
+			resp = TestUtil.getResponse(baseURL.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

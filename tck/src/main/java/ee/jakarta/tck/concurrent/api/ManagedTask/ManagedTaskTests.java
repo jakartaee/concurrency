@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 import jakarta.enterprise.concurrent.api.common.RunnableTask;
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 

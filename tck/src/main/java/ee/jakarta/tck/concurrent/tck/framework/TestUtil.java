@@ -18,7 +18,7 @@
  * $Id$
  */
 
-package jakarta.enterprise.concurrent.util;
+package jakarta.enterprise.concurrent.tck.framework;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -26,14 +26,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -44,6 +40,9 @@ import java.util.Properties;
  *
  */
 public final class TestUtil {
+	public static final TestLogger log = TestLogger.get(TestUtil.class);
+
+	public static final String nl = System.lineSeparator();
 
 	/**
 	 * Convience method to handle sucking in the data from a connection.
@@ -74,7 +73,7 @@ public final class TestUtil {
 	/**
 	 * Loads any properties that might be in a given String.
 	 */
-	public static Properties getResponseProperties(String string) throws IOException {
+	private static Properties getResponseProperties(String string) throws IOException {
 		Properties props;
 		ByteArrayInputStream in;
 		byte[] bytes;
@@ -83,17 +82,6 @@ public final class TestUtil {
 		in = new ByteArrayInputStream(bytes);
 		props.load(in);
 		in.close();
-		return props;
-	}
-
-	/**
-	 * One shot method to get Properties directly from a URLConnection.
-	 */
-	public static Properties getResponseProperties(URLConnection connection) throws IOException {
-		Properties props;
-		String input;
-		input = getResponse(connection);
-		props = getResponseProperties(input);
 		return props;
 	}
 
@@ -112,7 +100,7 @@ public final class TestUtil {
 	}
 
 	public static URLConnection sendPostData(Properties p, URL url) throws IOException {
-		TestUtil.logMsg("Openning url connection to: " + url.toString());
+		log.info("Openning url connection to: " + url.toString());
 		URLConnection urlConn = url.openConnection();
 		// Begin POST of properties to SERVLET
 		String argString = TestUtil.toEncodedString(p);
@@ -133,11 +121,11 @@ public final class TestUtil {
 	 * @param s number of seconds
 	 */
 	public static void sleepSec(int s) {
-		logTrace("Sleeping " + s + " seconds");
+		log.config("Sleeping " + s + " seconds");
 		try {
 			Thread.sleep(Duration.ofSeconds(s).toMillis());
 		} catch (InterruptedException e) {
-			logErr("Exception: " + e);
+			log.severe("Exception: " + e);
 		}
 	}
 
@@ -156,11 +144,11 @@ public final class TestUtil {
 	 * @param s number of milliseconds
 	 */
 	public static void sleepMsec(int s) {
-		logTrace("Sleeping " + s + " milliseconds");
+		log.config("Sleeping " + s + " milliseconds");
 		try {
 			Thread.sleep(s);
 		} catch (InterruptedException e) {
-			logErr("Exception: " + e);
+			log.severe("Exception: " + e);
 		}
 	}
 

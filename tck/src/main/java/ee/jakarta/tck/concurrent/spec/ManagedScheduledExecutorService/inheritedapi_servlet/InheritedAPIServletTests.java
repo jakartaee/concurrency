@@ -16,23 +16,17 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
 
-import jakarta.enterprise.concurrent.util.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
-import org.testng.annotations.BeforeClass;
+import java.net.URL;
+
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
-
 public class InheritedAPIServletTests extends TestClient {
-
-	/**
-	 * @class.setup_props: all.props; all properties;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/inheritedapi_web/testServlet");
-	}
+	
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testApiSubmit
@@ -44,8 +38,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiSubmit() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPISUBMIT);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -61,8 +54,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiExecute() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPIEXECUTE);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -78,8 +70,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiInvokeAll() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPIINVOKEALL);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -95,8 +86,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiInvokeAny() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPIINVOKEANY);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -112,8 +102,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiSchedule() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPISCHEDULE);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -129,8 +118,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiScheduleAtFixedRate() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPISCHEDULEATFIXEDRATE);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -146,8 +134,7 @@ public class InheritedAPIServletTests extends TestClient {
 	@Test
 	public void testApiScheduleWithFixedDelay() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_INHERITEDAPI_TESTAPISCHEDULEWITHFIXEDDELAY);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}

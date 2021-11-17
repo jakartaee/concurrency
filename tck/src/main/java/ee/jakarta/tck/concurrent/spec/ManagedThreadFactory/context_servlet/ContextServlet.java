@@ -14,30 +14,29 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.apitests;
+package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context_servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.naming.InitialContext;
 
+import jakarta.enterprise.concurrent.api.common.RunnableTask;
 import jakarta.enterprise.concurrent.api.common.Util;
-
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ManageableThread;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/testServlet")
-public class TestServlet extends HttpServlet {
+public class ContextServlet extends TestServlet {
 
-	@Resource(lookup = "java:comp/DefaultManagedThreadFactory")
-	private ManagedThreadFactory factory;
+	private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
+
+	private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
+
+	private static final String TEST_CLASSLOADER_CLASS_NAME = "com.sun.ts.tests.concurrency.spec.ManagedThreadFactory.context_servlet.TestServlet";
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
@@ -51,23 +50,17 @@ public class TestServlet extends HttpServlet {
 			out = res.getWriter();
 
 			InitialContext context = new InitialContext();
+			ManagedThreadFactory factory = (ManagedThreadFactory) context
+					.lookup(Util.MANAGED_THREAD_FACTORY_SVC_JNDI_NAME);
 
-			String opName = req.getParameter(APITests.SERVLET_OP_ATTR_NAME);
-			if (APITests.SERVLET_OP_INTERRUPTTHREADAPITEST.equals(opName)) {
-				CounterRunnable task = new CounterRunnable();
+			String opName = req.getParameter(ContextServletTests.SERVLET_OP_ATTR_NAME);
+			if (ContextServletTests.SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST.equals(opName)) {
+				CounterRunnableWithContext task = new CounterRunnableWithContext();
 				Thread thread = factory.newThread(task);
 				thread.start();
-				thread.interrupt();
 				Util.waitTillThreadFinish(thread);
-
-				Util.assertEquals(0, task.getCount());
+				Util.assertEquals(1, task.getCount());
 			} else {
-				CounterRunnable task = new CounterRunnable();
-				Thread thread = factory.newThread(task);
-				if (!(thread instanceof ManageableThread)) {
-					throw new RuntimeException(
-							"The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
-				}
 			}
 
 			out.println(Util.SERVLET_RETURN_SUCCESS);
@@ -83,20 +76,20 @@ public class TestServlet extends HttpServlet {
 		}
 	}
 
-	public static class CounterRunnable implements Runnable {
+	public static class CounterRunnableWithContext extends RunnableTask {
 		private volatile int count = 0;
 
 		public int getCount() {
 			return count;
 		}
 
+		public CounterRunnableWithContext() {
+			super(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME);
+		}
+
 		public void run() {
-			try {
-				Thread.sleep(Util.COMMON_CHECK_INTERVAL);
-				count++;
-			} catch (InterruptedException ignore) {
-				return;
-			}
+			super.run();
+			count++;
 		}
 	}
 }

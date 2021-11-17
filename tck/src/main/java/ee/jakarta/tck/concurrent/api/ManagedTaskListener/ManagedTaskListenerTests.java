@@ -23,8 +23,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.api.common.Util;
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;

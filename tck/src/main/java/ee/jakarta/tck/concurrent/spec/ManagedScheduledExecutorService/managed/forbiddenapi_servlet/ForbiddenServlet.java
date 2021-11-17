@@ -29,8 +29,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/testServlet")
-public class TestServlet extends CounterServlet {
+@WebServlet("/forbiddenServlet")
+public class ForbiddenServlet extends CounterServlet {
 
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 

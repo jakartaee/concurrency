@@ -29,54 +29,20 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
-
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 import jakarta.annotation.Resource;
 
 public class TransactionTests extends TestClient {
 
-	private static final TestLogger log = TestLogger.get(TransactionTests.class);
-
-	private String appendedURL = "";
-
-	private String username, password;
-
-	@Resource(lookup = Constants.DS_JNDI_NAME)
-	private static DataSource ds;
-
-	private Connection conn;
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort; ts_home; Driver, the Driver
-	 * name; db1, the database name with url; user1, the database user name;
-	 * password1, the database password; db2, the database name with url; user2, the
-	 * database user name; password2, the database password; DriverManager, flag for
-	 * DriverManager; ptable, the primary table; ftable, the foreign table; cofSize,
-	 * the initial size of the ptable; cofTypeSize, the initial size of the ftable;
-	 * binarySize, size of binary data type; varbinarySize, size of varbinary data
-	 * type; longvarbinarySize, size of longvarbinary data type;
-	 * 
-	 * @class.testArgs: -ap tssql.stmt
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-	}
-
-	@AfterClass // TODO AfterClass or AfterTest
-	public void cleanupTest() {
-		try {
-			removeTestData();
-		} catch (Exception e) {
-			cleanupFailure(e);
-		}
-	}
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testCommitTransactionWithManagedThreadFactory
@@ -97,8 +63,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(Util.getUrl(Constants.TX_SERVLET_URI, host, port) + appendedURL + "&" + Constants.PARAM_COMMIT
-					+ "=true");
+			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=true").withTestName("invokeTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -126,8 +91,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(Util.getUrl(Constants.TX_SERVLET_URI, host, port) + appendedURL + "&" + Constants.PARAM_COMMIT
-					+ "=false");
+			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=false").withTestName("invokeTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -153,8 +117,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(Util.getUrl(Constants.TX_SERVLET_URI, host, port) + appendedURL + "&" + Constants.PARAM_COMMIT
-					+ "=" + Constants.PARAM_VALUE_CANCEL);
+			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=" + Constants.PARAM_VALUE_CANCEL).withTestName("invokeTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -162,39 +125,5 @@ public class TransactionTests extends TestClient {
 			e.printStackTrace();
 		}
 		assertEquals(testName + " failed to get successful result.", Message.SUCCESSMESSAGE, resp);
-	}
-
-	private String appendedURL(Properties p) throws UnsupportedEncodingException {
-		StringBuffer sb = new StringBuffer("?");
-		sb.append(Constants.USERNAME + "=" + p.get(Constants.USERNAME));
-		sb.append("&");
-		sb.append(Constants.PASSWORD + "=" + p.get(Constants.PASSWORD));
-		sb.append("&");
-		sb.append(Constants.TABLE_P + "=" + Constants.TABLE_P);
-		sb.append("&");
-		sb.append(Constants.SQL_TEMPLATE + "=" + URLEncoder.encode(p.get(Constants.SQL_TEMPLATE).toString(), "utf8"));
-		return sb.toString();
-	}
-
-	private void removeTestData() throws RemoteException {
-		log.info("removeTestData");
-
-		// init connection.
-		conn = Util.getConnection(ds, username, password, true);
-		String removeString = props.getProperty("Dbschema_Concur_Delete", "");
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(removeString);
-			stmt.close();
-		} catch (Exception e) {
-			throw new RemoteException(e.getMessage());
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 }

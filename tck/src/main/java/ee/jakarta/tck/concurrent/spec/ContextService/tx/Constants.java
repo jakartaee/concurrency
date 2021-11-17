@@ -20,7 +20,7 @@ final public class Constants {
 	private Constants() {
 	};
 
-	public static final String DS_JNDI_NAME = "jdbc/DB1";
+	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/DB1";
 
 	public static final String TABLE_P = "concurrencetable";
 
@@ -28,6 +28,8 @@ final public class Constants {
 
 	public static final String PASSWORD = "password1";
 
-	public static final String SQL_TEMPLATE = "Dbschema_Concur_Insert";
+	public static final String SQL_TEMPLATE_INSERT = "insert into concurrencetable values(?, ?)";
+
+	public static final String SQL_TEMPLATE_DELETE = "delete from concurrencetable";
 
 }

@@ -19,7 +19,7 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.transaction.UserTransaction;
 

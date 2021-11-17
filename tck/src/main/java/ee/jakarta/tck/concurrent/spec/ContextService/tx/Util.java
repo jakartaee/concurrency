@@ -26,8 +26,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
-
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 import jakarta.transaction.Transaction;
@@ -165,7 +163,7 @@ public class Util {
 	}
 
 	public static Connection getConnection(boolean autoCommit, String username, String password) {
-		DataSource ds = Util.lookup("jdbc/DB1");
+		DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
 		Connection conn = Util.getConnection(ds, username, password, autoCommit);
 		return conn;
 	}

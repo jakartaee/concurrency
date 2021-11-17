@@ -17,78 +17,23 @@
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
 
-import javax.sql.DataSource;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
 
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
-
-import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class TransactionTests extends TestClient {
 
 	private static final TestLogger log = TestLogger.get(TransactionTests.class);
 
-	private String appendedURL = "";
-
-	private String username, password, tablename, testURL;
-
-	@Resource(lookup = Constants.DS_JNDI_NAME)
-	private static DataSource ds;
-
-	private Connection conn;
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort; ts_home; Driver, the Driver
-	 * name; db1, the database name with url; user1, the database user name;
-	 * password1, the database password; db2, the database name with url; user2, the
-	 * database user name; password2, the database password; DriverManager, flag for
-	 * DriverManager; ptable, the primary table; ftable, the foreign table; cofSize,
-	 * the initial size of the ptable; cofTypeSize, the initial size of the ftable;
-	 * binarySize, size of binary data type; varbinarySize, size of varbinary data
-	 * type; longvarbinarySize, size of longvarbinary data type;
-	 *
-	 * @class.testArgs: -ap tssql.stmt
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/concurrency_spec_ContextService_tx_web");
-
-		try {
-			tablename = props.getProperty(Constants.TABLE_P);
-			appendedURL = appendedURL(props);
-			username = props.getProperty(Constants.USERNAME);
-			password = props.getProperty(Constants.PASSWORD);
-			testURL = "http://" + host + ":" + port + getURLContext() + "/TxServlet" + appendedURL;
-			removeTestData();
-		} catch (Exception e) {
-			setupFailure(e);
-		}
-	}
-
-	@AfterClass // TODO AfterClass or AfterTest
-	public void cleanup() {
-		try {
-			removeTestData();
-		} catch (Exception e) {
-			cleanupFailure(e);
-		}
-	}
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testTransactionOfExecuteThreadAndCommit
@@ -108,7 +53,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(testURL + "&methodname=TransactionOfExecuteThreadAndCommitTest");
+			url = URLBuilder.get().withBaseURL(baseURL).withTestName("TransactionOfExecuteThreadAndCommitTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -139,7 +84,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(testURL + "&methodname=TransactionOfExecuteThreadAndRollbackTest");
+			url = URLBuilder.get().withBaseURL(baseURL).withTestName("TransactionOfExecuteThreadAndRollbackTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -171,7 +116,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(testURL + "&methodname=SuspendAndCommitTest");
+			url = URLBuilder.get().withBaseURL(baseURL).withTestName("SuspendAndCommitTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -203,7 +148,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(testURL + "&methodname=SuspendAndRollbackTest");
+			url = URLBuilder.get().withBaseURL(baseURL).withTestName("SuspendAndRollbackTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -235,7 +180,7 @@ public class TransactionTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL(testURL + "&methodname=DefaultAndCommitTest");
+			url = URLBuilder.get().withBaseURL(baseURL).withTestName("DefaultAndCommitTest").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -248,37 +193,4 @@ public class TransactionTests extends TestClient {
 				resp.trim()); // actual
 	}
 
-	private String appendedURL(Properties p) throws UnsupportedEncodingException {
-		StringBuffer sb = new StringBuffer("?");
-		sb.append(Constants.USERNAME + "=" + p.get(Constants.USERNAME));
-		sb.append("&");
-		sb.append(Constants.PASSWORD + "=" + p.get(Constants.PASSWORD));
-		sb.append("&");
-		sb.append(Constants.TABLE_P + "=" + Constants.TABLE_P);
-		sb.append("&");
-		sb.append(Constants.SQL_TEMPLATE + "=" + URLEncoder.encode(p.get(Constants.SQL_TEMPLATE).toString(), "utf8"));
-		return sb.toString();
-	}
-
-	private void removeTestData() throws RemoteException {
-		log.info("removeTestData");
-
-		// init connection.
-		conn = Util.getConnection(ds, username, password, true);
-		String removeString = props.getProperty("Dbschema_Concur_Delete", "");
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(removeString);
-			stmt.close();
-		} catch (Exception e) {
-			throw new RemoteException(e.getMessage());
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
 }

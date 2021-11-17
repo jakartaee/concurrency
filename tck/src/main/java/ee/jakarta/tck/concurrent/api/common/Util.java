@@ -27,7 +27,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
 import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;

@@ -20,25 +20,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ContextPropagationTests extends TestClient {
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort; ts_home; all.props; all
-	 * properties;
-	 *
-	 */
-
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/ContextPropagate_web");
-	}
+	
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testJNDIContextAndCreateProxyInServlet
@@ -57,7 +49,7 @@ public class ContextPropagationTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL("http://" + host + ":" + port + getURLContext() + "/JNDIServlet?action=createProxyInServlet");
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("JNDIServlet").withQueries("action=createProxyInServlet").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -88,7 +80,7 @@ public class ContextPropagationTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL("http://" + host + ":" + port + getURLContext() + "/JNDIServlet?action=createProxyInEJB");
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("JNDIServlet").withQueries("action=createProxyInEJB").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -117,7 +109,7 @@ public class ContextPropagationTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL("http://" + host + ":" + port + getURLContext() + "/ClassloaderServlet");
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ClassloaderServlet").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -147,7 +139,7 @@ public class ContextPropagationTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL("http://" + host + ":" + port + getURLContext() + "/SecurityServlet");
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("SecurityServlet").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

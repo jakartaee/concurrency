@@ -24,17 +24,16 @@ import javax.naming.InitialContext;
 
 import jakarta.enterprise.concurrent.api.common.CommonTriggers;
 import jakarta.enterprise.concurrent.api.common.Util;
-
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/testServlet")
-public class TestServlet extends HttpServlet {
+@WebServlet("/securityServlet")
+public class SecurityServlet extends TestServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);

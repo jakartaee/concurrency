@@ -16,23 +16,17 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
 
-import jakarta.enterprise.concurrent.util.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
-import org.testng.annotations.BeforeClass;
+import java.net.URL;
+
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
-
-import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
 
 public class ForbiddenAPIServletTests extends TestClient {
 
-	/**
-	 * @class.setup_props: all.props; all properties;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/forbiddenapi_web/testServlet");
-	}
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testAwaitTermination
@@ -44,8 +38,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Test
 	public void testAwaitTermination() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTAWAITTERMINATION);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -61,8 +54,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Test
 	public void testIsShutdown() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISSHUTDOWN);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -78,8 +70,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Test
 	public void testIsTerminated() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISTERMINATED);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -95,8 +86,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Test
 	public void testShutdown() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWN);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}
@@ -112,8 +102,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Test
 	public void testShutdownNow() {
 		try {
-			ConcurrencyTestUtils.sendClientRequest2Url(HTTP, host, port, getURLContext(),
-					ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWNNOW);
+			runTest(baseURL, testName);
 		} catch (Exception e) {
 			fail(e);
 		}

@@ -37,9 +37,7 @@ public class TransactedTask implements Runnable {
 	public void run() {
 		boolean pass = false;
 		Connection conn = null;
-//    String tableName = TestUtil.getProperty(Constants.TABLE_P,
-//    Constants.DEFAULT_PTABLE); //TODO figure out way to get this property
-		String tableName = "placeholder";
+		String tableName = Constants.TABLE_P;
 		int originCount = Util.getCount(tableName, username, password);
 
 		UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);

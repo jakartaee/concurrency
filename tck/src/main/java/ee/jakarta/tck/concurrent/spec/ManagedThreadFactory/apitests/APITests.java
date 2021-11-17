@@ -20,29 +20,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.api.common.Util;
 
 public class APITests extends TestClient {
+	
+	@ArquillianResource
+	URL baseURL;
 
 	public static final String SERVLET_OP_INTERRUPTTHREADAPITEST = "interruptThreadApiTest";
 
 	public static final String SERVLET_OP_IMPLEMENTSMANAGEABLETHREADINTERFACETEST = "implementsManageableThreadInterfaceTest";
 
 	public static final String SERVLET_OP_ATTR_NAME = "opName";
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/apitests_web/testServlet");
-	}
 
 	/*
 	 * @testName: interruptThreadApiTest
@@ -58,11 +53,9 @@ public class APITests extends TestClient {
 	public void interruptThreadApiTest() {
 
 		try {
-			URL url = new URL(HTTP, host, port, getURLContext());
-
 			Properties prop = new Properties();
 			prop.put(SERVLET_OP_ATTR_NAME, SERVLET_OP_INTERRUPTTHREADAPITEST);
-			URLConnection urlConn = TestUtil.sendPostData(prop, url);
+			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
 			String s = TestUtil.getResponse(urlConn);
 			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
 		} catch (Exception e) {
@@ -81,11 +74,9 @@ public class APITests extends TestClient {
 	public void implementsManageableThreadInterfaceTest() {
 
 		try {
-			URL url = new URL(HTTP, host, port, getURLContext());
-
 			Properties prop = new Properties();
 			prop.put(SERVLET_OP_ATTR_NAME, SERVLET_OP_IMPLEMENTSMANAGEABLETHREADINTERFACETEST);
-			URLConnection urlConn = TestUtil.sendPostData(prop, url);
+			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
 			String s = TestUtil.getResponse(urlConn);
 			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
 		} catch (Exception e) {

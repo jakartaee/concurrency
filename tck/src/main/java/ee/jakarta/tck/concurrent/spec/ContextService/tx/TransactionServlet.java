@@ -16,30 +16,38 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URLDecoder;
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.Enumeration;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings("serial")
-@WebServlet("/TxServlet")
-public class TxServlet extends HttpServlet {
+@WebServlet("/TransactionServlet")
+@DataSourceDefinition(name = "java:comp/env/jdbc/DB1", className = "org.apache.derby.jdbc.EmbeddedDataSource", databaseName = "memory:DB1", user = "user1", password = "password1", properties = {
+		"createDatabase=create" })
+public class TransactionServlet extends TestServlet {
+
+	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
+
+	@Resource(lookup = "java:comp/env/jdbc/DB1")
+	DataSource ds;
 
 	@Resource(lookup = "java:comp/DefaultContextService")
 	private ContextService cx;
@@ -47,34 +55,34 @@ public class TxServlet extends HttpServlet {
 	@Resource(lookup = "java:comp/UserTransaction")
 	private UserTransaction ut;
 
-	private static final String METHOD_PARAM_NAME = "methodname";
-
-	private String tableName;
-
-	private String username;
-
-	private String password;
-
-	private String sqlTemplate;
+	@Override
+	protected void before() throws Exception {
+		removeTestData();
+	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void after() throws Exception {
+		removeTestData();
+	}
 
-		String methodName = req.getParameter(METHOD_PARAM_NAME);
-		Map<String, String> params = null;
+	private void removeTestData() throws RemoteException {
+		log.info("removeTestData");
+
+		// init connection.
+		Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true);
 		try {
-			params = formatMap(req);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(Constants.SQL_TEMPLATE_DELETE);
+			stmt.close();
+		} catch (Exception e) {
+			throw new RemoteException(e.getMessage());
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		username = params.get(Constants.USERNAME);
-		password = params.get(Constants.PASSWORD);
-		tableName = params.get(Constants.TABLE_P);
-		sqlTemplate = params.get(Constants.SQL_TEMPLATE);
-
-		String s = (String) invoke(this, methodName, new Class[] {}, new Object[] {});
-
-		resp.getWriter().write(s);
 	}
 
 	public String TransactionOfExecuteThreadAndCommitTest() throws ServletException {
@@ -83,10 +91,10 @@ public class TxServlet extends HttpServlet {
 		Connection conn2 = null;
 
 		try {
-			int originCount = Util.getCount(tableName, username, password);
+			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 			ut.begin();
-			conn = Util.getConnection(false, username, password);
-			pStmt = conn.prepareStatement(sqlTemplate);
+			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
+			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
 			pStmt.setInt(1, 99);
 			pStmt.setString(2, "Type-99");
 			pStmt.addBatch();
@@ -96,15 +104,15 @@ public class TxServlet extends HttpServlet {
 			pStmt.executeBatch();
 
 			TestWorkInterface work = new TestTxWork();
-			work.setUserName(username);
-			work.setPassword(password);
-			work.setSQLTemplate(sqlTemplate);
+			work.setUserName(Constants.USERNAME);
+			work.setPassword(Constants.PASSWORD);
+			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			Map<String, String> m = new HashMap();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
 			ut.commit();
-			int afterTransacted = Util.getCount(tableName, username, password);
+			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 
 			return String.valueOf(afterTransacted - originCount);
 		} catch (Exception e) {
@@ -127,10 +135,10 @@ public class TxServlet extends HttpServlet {
 		Connection conn2 = null;
 
 		try {
-			int originCount = Util.getCount(tableName, username, password);
+			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 			ut.begin();
-			conn = Util.getConnection(false, username, password);
-			pStmt = conn.prepareStatement(sqlTemplate);
+			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
+			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
 			pStmt.setInt(1, 99);
 			pStmt.setString(2, "Type-99");
 			pStmt.addBatch();
@@ -140,15 +148,15 @@ public class TxServlet extends HttpServlet {
 			pStmt.executeBatch();
 
 			TestWorkInterface work = new TestTxWork();
-			work.setUserName(username);
-			work.setPassword(password);
-			work.setSQLTemplate(sqlTemplate);
+			work.setUserName(Constants.USERNAME);
+			work.setPassword(Constants.PASSWORD);
+			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			Map<String, String> m = new HashMap();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
 			ut.rollback();
-			int afterTransacted = Util.getCount(tableName, username, password);
+			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 
 			return String.valueOf(afterTransacted - originCount);
 		} catch (Exception e) {
@@ -171,10 +179,10 @@ public class TxServlet extends HttpServlet {
 		Connection conn2 = null;
 
 		try {
-			int originCount = Util.getCount(tableName, username, password);
+			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 			ut.begin();
-			conn = Util.getConnection(false, username, password);
-			pStmt = conn.prepareStatement(sqlTemplate);
+			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
+			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
 			pStmt.setInt(1, 99);
 			pStmt.setString(2, "Type-99");
 			pStmt.addBatch();
@@ -183,9 +191,9 @@ public class TxServlet extends HttpServlet {
 			pStmt.addBatch();
 			pStmt.executeBatch();
 			TestWorkInterface work = new TestTxWork();
-			work.setUserName(username);
-			work.setPassword(password);
-			work.setSQLTemplate(sqlTemplate);
+			work.setUserName(Constants.USERNAME);
+			work.setPassword(Constants.PASSWORD);
+			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			work.needBeginTx(true);
 			work.needCommit(true);
 			Map<String, String> m = new HashMap();
@@ -193,7 +201,7 @@ public class TxServlet extends HttpServlet {
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
 			ut.rollback();
-			int afterTransacted = Util.getCount(tableName, username, password);
+			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 
 			return String.valueOf(afterTransacted - originCount);
 		} catch (Exception e) {
@@ -216,10 +224,10 @@ public class TxServlet extends HttpServlet {
 		Connection conn2 = null;
 
 		try {
-			int originCount = Util.getCount(tableName, username, password);
+			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 			ut.begin();
-			conn = Util.getConnection(false, username, password);
-			pStmt = conn.prepareStatement(sqlTemplate);
+			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
+			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
 			pStmt.setInt(1, 99);
 			pStmt.setString(2, "Type-99");
 			pStmt.addBatch();
@@ -228,9 +236,9 @@ public class TxServlet extends HttpServlet {
 			pStmt.addBatch();
 			pStmt.executeBatch();
 			TestWorkInterface work = new TestTxWork();
-			work.setUserName(username);
-			work.setPassword(password);
-			work.setSQLTemplate(sqlTemplate);
+			work.setUserName(Constants.USERNAME);
+			work.setPassword(Constants.PASSWORD);
+			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			work.needBeginTx(true);
 			work.needRollback(true);
 			Map<String, String> m = new HashMap();
@@ -238,7 +246,7 @@ public class TxServlet extends HttpServlet {
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
 			ut.commit();
-			int afterTransacted = Util.getCount(tableName, username, password);
+			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 
 			return String.valueOf(afterTransacted - originCount);
 		} catch (Exception e) {
@@ -261,10 +269,10 @@ public class TxServlet extends HttpServlet {
 		Connection conn2 = null;
 
 		try {
-			int originCount = Util.getCount(tableName, username, password);
+			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 			ut.begin();
-			conn = Util.getConnection(false, username, password);
-			pStmt = conn.prepareStatement(sqlTemplate);
+			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
+			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
 			pStmt.setInt(1, 99);
 			pStmt.setString(2, "Type-99");
 			pStmt.addBatch();
@@ -273,16 +281,16 @@ public class TxServlet extends HttpServlet {
 			pStmt.addBatch();
 			pStmt.executeBatch();
 			TestWorkInterface work = new TestTxWork();
-			work.setUserName(username);
-			work.setPassword(password);
-			work.setSQLTemplate(sqlTemplate);
+			work.setUserName(Constants.USERNAME);
+			work.setPassword(Constants.PASSWORD);
+			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			work.needBeginTx(true);
 			work.needCommit(true);
 			TestWorkInterface proxy = cx.createContextualProxy(work, TestWorkInterface.class);
 			proxy.doSomeWork();
 			ut.rollback();
-			// int afterTransacted = Util.getCount(tableName, conn);
-			int afterTransacted = Util.getCount(tableName, username, password);
+			// int afterTransacted = Util.getCount(Constants.TABLE_P, conn);
+			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 
 			return String.valueOf(afterTransacted - originCount);
 		} catch (Exception e) {
@@ -333,16 +341,5 @@ public class TxServlet extends HttpServlet {
 		} catch (IllegalAccessException e) {
 			throw new ServletException(e);
 		}
-	}
-
-	private Map<String, String> formatMap(HttpServletRequest req) throws UnsupportedEncodingException {
-		Map<String, String> props = new HashMap<String, String>();
-		Enumeration<String> params = req.getParameterNames();
-		while (params.hasMoreElements()) {
-			String name = (String) params.nextElement();
-			String value = req.getParameter(name);
-			props.put(name, URLDecoder.decode(value, "utf8"));
-		}
-		return props;
 	}
 }

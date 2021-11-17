@@ -18,22 +18,65 @@ package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.tx;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import javax.sql.DataSource;
+
+import jakarta.annotation.Resource;
+import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name = Constants.TX_SERVLET_NAME, urlPatterns = { Constants.TX_SERVLET_URI })
-public class TransactionServlet extends HttpServlet {
+@WebServlet("/TransactionServlet")
+@DataSourceDefinition(name = "java:comp/env/jdbc/DB1", className = "org.apache.derby.jdbc.EmbeddedDataSource", databaseName = "memory:DB1", user = "user1", password = "password1", properties = {
+		"createDatabase=create" })
+public class TransactionServlet extends TestServlet {
+
+	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
+
+	@Resource(lookup = "java:comp/env/jdbc/DB1")
+	private static DataSource ds;
+
+	@Override
+	protected void before() throws Exception {
+		removeTestData();
+	}
+
+	@Override
+	protected void after() throws Exception {
+		removeTestData();
+	}
+
+	private void removeTestData() throws RemoteException {
+		log.info("removeTestData");
+
+		// init connection.
+		Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true);
+		// FIXME String removeString = props.getProperty("Dbschema_Concur_Delete", "");
+		String removeString = "FIXME";
+		try {
+			Statement stmt = conn.createStatement();
+			stmt.executeUpdate(removeString);
+			stmt.close();
+		} catch (Exception e) {
+			throw new RemoteException(e.getMessage());
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * A basic implementation of the <code>doGet</code> method.
@@ -60,22 +103,15 @@ public class TransactionServlet extends HttpServlet {
 	}
 
 	private void invokeTest(HttpServletRequest req, HttpServletResponse res) {
-		Map<String, String> params = null;
-		try {
-			params = formatMap(req);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-
 		boolean passed = false;
-		String param = params.get(Constants.PARAM_COMMIT);
+		String param = req.getParameter(Constants.PARAM_COMMIT);
 		if (Constants.PARAM_VALUE_CANCEL.equals(param)) {
-			passed = cancelTest(res, params);
+			passed = cancelTest(res);
 		} else {
 			boolean isCommit = Boolean.parseBoolean(param);
 			ManagedThreadFactory factory = Util.getManagedThreadFactory();
-			Thread thread = factory.newThread(new TransactedTask(isCommit, params.get(Constants.USERNAME),
-					params.get(Constants.PASSWORD), params.get(Constants.SQL_TEMPLATE)));
+			Thread thread = factory.newThread(new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD,
+					Constants.SQL_TEMPLATE_INSERT));
 			thread.start();
 			try {
 				Util.waitTillThreadFinish(thread);
@@ -93,13 +129,10 @@ public class TransactionServlet extends HttpServlet {
 		}
 	}
 
-	private boolean cancelTest(HttpServletResponse res, Map<String, String> params) {
-		String username = params.get(Constants.USERNAME);
-		String password = params.get(Constants.PASSWORD);
-		String tablename = params.get(Constants.TABLE_P);
-		String sqlTemplate = params.get(Constants.SQL_TEMPLATE);
-		int originTableCount = Util.getCount(tablename, username, password);
-		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(username, password, sqlTemplate);
+	private boolean cancelTest(HttpServletResponse res) {
+		int originTableCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
+		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
+				Constants.SQL_TEMPLATE_INSERT);
 		ManagedThreadFactory factory = Util.getManagedThreadFactory();
 		Thread thread = factory.newThread(cancelledTask);
 		thread.start();
@@ -109,7 +142,7 @@ public class TransactionServlet extends HttpServlet {
 		cancelledTask.cancelTask();
 		// continue to run if possible.
 		cancelledTask.resume();
-		int afterTransacted = Util.getCount(tablename, username, password);
+		int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 		return originTableCount == afterTransacted;
 	}
 
@@ -123,16 +156,5 @@ public class TransactionServlet extends HttpServlet {
 		} finally {
 			pw.close();
 		}
-	}
-
-	private Map<String, String> formatMap(HttpServletRequest req) throws UnsupportedEncodingException {
-		Map<String, String> props = new HashMap<String, String>();
-		Enumeration<String> params = req.getParameterNames();
-		while (params.hasMoreElements()) {
-			String name = (String) params.nextElement();
-			String value = req.getParameter(name);
-			props.put(name, URLDecoder.decode(value, "utf8"));
-		}
-		return props;
 	}
 }

@@ -37,8 +37,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/testServlet")
-public class TestServlet extends CounterServlet {
+@WebServlet("/InheritedAPIServlet")
+public class InheritedAPIServlet extends CounterServlet {
 
 	protected void setupTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		StaticCounter.reset();

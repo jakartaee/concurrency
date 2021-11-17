@@ -25,7 +25,7 @@ import javax.naming.InitialContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 import jakarta.enterprise.concurrent.api.common.Util;
 import jakarta.enterprise.concurrent.common.counter.CounterCallableTask;
 import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;

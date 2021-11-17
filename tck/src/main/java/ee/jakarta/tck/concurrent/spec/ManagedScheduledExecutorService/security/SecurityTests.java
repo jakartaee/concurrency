@@ -20,23 +20,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.api.common.Util;
 
 public class SecurityTests extends TestClient {
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/SecurityTest_web/testServlet");
-	}
+	
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: managedScheduledExecutorServiceAPISecurityTest
@@ -51,8 +46,7 @@ public class SecurityTests extends TestClient {
 	public void managedScheduledExecutorServiceAPISecurityTest() {
 
 		try {
-			URL url = new URL(HTTP, host, port, getURLContext());
-			URLConnection urlConn = TestUtil.sendPostData(new Properties(), url);
+			URLConnection urlConn = TestUtil.sendPostData(new Properties(), baseURL);
 			String s = TestUtil.getResponse(urlConn);
 			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
 		} catch (Exception e) {

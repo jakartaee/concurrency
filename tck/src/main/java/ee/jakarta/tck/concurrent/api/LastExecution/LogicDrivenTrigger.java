@@ -18,7 +18,7 @@ package jakarta.enterprise.concurrent.api.LastExecution;
 
 import java.util.Date;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;

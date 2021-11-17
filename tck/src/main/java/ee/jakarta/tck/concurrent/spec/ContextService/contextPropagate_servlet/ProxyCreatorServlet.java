@@ -27,17 +27,18 @@ import java.util.Properties;
 import javax.naming.NamingException;
 
 import java.util.Base64;
-import jakarta.enterprise.concurrent.util.TestUtil;
+
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 @WebServlet("/ProxyCreatorServlet")
-public class ProxyCreatorServlet extends HttpServlet {
+public class ProxyCreatorServlet extends TestServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

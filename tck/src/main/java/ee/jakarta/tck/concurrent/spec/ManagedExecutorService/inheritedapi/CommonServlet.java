@@ -26,15 +26,15 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 @WebServlet(name = Constants.COMMON_SERVLET_NAME, urlPatterns = { Constants.COMMON_SERVLET_URI })
-public class CommonServlet extends HttpServlet {
+public class CommonServlet extends TestServlet {
 	// try the inject
 	@Resource
 	ManagedExecutorService mes;

@@ -20,24 +20,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ContextPropagationServletTests extends TestClient {
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort; ts_home; all.props; all
-	 * properties;
-	 *
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/ContextPropagate_servlet1_web");
-	}
+	
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testJNDIContextInServlet
@@ -55,9 +48,8 @@ public class ContextPropagationServletTests extends TestClient {
 	public void testJNDIContextInServlet() {
 		URL url;
 		String resp = null;
-		try {
-			url = new URL(
-					"http://" + host + ":" + port + getURLContext() + "/ProxyCreatorServlet?action=createJNDIWork");
+		try {	
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ProxyCreatorServlet").withQueries("action=createJNDIWork").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -87,8 +79,7 @@ public class ContextPropagationServletTests extends TestClient {
 		URL url;
 		String resp = null;
 		try {
-			url = new URL("http://" + host + ":" + port + getURLContext()
-					+ "/ProxyCreatorServlet?action=createClassloaderWork");
+			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ProxyCreatorServlet").withQueries("action=createClassloaderWork").withTestName("service").build();
 			resp = TestUtil.getResponse(url.openConnection());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

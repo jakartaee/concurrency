@@ -22,14 +22,14 @@ import java.util.concurrent.TimeUnit;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(Constants.SERVLET_TEST_URL)
-public class TestServlet extends HttpServlet {
+public class ForbiddenServlet extends TestServlet {
 	@Resource
 	private ManagedExecutorService mes;
 

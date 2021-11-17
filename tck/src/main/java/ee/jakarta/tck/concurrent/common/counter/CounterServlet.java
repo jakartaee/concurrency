@@ -20,14 +20,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
-
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class CounterServlet extends HttpServlet {
+public class CounterServlet extends TestServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);

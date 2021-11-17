@@ -25,7 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
@@ -65,10 +65,6 @@ public class Util {
 			}
 		}
 		return targetObject;
-	}
-
-	public static String getUrl(String servletUri, String host, int port) {
-		return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
 	}
 
 }

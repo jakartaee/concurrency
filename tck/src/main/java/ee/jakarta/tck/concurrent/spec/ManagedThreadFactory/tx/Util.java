@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
@@ -43,8 +43,6 @@ public class Util {
 	private static final TestLogger log = TestLogger.get(Util.class);
 
 	private static final String MANAGED_THREAD_FACTORY_SVC_JNDI_NAME = "java:comp/DefaultManagedThreadFactory";
-
-	private Connection conn;
 
 	private Util() {
 	}
@@ -91,10 +89,6 @@ public class Util {
 			log.severe("failed to get connection.", e);
 		}
 		return conn;
-	}
-
-	public static String getUrl(String servletUri, String host, int port) {
-		return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
 	}
 
 	public static int getCount(String tableName, String username, String password) {
@@ -192,13 +186,6 @@ public class Util {
 		// printProperties(props);
 		return props;
 
-	}
-
-	private static void printProperties(Properties props) {
-		Set<String> propertyNames = props.stringPropertyNames();
-		for (String key : propertyNames) {
-			log.info(key + " = " + props.getProperty(key));
-		}
 	}
 
 	public static void waitForTransactionBegan(CancelledTransactedTask pp, long maxListenerWaitTime, int poolInterval) {

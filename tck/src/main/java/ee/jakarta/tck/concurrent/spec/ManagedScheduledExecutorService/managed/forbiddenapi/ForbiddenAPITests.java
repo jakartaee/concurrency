@@ -16,7 +16,7 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
-import jakarta.enterprise.concurrent.util.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
 import org.testng.annotations.Test;
 

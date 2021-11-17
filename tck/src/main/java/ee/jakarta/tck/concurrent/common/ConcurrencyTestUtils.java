@@ -16,14 +16,9 @@
 
 package jakarta.enterprise.concurrent.common;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 import java.util.concurrent.Future;
 
 import javax.naming.InitialContext;
-
-import jakarta.enterprise.concurrent.util.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
@@ -144,15 +139,4 @@ public class ConcurrencyTestUtils {
 			}
 		}
 	}
-
-	public static void sendClientRequest2Url(String protocol, String hostname, int portnum, String urlString,
-			String testName) throws Exception {
-		URL url = new URL(protocol, hostname, portnum, testName);
-		Properties prop = new Properties();
-		prop.put(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME, testName);
-		URLConnection urlConn = TestUtil.sendPostData(prop, url);
-		String result = TestUtil.getResponse(urlConn);
-		ConcurrencyTestUtils.assertEquals(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS, result.trim());
-	}
-
 }

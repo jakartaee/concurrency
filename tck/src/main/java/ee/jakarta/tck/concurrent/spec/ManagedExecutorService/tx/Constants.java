@@ -22,19 +22,11 @@ final public class Constants {
 
 	public static final String UT_JNDI_NAME = "java:comp/UserTransaction";
 
-	public static final String CONTEXT_PATH = "/concurrency_spec_managedExecutorService_tx_web";
-
-	public static final String DS_JNDI_NAME = "jdbc/DB1";
-
-	public static final String TX_SERVLET_NAME = "tx";
-
-	public static final String TX_SERVLET_URI = "/tx";
+	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/DB1";
 
 	public static final String PARAM_COMMIT = "isCommit";
 
 	public static final String PARAM_VALUE_CANCEL = "cancel";
-
-	public static final String DEFAULT_PTABLE = "concurrencetable";
 
 	public static final String TABLE_P = "concurrencetable";
 
@@ -42,5 +34,8 @@ final public class Constants {
 
 	public static final String PASSWORD = "password1";
 
-	public static final String SQL_TEMPLATE = "Dbschema_Concur_Insert";
+	public static final String SQL_TEMPLATE_INSERT = "insert into concurrencetable values(?, ?)";
+
+	public static final String SQL_TEMPLATE_DELETE = "delete from concurrencetable";
+
 }

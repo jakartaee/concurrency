@@ -20,30 +20,25 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.api.common.Util;
 
 public class ContextTests extends TestClient {
+	
+	@ArquillianResource
+	URL baseURL;
 
 	public static final String SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST = "jndiClassloaderPropagationTest";
 
 	public static final String SERVLET_OP_SECURITYPROPAGATIONTEST = "securityPropagationTest";
 
 	public static final String SERVLET_OP_ATTR_NAME = "opName";
-
-	/*
-	 * @class.setup_props: webServerHost; webServerPort;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/context_web/testServlet");
-	}
-
+	
 	/*
 	 * @testName: jndiClassloaderPropagationTest
 	 * 
@@ -56,11 +51,9 @@ public class ContextTests extends TestClient {
 	public void jndiClassloaderPropagationTest() {
 
 		try {
-			URL url = new URL(HTTP, host, port, getURLContext());
-
 			Properties prop = new Properties();
 			prop.put(SERVLET_OP_ATTR_NAME, SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST);
-			URLConnection urlConn = TestUtil.sendPostData(prop, url);
+			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
 			String s = TestUtil.getResponse(urlConn);
 			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
 		} catch (Exception e) {

@@ -30,7 +30,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
@@ -86,10 +86,6 @@ public class Util {
 			log.severe("failed to get connection.", e);
 		}
 		return conn;
-	}
-
-	public static String getUrl(String servletUri, String host, int port) {
-		return "http://" + host + ":" + port + Constants.CONTEXT_PATH + servletUri;
 	}
 
 	public static int getCount(String tableName, String username, String password) {

@@ -22,22 +22,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.util.TestClient;
-import jakarta.enterprise.concurrent.util.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ForbiddenAPIServletTests extends TestClient {
 
-	/**
-	 * @class.setup_props: all.props; all properties;
-	 */
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		loadServerProperties();
-		setURLContext("/forbiddenapiTest_web");
-	}
+	@ArquillianResource
+	URL baseURL;
 
 	/*
 	 * @testName: testAwaitTermination
@@ -117,11 +113,9 @@ public class ForbiddenAPIServletTests extends TestClient {
 	private String request(String operation) {
 		String result = "";
 		Properties prop = new Properties();
-		URL url;
 		try {
-			url = new URL(HTTP, host, port, getURLContext() + Constants.SERVLET_TEST_URL);
 			prop.put(Constants.OP_NAME, operation);
-			URLConnection urlConn = TestUtil.sendPostData(prop, url);
+			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
 			result = TestUtil.getResponse(urlConn);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

@@ -22,14 +22,14 @@ import java.io.Serializable;
 import javax.naming.NamingException;
 
 import jakarta.ejb.EJB;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/JNDIServlet")
-public class JNDIServlet extends HttpServlet {
+public class JNDIServlet extends TestServlet {
 
 	@EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
 	private ContextPropagateInterface intf;

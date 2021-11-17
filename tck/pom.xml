@@ -52,6 +52,7 @@
         <jakarta.annotation.version>2.0.0</jakarta.annotation.version>
         
         <testng.version>6.14.3</testng.version>
+        <arquillian.version>1.6.0.Final</arquillian.version>
     </properties>
     <dependencies>
         <dependency>
@@ -82,6 +83,12 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <version>${arquillian.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
