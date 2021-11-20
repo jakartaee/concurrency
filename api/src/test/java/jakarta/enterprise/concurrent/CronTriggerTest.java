@@ -870,6 +870,39 @@ public class CronTriggerTest {
     }
 
     /**
+     * Confirm proper advancement from 59 seconds into the next minute, and so forth.
+     */
+    @Test
+    public void testTriggerAdvancesAcrossUnits() {
+        ZoneId Hawaii = ZoneId.of("Pacific/Honolulu");
+
+        CronTrigger trigger = new CronTrigger(Hawaii)
+                .seconds("*/20")
+                .minutes("*/15")
+                .hours("*/12")
+                .daysOfMonth("1/8")
+                .months("JAN/6");
+
+        ZonedDateTime scheduledAt = ZonedDateTime.of(
+                2020, 12, 31, // Thursday, December 31, 2020
+                23, 59, 59, 0, // 11:59:59 PM
+                trigger.getZoneId());
+
+        ZonedDateTime time;
+        time = trigger.getNextRunTime(null, scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 0, 0, Hawaii), time);
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 20, 0, Hawaii), time);
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 40, 0, Hawaii), time);
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 15, 0, 0, Hawaii), time);
+    }
+
+    /**
      * Specify a cron expression that very infrequently matches, such as leap days that are Fridays.
      */
     @Test

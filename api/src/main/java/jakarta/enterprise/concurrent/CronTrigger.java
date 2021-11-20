@@ -431,7 +431,7 @@ public class CronTrigger implements ZonedTrigger {
      * @return next date/time according to the cron schedule, or the original time if it matches.
      */
     protected ZonedDateTime next(final ZonedDateTime from) {
-        ZonedDateTime time = from.getNano() == 0 ? from : from.withNano(0).withSecond(from.getSecond() + 1);
+        ZonedDateTime time = from.getNano() == 0 ? from : from.plusSeconds(1).withNano(0);
 
         for (int i = 0; i < 1000 /** just in case expression never matches */ && time != null; ++i) {
             int year = time.getYear();
