@@ -20,6 +20,7 @@ import java.util.Date;
 
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 
 public class CommonTriggers {
 
@@ -72,7 +73,7 @@ public class CommonTriggers {
 
 		private int executionCount = 0;
 
-		private static final int executionCountLimit = 10;
+		private static final int executionCountLimit = TestConstants.PollsPerTimeout * 2;
 
 		public TriggerFixedRate(Date startTime, long delta) {
 			this.startTime = startTime;

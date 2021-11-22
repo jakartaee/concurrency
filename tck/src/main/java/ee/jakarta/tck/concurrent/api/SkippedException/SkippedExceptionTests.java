@@ -16,17 +16,25 @@
 
 package jakarta.enterprise.concurrent.api.SkippedException;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.SkippedException;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
-public class SkippedExceptionTests extends TestClient {
+public class SkippedExceptionTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(SkippedExceptionTests.class);
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="SkippedException")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), SkippedExceptionTests.class.getPackage());
+	}
 
 	/*
 	 * @testName: SkippedExceptionNoArgTest

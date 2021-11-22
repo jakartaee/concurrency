@@ -16,24 +16,31 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.testng.annotations.BeforeClass;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ForbiddenAPIServletTests extends TestClient {
 
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ManagedExecutorService.managed_servlet.forbiddenapi", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ForbiddenAPIServletTests.class.getPackage());
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "ForbiddenServlet";
+	}
 
 	/*
 	 * @testName: testAwaitTermination
@@ -45,8 +52,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testAwaitTermination() {
-		String res = request(Constants.OP_AWAITTERMINATION);
-		checkResponse(res);
+		runTest(baseURL);
 	}
 
 	/*
@@ -59,8 +65,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testIsShutdown() {
-		String res = request(Constants.OP_ISSHUTDOWN);
-		checkResponse(res);
+		runTest(baseURL);
 	}
 
 	/*
@@ -73,8 +78,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testIsTerminated() {
-		String res = request(Constants.OP_ISTERMINATED);
-		checkResponse(res);
+		runTest(baseURL);
 	}
 
 	/*
@@ -87,8 +91,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testShutdown() {
-		String res = request(Constants.OP_SHUTDOWN);
-		checkResponse(res);
+		runTest(baseURL);
 	}
 
 	/*
@@ -101,29 +104,6 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testShutdownNow() {
-		String res = request(Constants.OP_SHUTDOWNNOW);
-		checkResponse(res);
+		runTest(baseURL);
 	}
-
-	private void checkResponse(String responseStr) {
-		assertEquals(testName + " failed to get successful response.", Constants.SUCCESSMESSAGE, // expected
-				responseStr); // actual
-	}
-
-	private String request(String operation) {
-		String result = "";
-		Properties prop = new Properties();
-		try {
-			prop.put(Constants.OP_NAME, operation);
-			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
-			result = TestUtil.getResponse(urlConn);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
-
 }

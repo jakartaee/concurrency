@@ -16,69 +16,38 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.apitests;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.naming.InitialContext;
-
-import jakarta.enterprise.concurrent.api.common.Util;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/APIServlet")
+@WebServlet("APIServlet")
 public class APIServlet extends TestServlet {
 
-	@Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+	@Resource(lookup = TestConstants.DefaultManagedThreadFactory)
 	private ManagedThreadFactory factory;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		doPost(req, res);
+	public void interruptThreadApiTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		CounterRunnable task = new CounterRunnable();
+		Thread thread = factory.newThread(task);
+		thread.start();
+		thread.interrupt();
+		TestUtil.waitTillThreadFinish(thread);
+		TestUtil.assertEquals(0, task.getCount());
 	}
-
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		PrintWriter out = null;
-
-		try {
-			res.setContentType("text/plain");
-			out = res.getWriter();
-
-			InitialContext context = new InitialContext();
-
-			String opName = req.getParameter(APITests.SERVLET_OP_ATTR_NAME);
-			if (APITests.SERVLET_OP_INTERRUPTTHREADAPITEST.equals(opName)) {
-				CounterRunnable task = new CounterRunnable();
-				Thread thread = factory.newThread(task);
-				thread.start();
-				thread.interrupt();
-				Util.waitTillThreadFinish(thread);
-
-				Util.assertEquals(0, task.getCount());
-			} else {
-				CounterRunnable task = new CounterRunnable();
-				Thread thread = factory.newThread(task);
-				if (!(thread instanceof ManageableThread)) {
-					throw new RuntimeException(
-							"The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
-				}
-			}
-
-			out.println(Util.SERVLET_RETURN_SUCCESS);
-		} catch (Exception e) {
-			if (out != null) {
-				out.println(Util.SERVLET_RETURN_FAIL);
-				out.println(e);
-			}
-		} finally {
-			if (null != out) {
-				out.close();
-			}
+	
+	public void implementsManageableThreadInterfaceTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		CounterRunnable task = new CounterRunnable();
+		Thread thread = factory.newThread(task);
+		if (!(thread instanceof ManageableThread)) {
+			throw new RuntimeException(
+					"The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
 		}
 	}
 
@@ -91,7 +60,7 @@ public class APIServlet extends TestServlet {
 
 		public void run() {
 			try {
-				Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+				TestUtil.sleep(TestConstants.PollInterval);
 				count++;
 			} catch (InterruptedException ignore) {
 				return;

@@ -16,73 +16,56 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.naming.InitialContext;
 
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.api.common.Util;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.api.common.RunnableTask;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 public class SecurityServlet extends TestServlet {
+	
+	@EJB
+	private SecurityTestRemote str;
 
 	private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
 
 	private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
 
-	private static final String TEST_CLASSLOADER_CLASS_NAME = "com.sun.ts.tests.concurrency.spec.ManagedThreadFactory.context.TestServlet";
+	private static final String TEST_CLASSLOADER_CLASS_NAME = SecurityServlet.class.getCanonicalName();
 
-	private static final String SECURITYTESTEJB_JNDI_NAME = "java:global/context/context_ejb/SecurityTestEjb";
-
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		doPost(req, res);
-	}
-
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		PrintWriter out = null;
-
-		try {
-			res.setContentType("text/plain");
-			out = res.getWriter();
+	public void jndiClassloaderPropagationTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
 			InitialContext context = new InitialContext();
 			ManagedThreadFactory factory = (ManagedThreadFactory) context
-					.lookup(Util.MANAGED_THREAD_FACTORY_SVC_JNDI_NAME);
+					.lookup(TestConstants.DefaultManagedThreadFactory);
 
-			String opName = req.getParameter(ContextTests.SERVLET_OP_ATTR_NAME);
-			if (ContextTests.SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST.equals(opName)) {
-				CounterRunnableWithContext task = new CounterRunnableWithContext();
-				Thread thread = factory.newThread(task);
-				thread.start();
-				Util.waitTillThreadFinish(thread);
-				Util.assertEquals(1, task.getCount());
-			} else {
-				req.login("javajoe", "javajoe");
-				CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck();
-				Thread thread = factory.newThread(task);
-				thread.start();
-				Util.waitTillThreadFinish(thread);
-				Util.assertEquals(1, task.getCount());
-			}
-
-			out.println(Util.SERVLET_RETURN_SUCCESS);
-		} catch (Exception e) {
-			if (out != null) {
-				out.println(Util.SERVLET_RETURN_FAIL);
-				out.println(e);
-			}
-		} finally {
-			if (null != out) {
-				out.close();
-			}
-		}
+			CounterRunnableWithContext task = new CounterRunnableWithContext();
+			Thread thread = factory.newThread(task);
+			thread.start();
+			TestUtil.waitTillThreadFinish(thread);
+			TestUtil.assertEquals(1, task.getCount());
 	}
+	
+	public void jndiClassloaderPropagationWithSecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+
+		req.login("javajoe", "javajoe");
+		
+		InitialContext context = new InitialContext();
+		ManagedThreadFactory factory = (ManagedThreadFactory) context
+				.lookup(TestConstants.DefaultManagedThreadFactory);
+
+		CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
+		Thread thread = factory.newThread(task);
+		thread.start();
+		TestUtil.waitTillThreadFinish(thread);
+		TestUtil.assertEquals(1, task.getCount());
+}
 
 	public static class CounterRunnableWithContext extends RunnableTask {
 		private volatile int count = 0;
@@ -103,6 +86,12 @@ public class SecurityServlet extends TestServlet {
 
 	public static class CounterRunnableWithSecurityCheck implements Runnable {
 		private volatile int count = 0;
+		
+		private SecurityTestRemote str;
+		
+		CounterRunnableWithSecurityCheck(SecurityTestRemote str) {
+			this.str = str;
+		}
 
 		public int getCount() {
 			return count;
@@ -110,9 +99,7 @@ public class SecurityServlet extends TestServlet {
 
 		public void run() {
 			try {
-				InitialContext context = new InitialContext();
-				SecurityTestRemote str = (SecurityTestRemote) context.lookup(SECURITYTESTEJB_JNDI_NAME);
-				Util.assertEquals(SecurityTestRemote.MANAGERMETHOD1_RETURN_STR, str.managerMethod1());
+				TestUtil.assertEquals(TestConstants.SimpleReturnValue, str.managerMethod1());
 			} catch (Exception e) {
 				e.printStackTrace();
 				return;

@@ -16,8 +16,6 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -27,56 +25,17 @@ import java.util.concurrent.TimeUnit;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet(name = Constants.COMMON_SERVLET_NAME, urlPatterns = { Constants.COMMON_SERVLET_URI })
+@WebServlet("CommonServlet")
 public class CommonServlet extends TestServlet {
-	// try the inject
+
 	@Resource
 	ManagedExecutorService mes;
 
-	/**
-	 * A basic implementation of the <code>doGet</code> method.
-	 * 
-	 * @param req - <code>HttpServletRequest</code>
-	 * @param res - <code>HttpServletResponse</code>
-	 * @exception ServletException if an error occurs
-	 * @exception IOException      if an IO error occurs
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		invokeTest(req, res);
-	}
-
-	/**
-	 * A basic implementation of the <code>doPost</code> method.
-	 * 
-	 * @param req - <code>HttpServletRequest</code>
-	 * @param res - <code>HttpServletResponse</code>
-	 * @exception ServletException if an error occurs
-	 * @exception IOException      if an IO error occurs
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		invokeTest(req, res);
-	}
-
-	private void invokeTest(HttpServletRequest req, HttpServletResponse res) {
-		// make sure resource injection is ok.
-		if (null != mes && submitTaskTest() && testAtMostOnce()) {
-			print(res, Message.SUCCESSMESSAGE);
-		} else {
-			print(res, Message.FAILMESSAGE);
-		}
-	}
-
-	private boolean submitTaskTest() {
-		return testExecute() && testSubmit() && testInvokeAny() && testInvokeAll();
-	}
-
-	private boolean testExecute() {
+	public void testExecute() {
 		Task<?> commonTask = new Task.CommonTask(0);
 		mes.execute(commonTask);
 		// wait for a while.
@@ -85,22 +44,19 @@ public class CommonServlet extends TestServlet {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return commonTask.isRan();
 	}
 
-	private boolean testSubmit() {
+	public void testSubmit() {
 		Task<?> commonTask = new Task.CommonTask(0);
 		Future<?> noRes = mes.submit((Runnable) commonTask);
 		try {
-			Util.waitForTaskComplete(noRes, 3 * 1000);
+			TestUtil.waitForTaskComplete(noRes);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return commonTask.isRan();
 	}
 
-	private boolean testInvokeAny() {
-		boolean passed = false;
+	public void testInvokeAny() {
 		Task.CommonTask commonTask0 = new Task.CommonTask(0);
 		Task.CommonTask commonTask1 = new Task.CommonTask(1);
 		List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
@@ -114,14 +70,12 @@ public class CommonServlet extends TestServlet {
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		if (tasks.get(res).isRan()) {
-			passed = true;
+		if (!tasks.get(res).isRan()) {
+			throw new RuntimeException("failed to run any tasks");
 		}
-		return passed;
 	}
 
-	private boolean testInvokeAll() {
-		boolean passed = false;
+	public void testInvokeAll() {
 		Task.CommonTask commonTask0 = new Task.CommonTask(0);
 		Task.CommonTask commonTask1 = new Task.CommonTask(1);
 		List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
@@ -130,40 +84,29 @@ public class CommonServlet extends TestServlet {
 		List<Future<Integer>> res = null;
 		try {
 			res = mes.invokeAll(tasks);
-			Util.waitForTaskComplete(res.get(0), Constants.MAX_WAIT_TIME);
-			Util.waitForTaskComplete(res.get(1), Constants.MAX_WAIT_TIME);
+			TestUtil.waitForTaskComplete(res.get(0));
+			TestUtil.waitForTaskComplete(res.get(1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (commonTask0.isRan() && commonTask1.isRan()) {
-			passed = true;
+		if (!commonTask0.isRan() || !commonTask1.isRan()) {
+			throw new RuntimeException("failed to run all tasks");
 		}
-		return passed;
 	}
 
-	private boolean testAtMostOnce() {
+	public void testAtMostOnce() {
 		Task.CommonTask commonTask = new Task.CommonTask(0);
 		Future<?> future = mes.submit((Runnable) commonTask);
 		try {
-			Util.waitForTaskComplete(future, Constants.MAX_WAIT_TIME);
+			TestUtil.waitForTaskComplete(future);
 			// check number.
-			return (commonTask.runCount() == 1);
+			if (commonTask.runCount() == 1) {
+				return; //expected
+			} else {
+				throw new RuntimeException("failed to run task exactly once");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
 	}
-
-	private void print(HttpServletResponse res, String msg) {
-		PrintWriter pw = null;
-		try {
-			pw = res.getWriter();
-			pw.print(msg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			pw.close();
-		}
-	}
-
 }

@@ -16,17 +16,31 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
+
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
 public class InheritedAPIServletTests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ManagedScheduledExecutorService.inheritedapi_servlet", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonCounterPackage(), InheritedAPIServletTests.class.getPackage());
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "InheritedAPIServlet";
+	}
 
 	/*
 	 * @testName: testApiSubmit
@@ -37,11 +51,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiSubmit() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -53,11 +63,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiExecute() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -69,11 +75,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiInvokeAll() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -85,11 +87,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiInvokeAny() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -101,11 +99,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiSchedule() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -117,11 +111,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiScheduleAtFixedRate() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -133,11 +123,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiScheduleWithFixedDelay() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 }

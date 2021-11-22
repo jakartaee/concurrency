@@ -19,22 +19,32 @@ package jakarta.enterprise.concurrent.api.ManagedTask;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
-
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.api.common.RunnableTask;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 
-public class ManagedTaskTests extends TestClient {
+public class ManagedTaskTests extends ArquillianTests {
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="ManagedTask")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), ManagedTaskTests.class.getPackage());
+	}
 
-	private static final String ENV_ENTRY_JNDI_NAME = "java:comp/env/StringValue";
-
-	private static final String ENV_ENTRY_VALUE = "something";
-
-	private ManagedTaskListenerImpl managedTaskListener;
+	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
+	
+	private RunnableTask createRunnableTask() {
+		//Task never actually run
+		return new RunnableTask("java:comp/env/StringValue", "FakeValue", this.getClass().getName());
+	}
 
 	/*
 	 * @testName: GetExecutionProperties
@@ -55,10 +65,9 @@ public class ManagedTaskTests extends TestClient {
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			if (managedTask.getExecutionProperties().get("key") == "value")
-				pass = true;
+			assertTrue(testName + " failed to get expected property", managedTask.getExecutionProperties().get("key") == "value");
 		}
-		assertTrue(testName + " failed to get expected property", pass);
+		
 	}
 
 	/*
@@ -75,19 +84,10 @@ public class ManagedTaskTests extends TestClient {
 		properties.put("key", "value");
 		RunnableTask runnableTask = createRunnableTask();
 		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-		boolean pass = false;
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			if (managedTask.getManagedTaskListener() == managedTaskListener) {
-				pass = true;
-			}
+			assertTrue(testName + " failed to get expected managedTaskListener", managedTask.getManagedTaskListener() == managedTaskListener);
 		}
-		assertTrue(testName + " failed to get expected managedTaskListener", pass);
 	}
-
-	private RunnableTask createRunnableTask() {
-		return new RunnableTask(ENV_ENTRY_JNDI_NAME, ENV_ENTRY_VALUE, this.getClass().getName());
-	}
-
 }

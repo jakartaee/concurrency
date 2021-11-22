@@ -19,9 +19,15 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 public class TransactedTask implements Runnable {
+	
+	private static final TestLogger log = TestLogger.get(TransactedTask.class);
+	
 	private final boolean isCommit;
 
 	private final String username, password, sqlTemplate;
@@ -36,20 +42,18 @@ public class TransactedTask implements Runnable {
 	@Override
 	public void run() {
 		boolean pass = false;
-		Connection conn = null;
 		String tableName = Constants.TABLE_P;
 		int originCount = Util.getCount(tableName, username, password);
 
-		UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
+		UserTransaction ut = TestUtil.lookup(TestConstants.UserTransaction);
 		if (ut == null) {
 			// error if no transaction can be obtained in task.
 			throw new RuntimeException("didn't get user transaction inside the submitted task.");
 		} else {
-
+			Connection conn = Util.getConnection(false, username, password);
 			PreparedStatement pStmt = null;
 			try {
 				ut.begin();
-				conn = Util.getConnection(false, username, password);
 				pStmt = conn.prepareStatement(sqlTemplate);
 				String sTypeDesc = "Type-99";
 				int newType = 99;
@@ -70,26 +74,24 @@ public class TransactedTask implements Runnable {
 					pass = (afterTransacted == originCount);
 				}
 			} catch (Exception e) {
+				log.severe("Got exception when trying to run TransactedTask", e);
 				try {
 					ut.rollback();
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					log.finer("Got exception when trying to do rollback on failed test", e1);
 				}
-				e.printStackTrace();
 			} finally {
 				try {
 					pStmt.close();
 					conn.close();
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.finer("Got exception when trying to close connection and statment", e);
 				}
 			}
-
 			if (!pass) {
 				throw new RuntimeException("didn't get expected result with transacted task.");
 			}
 		}
-
 	}
 
 }

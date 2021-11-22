@@ -16,7 +16,11 @@
 
 package jakarta.enterprise.concurrent.api.common.counter;
 
+import java.time.Duration;
+
 import javax.naming.InitialContext;
+
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class CounterRunnableTask implements Runnable {
 
@@ -35,7 +39,7 @@ public class CounterRunnableTask implements Runnable {
 	public void run() {
 		try {
 			if (sleepTime > 0) {
-				Thread.sleep(sleepTime);
+				TestUtil.sleep(Duration.ofMillis(sleepTime));
 			}
 
 			InitialContext context = new InitialContext();

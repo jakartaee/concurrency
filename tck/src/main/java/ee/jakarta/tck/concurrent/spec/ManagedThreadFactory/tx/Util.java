@@ -17,62 +17,20 @@
 package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.tx;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class Util {
 
 	private static final TestLogger log = TestLogger.get(Util.class);
 
-	private static final String MANAGED_THREAD_FACTORY_SVC_JNDI_NAME = "java:comp/DefaultManagedThreadFactory";
-
 	private Util() {
-	}
-
-	public static <T> T waitForTaskComplete(final Future<T> future, final int maxTaskWaitTime)
-			throws InterruptedException, ExecutionException, TimeoutException {
-		T result = null;
-		result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
-		return result;
-	}
-
-	public static ManagedThreadFactory getManagedThreadFactory() {
-		return lookup(MANAGED_THREAD_FACTORY_SVC_JNDI_NAME);
-	}
-
-	public static <T> T lookup(String jndiName) {
-		Context ctx = null;
-		T targetObject = null;
-		try {
-			ctx = new InitialContext();
-			targetObject = (T) ctx.lookup(jndiName);
-		} catch (Exception e) {
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-				log.severe("failed to lookup resource.", e);
-			}
-		}
-		return targetObject;
 	}
 
 	public static Connection getConnection(DataSource ds, String user, String pwd, boolean autoCommit) {
@@ -148,64 +106,17 @@ public class Util {
 	}
 
 	public static Connection getConnection(boolean autoCommit, String username, String password) {
-		DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
+		DataSource ds = TestUtil.lookup(Constants.DS_JNDI_NAME);
 		Connection conn = Util.getConnection(ds, username, password, autoCommit);
 		return conn;
 	}
 
-	public static Connection getConnection(String dbURL, String propsString, boolean autoCommit) {
-		Connection conn = null;
-		try {
-
-			conn = DriverManager.getConnection(dbURL, strToProps(propsString));
-			if (conn != null) {
-				conn.setAutoCommit(autoCommit);
-			}
-
-		} catch (SQLException sqle) {
-			log.severe("failed to get connection.", sqle);
-		}
-		return conn;
-	}
-
-	public static Properties strToProps(String strProps) {
-
-		Properties props = new Properties();
-		log.info("Props String = " + strProps);
-		String strArray[] = strProps.split(":"); // Split the given string into
-													// array of key value pairs
-
-		for (String keyValuePair : strArray) {
-			String strArray2[] = keyValuePair.split("="); // Take the key value pair
-															// and store it into
-															// properties
-			log.info("Setting property " + strArray2[0] + " = " + strArray2[1]);
-			props.setProperty(strArray2[0], strArray2[1]);
-		}
-
-		// printProperties(props);
-		return props;
-
-	}
-
-	public static void waitForTransactionBegan(CancelledTransactedTask pp, long maxListenerWaitTime, int poolInterval) {
-		final long stopTime = System.currentTimeMillis() + maxListenerWaitTime;
+	public static void waitForTransactionBegan(CancelledTransactedTask pp) {
+		final long stopTime = System.currentTimeMillis() + Constants.POLL_TIMEOUT.toMillis();
 		while (!pp.transactionBegin() && System.currentTimeMillis() < stopTime) {
-			TestUtil.sleep(poolInterval);
-		}
-	}
-
-	public static void waitTillThreadFinish(Thread thread) {
-		long start = System.currentTimeMillis();
-
-		while (thread.isAlive()) {
 			try {
-				Thread.sleep(5 * 1000);
+				TestUtil.sleep(Constants.POLL_INTERVAL);
 			} catch (InterruptedException ignore) {
-			}
-
-			if ((System.currentTimeMillis() - start) > 30 * 1000) {
-				throw new RuntimeException("wait task timeout");
 			}
 		}
 	}

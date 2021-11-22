@@ -16,26 +16,36 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.api.common.counter.CounterRemote;
-
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.annotations.Test;
 
 import jakarta.ejb.EJB;
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
 public class InheritedAPITests extends TestClient {
-
-	@EJB(beanName = "TestEjb")
-	static private TestEjbRemote testEjb;
-
-	@EJB(beanName = "CounterSingleton")
-	static private CounterRemote counter;
-
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		counter.reset();
+	
+	public static final String CounterSingletonJNDI = "java:global/inheritedapi/counter_ejb/CounterSingleton";
+	
+	@Deployment(name="ManagedScheduledExecutorService.inheritedapi")
+	public static EnterpriseArchive createDeployment() {
+		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "counter_ejb.jar")
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage() ,getAPICommonCounterPackage())
+				.addAsManifestResource(InheritedAPITests.class.getPackage(), "counter-sun-ejb-jar.xml", "sun-ejb-jar.xml");
+		
+		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inherited_ejb.jar")
+				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage())
+				.addAsManifestResource(InheritedAPITests.class.getPackage(), "inheritedapi-sun-ejb-jar.xml", "sun-ejb-jar.xml");
+		
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
+		
+		return ear;
 	}
+
+	@EJB
+	private TestEjbRemote testEjb;
 
 	/*
 	 * @testName: testApiSubmit

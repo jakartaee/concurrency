@@ -21,59 +21,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.transaction.Transaction;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class Util {
 
 	private static final TestLogger log = TestLogger.get(Util.class);
 
 	private Util() {
-	}
-
-	public static ContextService lookupDefaultContextService() throws NamingException {
-		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			return cs;
-
-		} catch (NamingException e) {
-			throw e;
-		}
-	}
-
-	public static Transaction lookupUserTransaction() throws NamingException {
-		try {
-			InitialContext ctx = new InitialContext();
-			Transaction tx = (Transaction) ctx.lookup("java:comp/UserTransaction");
-			return tx;
-
-		} catch (NamingException e) {
-			throw e;
-		}
-	}
-
-	public static <T> T lookup(String jndiName) {
-		Context ctx = null;
-		T targetObject = null;
-		try {
-			ctx = new InitialContext();
-			targetObject = (T) ctx.lookup(jndiName);
-		} catch (Exception e) {
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-				log.severe("failed to lookup resource.", e);
-			}
-		}
-		return targetObject;
 	}
 
 	public static Connection getConnection(DataSource ds, String user, String pwd, boolean autoCommit) {
@@ -117,7 +74,17 @@ public class Util {
 		return -1;
 	}
 
-	public static int getCount(String tableName, Connection conn) {
+	/**
+	 * get count by specifying connection. the caller should take care of closing
+	 * connection.
+	 * 
+	 * @param conn
+	 * @param tableName
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static int getCount(Connection conn, String tableName, String username, String password) {
 		Statement stmt = null;
 		try {
 			final String queryStr = "select count(*) from " + tableName;
@@ -130,31 +97,7 @@ public class Util {
 			e1.printStackTrace();
 		} finally {
 			try {
-				if (stmt != null)
-					stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return -1;
-	}
-
-	public static int getResults(String tableName, Connection conn) {
-		Statement stmt = null;
-		try {
-			final String queryStr = "select * from " + tableName;
-			stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(queryStr);
-			while (rs.next()) {
-				System.out.println(rs.getString(1));
-				System.out.println(rs.getString(2));
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		} finally {
-			try {
-				if (stmt != null)
-					stmt.close();
+				stmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -163,7 +106,7 @@ public class Util {
 	}
 
 	public static Connection getConnection(boolean autoCommit, String username, String password) {
-		DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
+		DataSource ds = TestUtil.lookup(Constants.DS_JNDI_NAME);
 		Connection conn = Util.getConnection(ds, username, password, autoCommit);
 		return conn;
 	}

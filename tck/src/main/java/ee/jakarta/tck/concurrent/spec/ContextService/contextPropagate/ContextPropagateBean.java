@@ -20,18 +20,20 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 @Local(ContextPropagateInterface.class)
 @Stateless
 public class ContextPropagateBean implements ContextPropagateInterface {
 
-	@Resource(lookup = "java:comp/DefaultManagedThreadFactory")
+	@Resource(lookup = TestConstants.DefaultManagedThreadFactory)
 	private ManagedThreadFactory threadFactory;
 
 	@Override
 	public TestWorkInterface createWorker(String classname) {
 		try {
-			return (TestWorkInterface) Util.lookupDefaultContextService().createContextualProxy(
+			return (TestWorkInterface) TestUtil.getContextService().createContextualProxy(
 					Class.forName(classname).newInstance(), Runnable.class, TestWorkInterface.class);
 		} catch (Exception en) {
 			throw new RuntimeException(en);

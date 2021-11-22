@@ -12,11 +12,13 @@ import java.util.List;
  * annotation to get the URL of the servlet.
  */
 public class URLBuilder {
+	private static final TestLogger log = TestLogger.get(URLBuilder.class);
+	
 	public static final String TEST_METHOD = "testMethod";
 
 	private URL baseURL;
-	private List<String> queries;
-	private List<String> paths;
+	private ArrayList<String> queries;
+	private ArrayList<String> paths;
 	private boolean testNameSet = false;
 
 	private URLBuilder() {
@@ -47,7 +49,7 @@ public class URLBuilder {
 	 */
 	public URLBuilder withQueries(String... queries) {
 		if (this.queries == null) {
-			this.queries = Arrays.asList(queries);
+			this.queries = new ArrayList<>(Arrays.asList(queries));
 		} else {
 			this.queries.addAll(Arrays.asList(queries));
 		}
@@ -63,7 +65,7 @@ public class URLBuilder {
 	 */
 	public URLBuilder withPaths(String... paths) {
 		if (this.paths == null) {
-			this.paths = Arrays.asList(paths);
+			this.paths = new ArrayList<>(Arrays.asList(paths));
 		} else {
 			this.paths.addAll(Arrays.asList(paths));
 		}
@@ -85,7 +87,7 @@ public class URLBuilder {
 		String query = TEST_METHOD + "=" + testName;
 		
 		if (this.queries == null) {
-			this.queries = Arrays.asList(query);
+			this.queries = new ArrayList<>(Arrays.asList(query));
 		} else {
 			this.queries.add(query);
 		}
@@ -96,17 +98,20 @@ public class URLBuilder {
 
 	/**
 	 * This will build the URL tacking on the additional queries, paths, and testName.
-	 * @return
 	 */
 	public URL build() {
 		if (baseURL == null) {
 			throw new RuntimeException("Cannot build URL without a baseURL");
 		}
+		
+		log.enter("build", baseURL, queries, paths);
 
 		URL extendedURL = baseURL;
 
 		extendedURL = extendQuery(extendedURL, queries);
 		extendedURL = extendPath(extendedURL, paths);
+		
+		log.exit("build", extendedURL);
 
 		return extendedURL;
 	}
@@ -114,14 +119,23 @@ public class URLBuilder {
 	public static URL extendQuery(URL baseURL, List<String> queries) {
 		if (queries == null)
 			return baseURL;
-
-		String extendedQuery = baseURL.getQuery();
+		
+		//Get existing query part
+		boolean existingQuery = baseURL.getQuery() != null;
+		String extendedQuery = existingQuery ? "?" + baseURL.getQuery() : "?";
+		
+		//Append additional query parts
 		for (String queryPart : queries) {
-			extendedQuery += "&" + queryPart;
+			extendedQuery += queryPart + "&";
 		}
+		
+		//Cleanup trailing symbol(s)
+		extendedQuery = extendedQuery.substring(0, extendedQuery.length() - 1);
+		
+		//Generate and return new URL
 		try {
 			return new URL(baseURL.getProtocol(), baseURL.getHost(), baseURL.getPort(),
-					baseURL.getPath() + "?" + extendedQuery, null);
+					baseURL.getPath() + extendedQuery, null);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
@@ -130,14 +144,24 @@ public class URLBuilder {
 	public static URL extendPath(URL baseURL, List<String> paths) {
 		if (paths == null)
 			return baseURL;
-
-		String extendedPath = baseURL.getPath();
+		
+		//Get existing path part
+		boolean existingPath = baseURL.getPath() != null;
+		String extendedPath = existingPath ? baseURL.getPath() : "";
+		
+		//Append additional path parts
 		for (String pathPart : paths) {
-			extendedPath += "/" + pathPart;
+			pathPart = pathPart.replace("/", ""); //Remove existing /
+			extendedPath += pathPart + "/";
 		}
+		
+		//cleanup trailing symbol(s)
+		extendedPath = extendedPath.substring(0, extendedPath.length() - 1);
+		
+		//Generate and return new URL
 		try {
 			return new URL(baseURL.getProtocol(), baseURL.getHost(), baseURL.getPort(),
-					extendedPath + "?" + baseURL.getQuery(), null);
+					extendedPath + (baseURL.getQuery() == null ? "" : "?" + baseURL.getQuery()), null);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}

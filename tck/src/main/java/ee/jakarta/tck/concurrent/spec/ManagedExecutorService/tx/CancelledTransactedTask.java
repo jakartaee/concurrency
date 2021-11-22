@@ -18,9 +18,10 @@ package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.time.Duration;
 
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
 import jakarta.transaction.UserTransaction;
 
 public class CancelledTransactedTask implements Runnable {
@@ -53,7 +54,7 @@ public class CancelledTransactedTask implements Runnable {
 	@Override
 	public void run() {
 		Connection conn = Util.getConnection(false, username, password);
-		UserTransaction ut = Util.lookup(Constants.UT_JNDI_NAME);
+		UserTransaction ut = TestUtil.lookup(TestConstants.UserTransaction);
 		if (ut == null) {
 			// error if no transaction can be obtained in task.
 			throw new RuntimeException("didn't get user transaction inside the submitted task.");
@@ -63,7 +64,7 @@ public class CancelledTransactedTask implements Runnable {
 				ut.begin();
 				transactionBegan = true;
 				while (!runFlag) {
-					TestUtil.sleep(500);
+					TestUtil.sleep(Duration.ofMillis(500));
 				}
 				pStmt = conn.prepareStatement(sqlTemplate);
 				String sTypeDesc = "Type-Cancelled-99";

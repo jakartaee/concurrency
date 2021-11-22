@@ -16,7 +16,11 @@
 
 package jakarta.enterprise.concurrent.api.common;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
+
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class CommonTasks {
 
@@ -35,9 +39,9 @@ public class CommonTasks {
 		public String call() {
 			try {
 				if (waitTime != 0) {
-					Thread.sleep(waitTime);
+					TestUtil.sleep(Duration.ofMillis(waitTime));
 				} else {
-					Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+					TestUtil.sleep(TestConstants.PollInterval);
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -49,7 +53,7 @@ public class CommonTasks {
 	public static class SimpleRunnable implements Runnable {
 		public void run() {
 			try {
-				Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+				TestUtil.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -65,7 +69,7 @@ public class CommonTasks {
 
 		public Integer call() {
 			try {
-				Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+				TestUtil.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

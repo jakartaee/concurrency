@@ -24,36 +24,26 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.naming.InitialContext;
-
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.SkippedException;
 import jakarta.enterprise.concurrent.api.common.CommonTriggers;
-import jakarta.enterprise.concurrent.api.common.Util;
 import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
 import jakarta.enterprise.concurrent.common.counter.StaticCounter;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.SkippedException;
-
-public class TriggerTests extends TestClient {
-
-	InitialContext context;
-
-	ManagedScheduledExecutorService executorService;
-
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		try {
-			context = new InitialContext();
-			executorService = (ManagedScheduledExecutorService) context
-					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-			StaticCounter.reset();
-		} catch (Exception e) {
-			setupFailure(e);
-		}
+public class TriggerTests extends ArquillianTests {
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="Trigger")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), getCommonCounterPackage(), TriggerTests.class.getPackage());
 	}
 
 	/*
@@ -64,27 +54,22 @@ public class TriggerTests extends TestClient {
 	 * @test_Strategy: Retrieve the next time that the task should run after.
 	 */
 	@Test
-	public void triggerGetNextRunTimeTest() {
-		ScheduledFuture sf = executorService.schedule(new CounterRunnableTask(),
-				new CommonTriggers.TriggerFixedRate(new Date(), Util.COMMON_CHECK_INTERVAL));
+	public void triggerGetNextRunTimeTest() throws Exception {
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new CounterRunnableTask(),
+				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
 
 		try {
 			if (StaticCounter.getCount() != 0) {
 				throw new RuntimeException("The first trigger is too fast.");
 			}
 
-			Thread.sleep(Util.COMMON_TASK_TIMEOUT);
+			TestUtil.sleep(TestConstants.WaitTimeout);
 			int result = StaticCounter.getCount();
-			if (result < 5 || result > 7) {
-				throw new RuntimeException("task run time should in range 5 to 7: yours is " + result);
-			}
-
-		} catch (Exception e) {
-			fail(e);
+			assertInRange(result, TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
 		} finally {
 			// make sure the task schedule by this case is stop
 			try {
-				Thread.sleep(Util.COMMON_TASK_TIMEOUT * 2);
+				TestUtil.sleep(TestConstants.WaitTimeout.multipliedBy(2));
 			} catch (InterruptedException ignore) {
 			}
 		}
@@ -103,11 +88,11 @@ public class TriggerTests extends TestClient {
 	 */
 	@Test
 	public void triggerSkipRunTest() {
-		ScheduledFuture sf = executorService.schedule(new Callable() {
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new Callable() {
 			public Object call() {
 				return "ok";
 			}
-		}, new CommonTriggers.OnceTriggerDelaySkip(Util.COMMON_CHECK_INTERVAL));
+		}, new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval.toMillis()));
 
 		long start = System.currentTimeMillis();
 		while (!sf.isDone()) {
@@ -118,7 +103,7 @@ public class TriggerTests extends TestClient {
 			} catch (ExecutionException ee) {
 			} catch (TimeoutException | InterruptedException e) {
 			}
-			if ((System.currentTimeMillis() - start) > Util.COMMON_TASK_TIMEOUT) {
+			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
 				fail("wait task timeout");
 			}
 		}

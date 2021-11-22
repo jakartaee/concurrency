@@ -17,27 +17,42 @@
 package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context;
 
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.testng.annotations.BeforeClass;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-import jakarta.enterprise.concurrent.api.common.Util;
 
 public class ContextTests extends TestClient {
 	
-	@ArquillianResource
+	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
-
-	public static final String SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST = "jndiClassloaderPropagationTest";
-
-	public static final String SERVLET_OP_SECURITYPROPAGATIONTEST = "securityPropagationTest";
-
-	public static final String SERVLET_OP_ATTR_NAME = "opName";
+	
+	@Deployment(name="ManagedThreadFactory.context", testable=false)
+	public static EnterpriseArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "Context.war")
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), ContextTests.class.getPackage())
+				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
+		
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "Context_ejb.jar")
+				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
+		
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "Context.ear")
+				.addAsModules(war, jar)
+				.addAsManifestResource(ContextTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+		
+		return ear;
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "SecurityServlet";
+	}
 	
 	/*
 	 * @testName: jndiClassloaderPropagationTest
@@ -49,16 +64,12 @@ public class ContextTests extends TestClient {
 	 */
 	@Test
 	public void jndiClassloaderPropagationTest() {
-
-		try {
-			Properties prop = new Properties();
-			prop.put(SERVLET_OP_ATTR_NAME, SERVLET_OP_JNDICLASSLOADERPROPAGATIONTEST);
-			URLConnection urlConn = TestUtil.sendPostData(prop, baseURL);
-			String s = TestUtil.getResponse(urlConn);
-			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
+	}
+	
+	@Test
+	public void jndiClassloaderPropagationWithSecurityTest() {
+		runTest(baseURL);
 	}
 
 }

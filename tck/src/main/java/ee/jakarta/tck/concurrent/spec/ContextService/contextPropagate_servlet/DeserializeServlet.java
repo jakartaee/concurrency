@@ -23,20 +23,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/DeserializeServlet")
-public class DeserializeServlet extends TestServlet {
+@SuppressWarnings("serial")
+@WebServlet("DeserializeServlet")
+public class DeserializeServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		try {
-			Object proxy = Util.lookupDefaultContextService().createContextualProxy(new TestJNDIRunnableWork(),
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestJNDIRunnableWork(),
 					Runnable.class, TestWorkInterface.class, Serializable.class);
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			ObjectOutputStream out = new ObjectOutputStream(bout);
@@ -45,7 +46,7 @@ public class DeserializeServlet extends TestServlet {
 			byte[] bytes = bout.toByteArray();
 			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
 			proxy = in.readObject();
-			resp.getWriter().write(proxy.toString());
+			resp.getWriter().println(proxy.toString());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

@@ -19,21 +19,26 @@ package jakarta.enterprise.concurrent.api.ContextService;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ManagedTaskListener;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-
-public class ContextServiceTests extends TestClient {
+public class ContextServiceTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(ContextServiceTests.class);
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="ContextService")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ContextServiceTests.class.getPackage());
+	}
 
 	/*
 	 * @testName: ContextServiceWithIntf
@@ -47,12 +52,8 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntf() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Runnable proxy = (Runnable) cs.createContextualProxy(new TestRunnableWork(), Runnable.class);
+			Runnable proxy = (Runnable) TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class);
 			pass = true;
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
 		}
@@ -72,11 +73,7 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntfAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Object proxy = cs.createContextualProxy(new Object(), Runnable.class);
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
+			Object proxy = TestUtil.getContextService().createContextualProxy(new Object(), Runnable.class);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -98,12 +95,8 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntfAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Object proxy = cs.createContextualProxy(null, Runnable.class);
+			Object proxy = TestUtil.getContextService().createContextualProxy(null, Runnable.class);
 			log.info(proxy.toString());
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -124,12 +117,8 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfs() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class);
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class);
 			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
 		}
@@ -149,12 +138,8 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
 					ManagedTaskListener.class);
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -176,12 +161,8 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Object proxy = cs.createContextualProxy(null, Runnable.class, TestWorkInterface.class);
+			Object proxy = TestUtil.getContextService().createContextualProxy(null, Runnable.class, TestWorkInterface.class);
 			log.info(proxy.toString());
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -202,18 +183,12 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntfAndProperties() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Runnable proxy = (Runnable) cs.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class);
+			Runnable proxy = (Runnable) TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class);
 			pass = true;
-
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
 		}
@@ -232,18 +207,13 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfsAndProperties() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class);
 			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
 		}
@@ -263,17 +233,12 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					ManagedTaskListener.class);
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -295,17 +260,12 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(null, execProps, Runnable.class);
+			Object proxy = TestUtil.getContextService().createContextualProxy(null, execProps, Runnable.class);
 			log.info(proxy.toString());
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -327,17 +287,12 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class, ManagedTaskListener.class);
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -359,17 +314,12 @@ public class ContextServiceTests extends TestClient {
 	public void ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
+			Object proxy = TestUtil.getContextService().createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
 			log.info(proxy.toString());
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -391,23 +341,18 @@ public class ContextServiceTests extends TestClient {
 	public void GetExecutionProperties() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = cs.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class);
-			Map<String, String> returnedExecProps = cs.getExecutionProperties(proxy);
+			Map<String, String> returnedExecProps = TestUtil.getContextService().getExecutionProperties(proxy);
 
 			if (!"true".equals(returnedExecProps.get("USE_PARENT_TRANSACTION"))) {
 				log.severe("Expected:true, actual message=" + returnedExecProps.get("USE_PARENT_TRANSACTION"));
 			} else {
 				pass = true;
 			}
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
 		}
@@ -426,12 +371,8 @@ public class ContextServiceTests extends TestClient {
 	public void GetExecutionPropertiesNoProxy() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ContextService cs = (ContextService) ctx.lookup("java:comp/DefaultContextService");
-			Map<String, String> returnedExecProps = cs.getExecutionProperties(new Object());
+			Map<String, String> returnedExecProps = TestUtil.getContextService().getExecutionProperties(new Object());
 			pass = true;
-		} catch (NamingException ne) {
-			log.severe("Failed to lookup default ContextService" + ne);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {

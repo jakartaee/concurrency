@@ -16,16 +16,19 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+
+@SuppressWarnings("serial")
 public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
 
 	@Override
 	protected String work() {
 		try {
-			Thread.currentThread().getContextClassLoader()
-					.loadClass("com.sun.ts.tests.concurrency.spec.ContextService.contextPropagate.ClassloaderServlet");
+			Thread.currentThread().getContextClassLoader().loadClass(
+					"jakarta.enterprise.concurrent.spec.ContextService.contextPropagate.ClassloaderServlet");
 		} catch (ClassNotFoundException e) {
 			return "can not load class in web module from ejb module.";
 		}
-		return "success";
+		return TestConstants.ComplexReturnValue;
 	}
 }

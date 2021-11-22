@@ -24,49 +24,33 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.naming.InitialContext;
-
-import jakarta.enterprise.concurrent.api.common.CommonTasks;
-import jakarta.enterprise.concurrent.api.common.Util;
-import jakarta.enterprise.concurrent.api.common.counter.CounterRemote;
-import jakarta.enterprise.concurrent.api.common.counter.CounterRunnableTask;
-
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.api.common.CommonTasks;
+import jakarta.enterprise.concurrent.api.common.counter.CounterRemote;
+import jakarta.enterprise.concurrent.api.common.counter.CounterRunnableTask;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
 
-	@EJB(beanName = "CounterSingleton")
+	@EJB
 	private CounterRemote counter;
-
-	private String COUNTER_SINGLETON_JNDI = "java:global/inheritedapi/counter_ejb/CounterSingleton";
-
-	private ManagedScheduledExecutorService getService() {
-		try {
-			InitialContext context = new InitialContext();
-			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-			return executorService;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	public void testApiSubmit() {
 		try {
-			Future result = getService().submit(new CommonTasks.SimpleCallable());
-			Util.waitTillFutureIsDone(result);
-			Util.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			Future result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleCallable());
+			TestUtil.waitTillFutureIsDone(result);
+			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 
-			result = getService().submit(new CommonTasks.SimpleRunnable());
-			Util.waitTillFutureIsDone(result);
+			result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable());
+			TestUtil.waitTillFutureIsDone(result);
 			result.get();
 
-			result = getService().submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
-			Util.waitTillFutureIsDone(result);
-			Util.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+			TestUtil.waitTillFutureIsDone(result);
+			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -74,11 +58,12 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testApiExecute() {
 		try {
-			getService().execute(new CounterRunnableTask(COUNTER_SINGLETON_JNDI));
-			Thread.sleep(Util.COMMON_TASK_TIMEOUT);
-			Util.assertEquals(1, counter.getCount());
+			TestUtil.getManagedScheduledExecutorService().execute(new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI));
+			waitForCounter(1);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
+		}finally {
+			counter.reset();
 		}
 	}
 
@@ -88,41 +73,37 @@ public class TestEjb implements TestEjbRemote {
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			List<Future> resultList = getService().invokeAll(taskList);
+			List<Future> resultList = TestUtil.getManagedScheduledExecutorService().invokeAll(taskList);
 			for (Future each : resultList) {
-				Util.waitTillFutureIsDone(each);
+				TestUtil.waitTillFutureIsDone(each);
 			}
-			Util.assertEquals(1, resultList.get(0).get());
-			Util.assertEquals(2, resultList.get(1).get());
-			Util.assertEquals(3, resultList.get(2).get());
+			TestUtil.assertEquals(1, resultList.get(0).get());
+			TestUtil.assertEquals(2, resultList.get(1).get());
+			TestUtil.assertEquals(3, resultList.get(2).get());
 
-			resultList = getService().invokeAll(taskList, Util.COMMON_TASK_TIMEOUT_IN_SECOND, TimeUnit.SECONDS);
+			resultList = TestUtil.getManagedScheduledExecutorService().invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
 			for (Future each : resultList) {
-				Util.waitTillFutureIsDone(each);
+				TestUtil.waitTillFutureIsDone(each);
 			}
-			Util.assertEquals(1, resultList.get(0).get());
-			Util.assertEquals(2, resultList.get(1).get());
-			Util.assertEquals(3, resultList.get(2).get());
+			TestUtil.assertEquals(1, resultList.get(0).get());
+			TestUtil.assertEquals(2, resultList.get(1).get());
+			TestUtil.assertEquals(3, resultList.get(2).get());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		try {
 			List taskList = new ArrayList();
-			taskList.add(new CommonTasks.SimpleCallable(Util.COMMON_TASK_TIMEOUT));
-			taskList.add(new CommonTasks.SimpleCallable(Util.COMMON_TASK_TIMEOUT));
-			List<Future> resultList = getService().invokeAll(taskList, Util.COMMON_CHECK_INTERVAL_IN_SECOND,
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			List<Future> resultList = TestUtil.getManagedScheduledExecutorService().invokeAll(taskList, TestConstants.PollInterval.getSeconds(),
 					TimeUnit.SECONDS);
-			Thread.sleep(Util.COMMON_CHECK_INTERVAL);
 			for (Future each : resultList) {
-				each.get();
+				TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
 			}
-		} catch (CancellationException e) {
-			return;
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		throw new RuntimeException("Task should be cancelled because of timeout");
 	}
 
 	public void testApiInvokeAny() {
@@ -131,22 +112,22 @@ public class TestEjb implements TestEjbRemote {
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			Object result = getService().invokeAny(taskList);
-			Util.assertInRange(new Integer[] { 1, 2, 3 }, result);
+			Object result = TestUtil.getManagedScheduledExecutorService().invokeAny(taskList);
+			TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
 
-			result = getService().invokeAny(taskList, Util.COMMON_TASK_TIMEOUT_IN_SECOND, TimeUnit.SECONDS);
-			Util.assertInRange(new Integer[] { 1, 2, 3 }, result);
+			result = TestUtil.getManagedScheduledExecutorService().invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+			TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		try {
 			List taskList = new ArrayList();
-			taskList.add(new CommonTasks.SimpleCallable(Util.COMMON_TASK_TIMEOUT));
-			taskList.add(new CommonTasks.SimpleCallable(Util.COMMON_TASK_TIMEOUT));
-			Object result = getService().invokeAny(taskList, Util.COMMON_CHECK_INTERVAL_IN_SECOND, TimeUnit.SECONDS);
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			Object result = TestUtil.getManagedScheduledExecutorService().invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 		} catch (TimeoutException e) {
-			return;
+			return; //expected
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -155,15 +136,15 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testApiSchedule() {
 		try {
-			Future result = getService().schedule(new CommonTasks.SimpleCallable(),
-					Util.COMMON_CHECK_INTERVAL_IN_SECOND, TimeUnit.SECONDS);
-			Util.waitTillFutureIsDone(result);
-			Util.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			Future result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleCallable(),
+					TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+			TestUtil.waitTillFutureIsDone(result);
+			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 
-			result = getService().schedule(new CommonTasks.SimpleRunnable(), Util.COMMON_CHECK_INTERVAL_IN_SECOND,
+			result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleRunnable(), TestConstants.PollInterval.getSeconds(),
 					TimeUnit.SECONDS);
-			Util.waitTillFutureIsDone(result);
-			Util.assertEquals(null, result.get());
+			TestUtil.waitTillFutureIsDone(result);
+			TestUtil.assertEquals(null, result.get());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -172,10 +153,10 @@ public class TestEjb implements TestEjbRemote {
 	public void testApiScheduleAtFixedRate() {
 		ScheduledFuture result = null;
 		try {
-			result = getService().scheduleAtFixedRate(new CounterRunnableTask(COUNTER_SINGLETON_JNDI),
-					Util.COMMON_CHECK_INTERVAL_IN_SECOND, Util.COMMON_CHECK_INTERVAL_IN_SECOND, TimeUnit.SECONDS);
-			Thread.sleep(Util.COMMON_TASK_TIMEOUT);
-			Util.asserIntInRange(3, 7, counter.getCount());
+			result = TestUtil.getManagedScheduledExecutorService().scheduleAtFixedRate(new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI),
+					TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+			TestUtil.sleep(TestConstants.WaitTimeout);
+			TestUtil.assertIntInRange(TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2, counter.getCount());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -183,21 +164,24 @@ public class TestEjb implements TestEjbRemote {
 				result.cancel(true);
 				// Sleep to ensure cancel take effect.
 				try {
-					Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+					TestUtil.sleep(TestConstants.PollInterval);
 				} catch (Exception e) {
 				}
 			}
+			counter.reset();
 		}
 	}
 
 	public void testApiScheduleWithFixedDelay() {
 		ScheduledFuture result = null;
 		try {
-			result = getService().scheduleWithFixedDelay(
-					new CounterRunnableTask(COUNTER_SINGLETON_JNDI, Util.COMMON_CHECK_INTERVAL),
-					Util.COMMON_CHECK_INTERVAL_IN_SECOND, Util.COMMON_CHECK_INTERVAL_IN_SECOND, TimeUnit.SECONDS);
-			Thread.sleep(Util.COMMON_TASK_TIMEOUT);
-			Util.asserIntInRange(1, 3, counter.getCount());
+			result = TestUtil.getManagedScheduledExecutorService().scheduleWithFixedDelay(
+					new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI, TestConstants.PollInterval.toMillis()), //task
+					TestConstants.PollInterval.getSeconds(), //initial delay
+					TestConstants.PollInterval.getSeconds(), //delay
+					TimeUnit.SECONDS); //Time units
+			TestUtil.sleep(TestConstants.WaitTimeout);
+			TestUtil.assertIntInRange((TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2, counter.getCount());
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -205,11 +189,26 @@ public class TestEjb implements TestEjbRemote {
 				result.cancel(true);
 				// Sleep to ensure cancel take effect.
 				try {
-					Thread.sleep(Util.COMMON_CHECK_INTERVAL);
+					TestUtil.sleep(TestConstants.PollInterval);
 				} catch (Exception e) {
 				}
 			}
+			counter.reset();
 		}
 	}
+	
+	private void waitForCounter(int expected) {
+		long start = System.currentTimeMillis();
 
+		while (expected != counter.getCount()) {
+			try {
+				TestUtil.sleep(TestConstants.PollInterval);
+			} catch (InterruptedException ignore) {
+			}
+
+			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+				throw new RuntimeException("Static counter did not produce expected counter before timeout. Expected: " + expected + " Actual: " + counter.getCount());
+			}
+		}
+	}
 }

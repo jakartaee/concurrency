@@ -16,51 +16,29 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.security;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.Future;
 
-import jakarta.enterprise.concurrent.api.common.Util;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/SecurityServlet")
+@WebServlet("SecurityServlet")
 public class SecurityServlet extends TestServlet {
-
+	
 	@Resource
 	private ManagedExecutorService mes;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		doPost(req, res);
-	}
-
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		PrintWriter out = null;
+	public void managedExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		req.login("javajoe", "javajoe");
-
-		try {
-			res.setContentType("text/plain");
-			out = res.getWriter();
-			Future<?> future = mes.submit(new SecurityTestTask());
-			Object result = Util.waitForTaskComplete(future, Util.COMMON_TASK_TIMEOUT_IN_SECOND);
-			Util.assertEquals(SecurityTestRemote.MANAGERMETHOD1_RETURN_STR, result);
-			out.println(Util.SERVLET_RETURN_SUCCESS);
-		} catch (Exception e) {
-			if (out != null) {
-				out.println(Util.SERVLET_RETURN_FAIL);
-				out.println(e);
-			}
-		} finally {
-			if (null != out) {
-				out.close();
-			}
-		}
+		Future<?> future = mes.submit(new SecurityTestTask());
+		Object result = TestUtil.waitForTaskComplete(future);
+		TestUtil.assertEquals(TestConstants.SimpleReturnValue, result);
 	}
 
 }

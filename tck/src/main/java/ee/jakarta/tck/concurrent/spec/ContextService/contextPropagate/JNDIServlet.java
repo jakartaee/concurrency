@@ -16,46 +16,34 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
-import java.io.IOException;
 import java.io.Serializable;
-
-import javax.naming.NamingException;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/JNDIServlet")
+@SuppressWarnings("serial")
+@WebServlet("JNDIServlet")
 public class JNDIServlet extends TestServlet {
 
-	@EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
+	@EJB
 	private ContextPropagateInterface intf;
+	
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String action = req.getParameter("action");
-		String result = null;
-		if ("createProxyInServlet".equals(action)) {
-			try {
-				result = intf.executeWorker((TestWorkInterface) Util.lookupDefaultContextService()
-						.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
-								Serializable.class));
+	public void testJNDIContextAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String result = intf.executeWorker((TestWorkInterface) TestUtil.getContextService()
+				.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
+						Serializable.class));
+		resp.getWriter().println(result);
 
-			} catch (NamingException e) {
-				throw new ServletException(e);
-			}
-		}
+	}
 
-		if ("createProxyInEJB".equals(action)) {
-			result = intf
-					.createWorker(
-							"com.sun.ts.tests.concurrency.spec.ContextService.contextPropagate.TestJNDIRunnableWork")
-					.doSomeWork();
-		}
-
+	public void testJNDIContextAndCreateProxyInEJB(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String result = intf.createWorker( TestJNDIRunnableWork.class.getCanonicalName())
+				.doSomeWork();
 		resp.getWriter().println(result);
 	}
 }

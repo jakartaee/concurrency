@@ -16,16 +16,25 @@
 
 package jakarta.enterprise.concurrent.api.AbortedException;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.AbortedException;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
-public class AbortedExceptionTests extends TestClient {
+public class AbortedExceptionTests extends ArquillianTests {
+	
 	private static final TestLogger log = TestLogger.get(AbortedExceptionTests.class);
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="AbortedException")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), AbortedExceptionTests.class.getPackage());
+	}
 
 	/*
 	 * @testName: AbortedExceptionNoArgTest

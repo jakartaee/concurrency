@@ -21,15 +21,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Base64;
 
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/WorkInterfaceServlet")
-public class WorkInterfaceServlet extends TestServlet {
+@WebServlet("WorkInterfaceServlet")
+public class WorkInterfaceServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,7 +37,7 @@ public class WorkInterfaceServlet extends TestServlet {
 		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(proxyAsBytes));
 		try {
 			Object proxy = in.readObject();
-			resp.getWriter().write(((TestWorkInterface) proxy).doSomeWork());
+			resp.getWriter().println(((TestWorkInterface) proxy).doSomeWork());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

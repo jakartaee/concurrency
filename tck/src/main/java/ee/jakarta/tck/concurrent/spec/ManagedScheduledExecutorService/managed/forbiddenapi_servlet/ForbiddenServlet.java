@@ -16,78 +16,82 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
 
-import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.enterprise.concurrent.common.ConcurrencyTestUtils;
-import jakarta.enterprise.concurrent.common.counter.CounterServlet;
-import jakarta.enterprise.concurrent.common.counter.StaticCounter;
+import javax.naming.InitialContext;
 
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.common.counter.StaticCounter;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/forbiddenServlet")
-public class ForbiddenServlet extends CounterServlet {
+@WebServlet("/ForbiddenServlet")
+public class ForbiddenServlet extends TestServlet {
 
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-
-	protected void setupTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		StaticCounter.reset();
-	}
-
-	protected void doTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
-
-		res.setContentType("text/plain");
-		PrintWriter out = res.getWriter();
-		String opName = req.getParameter(ConcurrencyTestUtils.SERVLET_OP_ATTR_NAME);
-		ManagedScheduledExecutorService service = ConcurrencyTestUtils.getManagedScheduledExecutorService();
-
-		if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTAWAITTERMINATION.equals(opName)) {
-			try {
-				service.awaitTermination(10, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalStateException e) {
-				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-				return;
-			}
-			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISSHUTDOWN.equals(opName)) {
-			try {
-				service.isShutdown();
-			} catch (IllegalStateException e) {
-				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-				return;
-			}
-			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTISTERMINATED.equals(opName)) {
-			try {
-				service.isTerminated();
-			} catch (IllegalStateException e) {
-				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-				return;
-			}
-			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWN.equals(opName)) {
-			try {
-				service.shutdown();
-			} catch (IllegalStateException e) {
-				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-				return;
-			}
-			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-		} else if (ConcurrencyTestUtils.SERVLET_OP_FORBIDDENAPI_TESTSHUTDOWNNOW.equals(opName)) {
-			try {
-				service.shutdownNow();
-			} catch (IllegalStateException e) {
-				out.println(ConcurrencyTestUtils.SERVLET_RETURN_SUCCESS);
-				return;
-			}
-			throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	
+	private ManagedScheduledExecutorService getService() {
+		try {
+			InitialContext context = new InitialContext();
+			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
+					.lookup(TestConstants.DefaultManagedScheduledExecutorService);
+			return executorService;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	protected void before() {
+		StaticCounter.reset();
+	}
+	
+	public void testAwaitTermination() {
+		try {
+			getService().awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 
+	public void testIsShutdown() {
+		try {
+			getService().isShutdown();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
+
+	public void testIsTerminated() {
+		try {
+			getService().isTerminated();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
+
+	public void testShutdown() {
+		try {
+			getService().shutdown();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
+
+	public void testShutdownNow() {
+		try {
+			getService().shutdownNow();
+		} catch (IllegalStateException e) {
+			return;
+		}
+		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+	}
 }

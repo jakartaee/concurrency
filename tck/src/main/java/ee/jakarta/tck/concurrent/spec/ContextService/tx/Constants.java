@@ -16,11 +16,19 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
-final public class Constants {
+import java.time.Duration;
+
+public final class Constants {
 	private Constants() {
 	};
+	
+	public static final String UT_JNDI_NAME = "java:comp/UserTransaction";
 
-	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/DB1";
+	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/ContextServiceDB";
+	
+	public static final String DS_DB_NAME = "memory:ContextServiceDB";
+	
+	public static final String CONTEXT_SVC_JNDI_NAME = "java:comp/DefaultContextService";
 
 	public static final String TABLE_P = "concurrencetable";
 
@@ -28,8 +36,15 @@ final public class Constants {
 
 	public static final String PASSWORD = "password1";
 
+	public static final String SQL_TEMPLATE_DROP = "drop table concurrencetable";
+	
+	public static final String SQL_TEMPLATE_CREATE = "create table concurrencetable (TYPE_ID int NOT NULL, TYPE_DESC varchar(32), primary key(TYPE_ID))";
+
 	public static final String SQL_TEMPLATE_INSERT = "insert into concurrencetable values(?, ?)";
 
 	public static final String SQL_TEMPLATE_DELETE = "delete from concurrencetable";
-
+	
+	public static final Duration POLL_INTERVAL = Duration.ofSeconds(1);
+	
+	public static final Duration POLL_TIMEOUT = Duration.ofSeconds(30);
 }

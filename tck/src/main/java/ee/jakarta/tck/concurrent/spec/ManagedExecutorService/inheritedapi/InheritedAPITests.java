@@ -16,20 +16,31 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class InheritedAPITests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ManagedExecutorService.inheritedapi", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "CommonServlet";
+	}
 
 	/*
 	 * @testName: testBasicManagedExecutorService
@@ -47,17 +58,29 @@ public class InheritedAPITests extends TestClient {
 	 * @test_Strategy: test basic function for ManagedExecutorService include
 	 * execute, submit, invokeAny, invokeAll, atMostOnce
 	 */
+	
 	@Test
-	public void testBasicManagedExecutorService() {
-		String resp = null;
-		try {
-			resp = TestUtil.getResponse(baseURL.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(testName + " failed to get successful result.", Message.SUCCESSMESSAGE, // expected
-				resp); // actual
+	public void testExecute() {
+		runTest(baseURL);
+	}
+
+	@Test
+	public void testSubmit() {
+		runTest(baseURL);
+	}
+
+	@Test
+	public void testInvokeAny() {
+		runTest(baseURL);
+	}
+
+	@Test
+	public void testInvokeAll() {
+		runTest(baseURL);
+	}
+
+	@Test
+	public void testAtMostOnce() {
+		runTest(baseURL);
 	}
 }

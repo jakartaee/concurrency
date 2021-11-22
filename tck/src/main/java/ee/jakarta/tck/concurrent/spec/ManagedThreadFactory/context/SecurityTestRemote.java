@@ -16,9 +16,10 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context;
 
-public interface SecurityTestRemote {
+import jakarta.ejb.Remote;
 
-	public static final String MANAGERMETHOD1_RETURN_STR = "ok";
+@Remote
+public interface SecurityTestRemote {
 
 	public String managerMethod1();
 

@@ -31,19 +31,4 @@
       <ejb-name>LimitedBean</ejb-name>
     </session>
   </enterprise-beans>
-
-  <assembly-descriptor>
-    <security-role>
-      <role-name>manager</role-name>
-    </security-role>
-
-    <method-permission>
-      <role-name>manager</role-name>
-      <method>
-        <ejb-name>LimitedBean</ejb-name>
-        <method-name>doSomething</method-name>
-      </method>
-    </method-permission>
-
-  </assembly-descriptor>
 </ejb-jar>

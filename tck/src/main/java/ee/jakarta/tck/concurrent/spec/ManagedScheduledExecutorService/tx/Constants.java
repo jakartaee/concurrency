@@ -16,19 +16,23 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.tx;
 
-final public class Constants {
+import java.time.Duration;
+
+public final class Constants {
 	private Constants() {
 	};
 
-	public static final String UT_JNDI_NAME = "java:comp/UserTransaction";
-
-	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/DB1";
-
+	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/ManagedScheduledExecutorServiceDB";
+	
+	public static final String DS_DB_NAME = "memory:ManagedScheduledExecutorServiceDB";
+	
 	public static final String PARAM_COMMIT = "isCommit";
 
-	public static final String PARAM_VALUE_CANCEL = "cancel";
+	public static final String COMMIT_TRUE = "isCommit=true";
+	
+	public static final String COMMIT_FALSE = "isCommit=false";
 
-	public static final String DEFAULT_PTABLE = "concurrencetable";
+	public static final String COMMIT_CANCEL = "isCommit=cancel";
 
 	public static final String TABLE_P = "concurrencetable";
 
@@ -36,7 +40,15 @@ final public class Constants {
 
 	public static final String PASSWORD = "password1";
 
+	public static final String SQL_TEMPLATE_DROP = "drop table concurrencetable";
+	
+	public static final String SQL_TEMPLATE_CREATE = "create table concurrencetable (TYPE_ID int NOT NULL, TYPE_DESC varchar(32), primary key(TYPE_ID))";
+
 	public static final String SQL_TEMPLATE_INSERT = "insert into concurrencetable values(?, ?)";
 
 	public static final String SQL_TEMPLATE_DELETE = "delete from concurrencetable";
+	
+	public static final Duration POLL_INTERVAL = Duration.ofSeconds(1);
+	
+	public static final Duration POLL_TIMEOUT = Duration.ofSeconds(30);
 }

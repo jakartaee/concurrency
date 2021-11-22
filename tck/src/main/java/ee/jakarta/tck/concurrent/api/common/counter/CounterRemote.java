@@ -16,6 +16,9 @@
 
 package jakarta.enterprise.concurrent.api.common.counter;
 
+import jakarta.ejb.Remote;
+
+@Remote
 public interface CounterRemote {
 
 	public void inc();

@@ -23,7 +23,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 /**
  * the Runnable Task to check the context related job. it verifies : 1, load

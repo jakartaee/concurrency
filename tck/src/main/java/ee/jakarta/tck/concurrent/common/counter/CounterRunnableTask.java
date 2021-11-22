@@ -16,6 +16,10 @@
 
 package jakarta.enterprise.concurrent.common.counter;
 
+import java.time.Duration;
+
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+
 public class CounterRunnableTask implements Runnable {
 	private long sleepTime = 0;
 
@@ -29,7 +33,7 @@ public class CounterRunnableTask implements Runnable {
 	public void run() {
 		try {
 			if (sleepTime > 0) {
-				Thread.sleep(sleepTime);
+				TestUtil.sleep(Duration.ofMillis(sleepTime));
 			}
 			StaticCounter.inc();
 		} catch (Exception e) {

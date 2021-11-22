@@ -16,21 +16,51 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ContextPropagationTests extends TestClient {
 	
-	@ArquillianResource
-	URL baseURL;
+	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagate_ejb/LimitedBean";
+	
+	@Deployment(name="ContextService.contextPropagate", testable=false)
+	public static EnterpriseArchive createDeployment() {
+		
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagate.war")
+				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
+				.deleteClass(ContextPropagateBean.class)
+				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml");
+		
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagate_ejb.jar")
+				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
+				.deleteClasses(ClassloaderServlet.class, JNDIServlet.class, SecurityServlet.class)
+				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
+				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+		
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagate.ear").addAsModules(war, jar);
+		
+		return ear;
+	}
+	
+	@ArquillianResource(JNDIServlet.class)
+	URL jndiURL;
+	
+	@ArquillianResource(ClassloaderServlet.class)
+	URL classloaderURL;
+	
+	@ArquillianResource(SecurityServlet.class)
+	URL securityURL;
 
 	/*
 	 * @testName: testJNDIContextAndCreateProxyInServlet
@@ -46,19 +76,9 @@ public class ContextPropagationTests extends TestClient {
 	 */
 	@Test
 	public void testJNDIContextAndCreateProxyInServlet() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("JNDIServlet").withQueries("action=createProxyInServlet").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
-		assertEquals(testName + "failed to get correct result.", "JNDIContextWeb", // expected
-				resp.trim()); // actual
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testName);
+		String resp = runTestWithResponse(requestURL, null);
+		this.assertStringInResponse(testName + "failed to get correct result.", "JNDIContextWeb", resp);
 	}
 
 	/*
@@ -77,19 +97,9 @@ public class ContextPropagationTests extends TestClient {
 	 */
 	@Test
 	public void testJNDIContextAndCreateProxyInEJB() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("JNDIServlet").withQueries("action=createProxyInEJB").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
-		assertEquals(testName + "failed to get correct result.", "JNDIContextWeb", // expected
-				resp.trim()); // actual
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testName);
+		String resp = runTestWithResponse(requestURL, null);
+		this.assertStringInResponse(testName + "failed to get correct result.", "JNDIContextEJB", resp);
 	}
 
 	/*
@@ -106,19 +116,9 @@ public class ContextPropagationTests extends TestClient {
 	 */
 	@Test
 	public void testClassloaderAndCreateProxyInServlet() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ClassloaderServlet").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
-		assertEquals(testName + "failed to get correct result.", "success", // expected
-				resp.trim()); // actual
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(securityURL).withPaths("ClassloaderServlet").withTestName(testName);
+		String resp = runTestWithResponse(requestURL, null);
+		this.assertStringInResponse(testName + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
 	}
 
 	/*
@@ -136,18 +136,8 @@ public class ContextPropagationTests extends TestClient {
 	 */
 	@Test
 	public void testSecurityAndCreateProxyInServlet() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("SecurityServlet").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
-		assertEquals(testName + "failed to get correct result.", "success", // expected
-				resp.trim()); // actual
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(classloaderURL).withPaths("SecurityServlet").withTestName(testName);
+		String resp = runTestWithResponse(requestURL, null);
+		this.assertStringInResponse(testName + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
 	}
 }

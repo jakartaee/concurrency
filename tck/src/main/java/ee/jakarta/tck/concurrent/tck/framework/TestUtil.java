@@ -21,89 +21,87 @@
 package jakarta.enterprise.concurrent.tck.framework;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
+import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
 
 /**
- * TestUtil is a final utility class responsible for implementing logging across
- * multiple VMs. It also contains many convenience methods for logging property
- * object contents, stacktraces, and header lines.
- *
+ * Utility methods to be used on the client or server side. 
+ * These utilities can be broken up into distinct categorities: 
+ * - HTTP utilities
+ * - Context lookup utilities
+ * - Waiter utilities
+ * - Assertions
  */
 public final class TestUtil {
 	public static final TestLogger log = TestLogger.get(TestUtil.class);
 
 	public static final String nl = System.lineSeparator();
+	
+	// ########## HTTP ##########
 
 	/**
-	 * Convience method to handle sucking in the data from a connection.
+	 * HTTP convenience method for servlets to get a response from another servlet. 
+	 * Test clients should extend the {@link TestClient} class that has its own HTTP methods.
+	 * 
+	 * @param connection - the URLConnection
+	 * @return String - response body
+	 * @throws IOException
 	 */
-	public static String getResponse(URLConnection connection) throws IOException {
-		StringBuffer content;
-		BufferedReader in;
-		// set up the streams / readers
-		InputStream instream = connection.getInputStream();
-		InputStreamReader inreader = new InputStreamReader(instream);
-		in = new BufferedReader(inreader);
-		// data structures
-		content = new StringBuffer(1024);
-		char[] chars = new char[1024];
-		int length = 0;
-		// pull the data into the content buffer
-		while (length != -1) {
-			content.append(chars, 0, length);
-			length = in.read(chars, 0, chars.length);
+	public static String getResponse(URLConnection con) throws IOException {	
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+			
+			StringBuffer response = new StringBuffer();
+			
+			String line;
+			while ((line = br.readLine()) != null) {
+				response.append(line).append(nl);
+			}
+
+			return response.toString();
 		}
-		// return
-		instream.close(); // john feb 16
-		inreader.close(); // john feb 16
-		in.close(); // john feb 16
-		return content.toString();
 	}
 
 	/**
-	 * Loads any properties that might be in a given String.
+	 * HTTP convenience method for servlets to create a URLConnection and post properties 
+	 * to that connection. 
+	 * 
+	 * Test clients should extend the {@link TestClient} class that has its own HTTP methods.
+	 * 
+	 * @param url - the URL to open a connection to
+	 * @param props - the properties to put into the connection input stream
+	 * 
+	 * @return the connection for further testing
+	 * @throws IOException
 	 */
-	private static Properties getResponseProperties(String string) throws IOException {
-		Properties props;
-		ByteArrayInputStream in;
-		byte[] bytes;
-		props = new Properties();
-		bytes = string.getBytes();
-		in = new ByteArrayInputStream(bytes);
-		props.load(in);
-		in.close();
-		return props;
-	}
-
-	@SuppressWarnings("deprecation")
-	public static String toEncodedString(Properties args) {
-		StringBuffer buf = new StringBuffer();
-		Enumeration<?> names = args.propertyNames();
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			String value = args.getProperty(name);
-			buf.append(URLEncoder.encode(name)).append("=").append(URLEncoder.encode(value));
-			if (names.hasMoreElements())
-				buf.append("&");
-		}
-		return buf.toString();
-	}
-
-	public static URLConnection sendPostData(Properties p, URL url) throws IOException {
-		log.info("Openning url connection to: " + url.toString());
+	public static URLConnection sendPostData(URL url, Properties props) throws IOException {
+		log.info("Opening url connection to: " + url.toString());
 		URLConnection urlConn = url.openConnection();
 		// Begin POST of properties to SERVLET
-		String argString = TestUtil.toEncodedString(p);
+		String argString = TestUtil.toEncodedString(props);
 		urlConn.setDoOutput(true);
 		urlConn.setDoInput(true);
 		urlConn.setUseCaches(false);
@@ -114,42 +112,245 @@ public final class TestUtil {
 		// End POST
 		return urlConn;
 	}
+	
+	static String toEncodedString(Properties args) throws UnsupportedEncodingException {
+		StringBuffer buf = new StringBuffer();
+		Enumeration<?> names = args.propertyNames();
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			String value = args.getProperty(name);
+			
+			buf.append(URLEncoder.encode(name, StandardCharsets.UTF_8.name()))
+				.append("=")
+				.append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
+			
+			if (names.hasMoreElements())
+				buf.append("&");
+		}
+		return buf.toString();
+	}
+	
+	//########## Lookups ##########	
+	public static <T> T lookup(String jndiName) {
+		Context ctx = null;
+		T targetObject = null;
+		try {
+			ctx = new InitialContext();
+			targetObject = (T) ctx.lookup(jndiName);
+		} catch (NamingException e) {
+			throw new RuntimeException("failed to lookup resource.", e);
+		} finally {
+			try {
+				ctx.close();
+			} catch (Exception ignore) {
+			}
+		}
+		return targetObject;
+	}
+	
+	public static ContextService getContextService() {
+		return lookup(TestConstants.DefaultContextService);
+	}
+	
+	public static ManagedExecutorService getManagedExecutorService() {
+		return lookup(TestConstants.DefaultManagedExecutorService);
+	}
+	
+	public static ManagedScheduledExecutorService getManagedScheduledExecutorService() {
+		return lookup(TestConstants.DefaultManagedScheduledExecutorService);
+	}
+	
+	public static ManagedThreadFactory getManagedThreadFactory() {
+		return lookup(TestConstants.DefaultManagedThreadFactory);
+	}
+	
+	//########## Waiters ##########
+	
+	/**
+	 * USE WITH CAUTION!! 
+	 * When possible tests should use waitFor methods to wait for specific condition to be meet.
+	 * Pausing the thread for a specific duration will directly impact test performance but in some cases is required. 
+	 * 
+	 * Pauses the calling thread for the specified duration
+	 * 
+	 * @param duration - duration to sleep
+	 * @throws InterruptedException 
+	 */
+	public static void sleep(Duration duration) throws InterruptedException {
+		log.config("Sleeping " + duration.toMillis() + " milliseconds");
+		Thread.sleep(duration.toMillis());
+	}
+	
+	/**
+	 * Waits for task to complete, but will timeout after {@link TestConstants#WaitTimeout}
+	 * @param future to wait for
+	 * @return result
+	 */
+	public static <T> T waitForTaskComplete(final Future<T> future) {
+		return waitForTaskComplete(future, TestConstants.WaitTimeout.toMillis());
+	}
+	
+	/**
+	 * Waits for task to complete, but will timeout after specified timeout in millis
+	 * @param future - the future to wait for
+	 * @param maxWaitTimeMillis - the timeout
+	 * @return result
+	 */
+	public static <T> T waitForTaskComplete(final Future<T> future, final long maxWaitTimeMillis) {
+		T result = null;
+		try {
+			result = future.get(maxWaitTimeMillis, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException("waitForTaskComplete", e);
+		} catch (ExecutionException e) {
+			throw new RuntimeException("waitForTaskComplete", e);
+		} catch (TimeoutException e) {
+			throw new RuntimeException("failed to finish task in " + maxWaitTimeMillis + " milliseconds. ", e);
+		} catch (Exception e) { // may caught the exception thrown from the task
+								// submitted.
+			throw new RuntimeException("waitForTaskComplete failed to finish task", e);
+		}
+		return result;
+	}
+	
+	/**
+	 * Wait for listener to complete, but will timeout after {@link TestConstants#WaitTimeout}, 
+	 * and will be polled ever {@link TestConstants#PollInterval}
+	 * 
+	 * @param managedTaskListener - the listener to be polled
+	 */
+	public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener) {
+		waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout.toMillis(), TestConstants.PollInterval.toMillis());
+	}
 
 	/**
-	 * pauses the calling thread for the specified number of seconds
-	 *
-	 * @param s number of seconds
+	 * Wait for listener to complete, but will timeout after a specified timeout, 
+	 * and will be polled ever specified interval
+	 * 
+	 * @param managedTaskListener - the listener to be polled
+	 * @param maxWaitTimeMillis - timeout
+	 * @param pollIntervalMillis - poll interval
 	 */
-	public static void sleepSec(int s) {
-		log.config("Sleeping " + s + " seconds");
-		try {
-			Thread.sleep(Duration.ofSeconds(s).toMillis());
-		} catch (InterruptedException e) {
-			log.severe("Exception: " + e);
+	public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener, long maxWaitTimeMillis,
+			long pollIntervalMillis) {
+		final long stopTime = System.currentTimeMillis() + maxWaitTimeMillis;
+		while (!managedTaskListener.eventCalled(ListenerEvent.DONE) && System.currentTimeMillis() < stopTime) {
+			try {
+				Thread.sleep(pollIntervalMillis);
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Thread was inerrupted while sleeping", e);
+			}
 		}
 	}
 
 	/**
-	 * pauses the calling thread for the specified number of milliseconds
-	 *
-	 * @param s number of milliseconds
+	 * Waits for future to complete, but will timeout after {@link TestConstants#WaitTimeout},
+	 * and will be polled every {@link TestConstants#PollInterval}
+	 * 
+	 * The difference between this method and waitForTaskComplete is that some
+	 * scheduled task will return values for multiple times, in this situation
+	 * waitForTaskComplete does not work.
+	 * 
+	 * @param future - the future to wait for
 	 */
-	public static void sleep(int s) {
-		sleepMsec(s);
-	}
+	public static void waitTillFutureIsDone(Future future) {
+		long start = System.currentTimeMillis();
 
+		while (!future.isDone()) {
+			try {
+				Thread.sleep(TestConstants.PollInterval.toMillis());
+			} catch (InterruptedException ignore) {
+			}
+
+			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+				throw new RuntimeException("Future did not finish before wait timeout elapsed.");
+			}
+		}
+	}
+	
 	/**
-	 * pauses the calling thread for the specified number of milliseconds
-	 *
-	 * @param s number of milliseconds
+	 * Waits for future to throw an error, but will timeout after {@link TestConstants#WaitTimeout},
+	 * and will be polled every {@link TestConstants#PollInterval}
+	 * 
+	 * @param future - the future to wait for
 	 */
-	public static void sleepMsec(int s) {
-		log.config("Sleeping " + s + " milliseconds");
-		try {
-			Thread.sleep(s);
-		} catch (InterruptedException e) {
-			log.severe("Exception: " + e);
+	public static void waitTillFutureThrowsException(Future future, Class<?> expected) {
+		long start = System.currentTimeMillis();
+
+		while (true) {
+			try {
+				Thread.sleep(TestConstants.PollInterval.toMillis());
+				future.get();
+			} catch (InterruptedException ignore) {
+			} catch (Throwable e) {
+				if(e.getClass().equals(expected)) {
+					return; //expected
+				}
+			}
+
+			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+				throw new RuntimeException("Future did not throw exception before wait timeout elapased.");
+			}
+		}
+	}
+	
+	/**
+	 * Waits until thread is finished, but will timeout after {@link TestConstants#WaitTimeout},
+	 * and will be polled every {@link TestConstants#PollInterval}
+	 * 
+	 * @param thread - the thread to wait for
+	 */
+	public static void waitTillThreadFinish(Thread thread) {
+		long start = System.currentTimeMillis();
+
+		while (thread.isAlive()) {
+			try {
+				Thread.sleep(TestConstants.PollInterval.toMillis());
+			} catch (InterruptedException ignore) {
+			}
+
+			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+				throw new RuntimeException("Thread did not finish before wait timeout elapsed.");
+			}
+		}
+	}
+	
+	//########## Custom assertions ##########
+
+	public static void assertEquals(Object expected, Object actual) {
+		String msg = "expected " + expected + " but you got " + actual;
+		if (expected == null && actual == null) {
+			return;
+		}
+		if (expected == null || actual == null) {
+			throw new RuntimeException(msg);
+		}
+		if (!expected.equals(actual)) {
+			throw new RuntimeException(msg);
 		}
 	}
 
+	public static void assertInRange(Object[] range, Object actual) {
+		String expected = "";
+		for (Object each : range) {
+			expected += each.toString();
+			expected += ",";
+		}
+		expected = expected.substring(0, expected.length() - 1);
+		String msg = "expected in " + expected + " but you got " + actual;
+		for (Object each : range) {
+			if (each.equals(actual)) {
+				return;
+			}
+		}
+		throw new RuntimeException(msg);
+	}
+
+	public static void assertIntInRange(int low, int high, int actual) {
+		String msg = "expected in range " + low + " , " + high;
+		msg += " but you got " + actual;
+		if (actual < low || actual > high) {
+			throw new RuntimeException(msg);
+		}
+	}
 }

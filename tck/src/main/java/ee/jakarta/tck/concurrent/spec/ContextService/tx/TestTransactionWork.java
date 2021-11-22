@@ -21,10 +21,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings("serial")
-public class TestTxWork implements TestWorkInterface, Serializable {
+public class TestTransactionWork implements TestWorkInterface, Serializable {
 
 	protected String result;
 
@@ -48,7 +49,7 @@ public class TestTxWork implements TestWorkInterface, Serializable {
 
 		if (beginTran) {
 			try {
-				ut = Util.lookup("java:comp/UserTransaction");
+				ut = TestUtil.lookup(Constants.UT_JNDI_NAME);
 				ut.begin();
 			} catch (Exception e) {
 				throw new RuntimeException(e);

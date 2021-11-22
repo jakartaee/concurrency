@@ -16,21 +16,56 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servlet;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.OperateOnDeployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class ContextPropagationServletTests extends TestClient {
 	
+	@Deployment(name = "ContextService.contextPropagate_servlet.ProxyCreatorServlet", testable=false)
+	public static WebArchive createDeployment1() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.deleteClass(WorkInterfaceServlet.class)
+				.addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
+	}
+	
+	@Deployment(name = "ContextService.contextPropagate_servlet.WorkInterfaceServlet", testable=false)
+	public static WebArchive createDeployment2() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.deleteClass(ProxyCreatorServlet.class);
+	}
+	
+	@Deployment(name = "ContextService.contextPropagate_servlet.DeserializeServletOnly", testable=false)
+	public static WebArchive createDeployment3() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
+	}
+	
 	@ArquillianResource
+	@OperateOnDeployment("ContextService.contextPropagate_servlet.ProxyCreatorServlet")
 	URL baseURL;
+	
+	@ArquillianResource
+	@OperateOnDeployment("ContextService.contextPropagate_servlet.WorkInterfaceServlet")
+	URL workInterfaceURL;
+	
+	@Override
+	protected String getServletPath() {
+		return "ProxyCreatorServlet";
+	}
 
 	/*
 	 * @testName: testJNDIContextInServlet
@@ -46,20 +81,16 @@ public class ContextPropagationServletTests extends TestClient {
 	 */
 	@Test
 	public void testJNDIContextInServlet() {
-		URL url;
-		String resp = null;
-		try {	
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ProxyCreatorServlet").withQueries("action=createJNDIWork").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
+		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName);
+		
+		Properties props = new Properties();
+		props.put("proxyURL", proxyURL.toString());
+		props.put(TEST_METHOD, testName);
+		
+		String resp = runTestWithResponse(requestURL, props);
 		assertNotNull("Response should not be null", resp);
-		assertEquals(testName + " failed to get correct result.", "JNDIContextWeb", // expected
-				resp.trim()); // actual
+		assertStringInResponse(testName + " failed to get correct result.", "JNDIContextWeb", resp.trim());
 	}
 
 	/*
@@ -76,19 +107,15 @@ public class ContextPropagationServletTests extends TestClient {
 	 */
 	@Test
 	public void testClassloaderInServlet() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withPaths("ProxyCreatorServlet").withQueries("action=createClassloaderWork").withTestName("service").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("++ get response: " + resp);
+		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName);
+		
+		Properties props = new Properties();
+		props.put("proxyURL", proxyURL.toString());
+		props.put(TEST_METHOD, testName);
+		
+		String resp = runTestWithResponse(requestURL, props);
 		assertNotNull("Response should not be null", resp);
-		assertEquals(testName + " failed to get correct result.", "success", // expected
-				resp.trim()); // actual
+		assertStringInResponse(testName + " failed to get correct result.", TestConstants.ComplexReturnValue, resp.trim());
 	}
 }

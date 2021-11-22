@@ -16,8 +16,6 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,131 +26,68 @@ import javax.sql.DataSource;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@SuppressWarnings("serial")
-@WebServlet("/TransactionServlet")
-@DataSourceDefinition(name = "java:comp/env/jdbc/DB1", className = "org.apache.derby.jdbc.EmbeddedDataSource", databaseName = "memory:DB1", user = "user1", password = "password1", properties = {
-		"createDatabase=create" })
+@SuppressWarnings({"serial", "unused"})
+@WebServlet(Constants.CONTEXT_PATH)
+@DataSourceDefinition(
+	name = Constants.DS_JNDI_NAME, 
+	className = "org.apache.derby.jdbc.EmbeddedDataSource", 
+	databaseName = Constants.DS_DB_NAME, 
+	properties = {
+			"createDatabase=create" 
+			}
+)
 public class TransactionServlet extends TestServlet {
 
 	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
 
-	@Resource(lookup = "java:comp/env/jdbc/DB1")
-	private static DataSource ds;
-
-	@Resource
-	ManagedExecutorService mes;
+	@Resource(lookup = Constants.DS_JNDI_NAME)
+	private DataSource ds;
 
 	@Override
-	protected void before() throws Exception {
-		removeTestData();
-	}
-
-	@Override
-	protected void after() throws Exception {
-		removeTestData();
-	}
-
-	private void removeTestData() throws RemoteException {
-		log.info("removeTestData");
-
-		// init connection.
-		Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true);
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(Constants.SQL_TEMPLATE_DELETE);
-			stmt.close();
+	protected void beforeClass() throws RemoteException {
+		log.enter("beforeClass");
+		
+		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {
+			try {
+				stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
+			} catch (SQLException e) {
+				log.finest("Could not drop table, assume table did not exist.");
+			}
+			stmt.executeUpdate(Constants.SQL_TEMPLATE_CREATE);
+			log.exit("beforeClass");
 		} catch (Exception e) {
 			throw new RemoteException(e.getMessage());
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
-	/**
-	 * A basic implementation of the <code>doGet</code> method.
-	 * 
-	 * @param req - <code>HttpServletRequest</code>
-	 * @param res - <code>HttpServletResponse</code>
-	 * @exception ServletException if an error occurs
-	 * @exception IOException      if an IO error occurs
-	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		invokeTest(req, res);
-	}
+	public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
+		Future<?> taskResult = TestUtil.getManagedExecutorService().submit(new TransactedTask(isCommit,
+				Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT));
+		TestUtil.waitForTaskComplete(taskResult);
+}
 
-	/**
-	 * A basic implementation of the <code>doPost</code> method.
-	 * 
-	 * @param req - <code>HttpServletRequest</code>
-	 * @param res - <code>HttpServletResponse</code>
-	 * @exception ServletException if an error occurs
-	 * @exception IOException      if an IO error occurs
-	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		invokeTest(req, res);
-	}
-
-	private void invokeTest(HttpServletRequest req, HttpServletResponse res) {
-		boolean passed = false;
-		String param = req.getParameter(Constants.PARAM_COMMIT);
-		if (Constants.PARAM_VALUE_CANCEL.equals(param)) {
-			passed = cancelTest(res);
-		} else {
-			boolean isCommit = Boolean.parseBoolean(param);
-			Future<?> taskResult = Util.getManagedExecutorService().submit(new TransactedTask(isCommit,
-					Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT));
-			try {
-				Util.waitForTaskComplete(taskResult, 3);
-			} catch (Exception e) {
-				e.printStackTrace();
-				print(res, Message.FAILMESSAGE);
-				return;
-			}
-			passed = true;
-		}
-		if (passed) {
-			print(res, Message.SUCCESSMESSAGE);
-		} else {
-			print(res, Message.FAILMESSAGE);
-		}
-	}
-
-	private boolean cancelTest(HttpServletResponse res) {
+	public void cancelTest() {
 		int originTableCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT);
-		Future<?> future = Util.getManagedExecutorService().submit(cancelledTask);
+		Future<?> future = TestUtil.getManagedExecutorService().submit(cancelledTask);
 		// then cancel it after transaction begin and
-		Util.waitForTransactionBegan(cancelledTask, 3000, 100);
+		Util.waitForTransactionBegan(cancelledTask);
 		// before it commit.
 		cancelledTask.cancelTask();
 		// continue to run if possible.
 		cancelledTask.resume();
 		int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-		return originTableCount == afterTransacted;
-	}
-
-	private void print(HttpServletResponse res, String msg) {
-		PrintWriter pw = null;
-		try {
-			pw = res.getWriter();
-			pw.print(msg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			pw.close();
+		if(originTableCount != afterTransacted) {
+			throw new RuntimeException("task was not properly cancelled");
 		}
 	}
 }

@@ -16,9 +16,15 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.security;
 
-public class SecurityTestEjb implements SecurityTestRemote {
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 
+@Stateless
+public class SecurityTestEjb implements SecurityTestRemote {
+	
+	@RolesAllowed("Manager")
 	public String managerMethod1() {
-		return SecurityTestRemote.MANAGERMETHOD1_RETURN_STR;
+		return TestConstants.SimpleReturnValue;
 	}
 }

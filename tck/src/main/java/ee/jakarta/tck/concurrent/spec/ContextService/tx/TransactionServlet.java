@@ -16,8 +16,6 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,54 +36,47 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
-@SuppressWarnings("serial")
-@WebServlet("/TransactionServlet")
-@DataSourceDefinition(name = "java:comp/env/jdbc/DB1", className = "org.apache.derby.jdbc.EmbeddedDataSource", databaseName = "memory:DB1", user = "user1", password = "password1", properties = {
-		"createDatabase=create" })
+@SuppressWarnings({"serial", "unused"})
+@WebServlet("TransactionServlet")
+@DataSourceDefinition(
+	name = Constants.DS_JNDI_NAME, 
+	className = "org.apache.derby.jdbc.EmbeddedDataSource", 
+	databaseName = Constants.DS_DB_NAME, 
+	properties = {
+			"createDatabase=create" 
+			}
+)
 public class TransactionServlet extends TestServlet {
 
 	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
 
-	@Resource(lookup = "java:comp/env/jdbc/DB1")
-	DataSource ds;
+	@Resource(lookup = Constants.DS_JNDI_NAME)
+	private DataSource ds;
 
-	@Resource(lookup = "java:comp/DefaultContextService")
+	@Resource(lookup = Constants.CONTEXT_SVC_JNDI_NAME)
 	private ContextService cx;
 
-	@Resource(lookup = "java:comp/UserTransaction")
+	@Resource(lookup = Constants.UT_JNDI_NAME)
 	private UserTransaction ut;
 
 	@Override
-	protected void before() throws Exception {
-		removeTestData();
-	}
-
-	@Override
-	protected void after() throws Exception {
-		removeTestData();
-	}
-
-	private void removeTestData() throws RemoteException {
-		log.info("removeTestData");
-
-		// init connection.
-		Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true);
-		try {
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(Constants.SQL_TEMPLATE_DELETE);
-			stmt.close();
+	protected void before() throws RemoteException {
+		log.enter("before");
+		
+		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {
+			try {
+				stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
+			} catch (SQLException e) {
+				log.finest("Could not drop table, assume table did not exist.");
+			}
+			stmt.executeUpdate(Constants.SQL_TEMPLATE_CREATE);
+			log.exit("before");
 		} catch (Exception e) {
 			throw new RemoteException(e.getMessage());
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
-	public String TransactionOfExecuteThreadAndCommitTest() throws ServletException {
+	public String testTransactionOfExecuteThreadAndCommit() throws ServletException {
 		PreparedStatement pStmt = null;
 		Connection conn = null;
 		Connection conn2 = null;
@@ -103,7 +94,7 @@ public class TransactionServlet extends TestServlet {
 			pStmt.addBatch();
 			pStmt.executeBatch();
 
-			TestWorkInterface work = new TestTxWork();
+			TestWorkInterface work = new TestTransactionWork();
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
@@ -129,7 +120,7 @@ public class TransactionServlet extends TestServlet {
 		}
 	}
 
-	public String TransactionOfExecuteThreadAndRollbackTest() throws ServletException {
+	public String testTransactionOfExecuteThreadAndRollback() throws ServletException {
 		PreparedStatement pStmt = null;
 		Connection conn = null;
 		Connection conn2 = null;
@@ -147,7 +138,7 @@ public class TransactionServlet extends TestServlet {
 			pStmt.addBatch();
 			pStmt.executeBatch();
 
-			TestWorkInterface work = new TestTxWork();
+			TestWorkInterface work = new TestTransactionWork();
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
@@ -173,7 +164,7 @@ public class TransactionServlet extends TestServlet {
 		}
 	}
 
-	public String SuspendAndCommitTest() throws ServletException {
+	public String testSuspendAndCommit() throws ServletException {
 		PreparedStatement pStmt = null;
 		Connection conn = null;
 		Connection conn2 = null;
@@ -190,7 +181,7 @@ public class TransactionServlet extends TestServlet {
 			pStmt.setString(2, "Type-100");
 			pStmt.addBatch();
 			pStmt.executeBatch();
-			TestWorkInterface work = new TestTxWork();
+			TestWorkInterface work = new TestTransactionWork();
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
@@ -218,7 +209,7 @@ public class TransactionServlet extends TestServlet {
 		}
 	}
 
-	public String SuspendAndRollbackTest() throws ServletException {
+	public String testSuspendAndRollback() throws ServletException {
 		PreparedStatement pStmt = null;
 		Connection conn = null;
 		Connection conn2 = null;
@@ -235,7 +226,7 @@ public class TransactionServlet extends TestServlet {
 			pStmt.setString(2, "Type-100");
 			pStmt.addBatch();
 			pStmt.executeBatch();
-			TestWorkInterface work = new TestTxWork();
+			TestWorkInterface work = new TestTransactionWork();
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
@@ -263,7 +254,7 @@ public class TransactionServlet extends TestServlet {
 		}
 	}
 
-	public String DefaultAndCommitTest() throws ServletException {
+	public String testDefaultAndCommit() throws ServletException {
 		PreparedStatement pStmt = null;
 		Connection conn = null;
 		Connection conn2 = null;
@@ -280,7 +271,7 @@ public class TransactionServlet extends TestServlet {
 			pStmt.setString(2, "Type-100");
 			pStmt.addBatch();
 			pStmt.executeBatch();
-			TestWorkInterface work = new TestTxWork();
+			TestWorkInterface work = new TestTransactionWork();
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
@@ -304,42 +295,6 @@ public class TransactionServlet extends TestServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	public static Object invoke(Object o, String methodName, Class[] paramTypes, Object[] args)
-			throws ServletException {
-
-		try {
-			if (o == null || methodName == null || "".equals(methodName.trim())) {
-				throw new IllegalArgumentException("Object and methodName must not be null");
-			}
-			Method method = null;
-			if (paramTypes != null && paramTypes.length > 0) {
-				method = o.getClass().getMethod(methodName, paramTypes);
-			} else {
-				method = o.getClass().getMethod(methodName);
-			}
-
-			Object result = null;
-			if (method != null) {
-				if (args != null && args.length > 0) {
-					result = method.invoke(o, args);
-				} else {
-					result = method.invoke(o);
-				}
-			}
-
-			return result;
-
-		} catch (NoSuchMethodException e) {
-			throw new ServletException(e);
-		} catch (InvocationTargetException e) {
-			throw new ServletException(e);
-		} catch (IllegalArgumentException e) {
-			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
-			throw new ServletException(e);
 		}
 	}
 }

@@ -21,57 +21,58 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Base64;
 import java.util.Properties;
 
-import javax.naming.NamingException;
-
-import java.util.Base64;
-
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/ProxyCreatorServlet")
+@WebServlet("ProxyCreatorServlet")
 public class ProxyCreatorServlet extends TestServlet {
+	
+	private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		String action = req.getParameter("action");
+	public void testJNDIContextInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		Object proxy = true;
 		String result = null;
-		URL url = new URL("http://" + req.getServerName() + ":" + req.getServerPort()
-				+ "/ContextPropagate_servlet2_web/TestServlet");
-		;
-		if ("createJNDIWork".equals(action)) {
-			try {
-				proxy = Util.lookupDefaultContextService().createContextualProxy(new TestJNDIRunnableWork(),
-						Runnable.class, TestWorkInterface.class, Serializable.class);
-			} catch (NamingException e) {
-				throw new ServletException(e);
-			}
-		}
+		String proxyURLString = req.getParameter("proxyURL");
+		
+		log.info("Proxy URL from parameter", proxyURLString);
 
-		if ("createClassloaderWork".equals(action)) {
-			try {
-				proxy = Util.lookupDefaultContextService().createContextualProxy(new TestClassloaderRunnableWork(),
-						Runnable.class, TestWorkInterface.class, Serializable.class);
-			} catch (NamingException e) {
-				throw new ServletException(e);
-			}
-		}
+		URL url = new URL(proxyURLString);
+		
+		proxy = TestUtil.getContextService().createContextualProxy(new TestJNDIRunnableWork(),
+				Runnable.class, TestWorkInterface.class, Serializable.class);
 
 		Properties p = new Properties();
 		p.setProperty("proxy", proxyToString(proxy));
-		URLConnection urlConn = TestUtil.sendPostData(p, url);
-		result = TestUtil.getResponse(urlConn);
-		resp.getWriter().write(result);
+		
+		result = TestUtil.getResponse(TestUtil.sendPostData(url, p));
+		resp.getWriter().println(result);
+	}
+	
+	public void testClassloaderInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		Object proxy = true;
+		String result = null;
+		String proxyURLString = req.getParameter("proxyURL");
+		
+		log.info("Proxy URL from parameter", proxyURLString);
+
+		URL url = new URL(proxyURLString);
+
+		proxy = TestUtil.getContextService().createContextualProxy(new TestClassloaderRunnableWork(),
+				Runnable.class, TestWorkInterface.class, Serializable.class);
+
+		Properties p = new Properties();
+		p.setProperty("proxy", proxyToString(proxy));
+		
+		result = TestUtil.getResponse(TestUtil.sendPostData(url, p));
+		resp.getWriter().println(result);
 	}
 
 	private String proxyToString(Object proxy) throws IOException {

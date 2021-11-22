@@ -16,82 +16,32 @@
 
 package jakarta.enterprise.concurrent.api.ManagedExecutors;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.net.URL;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-import jakarta.enterprise.concurrent.api.common.CallableTask;
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.api.common.Util;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedExecutors;
-import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 public class ManagedExecutorsTests extends TestClient {
-
-	private static final TestLogger log = TestLogger.get(ManagedExecutorsTests.class);
-
-	private static final String MANAGED_EXECUTOR_SVC_JNDI_NAME = "java:comp/DefaultManagedExecutorService";
-
-	private static final String MANAGED_THREAD_FACTORY_JNDI_NAME = "java:comp/DefaultManagedThreadFactory";
-
-	private static final int TASK_MAX_WAIT_SECONDS = 10;// (s)
-
-	private static final long LISTENER_MAX_WAIT_MILLIS = 3 * 1000;// (ms)
-
-	private static final int LISTENER_POOL_INTERVAL_MILLIS = 100;// (ms)
-
-	private static final String ENV_ENTRY_JNDI_NAME = "java:comp/env/StringValue";
-
-	private static final String ENV_ENTRY_VALUE = "something";
-
-	private ManagedExecutorService managedExecutorSvc;
-
-	private ManagedThreadFactory managedThreadFactory;
-
-	private ManagedTaskListenerImpl managedTaskListener;
-
-	private boolean shutdown = true;
-
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup(String[] args, Properties p) {
-		Context ctx = null;
-		try {
-			ctx = new InitialContext();
-			managedExecutorSvc = (ManagedExecutorService) ctx.lookup(MANAGED_EXECUTOR_SVC_JNDI_NAME);
-			managedThreadFactory = (ManagedThreadFactory) ctx.lookup(MANAGED_THREAD_FACTORY_JNDI_NAME);
-		} catch (Exception e) {
-			setupFailure(e);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-				setupFailure(e);
-			}
-		}
-		managedTaskListener = new ManagedTaskListenerImpl();
+	
+	@ArquillianResource
+	URL baseURL;
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="ManagedExecutors", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), ManagedExecutorsTests.class.getPackage())
+				.addAsWebInfResource(ManagedExecutorsTests.class.getPackage(), "web.xml", "web.xml");
 	}
-
-	@AfterClass // TODO AfterClass or AfterTest
-	public void cleanup() {
-		managedTaskListener.clearEvents();
+	
+	@Override
+	protected String getServletPath() {
+		return "ManagedExecutorsServlet";
 	}
 
 	/*
@@ -105,18 +55,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void IsCurrentThreadShutdown() {
-		Thread createdThread = managedThreadFactory.newThread(new Runnable() {
-			@Override
-			public void run() {
-				shutdown = ManagedExecutors.isCurrentThreadShutdown();
-			}
-		});
-		// Executors.newSingleThreadExecutor() uses Executors.defaultThreadFactory()
-		// to create new thread. So the thread used in this test is a non Manageable
-		// Thread.
-		Future<?> future = Executors.newSingleThreadExecutor().submit(createdThread);
-		waitForTaskComplete(future);
-		assertFalse(testName + " failed because shutdown is set to be true when running job", shutdown);
+		runTest(baseURL);
 	}
 
 	/*
@@ -129,18 +68,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void IsCurrentThreadShutdown_ManageableThread() {
-		Thread createdThread = managedThreadFactory.newThread(new Runnable() {
-			@Override
-			public void run() {
-				shutdown = ManagedExecutors.isCurrentThreadShutdown();
-			}
-		});
-		// Executors.newSingleThreadExecutor(managedThreadFactory) uses
-		// ManagedThreadFactory
-		// to create new (Manageable) thread.
-		Future<?> future = Executors.newSingleThreadExecutor(managedThreadFactory).submit(createdThread);
-		waitForTaskComplete(future);
-		assertFalse(testName + " failed because shutdown is set to be true when running job", shutdown);
+		runTest(baseURL);
 	}
 
 	/*
@@ -157,10 +85,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithTaskListener() {
-		RunnableTask runnableTask = createRunnableTask();
-		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
-		Future<?> futureResult = managedExecutorSvc.submit(taskWithListener);
-		assertTaskAndListenerComplete(futureResult, runnableTask);
+		runTest(baseURL);
 	}
 
 	/*
@@ -173,18 +98,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithNullArg() {
-		boolean pass = false;
-		Runnable nullTask = null;
-		try {
-			ManagedExecutors.managedTask(nullTask, managedTaskListener);
-		} catch (IllegalArgumentException e) {
-			// this is what expected
-			pass = true;
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-
-		assertTrue(testName + " failed to get expected exception", pass);
+		runTest(baseURL);
 	}
 
 	/*
@@ -199,19 +113,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithTaskListenerAndMap() {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("key", "value");
-		RunnableTask runnableTask = createRunnableTask();
-		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-		boolean pass = false;
-		if (task instanceof ManagedTask) {
-			ManagedTask managedTask = (ManagedTask) task;
-			if (managedTask.getExecutionProperties().get("key") == "value")
-				pass = true;
-		}
-
-		assertTrue(testName + " failed to get expected property", pass);
-		assertTaskAndListenerComplete(managedExecutorSvc.submit(task), runnableTask);
+		runTest(baseURL);
 	}
 
 	/*
@@ -224,18 +126,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithMapAndNullArg() {
-		boolean pass = false;
-		Runnable nullTask = null;
-		Map<String, String> properties = new HashMap<String, String>();
-		try {
-			ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
-		} catch (IllegalArgumentException e) {
-			// this is what expected
-			pass = true;
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(testName + " failed to get expected exception", pass);
+		runTest(baseURL);
 	}
 
 	/*
@@ -250,12 +141,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithTaskListener() {
-		String expectedResultStr = "expected something";
-		CallableTask<String> callableTask = createCallableTask(expectedResultStr);
-		Callable<String> taskWithListener = ManagedExecutors.managedTask((Callable<String>) callableTask,
-				managedTaskListener);
-		Future<String> futureResult = managedExecutorSvc.submit(taskWithListener);
-		assertTaskAndListenerComplete(expectedResultStr, futureResult, callableTask);
+		runTest(baseURL);
 	}
 
 	/*
@@ -268,17 +154,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithNullArg() {
-		boolean pass = false;
-		Callable<?> nullTask = null;
-		try {
-			ManagedExecutors.managedTask(nullTask, managedTaskListener);
-		} catch (IllegalArgumentException e) {
-			// this is what expected
-			pass = true;
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(testName + " failed to get expected exception", pass);
+		runTest(baseURL);
 	}
 
 	/*
@@ -294,23 +170,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithTaskListenerAndMap() {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("key", "value");
-		properties.put(ManagedTask.IDENTITY_NAME, "id");
-		String expectedResultStr = "expected something";
-
-		CallableTask<String> callableTask = createCallableTask(expectedResultStr);
-		Callable<String> task = ManagedExecutors.managedTask((Callable<String>) callableTask, properties,
-				managedTaskListener);
-
-		boolean pass = false;
-		if (task instanceof ManagedTask) {
-			ManagedTask managedTask = (ManagedTask) task;
-			if (managedTask.getExecutionProperties().get("key") == "value")
-				pass = true;
-		}
-		assertTrue(testName + " failed to get expected property", pass);
-		assertTaskAndListenerComplete(expectedResultStr, managedExecutorSvc.submit(task), callableTask);
+		runTest(baseURL);
 	}
 
 	/*
@@ -323,53 +183,6 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithMapAndNullArg() {
-		boolean pass = false;
-		Callable<?> nullTask = null;
-		Map<String, String> properties = new HashMap<String, String>();
-		try {
-			ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
-		} catch (IllegalArgumentException e) {
-			// this is what expected
-			pass = true;
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(testName + " failed", pass);
-	}
-
-	private void assertTaskAndListenerComplete(Future<?> future, RunnableTask runnableTask) {
-		waitForTaskComplete(future);
-		assertListenerComplete(runnableTask);
-	}
-
-	private void assertTaskAndListenerComplete(String expectedResult, Future<String> future,
-			CallableTask<?> callableTask) {
-		String result = waitForTaskComplete(future);
-		assertTrue("Task return different value with expected one.", expectedResult.endsWith(result));
-		assertListenerComplete(callableTask);
-	}
-
-	private <T> T waitForTaskComplete(Future<T> future) {
-		return Util.waitForTaskComplete(future, TASK_MAX_WAIT_SECONDS);
-	}
-
-	private void assertListenerComplete(RunnableTask task) {
-		// wait for the listener run done.
-		Util.waitForListenerComplete(managedTaskListener, LISTENER_MAX_WAIT_MILLIS, LISTENER_POOL_INTERVAL_MILLIS);
-		// check listener status.
-		if (!(managedTaskListener.eventCalled(ListenerEvent.SUBMITTED)
-				&& managedTaskListener.eventCalled(ListenerEvent.STARTING)
-				&& managedTaskListener.eventCalled(ListenerEvent.DONE))) {
-			fail("TaskListener is not completely executed.");
-		}
-	}
-
-	private RunnableTask createRunnableTask() {
-		return new RunnableTask(ENV_ENTRY_JNDI_NAME, ENV_ENTRY_VALUE, this.getClass().getName());
-	}
-
-	private CallableTask<String> createCallableTask(String expectedReturnValue) {
-		return new CallableTask<String>(ENV_ENTRY_JNDI_NAME, ENV_ENTRY_VALUE, this.getClass().getName(),
-				expectedReturnValue);
+		runTest(baseURL);
 	}
 }

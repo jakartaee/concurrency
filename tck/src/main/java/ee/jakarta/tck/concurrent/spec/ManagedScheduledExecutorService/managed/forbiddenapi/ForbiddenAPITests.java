@@ -16,16 +16,25 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.annotations.Test;
 
 import jakarta.ejb.EJB;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 
-public class ForbiddenAPITests extends TestClient {
+public class ForbiddenAPITests extends ArquillianTests {
+	
+	@Deployment(name="ManagedScheduledExecutorService.managed.forbiddenapi")
+	public static JavaArchive createDeployment() {
+		return ShrinkWrap.create(JavaArchive.class)
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonCounterPackage(), ForbiddenAPITests.class.getPackage())
+				.addAsManifestResource(ForbiddenAPITests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+	}
 
-	@EJB(beanName = "TestEjb", name = "testEjb")
-	static private TestEjbRemote testEjb;
+	@EJB
+	private TestEjbRemote testEjb;
 
 	/*
 	 * @testName: testAwaitTermination

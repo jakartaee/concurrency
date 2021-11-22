@@ -17,21 +17,43 @@
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.security;
 
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.testng.annotations.BeforeClass;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-import jakarta.enterprise.concurrent.api.common.Util;
 
 public class SecurityTests extends TestClient {
 	
-	@ArquillianResource
+	public static final String SecurityEJBJNDI = "java:global/SecurityTest/SecurityTest_ejb/SecurityTestEjb";
+	
+	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
+	
+	@Deployment(name="ManagedScheduledExecutorService.security", testable=false)
+	public static EnterpriseArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "SecurityTest.war")
+				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), SecurityTests.class.getPackage());
+		
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "SecurityTest_ejb.jar")
+				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
+		
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "SecurityTest.ear")
+				.addAsModules(war, jar)
+				.addAsManifestResource(SecurityTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+		
+		return ear;
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "SecurityServlet";
+	}
 
 	/*
 	 * @testName: managedScheduledExecutorServiceAPISecurityTest
@@ -44,14 +66,7 @@ public class SecurityTests extends TestClient {
 	 */
 	@Test
 	public void managedScheduledExecutorServiceAPISecurityTest() {
-
-		try {
-			URLConnection urlConn = TestUtil.sendPostData(new Properties(), baseURL);
-			String s = TestUtil.getResponse(urlConn);
-			Util.assertEquals(Util.SERVLET_RETURN_SUCCESS, s.trim());
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 }

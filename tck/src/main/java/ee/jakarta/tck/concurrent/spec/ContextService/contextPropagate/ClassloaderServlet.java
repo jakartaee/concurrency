@@ -16,37 +16,25 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
-import java.io.IOException;
 import java.io.Serializable;
-
-import javax.naming.NamingException;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/ClassloaderServlet")
+@SuppressWarnings("serial")
+@WebServlet("ClassloaderServlet")
 public class ClassloaderServlet extends TestServlet {
 
-	@EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
-	private ContextPropagateInterface intf;
+	@EJB
+	private ContextPropagateInterface intf;	
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String action = req.getParameter("action");
-		String result = null;
-
-		try {
-			result = intf.executeWorker((TestWorkInterface) Util.lookupDefaultContextService().createContextualProxy(
-					new TestClassloaderRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
-
-		} catch (NamingException e) {
-			throw new ServletException(e);
-		}
-
+	public void testClassloaderAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+		String result = intf.executeWorker((TestWorkInterface) TestUtil.getContextService().createContextualProxy(
+				new TestClassloaderRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
 		resp.getWriter().println(result);
 	}
 }

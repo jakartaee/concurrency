@@ -20,64 +20,25 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.tck.framework.TestLogger;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class Util {
 
 	private static final TestLogger log = TestLogger.get(Util.class);
 
-	private static final String MANAGED_SCHEDULED_EXECUTOR_SVC_JNDI_NAME = "java:comp/DefaultManagedScheduledExecutorService";
-
 	private Util() {
-	}
-
-	public static <T> T waitForTaskComplete(final Future<T> future, final int maxTaskWaitTime)
-			throws InterruptedException, ExecutionException, TimeoutException {
-		T result = null;
-		result = future.get(maxTaskWaitTime, TimeUnit.SECONDS);
-		return result;
-	}
-
-	public static ManagedScheduledExecutorService getManagedExecutorService() {
-		return lookup(MANAGED_SCHEDULED_EXECUTOR_SVC_JNDI_NAME);
-	}
-
-	public static <T> T lookup(String jndiName) {
-		Context ctx = null;
-		T targetObject = null;
-		try {
-			ctx = new InitialContext();
-			targetObject = (T) ctx.lookup(jndiName);
-		} catch (Exception e) {
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-				log.severe("failed to lookup resource.", e);
-			}
-		}
-		return targetObject;
 	}
 
 	public static Connection getConnection(DataSource ds, String user, String pwd, boolean autoCommit) {
 		Connection conn = null;
 		try {
-			conn = ds.getConnection();
+			conn = ds.getConnection(); // Try without user password for EE case
 			if (conn == null) {
-				conn = ds.getConnection(user, pwd);
+				conn = ds.getConnection(user, pwd); // For standalone cases
 			}
 			if (null != conn) {
 				conn.setAutoCommit(autoCommit);
@@ -145,15 +106,18 @@ public class Util {
 	}
 
 	public static Connection getConnection(boolean autoCommit, String username, String password) {
-		DataSource ds = Util.lookup(Constants.DS_JNDI_NAME);
+		DataSource ds = TestUtil.lookup(Constants.DS_JNDI_NAME);
 		Connection conn = Util.getConnection(ds, username, password, autoCommit);
 		return conn;
 	}
 
-	public static void waitForTransactionBegan(CancelledTransactedTask pp, long maxListenerWaitTime, int poolInterval) {
-		final long stopTime = System.currentTimeMillis() + maxListenerWaitTime;
+	public static void waitForTransactionBegan(CancelledTransactedTask pp) {
+		final long stopTime = System.currentTimeMillis() + Constants.POLL_TIMEOUT.toMillis();
 		while (!pp.transactionBegin() && System.currentTimeMillis() < stopTime) {
-			TestUtil.sleep(poolInterval);
+			try {
+				TestUtil.sleep(Constants.POLL_INTERVAL);
+			} catch (InterruptedException ignore) {
+			}
 		}
 	}
 }

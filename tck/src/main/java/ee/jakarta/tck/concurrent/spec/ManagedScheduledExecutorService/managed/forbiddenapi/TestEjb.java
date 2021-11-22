@@ -18,32 +18,17 @@ package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.manag
 
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.InitialContext;
-
-import jakarta.enterprise.concurrent.api.common.Util;
-
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
 
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-	private ManagedScheduledExecutorService getService() {
-		try {
-			InitialContext context = new InitialContext();
-			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-			return executorService;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public void testAwaitTermination() {
 		try {
-			getService().awaitTermination(10, TimeUnit.SECONDS);
+			TestUtil.getManagedScheduledExecutorService().awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalStateException e) {
@@ -54,7 +39,7 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testIsShutdown() {
 		try {
-			getService().isShutdown();
+			TestUtil.getManagedScheduledExecutorService().isShutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -63,7 +48,7 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testIsTerminated() {
 		try {
-			getService().isTerminated();
+			TestUtil.getManagedScheduledExecutorService().isTerminated();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -72,7 +57,7 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testShutdown() {
 		try {
-			getService().shutdown();
+			TestUtil.getManagedScheduledExecutorService().shutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -81,7 +66,7 @@ public class TestEjb implements TestEjbRemote {
 
 	public void testShutdownNow() {
 		try {
-			getService().shutdownNow();
+			TestUtil.getManagedScheduledExecutorService().shutdownNow();
 		} catch (IllegalStateException e) {
 			return;
 		}

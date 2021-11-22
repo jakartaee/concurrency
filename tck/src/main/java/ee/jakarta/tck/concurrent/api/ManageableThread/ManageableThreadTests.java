@@ -16,21 +16,26 @@
 
 package jakarta.enterprise.concurrent.api.ManageableThread;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import jakarta.enterprise.concurrent.ManageableThread;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
+import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
-import jakarta.enterprise.concurrent.ManageableThread;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-
-public class ManageableThreadTests extends TestClient {
+public class ManageableThreadTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(ManageableThreadTests.class);
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="ManageableThread")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), ManageableThreadTests.class.getPackage());
+	}
 
 	/*
 	 * @testName: isShutdown
@@ -44,12 +49,8 @@ public class ManageableThreadTests extends TestClient {
 	public void isShutdown() {
 		boolean pass = false;
 		try {
-			InitialContext ctx = new InitialContext();
-			ManagedThreadFactory mtf = (ManagedThreadFactory) ctx.lookup("java:comp/DefaultManagedThreadFactory");
-			ManageableThread m = (ManageableThread) mtf.newThread(new TestRunnableWork());
+			ManageableThread m = (ManageableThread) TestUtil.getManagedThreadFactory().newThread(new TestRunnableWork());
 			pass = !m.isShutdown();
-		} catch (NamingException ne) {
-			log.warning("Failed to lookup default ContextService" + ne);
 		} catch (Exception e) {
 			log.warning("Unexpected Exception Caught", e);
 		}

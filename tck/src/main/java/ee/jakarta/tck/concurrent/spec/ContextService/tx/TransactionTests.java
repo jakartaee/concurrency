@@ -16,24 +16,31 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.tx;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
-import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class TransactionTests extends TestClient {
 
-	private static final TestLogger log = TestLogger.get(TransactionTests.class);
-
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ContextService.tx", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), TransactionTests.class.getPackage());
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "TransactionServlet";
+	}
 
 	/*
 	 * @testName: testTransactionOfExecuteThreadAndCommit
@@ -49,21 +56,8 @@ public class TransactionTests extends TestClient {
 	 * actions in servlet and in proxy will be committed.
 	 */
 	@Test
-	public void testTransactionOfExecuteThreadAndCommit() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withTestName("TransactionOfExecuteThreadAndCommitTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("The result is : " + resp);
-		assertNotNull("Response should not be null.", resp);
-		assertEquals(testName + " failed to get successful result.", "3", // expected
-				resp.trim()); // actual
+	public void testTransactionOfExecuteThreadAndCommit() {		
+		runTest(baseURL);
 	}
 
 	/*
@@ -81,20 +75,7 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testTransactionOfExecuteThreadAndRollback() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withTestName("TransactionOfExecuteThreadAndRollbackTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("The result is : " + resp);
-		assertNotNull("Response should not be null.", resp);
-		assertEquals(testName + " failed to get successful result.", "0", // expected
-				resp.trim()); // actual
+		runTest(baseURL);
 	}
 
 	/*
@@ -113,20 +94,7 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testSuspendAndCommit() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withTestName("SuspendAndCommitTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("The result is : " + resp);
-		assertNotNull("Response should not be null.", resp);
-		assertEquals(testName + " failed to get successful result.", "1", // expected
-				resp.trim()); // actual
+		runTest(baseURL);
 	}
 
 	/*
@@ -145,20 +113,7 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testSuspendAndRollback() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withTestName("SuspendAndRollbackTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("The result is : " + resp);
-		assertNotNull("Response should not be null.", resp);
-		assertEquals(testName + " failed to get successful result.", "2", // expected
-				resp.trim()); // actual
+		runTest(baseURL);
 	}
 
 	/*
@@ -177,20 +132,7 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testDefaultAndCommit() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withTestName("DefaultAndCommitTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("The result is : " + resp);
-		assertNotNull("Response should not be null.", resp);
-		assertEquals(testName + " failed to get successful result.", "1", // expected
-				resp.trim()); // actual
+		runTest(baseURL);
 	}
 
 }

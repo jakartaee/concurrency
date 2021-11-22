@@ -16,37 +16,27 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
-import java.io.IOException;
 import java.io.Serializable;
-
-import javax.naming.NamingException;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.servlet.ServletException;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/SecurityServlet")
+@SuppressWarnings("serial")
+@WebServlet("SecurityServlet")
 public class SecurityServlet extends TestServlet {
 
-	@EJB(lookup = "java:app/ContextPropagate_ejb/ContextPropagateBean")
+	@EJB
 	private ContextPropagateInterface intf;
-
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+	
+	public void testSecurityAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		req.login("javajoe", "javajoe");
 
-		String result = null;
-		try {
-			result = intf.executeWorker((TestWorkInterface) Util.lookupDefaultContextService().createContextualProxy(
-					new TestSecurityRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
-
-		} catch (NamingException e) {
-			throw new ServletException(e);
-		}
+		String result = intf.executeWorker((TestWorkInterface) TestUtil.getContextService().createContextualProxy(
+				new TestSecurityRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
 
 		resp.getWriter().println(result);
 	}

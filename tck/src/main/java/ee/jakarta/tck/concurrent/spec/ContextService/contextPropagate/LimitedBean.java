@@ -16,14 +16,17 @@
 
 package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
 
 @Local(LimitedInterface.class)
 @Stateless
 public class LimitedBean implements LimitedInterface {
 
+	@RolesAllowed("Manager")
 	public String doSomething() {
-		return "success";
+		return TestConstants.ComplexReturnValue;
 	}
 }

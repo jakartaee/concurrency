@@ -2,7 +2,6 @@ package jakarta.enterprise.concurrent.tck.framework;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -13,26 +12,44 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Standard superclass for test servlets that accepts a `testMethod` parameter 
- * to the doGet method that will attempt to run that method on the subclass. 
+ * to the doGet / doPost methods that will attempt to run that method on the subclass. 
  * 
- * The doGet method will append `SUCCESS` to the response if the test is successfully.
+ * The doGet / doPost methods will append `SUCCESS` to the response if the test is successfully.
  * Otherwise, SUCCESS will not be appended to the response. 
- *
  */
 public class TestServlet extends HttpServlet {
-
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final TestLogger log = TestLogger.get(TestServlet.class);
+	
+	private boolean runBeforeClass = true;
+	
 	public static final String SUCCESS = "SUCCESS";
+	public static final String FAILURE = "FAILURE";
 	public static final String TEST_METHOD = "testMethod";
+	
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		doGet(request, response);
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String method = request.getParameter(TEST_METHOD);
+		
+		log.enter(method, "Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
+		
+		if(runBeforeClass) {
+			try {
+				beforeClass();
+				runBeforeClass = false;
+			} catch (Exception e) {
+				throw new RuntimeException("Caught exception trying to run beforeClass method.", e);
+			}
+		}
 
-		System.out.println(">>> BEGIN: " + method);
-		System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
 		PrintWriter writer = response.getWriter();
 		if (method != null && method.length() > 0) {
 			try {
@@ -51,6 +68,7 @@ public class TestServlet extends HttpServlet {
 						Method mthd = getClass().getMethod(method, (Class<?>[]) null);
 						mthd.invoke(this);
 					} catch (NoSuchMethodException nsme1) {
+						log.config("Delegating to invokeTest method");
 						invokeTest(method, request, response);
 					}
 				} finally {
@@ -62,25 +80,29 @@ public class TestServlet extends HttpServlet {
 				if (t instanceof InvocationTargetException) {
 					t = t.getCause();
 				}
-
-				System.out.println("ERROR: " + t);
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
-				System.err.print(sw);
+				
+				log.warning("ERROR: Caught exception attempting to call test method " + method + " on servlet "
+						+ getClass().getName(), t);
 
 				writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet "
 						+ getClass().getName());
 				t.printStackTrace(writer);
 			}
 		} else {
-			System.out.println("ERROR: expected testMethod parameter");
+			log.warning("ERROR: expected testMethod parameter");
 			writer.println("ERROR: expected testMethod parameter");
 		}
 
 		writer.flush();
 		writer.close();
-
-		System.out.println("<<< END:   " + method);
+		
+		log.exit(method);
+	}
+	
+	/**
+	 * Override to mimic JUnit's {@code @BeforeClass} annotation.
+	 */
+	protected void beforeClass() throws Exception {
 	}
 
 	/**
@@ -105,66 +127,4 @@ public class TestServlet extends HttpServlet {
 				+ " with any of the following signatures:   " + method + "(HttpServletRequest, HttpServletResponse)   "
 				+ method + "()");
 	}
-
-	// ASSERTION METHODS
-	protected void setupFailure(Throwable t) {
-		org.testng.Assert.fail("Failed during setup due to an exception", t);
-	}
-
-	protected void cleanupFailure(Throwable t) {
-		org.testng.Assert.fail("Failed during cleanup due to an exception", t);
-	}
-
-	protected void assertTrue(boolean isTrue) {
-		org.testng.Assert.assertTrue(isTrue, "failed");
-	}
-
-	protected void assertTrue(String message, boolean isTrue) {
-		org.testng.Assert.assertTrue(isTrue, message);
-	}
-
-	protected void assertFalse(boolean isFalse) {
-		org.testng.Assert.assertFalse(isFalse, "failed");
-	}
-
-	protected void assertFalse(String message, boolean isFalse) {
-		org.testng.Assert.assertFalse(isFalse, message);
-	}
-
-	protected void assertEquals(String message, int expected, int actual) {
-		org.testng.Assert.assertEquals(actual, expected, message);
-	}
-
-	protected void assertEquals(String message, String expected, String actual) {
-		org.testng.Assert.assertEquals(actual, expected, message);
-	}
-
-	protected void assertNull(Object obj) {
-		org.testng.Assert.assertNull(obj, "failed the task should return null result, actual result=" + obj);
-	}
-
-	protected void assertNull(String message, Object obj) {
-		org.testng.Assert.assertNull(obj, message);
-	}
-
-	protected void assertNotNull(Object obj) {
-		org.testng.Assert.assertNotNull(obj, "failed the task should return not null result, actual result=" + obj);
-	}
-
-	protected void assertNotNull(String message, Object obj) {
-		org.testng.Assert.assertNotNull(obj, message);
-	}
-
-	protected void fail(String message) {
-		org.testng.Assert.fail(message);
-	}
-
-	protected void fail(String message, Throwable t) {
-		org.testng.Assert.fail(message, t);
-	}
-
-	protected void fail(Throwable t) {
-		org.testng.Assert.fail("failed due to an exception", t);
-	}
-
 }

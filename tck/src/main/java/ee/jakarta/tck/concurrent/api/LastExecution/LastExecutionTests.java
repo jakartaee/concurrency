@@ -20,39 +20,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.naming.InitialContext;
-
-import org.testng.annotations.BeforeClass;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.api.common.Util;
+import jakarta.enterprise.concurrent.ManagedExecutors;
+import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.enterprise.concurrent.common.counter.CounterCallableTask;
 import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
 import jakarta.enterprise.concurrent.common.counter.StaticCounter;
+import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
+import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
-import jakarta.enterprise.concurrent.ManagedExecutors;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.ManagedTask;
-
-public class LastExecutionTests extends TestClient {
-
-	InitialContext context;
-
-	ManagedScheduledExecutorService executorService;
+public class LastExecutionTests extends ArquillianTests {
 
 	public static final String IDENTITY_NAME_TEST_ID = "lastExecutionGetIdentityNameTest";
-
-	@BeforeClass // TODO BeforeClass or BeforeTest
-	public void setup() {
-		try {
-			context = new InitialContext();
-			executorService = (ManagedScheduledExecutorService) context
-					.lookup(Util.SCHEDULED_MANAGED_EXECUTOR_SVC_JNDI_NAME);
-			StaticCounter.reset();
-		} catch (Exception e) {
-			setupFailure(e);
-		}
+	
+	//TODO deploy as EJB and JSP artifacts
+	@Deployment(name="LastExecution")
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getCommonCounterPackage() ,LastExecutionTests.class.getPackage());
+	}
+	
+	@BeforeMethod
+	public void reset() {
+		StaticCounter.reset();
 	}
 
 	/*
@@ -70,11 +66,10 @@ public class LastExecutionTests extends TestClient {
 		Map<String, String> executionProperties = new HashMap<String, String>();
 		executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
-		ScheduledFuture sf = executorService.schedule(
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
-				new LogicDrivenTrigger(Util.COMMON_CHECK_INTERVAL,
-						LogicDrivenTrigger.TEST_NAME_LASTEXECUTIONGETIDENTITYNAMETEST));
-		Util.waitTillFutureIsDone(sf);
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals("Got wrong identity name. See server log for more details.", LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount()); // actual
@@ -88,23 +83,31 @@ public class LastExecutionTests extends TestClient {
 	 * @test_Strategy: Result of the last execution.
 	 */
 	@Test
-	public void lastExecutionGetResultTest() {
+	public void lastExecutionGetResultRunnableTest() {
 		// test with runnable, LastExecution should return null
-		ScheduledFuture sf = executorService
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService()
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
-						Util.COMMON_CHECK_INTERVAL, LogicDrivenTrigger.TEST_NAME_LASTEXECUTIONGETRESULTTEST_RUNNABLE));
-		Util.waitTillFutureIsDone(sf);
+						TestConstants.PollInterval.toMillis(), testName));
+		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals("Got wrong last execution result. See server log for more details.",
 				LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount()); // actual
-
-		StaticCounter.reset();
+	}
+	
+	/*
+	 * @testName: lastExecutionGetResultTest
+	 * 
+	 * @assertion_ids: CONCURRENCY:JAVADOC:16
+	 * 
+	 * @test_Strategy: Result of the last execution.
+	 */
+	@Test
+	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
-		sf = executorService.schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
-				new LogicDrivenTrigger(Util.COMMON_CHECK_INTERVAL,
-						LogicDrivenTrigger.TEST_NAME_LASTEXECUTIONGETRESULTTEST_CALLABLE));
-		Util.waitTillFutureIsDone(sf);
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals("Got wrong last execution result. See server log for more details.",
 				LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -121,11 +124,10 @@ public class LastExecutionTests extends TestClient {
 	 */
 	@Test
 	public void lastExecutionGetRunningTimeTest() {
-		ScheduledFuture sf = executorService.schedule(ManagedExecutors.managedTask(
-				new CounterRunnableTask(LogicDrivenTrigger.LASTEXECUTIONGETRUNNINGTIMETEST_SLEEP_TIME), null, null),
-				new LogicDrivenTrigger(Util.COMMON_CHECK_INTERVAL,
-						LogicDrivenTrigger.TEST_NAME_LASTEXECUTIONGETRUNNINGTIMETEST));
-		Util.waitTillFutureIsDone(sf);
+		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(
+				new CounterRunnableTask(TestConstants.PollInterval.toMillis()), null, null),
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+		TestUtil.waitTillFutureIsDone(sf);
 		assertEquals("Got wrong last execution result.", LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount()); // actual
 	}

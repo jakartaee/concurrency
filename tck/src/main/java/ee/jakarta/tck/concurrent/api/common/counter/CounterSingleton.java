@@ -16,6 +16,9 @@
 
 package jakarta.enterprise.concurrent.api.common.counter;
 
+import jakarta.ejb.Stateless;
+
+@Stateless
 public class CounterSingleton implements CounterRemote {
 
 	private int count = 0;

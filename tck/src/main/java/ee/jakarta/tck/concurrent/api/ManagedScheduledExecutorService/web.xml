@@ -17,14 +17,14 @@
 
 -->
 
-<ejb-jar version="4.0" xmlns="https://jakarta.ee/xml/ns/jakartaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd">
-	<display-name>Ejb1</display-name>
-	<enterprise-beans>
-		<session>
-			<ejb-name>TestEjb</ejb-name>
-			<ejb-class>com.sun.ts.tests.concurrency.spec.ManagedExecutorService.managed.forbiddenapi.TestEjb</ejb-class>
-		</session>
-	</enterprise-beans>
-</ejb-jar>
+<web-app version="5.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd">
+  <display-name>servlet_vehicle</display-name>
+  <session-config>
+    <session-timeout>54</session-timeout>
+  </session-config>
+  <env-entry>
+    <env-entry-name>ManagedScheduledExecutorService_test_string</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>hello</env-entry-value>
+  </env-entry>
+</web-app>

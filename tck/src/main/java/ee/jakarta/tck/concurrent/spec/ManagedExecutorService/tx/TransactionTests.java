@@ -16,21 +16,27 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
 
 public class TransactionTests extends TestClient {
 
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ManagedExecutorService.tx", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), TransactionTests.class.getPackage());
+	}
 
 	/*
 	 * @testName: testCommitTransactionWithManagedExecutorService
@@ -48,20 +54,9 @@ public class TransactionTests extends TestClient {
 	 * ManagedExecutorService.it support user-managed global transaction demarcation
 	 * using the jakarta.transaction.UserTransaction interface.
 	 */
-	@Test
+	@Test(dependsOnMethods= {"testRollbackTransactionWithManagedExecutorService"}) //TODO rewrite test logic to avoid duplicate key violation
 	public void testCommitTransactionWithManagedExecutorService() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=true").withTestName("invokeTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(testName + " failed to get successful result.", Message.SUCCESSMESSAGE, // expected
-				resp); // actual
+		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
 	}
 
 	/*
@@ -75,18 +70,7 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testRollbackTransactionWithManagedExecutorService() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=false").withTestName("invokeTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(testName + " failed to get successful result.", Message.SUCCESSMESSAGE, // expected
-				resp); // actual
+		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
 	}
 
 	/*
@@ -101,18 +85,6 @@ public class TransactionTests extends TestClient {
 	 */
 	@Test
 	public void testCancelTransactionWithManagedExecutorService() {
-		URL url;
-		String resp = null;
-		try {
-			url = URLBuilder.get().withBaseURL(baseURL).withQueries(Constants.PARAM_COMMIT + "=" + Constants.PARAM_VALUE_CANCEL).withTestName("invokeTest").build();
-			resp = TestUtil.getResponse(url.openConnection());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		assertEquals(testName + " failed to get successful result.", Message.SUCCESSMESSAGE, // expected
-				resp); // actual
+		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
 	}
-
 }

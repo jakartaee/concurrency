@@ -16,17 +16,31 @@
 
 package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-
 import java.net.URL;
 
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
+
+import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
 public class ForbiddenAPIServletTests extends TestClient {
 
 	@ArquillianResource
 	URL baseURL;
+	
+	@Deployment(name="ManagedScheduledExecutorService.managed.forbiddenapi_servlet", testable=false)
+	public static WebArchive createDeployment() {
+		return ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getCommonCounterPackage(), ForbiddenAPIServletTests.class.getPackage());
+	}
+	
+	@Override
+	protected String getServletPath() {
+		return "ForbiddenServlet";
+	}
 
 	/*
 	 * @testName: testAwaitTermination
@@ -37,11 +51,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testAwaitTermination() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -53,11 +63,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testIsShutdown() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -69,11 +75,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testIsTerminated() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -85,11 +87,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testShutdown() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 
 	/*
@@ -101,10 +99,6 @@ public class ForbiddenAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testShutdownNow() {
-		try {
-			runTest(baseURL, testName);
-		} catch (Exception e) {
-			fail(e);
-		}
+		runTest(baseURL);
 	}
 }

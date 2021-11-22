@@ -18,14 +18,14 @@
 -->
 
 <web-app version="5.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd">
-  <display-name>TestServlet</display-name>
+  <display-name>ContextServlet</display-name>
   <servlet>
-    <servlet-name>TestServlet</servlet-name>
-    <servlet-class>com.sun.ts.tests.concurrency.spec.ManagedThreadFactory.context.TestServlet</servlet-class>
+    <servlet-name>ContextServlet</servlet-name>
+    <servlet-class>jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context_servlet.ContextServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>TestServlet</servlet-name>
-    <url-pattern>/testServlet</url-pattern>
+    <servlet-name>ContextServlet</servlet-name>
+    <url-pattern>ContextServlet</url-pattern>
   </servlet-mapping>
   <env-entry>
     <env-entry-name>ManagedThreadFactory_test_string</env-entry-name>
