@@ -235,6 +235,10 @@ public @interface Asynchronous {
     public static class Result {
         private static final ThreadLocal<CompletableFuture<?>> FUTURES = new ThreadLocal<CompletableFuture<?>>();
 
+        // Prevent instantiation
+        private Result() {
+        }
+
         /**
          * Completes the {@link java.util.concurrent.CompletableFuture CompletableFuture}
          * instance that the Jakarta EE Product Provider supplies to the caller of the
