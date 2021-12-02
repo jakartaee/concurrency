@@ -87,13 +87,13 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.concurrent.Callable} with context
    * that is captured from the thread that invokes
-   * <code>contextualCallable</code>. Context is captured at the time <code>contextualCallable</code> is invoked.</p> 
+   * <code>contextualCallable</code>. Context is captured at the time <code>contextualCallable</code> is invoked.</p>
    *
    * <p>When <code>call</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>call</code> method,
    * then the <code>call</code> method of the provided <code>Callable</code> is invoked.
    * Finally, the previous context is restored on the thread, and the result of the
-   * <code>Callable</code> is returned to the invoker.</p> 
+   * <code>Callable</code> is returned to the invoker.</p>
    *
    * @param <R> callable result type.
    * @param callable instance to contextualize.
