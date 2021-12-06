@@ -232,7 +232,7 @@ public @interface Asynchronous {
      *
      * @since 3.0
      */
-    public static class Result {
+    public static final class Result {
         private static final ThreadLocal<CompletableFuture<?>> FUTURES = new ThreadLocal<CompletableFuture<?>>();
 
         // Prevent instantiation
