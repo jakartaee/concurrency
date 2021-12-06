@@ -87,7 +87,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.concurrent.Callable} with context
    * that is captured from the thread that invokes
-   * <code>contextualCallable</code>.</p>
+   * <code>contextualCallable</code>. Context is captured at the time <code>contextualCallable</code> is invoked.</p>
    *
    * <p>When <code>call</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>call</code> method,
@@ -106,7 +106,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.function.BiConsumer} with context
    * that is captured from the thread that invokes
-   * <code>contextualConsumer</code>.</p>
+   * <code>contextualConsumer</code>. Context is captured at the time <code>contextualConsumer</code> is invoked.</p>
    *
    * <p>When <code>accept</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>accept</code> method,
@@ -125,7 +125,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.function.Consumer} with context
    * that is captured from the thread that invokes
-   * <code>contextualConsumer</code>.</p>
+   * <code>contextualConsumer</code>. Context is captured at the time <code>contextualConsumer</code> is invoked.</p>
    *
    * <p>When <code>accept</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>accept</code> method,
@@ -143,7 +143,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.function.BiFunction} with context
    * that is captured from the thread that invokes
-   * <code>contextualFunction</code>.</p>
+   * <code>contextualFunction</code>. Context is captured at the time <code>contextualFunction</code> is invoked.</p>
    *
    * <p>When <code>apply</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>apply</code> method,
@@ -164,7 +164,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.util.function.BiFunction} with context
    * that is captured from the thread that invokes
-   * <code>contextualFunction</code>.</p>
+   * <code>contextualFunction</code>. Context is captured at the time <code>contextualFunction</code> is invoked.</p>
    *
    * <p>When <code>apply</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>apply</code> method,
@@ -184,7 +184,7 @@ public interface ContextService {
   /**
    * <p>Wraps a {@link java.lang.Runnable} with context
    * that is captured from the thread that invokes
-   * <code>ContextualRunnable</code>.</p>
+   * <code>contextualRunnable</code>. Context is captured at the time <code>contextualRunnable</code> is invoked.</p>
    *
    * <p>When <code>run</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>run</code> method,
@@ -200,7 +200,7 @@ public interface ContextService {
 
   /**
    * <p>Wraps a {@link java.util.function.Supplier} with context captured from the thread that invokes
-   * <code>contextualSupplier</code>.</p>
+   * <code>contextualSupplier</code>. Context is captured at the time <code>contextualSupplier</code> is invoked.</p>
    *
    * <p>When <code>supply</code> is invoked on the proxy instance,
    * context is first established on the thread that will run the <code>supply</code> method,
