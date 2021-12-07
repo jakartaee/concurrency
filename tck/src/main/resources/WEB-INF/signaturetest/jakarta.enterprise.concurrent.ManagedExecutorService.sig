@@ -1,0 +1,11 @@
+#public abstract interface jakarta.enterprise.concurrent.ManagedExecutorService extends [interface java.util.concurrent.ExecutorService]
+public abstract <T> java.util.concurrent.CompletableFuture<T> jakarta.enterprise.concurrent.ManagedExecutorService.copy(java.util.concurrent.CompletableFuture<T>)
+public abstract <T> java.util.concurrent.CompletionStage<T> jakarta.enterprise.concurrent.ManagedExecutorService.copy(java.util.concurrent.CompletionStage<T>)
+public abstract <U> java.util.concurrent.CompletableFuture<U> jakarta.enterprise.concurrent.ManagedExecutorService.completedFuture(U)
+public abstract <U> java.util.concurrent.CompletableFuture<U> jakarta.enterprise.concurrent.ManagedExecutorService.failedFuture(java.lang.Throwable)
+public abstract <U> java.util.concurrent.CompletableFuture<U> jakarta.enterprise.concurrent.ManagedExecutorService.newIncompleteFuture()
+public abstract <U> java.util.concurrent.CompletableFuture<U> jakarta.enterprise.concurrent.ManagedExecutorService.supplyAsync(java.util.function.Supplier<U>)
+public abstract <U> java.util.concurrent.CompletionStage<U> jakarta.enterprise.concurrent.ManagedExecutorService.completedStage(U)
+public abstract <U> java.util.concurrent.CompletionStage<U> jakarta.enterprise.concurrent.ManagedExecutorService.failedStage(java.lang.Throwable)
+public abstract jakarta.enterprise.concurrent.ContextService jakarta.enterprise.concurrent.ManagedExecutorService.getContextService()
+public abstract java.util.concurrent.CompletableFuture<java.lang.Void> jakarta.enterprise.concurrent.ManagedExecutorService.runAsync(java.lang.Runnable)
