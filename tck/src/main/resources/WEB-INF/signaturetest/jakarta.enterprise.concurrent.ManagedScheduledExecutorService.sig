@@ -1,0 +1,3 @@
+#public abstract interface jakarta.enterprise.concurrent.ManagedScheduledExecutorService extends [interface jakarta.enterprise.concurrent.ManagedExecutorService, interface java.util.concurrent.ScheduledExecutorService]
+public abstract <V> java.util.concurrent.ScheduledFuture<V> jakarta.enterprise.concurrent.ManagedScheduledExecutorService.schedule(java.util.concurrent.Callable<V>,jakarta.enterprise.concurrent.Trigger)
+public abstract java.util.concurrent.ScheduledFuture<?> jakarta.enterprise.concurrent.ManagedScheduledExecutorService.schedule(java.lang.Runnable,jakarta.enterprise.concurrent.Trigger)
