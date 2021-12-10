@@ -144,11 +144,11 @@ public @interface ContextServiceDefinition {
      * runs the contextual task or action.
      * <p>For example, with <code> unchanged = TRANSACTION</code>
      * if a transaction is started after a function is
-     * contextualized, but before the function is run on the same thread, 
+     * contextualized, but before the function is run on the same thread,
      * the transaction will be active in the contextual function:</p>
-     * 
-     * <pre>Consumer<String, Integer> updateDB = contextService.contextualConsumer(fn);
-     * 
+     *
+     * <pre>Consumer&lt;String, Integer&gt; updateDB = contextService.contextualConsumer(fn);
+     *
      *&#47;/ later, on another thread
      *tx.begin();
      *updateDB.accept("java:comp/env/jdbc/ds1");
