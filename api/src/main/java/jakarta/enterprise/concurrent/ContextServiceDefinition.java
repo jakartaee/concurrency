@@ -141,7 +141,19 @@ public @interface ContextServiceDefinition {
 
     /**
      * <p>Types of context that are left alone when a thread
-     * runs the contextual task or action.</p>
+     * runs the contextual task or action.
+     * <p>For example, with <code> unchanged = TRANSACTION</code>
+     * if a transaction is started after a function is
+     * contextualized, but before the function is run on the same thread,
+     * the transaction will be active in the contextual function:</p>
+     *
+     * <pre>Consumer&lt;String, Integer&gt; updateDB = contextService.contextualConsumer(fn);
+     *
+     *&#47;/ later, on another thread
+     *tx.begin();
+     *updateDB.accept("java:comp/env/jdbc/ds1");
+     *&#47;/...additional transactional work
+     *tx.commit();</pre>
      *
      * <p>Constants are provided on this class for the context types
      * that are defined by the Jakarta EE Concurrency specification.</p>
