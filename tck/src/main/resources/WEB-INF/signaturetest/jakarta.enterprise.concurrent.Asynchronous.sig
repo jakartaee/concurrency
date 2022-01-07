@@ -4,4 +4,4 @@
 @java.lang.annotation.Inherited()
 @java.lang.annotation.Retention(value=RUNTIME)
 @java.lang.annotation.Target(value={METHOD, TYPE})
-public abstract java.lang.String jakarta.enterprise.concurrent.Asynchronous.executor() [@jakarta.enterprise.util.Nonbinding()] default java:comp/DefaultManagedExecutorService
+@jakarta.enterprise.util.Nonbinding() public abstract java.lang.String jakarta.enterprise.concurrent.Asynchronous.executor() default java:comp/DefaultManagedExecutorService
