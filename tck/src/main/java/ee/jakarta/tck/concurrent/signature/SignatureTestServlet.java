@@ -27,6 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -86,42 +87,40 @@ public class SignatureTestServlet extends HttpServlet {
         observed.add(b.toString());
 
         for (Annotation a : c.getAnnotations())
-            observed.add(a.toString());
+            observed.add(toString(a));
 
         for (Constructor<?> ctor : c.getConstructors())
             if (c.equals(ctor.getDeclaringClass())) {
-                b = new StringBuilder(ctor.toGenericString());
+                b = new StringBuilder();
                 Annotation[] ctorAnnos = ctor.getAnnotations();
-                if (ctorAnnos.length > 0)
-                    b.append(" ").append(Arrays.toString(ctorAnnos));
+                for (Annotation a : ctorAnnos)
+                    b.append(toString(a)).append(" ");
+                b.append(ctor.toGenericString());
                 observed.add(b.toString());
             }
 
         for (Field f : c.getFields())
             if (c.equals(f.getDeclaringClass())) {
-                b = new StringBuilder(f.toGenericString());
+                b = new StringBuilder();
                 Annotation[] fieldAnnos = f.getAnnotations();
-                if (fieldAnnos.length > 0)
-                    b.append(" ").append(Arrays.toString(fieldAnnos));
+                for (Annotation a : fieldAnnos)
+                    b.append(toString(a)).append(" ");
+                b.append(f.toGenericString());
                 observed.add(b.toString());
             }
 
         for (Method m : c.getMethods())
             if (c.equals(m.getDeclaringClass())) {
-                b = new StringBuilder(m.toGenericString());
+                b = new StringBuilder();
                 Annotation[] methodAnnos = m.getAnnotations();
-                if (methodAnnos.length > 0)
-                    b.append(" ").append(Arrays.toString(methodAnnos));
+                for (Annotation a : methodAnnos)
+                    b.append(toString(a)).append(" ");
+                b.append(m.toGenericString());
                 Object annoDefault = m.getDefaultValue();
-                if (annoDefault != null)
-                    if (annoDefault.getClass().isArray()) {
-                        b.append(" default [");
-                        for (int d = 0; d < Array.getLength(annoDefault); d++)
-                            b.append(d == 0 ? "" : ",").append(Array.get(annoDefault, d));
-                        b.append("]");
-                    } else {
-                        b.append(" default ").append(annoDefault);
-                    }
+                if (annoDefault != null) {
+                    b.append(" default ");
+                    toStringBuilder(b, annoDefault);
+                }
                 observed.add(b.toString());
             }
 
@@ -150,15 +149,59 @@ public class SignatureTestServlet extends HttpServlet {
         TreeSet<String> missing = new TreeSet<String>(expected);
         missing.removeAll(observed);
 
-        assertEquals(Collections.EMPTY_SET, missing,
-                     "Found " + className + " that lacks the identified aspects of the specification class.");
-
         TreeSet<String> extras = new TreeSet<String>(observed);
         extras.removeAll(expected);
+
+        assertEquals(missing, Collections.EMPTY_SET,
+                     "Found " + className + " that lacks the identified aspects of the specification class. " +
+                                                     "Instead includes " + extras.toString() + ".");
 
         assertEquals(Collections.EMPTY_SET, extras,
                      "Found " + className + " that differs from the specification class.");
 
         return SUCCESS;
+    }
+
+    private static String toString(Annotation a) {
+        Class<?> type = a.annotationType();
+        StringBuilder b = new StringBuilder()
+                        .append("@")
+                        .append(type.getName())
+                        .append("(");
+        int count = 0;
+        for (Method m : type.getMethods())
+            if (type.equals(m.getDeclaringClass()) && m.getParameterCount() == 0) {
+                Object value;
+                try {
+                    value = m.invoke(a);
+                } catch (IllegalAccessException | InvocationTargetException x) {
+                    x.printStackTrace();
+                    value = null;
+                }
+                if (value != null) {
+                    if (++count > 1)
+                        b.append(", ");
+                    b.append(m.getName()).append("=");
+                    toStringBuilder(b, value);
+                }
+            }
+        b.append(")");
+        return b.toString();
+    }
+
+    private static void toStringBuilder(StringBuilder b, Object value) {
+        if (value instanceof Class) {
+            b.append(((Class<?>) value).getName()).append(".class");
+        } else if (value.getClass().isArray()) {
+            b.append("{");
+            for (int v = 0; v < Array.getLength(value); v++) {
+                if (v > 0)
+                    b.append(", ");
+                toStringBuilder(b, Array.get(value, v));
+            }
+            b.append("}");
+        } else {
+            b.append(value);
+        }
     }
 }
