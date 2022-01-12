@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,9 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 
 @SuppressWarnings("serial")
 public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
@@ -25,7 +25,7 @@ public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
 	protected String work() {
 		try {
 			Thread.currentThread().getContextClassLoader().loadClass(
-					"jakarta.enterprise.concurrent.spec.ContextService.contextPropagate.ClassloaderServlet");
+					"ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ClassloaderServlet");
 		} catch (ClassNotFoundException e) {
 			return "can not load class in web module from ejb module.";
 		}

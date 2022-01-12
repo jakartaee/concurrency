@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,25 +22,10 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import ee.jakarta.tck.concurrent.spec.context.IntContext;
-import ee.jakarta.tck.concurrent.spec.context.StringContext;
-
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Status;
-import jakarta.transaction.SystemException;
-import jakarta.transaction.UserTransaction;
-
-import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -49,8 +34,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.Map;
-import java.util.Queue;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -59,6 +42,18 @@ import java.util.function.Supplier;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import ee.jakarta.tck.concurrent.common.context.IntContext;
+import ee.jakarta.tck.concurrent.common.context.StringContext;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
 
 @ContextServiceDefinition(name = "java:app/concurrent/ContextA",
                           propagated = { APPLICATION, IntContext.NAME },
@@ -69,11 +64,10 @@ import javax.naming.NamingException;
                           unchanged = { APPLICATION, IntContext.NAME },
                           propagated = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:comp/concurrent/ContextC")
-@WebServlet("/ContextServiceDefinitionServlet")
-public class ContextServiceDefinitionServlet extends HttpServlet {
+@WebServlet("ContextServiceDefinitionServlet")
+public class ContextServiceDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
-    private static final String SUCCESS = "success";
 
     /**
      * Java SE thread pool with threads that lack context.
@@ -89,43 +83,8 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
     }
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void before() throws ServletException {
         unmanagedThreads = Executors.newFixedThreadPool(10);
-    }
-
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        String action = req.getParameter("action");
-        System.out.println("STARTING " + getClass().getName() + "." + action);
-        try {
-            String result;
-
-            if ("testContextServiceDefinitionAllAttributes".equals(action))
-                result = testContextServiceDefinitionAllAttributes();
-            else if ("testContextServiceDefinitionDefaults".equals(action))
-                result = testContextServiceDefinitionDefaults();
-            else if ("testContextServiceDefinitionWithThirdPartyContext".equals(action))
-                result = testContextServiceDefinitionWithThirdPartyContext();
-            else if ("testContextualConsumer".equals(action))
-                result = testContextualConsumer();
-            else if ("testContextualFunction".equals(action))
-                result = testContextualFunction();
-            else if ("testContextualSupplier".equals(action))
-                result = testContextualSupplier();
-            else if ("testCopyWithContextCapture".equals(action))
-                result = testCopyWithContextCapture();
-            else
-                result = "unknown or missing action for " + getClass().getName() + ": " + action;
-
-            System.out.println((SUCCESS.equals(result) ? "PASSED" : "FAILED") +
-                    getClass().getName() + "." + action + ": " + result);
-            resp.getWriter().println(result);
-        } catch (Throwable x) {
-            System.out.print("FAILED " + getClass().getName() + "." + action + ": ");
-            x.printStackTrace(System.out);
-            x.printStackTrace(resp.getWriter());
-        }
     }
 
     /**
@@ -134,7 +93,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
      * ContextA, which is tested here, propagates Application context and IntContext,
      * clears StringContext, and leaves Transaction context unchanged.
      */
-    private String testContextServiceDefinitionAllAttributes() throws Throwable {
+    public void testContextServiceDefinitionAllAttributes() throws Throwable {
         ContextService contextServiceA = InitialContext.doLookup("java:app/concurrent/ContextA");
 
         BiFunction<Object[], String, Object[]> fn = (results, jndiName) -> {
@@ -178,24 +137,24 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             assertTrue(results[0] instanceof ContextService,
                     "Application context must be propagated to inline contextual BiFunction " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals(Integer.valueOf(101), results[1],
+            assertEquals(results[1], Integer.valueOf(101), 
                     "Third-party context type IntContext must be propagated to inline contextual BiFunction " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals("", results[2],
+            assertEquals(results[2], "", 
                     "Third-party context type StringContext must be cleared from inline contextual BiFunction " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), results[3],
+            assertEquals(results[3], Integer.valueOf(Status.STATUS_ACTIVE), 
                     "Transaction context must be left unchanged on inline contextual BiFunction " +
                     "per java:app/concurrent/ContextA configuration.");
 
             // context from before the inline contextual BiFunction must be restored to thread
             assertNotNull(InitialContext.doLookup("java:app/concurrent/ContextA"),
                     "Previous Application context must be present after inline contextual BiFunction.");
-            assertEquals(102, IntContext.get(),
+            assertEquals(IntContext.get(), 102, 
                     "Third-party context type IntContext must be restored after inline contextual BiFunction.");
-            assertEquals("testContextServiceDefinitionAllAttributes-2", StringContext.get(),
+            assertEquals(StringContext.get(), "testContextServiceDefinitionAllAttributes-2", 
                     "Third-party context type StringContext must be restored after inline contextual BiFunction.");
-            assertEquals(Status.STATUS_ACTIVE, tx.getStatus(),
+            assertEquals(tx.getStatus(), Status.STATUS_ACTIVE, 
                     "Transaction context must remain on thread after inline contextual BiFunction " +
                     "because it is to be left unchanged per java:app/concurrent/ContextA configuration.");
         } finally {
@@ -213,24 +172,22 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         assertTrue(results[0] instanceof ContextService,
                 "Application context must be propagated to async contextual BiFunction " +
                 "per java:app/concurrent/ContextA configuration.");
-        assertEquals(Integer.valueOf(101), results[1],
+        assertEquals(results[1], Integer.valueOf(101), 
                 "Third-party context type IntContext must be propagated to async contextual BiFunction " +
                 "per java:app/concurrent/ContextA configuration.");
-        assertEquals("", results[2],
+        assertEquals(results[2], "", 
                 "Third-party context type StringContext must be cleared from async contextual BiFunction " +
                 "per java:app/concurrent/ContextA configuration.");
-        assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results[3],
+        assertEquals(results[3], Integer.valueOf(Status.STATUS_NO_TRANSACTION), 
                 "Transaction context must be left unchanged on async contextual BiFunction " +
                 "per java:app/concurrent/ContextA configuration.");
-
-        return SUCCESS;
     }
 
     /**
      * A ContextServiceDefinition with minimal attributes configured
      * clears transaction context and propagates other types.
      */
-    private String testContextServiceDefinitionDefaults() throws Throwable {
+    public void testContextServiceDefinitionDefaults() throws Throwable {
         ContextService contextService = InitialContext.doLookup("java:comp/concurrent/ContextC");
 
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
@@ -263,10 +220,10 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
 
             StringContext.set("testContextServiceDefinitionDefaults-2");
 
-            assertEquals("testContextServiceDefinitionDefaults-1", callable.call(),
+            assertEquals(callable.call(), "testContextServiceDefinitionDefaults-1", 
                     "Third-party context type StringContext must be propagated to contextual Callable.");
 
-            assertEquals(Status.STATUS_ACTIVE, tx.getStatus(),
+            assertEquals(tx.getStatus(), Status.STATUS_ACTIVE, 
                     "Transaction must be restored on thread after contextual proxy completes.");
         } finally {
             StringContext.set(null);
@@ -276,7 +233,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         Object result;
         assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                 "Contextual runnable did not start on thread.");
-        assertEquals(Integer.valueOf(13), result,
+        assertEquals(result, Integer.valueOf(13), 
                 "Third-party context type IntContext must be propagated to contextual Runnable.");
 
         assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
@@ -287,8 +244,6 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         assertTrue(result instanceof ContextService,
                 "Application context must be propagated to contextual Runnable, but instead lookup found: " +
                 result);
-
-        return SUCCESS;
     }
 
     /**
@@ -297,7 +252,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
      * ContextA with IntContext propagated and StringContext cleared.
      * ContextB with IntContext unchanged and StringContext propagated (per ALL_REMAINING).
      */
-    private String testContextServiceDefinitionWithThirdPartyContext() throws Throwable {
+    public void testContextServiceDefinitionWithThirdPartyContext() throws Throwable {
         try {
             StringContext.set("testCSDWithThirdPartyContext-1");
             IntContext.set(31);
@@ -328,41 +283,39 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             // Run inline
             Queue<Object> results = new LinkedList<Object>();
             consumerA.accept(results, results);
-            assertEquals(Integer.valueOf(31), results.poll(),
+            assertEquals(results.poll(), Integer.valueOf(31),
                     "Third-party context type IntContext must be propagated to inline contextual BiConsumer " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals("", results.poll(),
+            assertEquals(results.poll(), "", 
                     "Third-party context type StringContext must be cleared from inline contextual BiConsumer " +
                     "per java:app/concurrent/ContextA configuration.");
 
             consumerB.accept(results, results);
-            assertEquals(Integer.valueOf(32), results.poll(),
+            assertEquals(results.poll(), Integer.valueOf(32), 
                     "Third-party context type IntContext must be left unchanged on inline contextual BiConsumer " +
                     "per java:module/concurrent/ContextB configuration.");
-            assertEquals("testCSDWithThirdPartyContext-1", results.poll(),
+            assertEquals(results.poll(), "testCSDWithThirdPartyContext-1", 
                     "Third-party context type StringContext must be propagated to inline contextual BiConsumer " +
                     "per java:module/concurrent/ContextB configuration.");
 
             // Check the thread context of async consumers
-            assertEquals(Integer.valueOf(31), queueA.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(queueA.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(31), 
                     "Third-party context type IntContext must be propagated to async contextual BiConsumer " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals("", queueA.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(queueA.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "", 
                     "Third-party context type StringContext must be cleared from async contextual BiConsumer " +
                     "per java:app/concurrent/ContextA configuration.");
 
-            assertEquals(Integer.valueOf(0), queueB.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(queueB.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0), 
                     "Third-party context type IntContext must be left unchanged on async contextual BiConsumer " +
                     "per java:module/concurrent/ContextB configuration.");
-            assertEquals("testCSDWithThirdPartyContext-1", queueB.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(queueB.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testCSDWithThirdPartyContext-1", 
                     "Third-party context type StringContext must be propagated to async contextual BiConsumer " +
                     "per java:module/concurrent/ContextB configuration.");
         } finally {
             StringContext.set(null);
             IntContext.set(0);
         }
-
-        return SUCCESS;
     }
 
     /**
@@ -370,7 +323,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
      * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
      * the thread that contextualizes the Consumer, per the configuration of the ContextServiceDefinition.
      */
-    private String testContextualConsumer() throws Throwable {
+    public void testContextualConsumer() throws Throwable {
         ContextService contextService = InitialContext.doLookup("java:app/concurrent/ContextA");
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
         try {
@@ -396,12 +349,12 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         Object result;
         assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                 "Contextual Consumer did not start running.");
-        assertEquals(Integer.valueOf(121), result,
+        assertEquals(result, Integer.valueOf(121),
                 "Third-party context type IntContext must be propagated to contextual Consumer " +
                 "per java:app/concurrent/ContextA configuration.");
         assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                 "Contextual Consumer did not continue running.");
-        assertEquals("", result,
+        assertEquals(result, "", 
                 "Third-party context type StringContext must be cleared on contextual Consumer " +
                 "per java:app/concurrent/ContextA configuration.");
         assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
@@ -412,8 +365,6 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         assertTrue(result instanceof ContextService,
                 "Application context must be propagated to contextual Consumer " +
                 "per java:app/concurrent/ContextA configuration.");
-
-        return SUCCESS;
     }
 
     /**
@@ -421,7 +372,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
      * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
      * the thread that contextualizes the Function, per the configuration of the ContextServiceDefinition.
      */
-    private String testContextualFunction() throws Throwable {
+    public void testContextualFunction() throws Throwable {
         ContextService contextService = InitialContext.doLookup("java:module/concurrent/ContextB");
         CompletableFuture<Object[]> future;
         tx.begin();
@@ -458,17 +409,15 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
         assertTrue(results[0] instanceof NamingException,
                 "Application context must remain unchanged on contextual Function " +
                 "per java:module/concurrent/ContextB configuration. Result: " + results[0]);
-        assertEquals(Integer.valueOf(0), results[1],
+        assertEquals(results[1], Integer.valueOf(0), 
                 "Third-party context type IntContext must remain unchanged on contextual Function " +
                 "per java:module/concurrent/ContextB configuration.");
-        assertEquals("testContextualFunction-1", results[2],
+        assertEquals(results[2], "testContextualFunction-1",
                 "Third-party context type StringContext must be propagated to contextual Function " +
                 "per java:module/concurrent/ContextB configuration.");
-        assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results[3],
+        assertEquals(results[3], Integer.valueOf(Status.STATUS_NO_TRANSACTION), 
                 "Transaction context must be cleared from contextual Function " +
                 "per java:module/concurrent/ContextB configuration.");
-
-        return SUCCESS;
     }
 
     /**
@@ -476,7 +425,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
      * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
      * the thread that contextualizes the Supplier, per the configuration of the ContextServiceDefinition.
      */
-    private String testContextualSupplier() throws Throwable {
+    public void testContextualSupplier() throws Throwable {
         try {
             StringContext.set("testContextualSupplier-1");
             IntContext.set(61);
@@ -491,24 +440,22 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             IntContext.set(62);
 
             Map.Entry<Integer, String> results = futureA.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(Integer.valueOf(61), results.getKey(),
+            assertEquals(results.getKey(), Integer.valueOf(61), 
                     "Third-party context type IntContext must be propagated to async contextual Supplier " +
                     "per java:app/concurrent/ContextA configuration.");
-            assertEquals("", results.getValue(),
+            assertEquals(results.getValue(), "", 
                     "Third-party context type StringContext must be cleared from async contextual Supplier " +
                     "per java:app/concurrent/ContextA configuration.");
         } finally {
             StringContext.set(null);
             IntContext.set(0);
         }
-
-        return SUCCESS;
     }
 
     /**
      * ContextService can create a contextualized copy of an unmanaged CompletableFuture.
      */
-    private String testCopyWithContextCapture() throws Throwable {
+    public void testCopyWithContextCapture() throws Throwable {
         ContextService contextService = InitialContext.doLookup("java:app/concurrent/ContextA");
         try {
             StringContext.set("testCopyWithContextCapture-1");
@@ -520,7 +467,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             IntContext.set(172);
 
             CompletableFuture<String> stage2 = stage1copy.exceptionally(failure -> {
-                assertEquals(172, IntContext.get(),
+                assertEquals(IntContext.get(), 172, 
                         "Third-party context type IntContext must be propagated to the .exceptionally Function " +
                         "per java:app/concurrent/ContextA configuration.");
                 return "java:app/concurrent/ContextA";
@@ -529,7 +476,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             IntContext.set(173);
 
             CompletableFuture<Void> stage3 = stage2.thenAcceptAsync(jndiName -> {
-                assertEquals("", StringContext.get(),
+                assertEquals(StringContext.get(), "", 
                         "Third-party context type StringContext must be cleared from async contextual Consumer " +
                         "per java:app/concurrent/ContextA configuration.");
                 try {
@@ -544,7 +491,7 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             stage1unmanaged.completeExceptionally(new UnsupportedOperationException(
                     "Intentionally raised to force the .exceptionally code path"));
 
-            assertEquals(null, stage3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(stage3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), null, 
                     "Dependent stages should complete in response to the completion of the stage " +
                     "from which the first stage was copied.");
 
@@ -554,7 +501,5 @@ public class ContextServiceDefinitionServlet extends HttpServlet {
             StringContext.set(null);
             IntContext.set(0);
         }
-
-        return SUCCESS;
     }
 }

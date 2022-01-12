@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 
 import java.net.URL;
 
@@ -26,23 +26,23 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestClient;
 
 public class ContextTests extends TestClient {
 	
-	@ArquillianResource(SecurityServlet.class)
+	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ManagedThreadFactory.context", testable=false)
+	@Deployment(name="ContextTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "Context.war")
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), ContextTests.class.getPackage())
+		WebArchive war = ShrinkWrap.create(WebArchive.class)
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), ContextTests.class.getPackage())
 				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "Context_ejb.jar")
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
 				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "Context.ear")
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
 				.addAsModules(war, jar)
 				.addAsManifestResource(ContextTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
 		

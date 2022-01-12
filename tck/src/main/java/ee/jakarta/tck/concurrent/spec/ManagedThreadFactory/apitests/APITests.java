@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.apitests;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.apitests;
 
 import java.net.URL;
 
@@ -24,17 +24,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestClient;
 
 public class APITests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ManagedThreadFactory.apitests", testable=false)
+	@Deployment(name="APITests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), APITests.class.getPackage());
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), APITests.class.getPackage());
 	}
 	
 	@Override

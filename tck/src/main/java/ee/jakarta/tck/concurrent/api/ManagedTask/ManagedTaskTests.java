@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.ManagedTask;
+package ee.jakarta.tck.concurrent.api.ManagedTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +24,19 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.common.RunnableTask;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 
 public class ManagedTaskTests extends ArquillianTests {
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ManagedTask")
+	@Deployment(name="ManagedTaskTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), ManagedTaskTests.class.getPackage());
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonManagedTaskListener(), ManagedTaskTests.class.getPackage());
 	}
 
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();

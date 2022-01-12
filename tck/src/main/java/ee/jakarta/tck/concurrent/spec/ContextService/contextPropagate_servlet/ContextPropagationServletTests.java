@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate_servlet;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
 
 import java.net.URL;
 import java.util.Properties;
@@ -26,40 +26,44 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.URLBuilder;
 
 public class ContextPropagationServletTests extends TestClient {
 	
-	@Deployment(name = "ContextService.contextPropagate_servlet.ProxyCreatorServlet", testable=false)
+	private static final String APP_NAME_PROXY = "ContextPropagationServletTests.Proxy";
+	private static final String APP_NAME_WORK = "ContextPropagationServletTests.Work";
+	private static final String APP_NAME_DESERIALIZE = "ContextPropagationServletTests.Deserialize";
+	
+	@Deployment(name = APP_NAME_PROXY, testable=false)
 	public static WebArchive createDeployment1() {
-		return ShrinkWrap.create(WebArchive.class)
+		return ShrinkWrap.create(WebArchive.class, APP_NAME_PROXY + ".war")
 				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
 				.deleteClass(WorkInterfaceServlet.class)
 				.addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
 	}
 	
-	@Deployment(name = "ContextService.contextPropagate_servlet.WorkInterfaceServlet", testable=false)
+	@Deployment(name = APP_NAME_WORK, testable=false)
 	public static WebArchive createDeployment2() {
-		return ShrinkWrap.create(WebArchive.class)
+		return ShrinkWrap.create(WebArchive.class, APP_NAME_WORK + ".war")
 				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
 				.deleteClass(ProxyCreatorServlet.class);
 	}
 	
-	@Deployment(name = "ContextService.contextPropagate_servlet.DeserializeServletOnly", testable=false)
+	@Deployment(name = APP_NAME_DESERIALIZE, testable=false)
 	public static WebArchive createDeployment3() {
-		return ShrinkWrap.create(WebArchive.class)
+		return ShrinkWrap.create(WebArchive.class, APP_NAME_DESERIALIZE + ".war")
 				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
 				.deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
 	}
 	
 	@ArquillianResource
-	@OperateOnDeployment("ContextService.contextPropagate_servlet.ProxyCreatorServlet")
+	@OperateOnDeployment(APP_NAME_PROXY)
 	URL baseURL;
 	
 	@ArquillianResource
-	@OperateOnDeployment("ContextService.contextPropagate_servlet.WorkInterfaceServlet")
+	@OperateOnDeployment(APP_NAME_WORK)
 	URL workInterfaceURL;
 	
 	@Override

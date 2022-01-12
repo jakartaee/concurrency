@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.ManagedTaskListener;
+package ee.jakarta.tck.concurrent.api.ManagedTaskListener;
 
 import java.time.Duration;
 import java.util.List;
@@ -26,23 +26,23 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.ManagedExecutors;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class ManagedTaskListenerTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(ManagedTaskListenerTests.class);
-	
+
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ManagedTaskListener")
+	@Deployment(name="ManagedTaskListenerTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(),  ManagedTaskListenerTests.class.getPackage());
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonManagedTaskListener(),  ManagedTaskListenerTests.class.getPackage());
 	}
 	
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();

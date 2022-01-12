@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.ContextService;
+package ee.jakarta.tck.concurrent.api.ContextService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +24,17 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class ContextServiceTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(ContextServiceTests.class);
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ContextService")
+	@Deployment(name="ContextServiceTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, getFrameworkPackage(), ContextServiceTests.class.getPackage());

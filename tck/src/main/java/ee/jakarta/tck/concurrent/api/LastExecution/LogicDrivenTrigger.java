@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,15 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.LastExecution;
+package ee.jakarta.tck.concurrent.api.LastExecution;
 
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 /**
  * A trigger that driven by test logic. This trigger is used for test the logic

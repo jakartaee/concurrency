@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,14 +14,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.tx;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.tx;
+
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 public class TransactedTask implements Runnable {
@@ -46,52 +50,48 @@ public class TransactedTask implements Runnable {
 		int originCount = Util.getCount(tableName, username, password);
 
 		UserTransaction ut = TestUtil.lookup(TestConstants.UserTransaction);
-		if (ut == null) {
-			// error if no transaction can be obtained in task.
-			throw new RuntimeException("didn't get user transaction inside the submitted task.");
-		} else {
-			Connection conn = Util.getConnection(false, username, password);
-			PreparedStatement pStmt = null;
-			try {
-				ut.begin();
-				pStmt = conn.prepareStatement(sqlTemplate);
-				String sTypeDesc = "Type-99";
-				int newType = 99;
-				pStmt.setInt(1, newType);
-				pStmt.setString(2, sTypeDesc);
-				pStmt.executeUpdate();
-				// commit or roll back transaction.
-				if (isCommit) {
-					ut.commit();
-				} else {
-					ut.rollback();
-				}
-				// check status.
-				int afterTransacted = Util.getCount(tableName, username, password);
-				if (isCommit) {
-					pass = (afterTransacted == originCount + 1);
-				} else {
-					pass = (afterTransacted == originCount);
-				}
-			} catch (Exception e) {
-				log.severe("Got exception when trying to run TransactedTask", e);
-				try {
-					ut.rollback();
-				} catch (Exception e1) {
-					log.finer("Got exception when trying to do rollback on failed test", e1);
-				}
-			} finally {
-				try {
-					pStmt.close();
-					conn.close();
-				} catch (Exception e) {
-					log.finer("Got exception when trying to close connection and statment", e);
-				}
+		assertNotNull(ut, "didn't get user transaction inside the submitted task.");
+
+		Connection conn = Util.getConnection(false, username, password);
+		PreparedStatement pStmt = null;
+		try {
+			ut.begin();
+			pStmt = conn.prepareStatement(sqlTemplate);
+			String sTypeDesc = "Type-99";
+			int newType = 99;
+			pStmt.setInt(1, newType);
+			pStmt.setString(2, sTypeDesc);
+			pStmt.executeUpdate();
+			// commit or roll back transaction.
+			if (isCommit) {
+				ut.commit();
+			} else {
+				ut.rollback();
 			}
-			if (!pass) {
-				throw new RuntimeException("didn't get expected result with transacted task.");
+			// check status.
+			int afterTransacted = Util.getCount(tableName, username, password);
+			if (isCommit) {
+				pass = (afterTransacted == originCount + 1);
+			} else {
+				pass = (afterTransacted == originCount);
+			}
+		} catch (Exception e) {
+			try {
+				ut.rollback();
+			} catch (Exception e1) {
+				log.finer("Got exception when trying to do rollback on failed test", e1);
+			}
+			fail("Got exception when trying to run TransactedTask");
+		} finally {
+			try {
+				pStmt.close();
+				conn.close();
+			} catch (Exception e) {
+				log.finer("Got exception when trying to close connection and statment", e);
 			}
 		}
+		
+		assertTrue(pass, "didn't get expected result with transacted task.");
 	}
 
 }

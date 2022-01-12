@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,20 +14,24 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedThreadFactory.context;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
+
+import static org.testng.Assert.assertEquals;
 
 import javax.naming.InitialContext;
 
+import ee.jakarta.tck.concurrent.common.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
+@WebServlet("SecurityServlet")
 public class SecurityServlet extends TestServlet {
 	
 	@EJB
@@ -49,7 +53,7 @@ public class SecurityServlet extends TestServlet {
 			Thread thread = factory.newThread(task);
 			thread.start();
 			TestUtil.waitTillThreadFinish(thread);
-			TestUtil.assertEquals(1, task.getCount());
+			assertEquals(task.getCount(), 1);
 	}
 	
 	public void jndiClassloaderPropagationWithSecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -64,7 +68,7 @@ public class SecurityServlet extends TestServlet {
 		Thread thread = factory.newThread(task);
 		thread.start();
 		TestUtil.waitTillThreadFinish(thread);
-		TestUtil.assertEquals(1, task.getCount());
+		assertEquals(task.getCount(), 1);
 }
 
 	public static class CounterRunnableWithContext extends RunnableTask {
@@ -99,9 +103,8 @@ public class SecurityServlet extends TestServlet {
 
 		public void run() {
 			try {
-				TestUtil.assertEquals(TestConstants.SimpleReturnValue, str.managerMethod1());
+				assertEquals(str.managerMethod1(), TestConstants.SimpleReturnValue);
 			} catch (Exception e) {
-				e.printStackTrace();
 				return;
 			}
 			count++;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,17 +14,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.security;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
+
+import static org.testng.Assert.assertEquals;
 
 import java.util.concurrent.ScheduledFuture;
 
 import javax.naming.InitialContext;
 
+import ee.jakarta.tck.concurrent.common.CommonTriggers;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.api.common.CommonTriggers;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +44,6 @@ public class SecurityServlet extends TestServlet {
 			ScheduledFuture future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
 
 			Object result = TestUtil.waitForTaskComplete(future);
-			TestUtil.assertEquals(TestConstants.SimpleReturnValue, result);
+			assertEquals(result, TestConstants.SimpleReturnValue);
 	}
 }

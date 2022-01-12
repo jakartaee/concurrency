@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,16 +14,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
+
+import static org.testng.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.common.counter.StaticCounter;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
@@ -52,11 +54,11 @@ public class ForbiddenServlet extends TestServlet {
 		try {
 			getService().awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsShutdown() {
@@ -65,7 +67,7 @@ public class ForbiddenServlet extends TestServlet {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsTerminated() {
@@ -74,7 +76,7 @@ public class ForbiddenServlet extends TestServlet {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdown() {
@@ -83,7 +85,7 @@ public class ForbiddenServlet extends TestServlet {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdownNow() {
@@ -92,6 +94,6 @@ public class ForbiddenServlet extends TestServlet {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,22 +14,24 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
 
 public class ForbiddenAPITests extends ArquillianTests {
 	
-	@Deployment(name="ManagedScheduledExecutorService.managed.forbiddenapi")
+	private static final String APP_NAME = "ManagedScheduledExecutorService.ForbiddenAPITests";
+	
+	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonCounterPackage(), ForbiddenAPITests.class.getPackage())
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonFixedCounterPackage(), ForbiddenAPITests.class.getPackage())
 				.addAsManifestResource(ForbiddenAPITests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
 	}
 

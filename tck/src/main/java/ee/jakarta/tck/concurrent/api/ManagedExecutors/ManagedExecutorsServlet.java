@@ -1,4 +1,19 @@
-package jakarta.enterprise.concurrent.api.ManagedExecutors;
+/*
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
+package ee.jakarta.tck.concurrent.api.ManagedExecutors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,15 +21,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import ee.jakarta.tck.concurrent.common.CallableTask;
+import ee.jakarta.tck.concurrent.common.RunnableTask;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.api.common.CallableTask;
-import jakarta.enterprise.concurrent.api.common.RunnableTask;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 
 @WebServlet("ManagedExecutorsServlet")

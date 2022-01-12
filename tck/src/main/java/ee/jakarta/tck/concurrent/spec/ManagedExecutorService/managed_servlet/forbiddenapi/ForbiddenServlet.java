@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,13 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
+
+import static org.testng.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
+import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
@@ -31,58 +33,52 @@ public class ForbiddenServlet extends TestServlet {
 	private ManagedExecutorService mes;
 
 	public void testAwaitTermination() {
-		boolean passed = false;
 		try {
 			mes.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (IllegalStateException e) { // what expected.
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
 	public void testIsShutdown() {
-		boolean passed = false;
-
 		try {
 			mes.isShutdown();
 		} catch (IllegalStateException e) { // what expected
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
 	public void testIsTerminated() {
-		boolean passed = false;
 		try {
 			mes.isTerminated();
 		} catch (IllegalStateException e) { // what expected
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
 	public void testShutdown() {
-		boolean passed = false;
 		try {
 			mes.shutdown();
 		} catch (IllegalStateException e) { // what expected
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
 	public void testShutdownNow() {
-		boolean passed = false;
 		try {
 			mes.shutdownNow();
 		} catch (IllegalStateException e) { // what expected
 			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 }

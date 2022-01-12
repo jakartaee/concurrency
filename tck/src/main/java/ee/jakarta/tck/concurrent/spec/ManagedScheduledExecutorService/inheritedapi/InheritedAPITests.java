@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -22,20 +22,19 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.framework.TestClient;
 import jakarta.ejb.EJB;
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
 
 public class InheritedAPITests extends TestClient {
+	public static final String CounterSingletonJNDI = "java:global/inheritedapi/inheritedapi_counter/CounterSingleton";
 	
-	public static final String CounterSingletonJNDI = "java:global/inheritedapi/counter_ejb/CounterSingleton";
-	
-	@Deployment(name="ManagedScheduledExecutorService.inheritedapi")
+	@Deployment(name="InheritedAPITests")
 	public static EnterpriseArchive createDeployment() {
-		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "counter_ejb.jar")
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage() ,getAPICommonCounterPackage())
+		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
+				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage())
 				.addAsManifestResource(InheritedAPITests.class.getPackage(), "counter-sun-ejb-jar.xml", "sun-ejb-jar.xml");
 		
-		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inherited_ejb.jar")
+		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
 				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage())
 				.addAsManifestResource(InheritedAPITests.class.getPackage(), "inheritedapi-sun-ejb-jar.xml", "sun-ejb-jar.xml");
 		

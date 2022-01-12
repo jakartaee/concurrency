@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
+
+import static org.testng.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +26,9 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
+	
+	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
+	
 	@Resource
 	private ManagedExecutorService mes;
 
@@ -31,37 +36,52 @@ public class TestEjb implements TestEjbRemote {
 		try {
 			mes.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			fail(e.toString());
 		} catch (IllegalStateException e) {
+			return;
 		}
+		
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsShutdown() {
 		try {
 			mes.isShutdown();
 		} catch (IllegalStateException e) {
+			return;
 		}
+		
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsTerminated() {
 		try {
 			mes.isTerminated();
 		} catch (IllegalStateException e) {
+			return;
 		}
+		
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdown() {
 		try {
 			mes.shutdown();
 		} catch (IllegalStateException e) {
+			return;
 		}
+		
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdownNow() {
 		try {
 			mes.shutdownNow();
 		} catch (IllegalStateException e) {
+			return;
 		}
+		
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,23 +14,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.SkippedException;
+package ee.jakarta.tck.concurrent.api.SkippedException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
 import jakarta.enterprise.concurrent.SkippedException;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
-import jakarta.enterprise.concurrent.tck.framework.TestLogger;
 
 public class SkippedExceptionTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(SkippedExceptionTests.class);
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="SkippedException")
+	@Deployment(name="SkippedExceptionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, getFrameworkPackage(), SkippedExceptionTests.class.getPackage());

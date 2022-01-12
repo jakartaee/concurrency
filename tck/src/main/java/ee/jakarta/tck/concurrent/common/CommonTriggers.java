@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,10 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.common;
+package ee.jakarta.tck.concurrent.common;
 
 import java.util.Date;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;
 
@@ -72,7 +73,7 @@ public class CommonTriggers {
 
 		private int executionCount = 0;
 
-		private static final int executionCountLimit = 10;
+		private static final int executionCountLimit = TestConstants.PollsPerTimeout * 2;
 
 		public TriggerFixedRate(Date startTime, long delta) {
 			this.startTime = startTime;

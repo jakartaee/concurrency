@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
 import java.net.URL;
 
@@ -26,29 +26,42 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
+import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 public class ContextPropagationTests extends TestClient {
+
+	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagationTests_ejb/LimitedBean";
+
 	
-	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagate_ejb/LimitedBean";
-	
-	@Deployment(name="ContextService.contextPropagate", testable=false)
+	@Deployment(name="ContextPropagationTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
 		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagate.war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
-				.deleteClass(ContextPropagateBean.class)
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagationTests_web.war")
+				.addPackages(true, getFrameworkPackage(), getContextPackage(), getContextProvidersPackage())
+				.addClasses(
+						ContextServiceDefinitionServlet.class,
+						ClassloaderServlet.class,
+						JNDIServlet.class,
+						SecurityServlet.class)
+				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
 				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml");
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagate_ejb.jar")
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
 				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
-				.deleteClasses(ClassloaderServlet.class, JNDIServlet.class, SecurityServlet.class)
+				.deleteClasses(
+						ContextServiceDefinitionServlet.class,
+						ClassloaderServlet.class,
+						JNDIServlet.class,
+						SecurityServlet.class)
 				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
 				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagate.ear").addAsModules(war, jar);
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagationTests.ear").addAsModules(war, jar);
 		
 		return ear;
 	}
@@ -61,6 +74,9 @@ public class ContextPropagationTests extends TestClient {
 	
 	@ArquillianResource(SecurityServlet.class)
 	URL securityURL;
+	
+	@ArquillianResource(ContextServiceDefinitionServlet.class)
+	URL contextURL;
 
 	/*
 	 * @testName: testJNDIContextAndCreateProxyInServlet
@@ -140,4 +156,80 @@ public class ContextPropagationTests extends TestClient {
 		String resp = runTestWithResponse(requestURL, null);
 		this.assertStringInResponse(testName + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
 	}
+	
+    /**
+     * A ContextServiceDefinition with all attributes configured
+     * propagates/clears/ignores context types as configured.
+     * ContextA, which is tested here, propagates Application context and IntContext,
+     * clears StringContext, and leaves Transaction context unchanged.
+     */
+	@Test
+    public void testContextServiceDefinitionAllAttributes() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * A ContextServiceDefinition with minimal attributes configured
+     * clears transaction context and propagates other types.
+     */
+	@Test
+    public void testContextServiceDefinitionDefaults() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * A ContextServiceDefinition can specify a third-party context type to be propagated/cleared/ignored.
+     * This test uses 2 ContextServiceDefinitions:
+     * ContextA with IntContext propagated and StringContext cleared.
+     * ContextB with IntContext unchanged and StringContext propagated (per ALL_REMAINING).
+     */
+	@Test
+    public void testContextServiceDefinitionWithThirdPartyContext() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * A ContextService contextualizes a Consumer, which can be supplied as a dependent stage action
+     * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
+     * the thread that contextualizes the Consumer, per the configuration of the ContextServiceDefinition.
+     */
+	@Test
+    public void testContextualConsumer() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * A ContextService contextualizes a Function, which can be supplied as a dependent stage action
+     * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
+     * the thread that contextualizes the Function, per the configuration of the ContextServiceDefinition.
+     */
+	@Test
+    public void testContextualFunction() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * A ContextService contextualizes a Supplier, which can be supplied as a dependent stage action
+     * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
+     * the thread that contextualizes the Supplier, per the configuration of the ContextServiceDefinition.
+     */
+	@Test
+    public void testContextualSupplier() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+
+    /**
+     * ContextService can create a contextualized copy of an unmanaged CompletableFuture.
+     */
+	@Test
+    public void testCopyWithContextCapture() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
 }

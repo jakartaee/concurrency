@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +27,12 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import jakarta.enterprise.concurrent.common.CommonTasks;
-import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
-import jakarta.enterprise.concurrent.common.counter.StaticCounter;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import ee.jakarta.tck.concurrent.common.CommonTasks;
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
@@ -44,7 +47,7 @@ public class InheritedAPIServlet extends TestServlet {
 	public void testApiSubmit() throws Exception {
 		Future result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleCallable());
 		TestUtil.waitTillFutureIsDone(result);
-		TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+		assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
 		result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable());
 		TestUtil.waitTillFutureIsDone(result);
@@ -52,7 +55,7 @@ public class InheritedAPIServlet extends TestServlet {
 
 		result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
 		TestUtil.waitTillFutureIsDone(result);
-		TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+		assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 	}
 
 	public void testApiExecute() throws Exception{
@@ -69,17 +72,17 @@ public class InheritedAPIServlet extends TestServlet {
 		for (Future each : resultList) {
 			TestUtil.waitTillFutureIsDone(each);
 		}
-		TestUtil.assertEquals(1, resultList.get(0).get());
-		TestUtil.assertEquals(2, resultList.get(1).get());
-		TestUtil.assertEquals(3, resultList.get(2).get());
+		assertEquals(resultList.get(0).get(), 1);
+		assertEquals(resultList.get(1).get(), 2);
+		assertEquals(resultList.get(2).get(), 3);
 		resultList = TestUtil.getManagedScheduledExecutorService().invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(),
 				TimeUnit.SECONDS);
 		for (Future each : resultList) {
 			TestUtil.waitTillFutureIsDone(each);
 		}
-		TestUtil.assertEquals(1, resultList.get(0).get());
-		TestUtil.assertEquals(2, resultList.get(1).get());
-		TestUtil.assertEquals(3, resultList.get(2).get());
+		assertEquals(resultList.get(0).get(), 1);
+		assertEquals(resultList.get(1).get(), 2);
+		assertEquals(resultList.get(2).get(), 3);
 
 		try {
 			taskList = new ArrayList();
@@ -91,7 +94,7 @@ public class InheritedAPIServlet extends TestServlet {
 				TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
 			}
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			fail(ex.getMessage());
 		}
 	}
 
@@ -114,21 +117,21 @@ public class InheritedAPIServlet extends TestServlet {
 		} catch (TimeoutException e) {
 			return; //expected
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			fail(ex.getMessage());
 		}
-		throw new RuntimeException("Task should be cancelled because of timeout");
+		fail("Task should be cancelled because of timeout");
 	}
 
 	public void testApiSchedule() throws Exception {
 		Future result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleCallable(),
 				TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 		TestUtil.waitTillFutureIsDone(result);
-		TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+		assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
 		result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleRunnable(),
 				TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 		TestUtil.waitTillFutureIsDone(result);
-		TestUtil.assertEquals(null, result.get());
+		assertEquals(result.get(), null);
 	}
 
 	public void testApiScheduleAtFixedRate() throws Exception {
@@ -141,7 +144,7 @@ public class InheritedAPIServlet extends TestServlet {
 			TestUtil.sleep(TestConstants.WaitTimeout);
 			TestUtil.assertIntInRange(TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2, StaticCounter.getCount());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} finally {
 			if (result != null) {
 				result.cancel(true);
@@ -164,7 +167,7 @@ public class InheritedAPIServlet extends TestServlet {
 			TestUtil.sleep(TestConstants.WaitTimeout);
 			TestUtil.assertIntInRange((TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2, StaticCounter.getCount());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} finally {
 			if (result != null) {
 				result.cancel(true);

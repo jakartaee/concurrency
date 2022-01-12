@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,14 +14,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.tx;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.tx;
+
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.time.Duration;
 
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 public class CancelledTransactedTask implements Runnable {
@@ -55,45 +58,42 @@ public class CancelledTransactedTask implements Runnable {
 	public void run() {
 		Connection conn = Util.getConnection(false, username, password);
 		UserTransaction ut = TestUtil.lookup(TestConstants.UserTransaction);
-		if (ut == null) {
-			// error if no transaction can be obtained in task.
-			throw new RuntimeException("didn't get user transaction inside the submitted task.");
-		} else {
-			PreparedStatement pStmt = null;
+		
+		assertNotNull(ut, "didn't get user transaction inside the submitted task.");
+		
+		PreparedStatement pStmt = null;
+		try {
+			ut.begin();
+			transactionBegan = true;
+			while (!runFlag) {
+				TestUtil.sleep(Duration.ofMillis(500));
+			}
+			pStmt = conn.prepareStatement(sqlTemplate);
+			String sTypeDesc = "Type-Cancelled-99";
+			int newType = 991;
+			pStmt.setInt(1, newType);
+			pStmt.setString(2, sTypeDesc);
+			pStmt.executeUpdate();
+			// check if it is cancelled here
+			if (cancelled) {
+				ut.rollback();
+				return;
+			}
+			ut.commit();
+		} catch (Exception e) {
 			try {
-				ut.begin();
-				transactionBegan = true;
-				while (!runFlag) {
-					TestUtil.sleep(Duration.ofMillis(500));
-				}
-				pStmt = conn.prepareStatement(sqlTemplate);
-				String sTypeDesc = "Type-Cancelled-99";
-				int newType = 991;
-				pStmt.setInt(1, newType);
-				pStmt.setString(2, sTypeDesc);
-				pStmt.executeUpdate();
-				// check if it is cancelled here
-				if (cancelled) {
-					ut.rollback();
-					return;
-				}
-				ut.commit();
+				ut.rollback();
+			} catch (Exception e1) {
+				//ignore
+			}
+			fail(e.getMessage());
+		} finally {
+			try {
+				pStmt.close();
+				conn.close();
 			} catch (Exception e) {
-				try {
-					ut.rollback();
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				e.printStackTrace();
-			} finally {
-				try {
-					pStmt.close();
-					conn.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				//ignore
 			}
 		}
 	}
-
 }

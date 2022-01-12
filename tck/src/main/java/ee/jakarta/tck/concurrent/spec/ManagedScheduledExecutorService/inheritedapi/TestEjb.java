@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +27,13 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import ee.jakarta.tck.concurrent.common.CommonTasks;
+import ee.jakarta.tck.concurrent.common.counter.CounterRemote;
+import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.api.common.CommonTasks;
-import jakarta.enterprise.concurrent.api.common.counter.CounterRemote;
-import jakarta.enterprise.concurrent.api.common.counter.CounterRunnableTask;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
@@ -42,7 +45,7 @@ public class TestEjb implements TestEjbRemote {
 		try {
 			Future result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleCallable());
 			TestUtil.waitTillFutureIsDone(result);
-			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
 			result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable());
 			TestUtil.waitTillFutureIsDone(result);
@@ -50,7 +53,7 @@ public class TestEjb implements TestEjbRemote {
 
 			result = TestUtil.getManagedScheduledExecutorService().submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
 			TestUtil.waitTillFutureIsDone(result);
-			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -61,7 +64,7 @@ public class TestEjb implements TestEjbRemote {
 			TestUtil.getManagedScheduledExecutorService().execute(new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI));
 			waitForCounter(1);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		}finally {
 			counter.reset();
 		}
@@ -77,19 +80,19 @@ public class TestEjb implements TestEjbRemote {
 			for (Future each : resultList) {
 				TestUtil.waitTillFutureIsDone(each);
 			}
-			TestUtil.assertEquals(1, resultList.get(0).get());
-			TestUtil.assertEquals(2, resultList.get(1).get());
-			TestUtil.assertEquals(3, resultList.get(2).get());
+			assertEquals(resultList.get(0).get(), 1);
+			assertEquals(resultList.get(1).get(), 2);
+			assertEquals(resultList.get(2).get(), 3);
 
 			resultList = TestUtil.getManagedScheduledExecutorService().invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
 			for (Future each : resultList) {
 				TestUtil.waitTillFutureIsDone(each);
 			}
-			TestUtil.assertEquals(1, resultList.get(0).get());
-			TestUtil.assertEquals(2, resultList.get(1).get());
-			TestUtil.assertEquals(3, resultList.get(2).get());
+			assertEquals(resultList.get(0).get(), 1);
+			assertEquals(resultList.get(1).get(), 2);
+			assertEquals(resultList.get(2).get(), 3);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		}
 
 		try {
@@ -102,7 +105,7 @@ public class TestEjb implements TestEjbRemote {
 				TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
 			}
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			fail(ex.getMessage());
 		}
 	}
 
@@ -129,9 +132,9 @@ public class TestEjb implements TestEjbRemote {
 		} catch (TimeoutException e) {
 			return; //expected
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			fail(ex.getMessage());
 		}
-		throw new RuntimeException("Task should be cancelled because of timeout");
+		fail("Task should be cancelled because of timeout");
 	}
 
 	public void testApiSchedule() {
@@ -139,14 +142,14 @@ public class TestEjb implements TestEjbRemote {
 			Future result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleCallable(),
 					TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 			TestUtil.waitTillFutureIsDone(result);
-			TestUtil.assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+			assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 
 			result = TestUtil.getManagedScheduledExecutorService().schedule(new CommonTasks.SimpleRunnable(), TestConstants.PollInterval.getSeconds(),
 					TimeUnit.SECONDS);
 			TestUtil.waitTillFutureIsDone(result);
-			TestUtil.assertEquals(null, result.get());
+			assertEquals(result.get(), null);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		}
 	}
 
@@ -158,7 +161,7 @@ public class TestEjb implements TestEjbRemote {
 			TestUtil.sleep(TestConstants.WaitTimeout);
 			TestUtil.assertIntInRange(TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2, counter.getCount());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} finally {
 			if (result != null) {
 				result.cancel(true);
@@ -183,7 +186,7 @@ public class TestEjb implements TestEjbRemote {
 			TestUtil.sleep(TestConstants.WaitTimeout);
 			TestUtil.assertIntInRange((TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2, counter.getCount());
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} finally {
 			if (result != null) {
 				result.cancel(true);

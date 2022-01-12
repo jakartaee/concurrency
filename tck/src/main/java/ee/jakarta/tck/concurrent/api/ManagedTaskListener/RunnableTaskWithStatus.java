@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,12 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.ManagedTaskListener;
+package ee.jakarta.tck.concurrent.api.ManagedTaskListener;
 
 import java.util.concurrent.TimeUnit;
 
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ListenerEvent;
-import jakarta.enterprise.concurrent.api.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
 
 public class RunnableTaskWithStatus implements Runnable {
 	private final ManagedTaskListenerImpl listener;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,12 +14,14 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+
+import static org.testng.Assert.fail;
 
 import java.util.concurrent.TimeUnit;
 
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 @Stateless
 public class TestEjb implements TestEjbRemote {
@@ -30,11 +32,11 @@ public class TestEjb implements TestEjbRemote {
 		try {
 			TestUtil.getManagedScheduledExecutorService().awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
+			fail(e.getMessage());
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsShutdown() {
@@ -43,7 +45,7 @@ public class TestEjb implements TestEjbRemote {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testIsTerminated() {
@@ -52,7 +54,7 @@ public class TestEjb implements TestEjbRemote {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdown() {
@@ -61,7 +63,7 @@ public class TestEjb implements TestEjbRemote {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 	public void testShutdownNow() {
@@ -70,7 +72,7 @@ public class TestEjb implements TestEjbRemote {
 		} catch (IllegalStateException e) {
 			return;
 		}
-		throw new RuntimeException(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
 	}
 
 }

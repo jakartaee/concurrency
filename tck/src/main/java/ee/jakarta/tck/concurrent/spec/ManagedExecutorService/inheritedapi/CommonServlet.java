@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedExecutorService.inheritedapi;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.inheritedapi;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +26,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.tck.framework.TestServlet;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
@@ -42,7 +46,7 @@ public class CommonServlet extends TestServlet {
 		try {
 			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
@@ -52,7 +56,7 @@ public class CommonServlet extends TestServlet {
 		try {
 			TestUtil.waitForTaskComplete(noRes);
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
 	}
 
@@ -66,13 +70,11 @@ public class CommonServlet extends TestServlet {
 		try {
 			res = mes.invokeAny(tasks);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			fail(e.toString());
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
-		if (!tasks.get(res).isRan()) {
-			throw new RuntimeException("failed to run any tasks");
-		}
+		assertTrue(tasks.get(res).isRan());
 	}
 
 	public void testInvokeAll() {
@@ -87,11 +89,10 @@ public class CommonServlet extends TestServlet {
 			TestUtil.waitForTaskComplete(res.get(0));
 			TestUtil.waitForTaskComplete(res.get(1));
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
-		if (!commonTask0.isRan() || !commonTask1.isRan()) {
-			throw new RuntimeException("failed to run all tasks");
-		}
+		assertTrue(commonTask0.isRan());
+		assertTrue(commonTask1.isRan());
 	}
 
 	public void testAtMostOnce() {
@@ -99,14 +100,10 @@ public class CommonServlet extends TestServlet {
 		Future<?> future = mes.submit((Runnable) commonTask);
 		try {
 			TestUtil.waitForTaskComplete(future);
-			// check number.
-			if (commonTask.runCount() == 1) {
-				return; //expected
-			} else {
-				throw new RuntimeException("failed to run task exactly once");
-			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			fail(e.toString());
 		}
+		// check number.
+		assertEquals(commonTask.runCount(), 1);
 	}
 }

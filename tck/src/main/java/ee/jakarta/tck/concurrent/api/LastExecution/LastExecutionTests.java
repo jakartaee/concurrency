@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.LastExecution;
+package ee.jakarta.tck.concurrent.api.LastExecution;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,24 +26,24 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.common.counter.CounterCallableTask;
-import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
-import jakarta.enterprise.concurrent.common.counter.StaticCounter;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class LastExecutionTests extends ArquillianTests {
 
 	public static final String IDENTITY_NAME_TEST_ID = "lastExecutionGetIdentityNameTest";
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="LastExecution")
+	@Deployment(name="LastExecutionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonCounterPackage() ,LastExecutionTests.class.getPackage());
+				.addPackages(true, getFrameworkPackage(), getCommonFixedCounterPackage() ,LastExecutionTests.class.getPackage());
 	}
 	
 	@BeforeMethod

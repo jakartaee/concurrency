@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedScheduledExecutorService.security;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 
 import java.net.URL;
 
@@ -26,24 +26,23 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestClient;
 
 public class SecurityTests extends TestClient {
-	
-	public static final String SecurityEJBJNDI = "java:global/SecurityTest/SecurityTest_ejb/SecurityTestEjb";
+	public static final String SecurityEJBJNDI = "java:global/security/security_ejb/SecurityTestEjb";
 	
 	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
 	
-	@Deployment(name="ManagedScheduledExecutorService.security", testable=false)
+	@Deployment(name="SecurityTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "SecurityTest.war")
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), SecurityTests.class.getPackage());
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage());
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "SecurityTest_ejb.jar")
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
 				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "SecurityTest.ear")
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar)
 				.addAsManifestResource(SecurityTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
 		

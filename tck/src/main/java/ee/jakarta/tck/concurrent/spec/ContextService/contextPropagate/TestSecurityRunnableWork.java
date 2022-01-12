@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,15 +14,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ContextService.contextPropagate;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 
 @SuppressWarnings("serial")
 public class TestSecurityRunnableWork extends BaseTestRunnableWork {
 
 	@Override
 	protected String work() {
-		return ( (LimitedInterface) TestUtil.lookup("java:app/ContextPropagate_ejb/LimitedBean") ).doSomething();
+		return ( (LimitedInterface) TestUtil.lookup(ContextPropagationTests.LimitedBeanAppJNDI) ).doSomething();
 	}
 }

@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,7 +15,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.api.Trigger;
+package ee.jakarta.tck.concurrent.api.Trigger;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -29,21 +29,24 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.common.CommonTriggers;
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.enterprise.concurrent.SkippedException;
-import jakarta.enterprise.concurrent.api.common.CommonTriggers;
-import jakarta.enterprise.concurrent.common.counter.CounterRunnableTask;
-import jakarta.enterprise.concurrent.common.counter.StaticCounter;
-import jakarta.enterprise.concurrent.tck.framework.ArquillianTests;
-import jakarta.enterprise.concurrent.tck.framework.TestConstants;
-import jakarta.enterprise.concurrent.tck.framework.TestUtil;
 
 public class TriggerTests extends ArquillianTests {
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="Trigger")
+	@Deployment(name="TriggerTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getAPICommonPackage(), getCommonCounterPackage(), TriggerTests.class.getPackage());
+				.addPackages(true, getFrameworkPackage(), 
+						getCommonPackage(), 
+						getCommonFixedCounterPackage(), 
+						TriggerTests.class.getPackage());
 	}
 
 	/*
@@ -95,18 +98,23 @@ public class TriggerTests extends ArquillianTests {
 		}, new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval.toMillis()));
 
 		long start = System.currentTimeMillis();
-		while (!sf.isDone()) {
-			try {
-				sf.get(100, TimeUnit.MILLISECONDS);
-			} catch (SkippedException se) {
-				return;
-			} catch (ExecutionException ee) {
-			} catch (TimeoutException | InterruptedException e) {
+		try {
+			while (!sf.isDone()) {
+				try {
+					sf.get(100, TimeUnit.MILLISECONDS);
+				} catch (SkippedException se) {
+					return;
+				} catch (ExecutionException ee) {
+				} catch (TimeoutException | InterruptedException e) {
+				}
+				if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+					fail("wait task timeout");
+				}
 			}
-			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
-				fail("wait task timeout");
-			}
+		} finally {
+			sf.cancel(true);
 		}
+
 		fail("SkippedException should be caught.");
 	}
 }

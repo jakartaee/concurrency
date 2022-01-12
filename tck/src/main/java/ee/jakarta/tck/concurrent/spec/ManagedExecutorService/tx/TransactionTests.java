@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package jakarta.enterprise.concurrent.spec.ManagedExecutorService.tx;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.tx;
 
 import java.net.URL;
 
@@ -24,15 +24,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
-import jakarta.enterprise.concurrent.tck.framework.TestClient;
-import jakarta.enterprise.concurrent.tck.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.URLBuilder;
 
 public class TransactionTests extends TestClient {
 
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ManagedExecutorService.tx", testable=false)
+	@Deployment(name="TransactionTests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, getFrameworkPackage(), TransactionTests.class.getPackage());
