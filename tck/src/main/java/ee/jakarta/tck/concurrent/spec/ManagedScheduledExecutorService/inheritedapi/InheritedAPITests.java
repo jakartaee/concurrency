@@ -31,12 +31,12 @@ public class InheritedAPITests extends TestClient {
 	@Deployment(name="InheritedAPITests")
 	public static EnterpriseArchive createDeployment() {
 		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage())
-				.addAsManifestResource(InheritedAPITests.class.getPackage(), "counter-sun-ejb-jar.xml", "sun-ejb-jar.xml");
+				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage());
+				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
-				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage())
-				.addAsManifestResource(InheritedAPITests.class.getPackage(), "inheritedapi-sun-ejb-jar.xml", "sun-ejb-jar.xml");
+				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
+				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
 		

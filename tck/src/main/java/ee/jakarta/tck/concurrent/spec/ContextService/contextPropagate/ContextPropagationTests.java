@@ -58,8 +58,8 @@ public class ContextPropagationTests extends TestClient {
 						ClassloaderServlet.class,
 						JNDIServlet.class,
 						SecurityServlet.class)
-				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
-				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagationTests.ear").addAsModules(war, jar);
 		

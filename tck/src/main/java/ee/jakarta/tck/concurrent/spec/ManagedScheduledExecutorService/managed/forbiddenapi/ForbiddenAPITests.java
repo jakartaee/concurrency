@@ -31,8 +31,8 @@ public class ForbiddenAPITests extends ArquillianTests {
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonFixedCounterPackage(), ForbiddenAPITests.class.getPackage())
-				.addAsManifestResource(ForbiddenAPITests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonFixedCounterPackage(), ForbiddenAPITests.class.getPackage());
+				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 	}
 
 	@EJB

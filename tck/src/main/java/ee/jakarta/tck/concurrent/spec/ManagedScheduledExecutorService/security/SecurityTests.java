@@ -43,8 +43,8 @@ public class SecurityTests extends TestClient {
 				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
-				.addAsModules(war, jar)
-				.addAsManifestResource(SecurityTests.class.getPackage(), "sun-ejb-jar.xml", "sun-ejb-jar.xml");
+				.addAsModules(war, jar);
+				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		return ear;
 	}
