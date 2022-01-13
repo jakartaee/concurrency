@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,8 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.spi.context;
 
-import ee.jakarta.tck.concurrent.spec.context.IntContext;
-
+import ee.jakarta.tck.concurrent.common.context.IntContext;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 
 /**

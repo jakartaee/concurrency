@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,11 +19,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.asynchronous.ReqBean;
-import ee.jakarta.tck.concurrent.spec.context.IntContext;
-import ee.jakarta.tck.concurrent.spec.context.StringContext;
-
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -42,26 +37,29 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import ee.jakarta.tck.concurrent.common.context.IntContext;
+import ee.jakarta.tck.concurrent.common.context.StringContext;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.Trigger;
-import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.CronTrigger;
 import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.Trigger;
+import jakarta.enterprise.concurrent.ZonedTrigger;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
+/**
+ * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet}
+ */
 @ManagedScheduledExecutorDefinition(name = "java:app/concurrent/ScheduledExecutorA",
                            context = "java:app/concurrent/ContextA",
                            maxAsync = 3,
@@ -70,11 +68,10 @@ import javax.naming.NamingException;
                            context = "java:module/concurrent/ContextB",
                            maxAsync = 4)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/ScheduledExecutorC")
-@WebServlet("/ManagedScheduledExecutorDefinitionServlet")
-public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
+@WebServlet("ManagedScheduledExecutorDefinitionServlet")
+public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
-    private static final String SUCCESS = "success";
 
     @Inject
     ReqBean reqBean;
@@ -82,53 +79,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
     @Resource
     UserTransaction tx;
 
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        System.out.println("STARTING " + getClass().getName() + "." + action);
-        try {
-            String result;
-
-            if ("testAsyncCompletionStageMSE".equals(action))
-                result = testAsyncCompletionStageMSE();
-            else if ("testAsynchronousMethodRunsWithContext".equals(action))
-                result = testAsynchronousMethodRunsWithContext();
-            else if ("testAsynchronousMethodWithMaxAsync3".equals(action))
-                result = testAsynchronousMethodWithMaxAsync3();
-            else if ("testCompletedFutureMSE".equals(action))
-                result = testCompletedFutureMSE();
-            else if ("testIncompleteFutureMSE".equals(action))
-                result = testIncompleteFutureMSE();
-            else if ("testManagedScheduledExecutorDefinitionAllAttributes".equals(action))
-                result = testManagedScheduledExecutorDefinitionAllAttributes();
-            else if ("testManagedScheduledExecutorDefinitionDefaults".equals(action))
-                result = testManagedScheduledExecutorDefinitionDefaults();
-            else if ("testNotAnAsynchronousMethod".equals(action))
-                result = testNotAnAsynchronousMethod();
-            else if ("testScheduleWithCronTrigger".equals(action))
-                result = testScheduleWithCronTrigger();
-            else if ("testScheduleWithZonedTrigger".equals(action))
-                result = testScheduleWithZonedTrigger();
-            else
-                result = "unknown or missing action for " + getClass().getName() + ": " + action;
-
-            System.out.println((SUCCESS.equals(result) ? "PASSED" : "FAILED") +
-                               getClass().getName() + "." + action + ": " + result);
-            resp.getWriter().println(result);
-        } catch (Throwable x) {
-            System.out.print("FAILED " + getClass().getName() + "." + action + ": ");
-            x.printStackTrace(System.out);
-            x.printStackTrace(resp.getWriter());
-        }
-    }
-
     /**
      * ManagedScheduledExecutorService submits an action to run asynchronously as a CompletionStage.
      * Dependent stages can be chained to the CompletionStage, and all stages run with the
      * thread context of the thread from which they were created, per
      * ManagedScheduledExecutorDefinition config.
      */
-    private String testAsyncCompletionStageMSE() throws Throwable {
+    public void testAsyncCompletionStageMSE() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorA");
 
         try {
@@ -154,7 +111,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             IntContext.set(200);
 
             String result = future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals("Application context propagated;IntContext propagated;StringContext cleared", result,
+            assertEquals(result, "Application context propagated;IntContext propagated;StringContext cleared",
                          "Application context and IntContext must be propagated and StringContext must be cleared " +
                          "per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
@@ -162,13 +119,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             StringContext.set(null);
         }
 
-        return SUCCESS;
+
     }
 
     /**
      * Asynchronous method runs with thread context captured from the caller.
      */
-    private String testAsynchronousMethodRunsWithContext() throws Throwable {
+    public void testAsynchronousMethodRunsWithContext() throws Throwable {
         BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
         reqBean.lookUpAContextService().thenAccept(results::add);
 
@@ -179,13 +136,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
                    "Application context must be propagated to Asynchronous method " +
                    "per @ManagedScheduledExecutorDefinition config.");
 
-        return SUCCESS;
+
     }
 
     /**
      * Asynchronous method execution is constrained by executor's maxAsync, which for ScheduledExecutorA is 3.
      */
-    private String testAsynchronousMethodWithMaxAsync3() throws Exception {
+    public void testAsynchronousMethodWithMaxAsync3() throws Exception {
         Semaphore invocationsStarted = new Semaphore(0);
         CountDownLatch blocker = new CountDownLatch(1);
 
@@ -202,16 +159,16 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             future3 = reqBean.awaitAndGetThirdPartyContext(invocationsStarted, blocker);
             future4 = reqBean.awaitAndGetThirdPartyContext(invocationsStarted, blocker);
 
-            assertEquals(true, invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
                          "Must be able to run 1 asynchronous method in parallel when maxAsync=3");
 
-            assertEquals(true, invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
                          "Must be able to run 2 asynchronous methods in parallel when maxAsync=3");
 
-            assertEquals(true, invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
                          "Must be able to run 3 asynchronous methods in parallel when maxAsync=3");
 
-            assertEquals(false, invocationsStarted.tryAcquire(1, 1, TimeUnit.SECONDS),
+            assertEquals(invocationsStarted.tryAcquire(1, 1, TimeUnit.SECONDS), false, 
                          "Must not run 4 asynchronous methods in parallel when maxAsync=3");
         } finally {
             StringContext.set(null);
@@ -219,23 +176,22 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             blocker.countDown();
         }
 
-        assertEquals("303", future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+        assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "303", 
                      "Third-party context type IntContext must be propagated and StringContext must be cleared " +
                      "on first asynchronous method invocation per the executor and ContextServiceDefinition.");
 
-        assertEquals("303", future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+        assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "303", 
                      "Third-party context type IntContext must be propagated and StringContext must be cleared " +
                      "on second asynchronous method invocation per the executor and ContextServiceDefinition.");
 
-        assertEquals("303", future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+        assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "303", 
                      "Third-party context type IntContext must be propagated and StringContext must be cleared " +
                      "on third asynchronous method invocation per the executor and ContextServiceDefinition.");
 
-        assertEquals("303", future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+        assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "303", 
                      "Third-party context type IntContext must be propagated and StringContext must be cleared " +
                      "on fourth asynchronous method invocation per the executor and ContextServiceDefinition.");
 
-        return SUCCESS;
     }
 
     /**
@@ -244,7 +200,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
      * The dependent stages all run with the thread context of the thread
      * from which they were created, per ManagedScheduledExecutorDefinition config.
      */
-    private String testCompletedFutureMSE() throws Throwable {
+    public void testCompletedFutureMSE() throws Throwable {
         ManagedScheduledExecutorService executor =
                         InitialContext.doLookup("java:module/concurrent/ScheduledExecutorB");
 
@@ -298,7 +254,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             StringContext.set("testCompletedFutureMSE-4");
 
             String result = stage3.join();
-            assertEquals("StringContext propagated;IntContext unchanged", result,
+            assertEquals(result, "StringContext propagated;IntContext unchanged", 
                          "StringContext must be propagated and Application context and IntContext must be left " +
                          "unchanged per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
@@ -306,7 +262,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             StringContext.set(null);
         }
 
-        return SUCCESS;
+
     }
 
     /**
@@ -315,7 +271,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
      * same context, but the dependent stages all run with the thread context of the thread
      * from which they were created, per ManagedScheduledExecutorDefinition config.
      */
-    private String testIncompleteFutureMSE() throws Throwable {
+    public void testIncompleteFutureMSE() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorA");
 
         StringBuilder results = new StringBuilder();
@@ -350,10 +306,10 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             stage1a.complete("java:app");
             stage1b.complete("concurrent/ScheduledExecutorA");
 
-            assertEquals(null, stage3.join(),
+            assertEquals(stage3.join(), null, 
                          "CompletableFuture with Void return type must return null from join.");
             String result = results.toString();
-            assertEquals("Application context propagated;StringContext cleared;IntContext propagated", result,
+            assertEquals(result, "Application context propagated;StringContext cleared;IntContext propagated", 
                          "Application context and IntContext must be propagated and StringContext must be cleared " +
                          "per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
@@ -361,13 +317,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             StringContext.set(null);
         }
 
-        return SUCCESS;
+
     }
 
     /**
      * A ManagedScheduledExecutorDefinition with all attributes configured enforces maxAsync and propagates context.
      */
-    private String testManagedScheduledExecutorDefinitionAllAttributes() throws Throwable {
+    public void testManagedScheduledExecutorDefinitionAllAttributes() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorA");
 
         BlockingQueue<Integer> results = new LinkedBlockingQueue<Integer>();
@@ -390,33 +346,33 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
             executor.submit(task);
             executor.submit(task, "TaskResult");
 
-            assertEquals(Integer.valueOf(33), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
                          "ManagedScheduledExecutorService with maxAsync=3 must be able to run an async task.");
 
-            assertEquals(Integer.valueOf(33), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
                          "ManagedScheduledExecutorService with maxAsync=3 must be able to run 2 async tasks concurrently.");
 
-            assertEquals(Integer.valueOf(33), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
                          "ManagedScheduledExecutorService with maxAsync=3 must be able to run 3 async tasks concurrently.");
 
-            assertEquals(null, results.poll(1, TimeUnit.SECONDS),
+            assertEquals(results.poll(1, TimeUnit.SECONDS), null, 
                          "ManagedScheduledExecutorService with maxAsync=3 must not run 4 async tasks concurrently.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
         }
 
-        assertEquals(Integer.valueOf(33), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+        assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
                      "ManagedScheduledExecutorService with maxAsync=3 must be able to run 4th task after 1st completes.");
 
-        return SUCCESS;
+
     }
 
     /**
      * A ManagedScheduledExecutorDefinition with minimal attributes can run multiple async tasks concurrently
      * and uses java:comp/DefaultContextService to determine context propagation and clearing.
      */
-    private String testManagedScheduledExecutorDefinitionDefaults() throws Throwable {
+    public void testManagedScheduledExecutorDefinitionDefaults() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC");
 
         CountDownLatch blocker = new CountDownLatch(1);
@@ -463,12 +419,12 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
 
             int status;
             status = txFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(Status.STATUS_NO_TRANSACTION, status,
+            assertEquals(status, Status.STATUS_NO_TRANSACTION, 
                          "Transaction context must be cleared from first async Callable task " +
                          "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
             status = txFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(Status.STATUS_NO_TRANSACTION, status,
+            assertEquals(status, Status.STATUS_NO_TRANSACTION, 
                          "Transaction context must be cleared from second async Callable task " +
                          "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
@@ -488,36 +444,36 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
         try {
             // run inline to verify that transaction context is cleared
             int status = executor.getContextService().contextualCallable(txCallable).call();
-            assertEquals(Status.STATUS_NO_TRANSACTION, status,
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
                          "Transaction context must be cleared from inline contextual Callable " +
                          "per java:comp/concurrent/ScheduledExecutorC configuration.");
         } finally {
             tx.rollback();
         }
 
-        return SUCCESS;
+
     }
 
     /**
      * A method that lacks the Asynchronous annotation does not run as an asynchronous method,
      * even if it returns a CompletableFuture.
      */
-    private String testNotAnAsynchronousMethod() throws Throwable {
+    public void testNotAnAsynchronousMethod() throws Throwable {
         String threadName = Thread.currentThread().getName();
 
         CompletableFuture<String> future = reqBean.notAsynchronous();
 
-        assertEquals(threadName, future.join(),
+        assertEquals(future.join(), threadName, 
                      "A method that returns CompletableFuture but is not annotated as @Asynchronous " +
                      "must run inline on the same thread.");
 
-        return SUCCESS;
+
     }
 
     /**
      * ManagedScheduledExecutorService can schedule a task with a CronTrigger
      */
-    private String testScheduleWithCronTrigger() throws Throwable {
+    public void testScheduleWithCronTrigger() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC");
 
         ZoneId US_CENTRAL = ZoneId.of("America/Chicago");
@@ -576,14 +532,14 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
                 future.cancel(true);
         }
 
-        return SUCCESS;
+
     }
 
     /**
      * ManagedScheduledExecutorService can schedule a task with a ZonedTrigger implementation
      * that uses the LastExecution methods with ZonedDateTime parameters.
      */
-    private String testScheduleWithZonedTrigger() throws Exception {
+    public void testScheduleWithZonedTrigger() throws Exception {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC");
 
         ZoneId US_CENTRAL = ZoneId.of("America/Chicago");
@@ -657,6 +613,6 @@ public class ManagedScheduledExecutorDefinitionServlet extends HttpServlet {
                        "LastExecution runStart and runEnd methods returned inconsistent times: " + startAndEndTimes);
         }
 
-        return SUCCESS;
+
     }
 }
