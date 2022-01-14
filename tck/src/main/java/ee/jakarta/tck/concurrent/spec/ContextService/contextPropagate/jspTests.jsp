@@ -48,7 +48,7 @@ public void testSecurityUnchangedContext(HttpServletRequest request, HttpServlet
 	    });
 		result = contextualSupplier.get();
 	    Assert.assertNotNull(result, "Security context result should have been set to a string value");
-	    Assert.assertEquals(result, "javajoe", "Security Context should have been propagated.");
+	    Assert.assertEquals(result, "javajoe", "Security Context should have been left unchanged.");
 	    
 	    ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/executor2");
 	    CompletableFuture<String> future = executor.supplyAsync(() -> {
