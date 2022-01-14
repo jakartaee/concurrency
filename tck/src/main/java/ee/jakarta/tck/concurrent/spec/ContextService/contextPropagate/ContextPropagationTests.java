@@ -47,9 +47,11 @@ public class ContextPropagationTests extends TestClient {
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
 						JNDIServlet.class,
-						SecurityServlet.class)
+						SecurityServlet.class,
+						JSPSecurityServlet.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
-				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml");
+				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
+				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
 				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
@@ -69,6 +71,9 @@ public class ContextPropagationTests extends TestClient {
 	@ArquillianResource(JNDIServlet.class)
 	URL jndiURL;
 	
+	@ArquillianResource(JSPSecurityServlet.class)
+	URL jspURL;
+	
 	@ArquillianResource(ClassloaderServlet.class)
 	URL classloaderURL;
 	
@@ -77,6 +82,24 @@ public class ContextPropagationTests extends TestClient {
 	
 	@ArquillianResource(ContextServiceDefinitionServlet.class)
 	URL contextURL;
+	
+	@Test
+	public void testSecurityClearedContext() {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		runTest(requestURL);
+	}
+	
+	@Test
+	public void testSecurityUnchangedContext() {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		runTest(requestURL);
+	}
+	
+	@Test
+	public void testSecurityPropagatedContext() {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		runTest(requestURL);
+	}
 
 	/*
 	 * @testName: testJNDIContextAndCreateProxyInServlet
