@@ -36,8 +36,16 @@ public final class TestLogger {
 	private TestLogger(Class<?> clazz) {
 		log = Logger.getLogger(clazz.getCanonicalName());
 	}
+	
+	private TestLogger(String clazz) {
+		log = Logger.getLogger(clazz);
+	}
 
 	public static TestLogger get(Class<?> clazz) {
+		return new TestLogger(clazz);
+	}
+	
+	public static TestLogger get(String clazz) {
 		return new TestLogger(clazz);
 	}
 
