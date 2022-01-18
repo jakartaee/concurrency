@@ -27,7 +27,7 @@
 
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-    <version>3.0.0-RC1</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <name>Jakarta Concurrency TCK</name>
@@ -52,7 +52,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         
         <jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
-        <jakarta.concurrent.version.dev>3.0.0-SNAPSHOT</jakarta.concurrent.version.dev>
+        <jakarta.concurrent.version.dev>3.0.0</jakarta.concurrent.version.dev>
         
         <!-- TODO update to 6.0.0 -->
         <jakarta.servlet.version>5.0.0</jakarta.servlet.version>

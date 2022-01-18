@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -46,7 +46,8 @@ import java.util.concurrent.Future;
  * <img src="doc-files/TaskListener_StateDiagram.gif" alt="Task Listener State Diagram"><p>
  *
  * <b>A. The task runs normally:</b>
- * <table summary="Task Listener State Normal">
+ * <table>
+ * <caption>Task Listener State Normal</caption>
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
  *     <td valign="top"><strong><u>State</u></strong></td>
  *     <td valign="top"><strong><u>Action</u></strong></td>
@@ -69,7 +70,8 @@ import java.util.concurrent.Future;
  * </table><p>
  *
  * <b>B. The task is cancelled during taskSubmitted():</b>
- * <table summary="Task Listener State Cancelled during taskSubmitted">
+ * <table>
+ * <caption>Task Listener State Cancelled during taskSubmitted</caption>
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
  *     <td valign="top"><strong><u>State</u></strong></td>
  *     <td valign="top"><strong><u>Action</u></strong></td>
@@ -94,7 +96,8 @@ import java.util.concurrent.Future;
  *
  * <b>C. The task is cancelled or aborted after submitted, but before started:</b>
  *
- * <table summary="Task Listener State Cancelled after submitted but before started">
+ * <table>
+ * <caption>Task Listener State Cancelled after submitted but before started</caption>
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
  *     <td valign="top"><strong><u>State</u></strong></td>
  *     <td valign="top"><strong><u>Action</u></strong></td>
@@ -119,7 +122,8 @@ import java.util.concurrent.Future;
  * </table> <p>
  *
  * <b>D. The task is cancelled when it is starting:</b>
- * <table summary="Task Listener State Cancelled when starting">
+ * <table>
+ * <caption>Task Listener State Cancelled when starting</caption>
  * <tr><td valign="top"><strong><u>Sequence</u></strong></td>
  *     <td valign="top"><strong><u>State</u></strong></td>
  *     <td valign="top"><strong><u>Action</u></strong></td>

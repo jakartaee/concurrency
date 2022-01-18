@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -36,7 +36,7 @@ import java.util.function.Function;
  * subclass this implementation or combine multiple <code>CronTrigger</code>
  * instances in a <code>Trigger</code> implementation of your own.
  * </p>
- * <table width="90%">
+ * <table>
  * <caption><b>Cron Expression Fields</b></caption>
  * <tr valign="top"><td>seconds (optional)</td><td>0-59, *. When absent, 0 is assumed</td></tr>
  * <tr valign="top"><td>minutes</td><td>0-59, *</td></tr>
@@ -48,7 +48,7 @@ import java.util.function.Function;
  *         and 7 for consistency with {@link java.time.DayOfWeek}.</td></tr>
  * </table>
  * <br>
- * <table width="90%">
+ * <table>
  * <caption><b>Cron Expression Syntax</b></caption>
  * <tr valign="top"><td><code>,</code></td>
  *     <td>delimits lists for all fields. For example, <code>MON,WED,FRI</code> or <code>MAY,SEP</code></td></tr>
@@ -68,7 +68,7 @@ import java.util.function.Function;
  *     <code>2L</code> indicates the second-to-last day, and so forth.</td></tr>
  * </table>
  * <br>
- * <table width="90%">
+ * <table>
  * <caption><b>Cron Expression Examples</b></caption>
  * <tr valign="top"><td><code>0 * * * *</code></td>
  *                  <td>every hour at the top of the hour</td></tr>
