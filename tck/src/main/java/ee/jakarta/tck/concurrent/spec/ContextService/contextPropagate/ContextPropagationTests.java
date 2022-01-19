@@ -48,7 +48,8 @@ public class ContextPropagationTests extends TestClient {
 						ClassloaderServlet.class,
 						JNDIServlet.class,
 						SecurityServlet.class,
-						JSPSecurityServlet.class)
+						JSPSecurityServlet.class,
+						ContextServiceDefinitionFromEJBServlet.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
 				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
 				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
@@ -59,7 +60,9 @@ public class ContextPropagationTests extends TestClient {
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
 						JNDIServlet.class,
-						SecurityServlet.class)
+						SecurityServlet.class,
+						JSPSecurityServlet.class,
+						ContextServiceDefinitionFromEJBServlet.class)
 				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
@@ -82,6 +85,9 @@ public class ContextPropagationTests extends TestClient {
 	
 	@ArquillianResource(ContextServiceDefinitionServlet.class)
 	URL contextURL;
+	
+	@ArquillianResource(ContextServiceDefinitionFromEJBServlet.class)
+	URL ejbContextURL;
 	
 	@Test
 	public void testSecurityClearedContext() {
@@ -191,6 +197,18 @@ public class ContextPropagationTests extends TestClient {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
 		runTest(requestURL);
     }
+	
+    /**
+     * A ContextServiceDefinition defined in an EJB with all attributes configured
+     * propagates/clears/ignores context types as configured.
+     * ContextA, which is tested here, propagates Application context and IntContext,
+     * clears StringContext, and leaves Transaction context unchanged.
+     */
+	@Test
+    public void testContextServiceDefinitionFromEJBAllAttributes() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
+		runTest(requestURL);
+    }
 
     /**
      * A ContextServiceDefinition with minimal attributes configured
@@ -199,6 +217,16 @@ public class ContextPropagationTests extends TestClient {
 	@Test
     public void testContextServiceDefinitionDefaults() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		runTest(requestURL);
+    }
+	
+    /**
+     * A ContextServiceDefinition defined in an EJB with minimal attributes configured
+     * clears transaction context and propagates other types.
+     */
+	@Test
+    public void testContextServiceDefinitionFromEJBDefaults() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
 		runTest(requestURL);
     }
 

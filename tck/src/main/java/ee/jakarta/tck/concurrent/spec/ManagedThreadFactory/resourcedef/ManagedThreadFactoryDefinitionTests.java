@@ -20,10 +20,15 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
@@ -35,15 +40,38 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
 	URL baseURL;
 	
+	@ArquillianResource(ManagedThreadFactoryDefinitionOnEJBServlet.class)
+	URL ejbContextURL;
+	
 	@Deployment(name="ManagedThreadFactoryDefinitionTests", testable=false)
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(false, ManagedThreadFactoryDefinitionTests.class.getPackage(),
+	public static EnterpriseArchive createDeployment() {
+		
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
+				.addPackages(false,
 						getFrameworkPackage(), 
 						getContextPackage(),
 						getContextProvidersPackage())
-				.addClasses(ContextServiceDefinitionServlet.class)
+				.addClasses(
+						ManagedThreadFactoryDefinitionOnEJBServlet.class,
+						ManagedThreadFactoryDefinitionServlet.class,
+						ContextServiceDefinitionServlet.class)
+//				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
+		
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
+				.addPackages(false, getFrameworkPackage(), ManagedThreadFactoryDefinitionTests.class.getPackage())
+				.deleteClasses(
+						ManagedThreadFactoryDefinitionOnEJBServlet.class,
+						ManagedThreadFactoryDefinitionServlet.class)
+				.addClasses(
+						ContextServiceDefinitionInterface.class,
+						ContextServiceDefinitionBean.class);
+//				.addAsManifestResource(ManagedScheduledExecutorDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+//				TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+		
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear").addAsModules(war, jar);
+		
+		return ear;
 	}
 	
 	@Override
@@ -55,14 +83,32 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
 		runTest(baseURL);
     }
+	
+	@Test
+    public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
+		runTest(requestURL);
+    }
 
 	@Test
     public void testManagedThreadFactoryDefinitionDefaults() throws Throwable {
 		runTest(baseURL);
+    }
+	
+	@Test
+    public void testManagedThreadFactoryDefinitionDefaultsEJB() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
+		runTest(requestURL);
     }
 
 	@Test
     public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
 		runTest(baseURL);
     }
+	
+	@Test
+    public void testParallelStreamBackedByManagedThreadFactoryEJB() throws Throwable {
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
+		runTest(requestURL);
+	}
 }
