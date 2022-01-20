@@ -182,7 +182,7 @@ public class ContextServiceDefinitionServlet extends TestServlet {
                 "Transaction context must be left unchanged on async contextual BiFunction " +
                 "per java:app/concurrent/ContextA configuration.");
     }
-
+    
     /**
      * A ContextServiceDefinition with minimal attributes configured
      * clears transaction context and propagates other types.
