@@ -35,11 +35,11 @@
     <properties>
 
         <api_package>jakarta.enterprise.concurrent</api_package>
-        <non.final>true</non.final>
-        <last.spec_version>1.1</last.spec_version>
-        <next.spec_version>2.0</next.spec_version>
+        <non.final>false</non.final> <!-- switch back to true once release is completed -->
+        <last.spec_version>2.0</last.spec_version>
+        <next.spec_version>3.0</next.spec_version>
         <spec.version>${next.spec_version}</spec.version>
-        <new.spec.version>3.0</new.spec.version>
+        <new.spec.version>3.1</new.spec.version>
         <build_number />
         <packages.export>jakarta.enterprise.concurrent.*; version=${spec.bundle.version}</packages.export>
     </properties>
