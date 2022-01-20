@@ -18,48 +18,27 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.resourcedef;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import ee.jakarta.tck.concurrent.common.context.IntContext;
-import ee.jakarta.tck.concurrent.common.context.StringContext;
-import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-
 /**
- * @ManagedExecutorDefinitions are defined under {@link ContextServiceDefinitionServlet} and {@link ContextServiceDefinitionBean}
+ * ContextServiceDefinitions are defined under {@link ContextServiceDefinitionBean}
  */
 @ManagedExecutorDefinition(name = "java:app/concurrent/EJBExecutorA",
-                           context = "java:app/concurrent/EJBContextD",
+                           context = "java:app/concurrent/EJBContextA",
                            maxAsync = 2,
                            hungTaskThreshold = 300000)
 // Reuse the same names as defined in the web module.
 @ManagedExecutorDefinition(name = "java:module/concurrent/ExecutorB",
-                           context = "java:module/concurrent/ContextE",
+                           context = "java:module/concurrent/ContextB",
                            maxAsync = 1)
 @ManagedExecutorDefinition(name = "java:comp/concurrent/EJBExecutorC")
-
-//TODO: Can we use context from ContextServiceDefinitionBean?
-@ContextServiceDefinition(name = "java:app/concurrent/EJBContextD",
-                          propagated = { APPLICATION, IntContext.NAME },
-                          cleared = StringContext.NAME,
-                          unchanged = TRANSACTION)
-@ContextServiceDefinition(name = "java:module/concurrent/ContextE",
-                        propagated = { APPLICATION, StringContext.NAME },
-                        cleared = IntContext.NAME,
-                        unchanged = TRANSACTION)
 @Local(ManagedExecutorDefinitionInterface.class)
 @Stateless
 public class ManagedExecutorDefinitionBean implements ManagedExecutorDefinitionInterface {
-
-	@Resource(lookup = "java:module/concurrent/ExecutorB", name = "java:app/env/concurrent/executorBRef")
-    ManagedExecutorService executorB;
 	
 	@Override
 	public Object doLookup(String name) throws NamingException {

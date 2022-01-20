@@ -17,15 +17,9 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.resourced
 
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-import ee.jakarta.tck.concurrent.common.context.IntContext;
-import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
-
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -38,15 +32,9 @@ import javax.naming.NamingException;
                            maxAsync = 3,
                            hungTaskThreshold = 360000)
 @ManagedScheduledExecutorDefinition(name = "java:module/concurrent/ScheduledExecutorB",
-                           context = "java:module/concurrent/ContextD",
+                           context = "java:module/concurrent/ContextB",
                            maxAsync = 4)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/EJBScheduledExecutorC")
-
-//TODO: Can we use context from ContextServiceDefinitionBean?
-@ContextServiceDefinition(name = "java:module/concurrent/ContextD",
-                          propagated = { APPLICATION, StringContext.NAME },
-                          cleared = IntContext.NAME,
-                          unchanged = TRANSACTION)
 @Local(ManagedScheduleExecutorDefinitionInterface.class)
 @Stateless
 public class ManagedScheduledExecutorDefinitionBean implements ManagedScheduleExecutorDefinitionInterface {

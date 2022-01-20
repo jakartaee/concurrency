@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -36,10 +36,12 @@ import javax.naming.NamingException;
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
@@ -53,8 +55,21 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
     UserTransaction tx;
     
     @EJB
-    ManagedThreadFactoryDefinitionInterface bean;
+    private ManagedThreadFactoryDefinitionInterface managedThreadFactoryDefinitionBean;
 
+	//Needed to initialize the ContextServiceDefinitions
+	@EJB
+	private ContextServiceDefinitionInterface contextServiceDefinitionBean;
+	
+	@Override
+	public void init() throws ServletException {
+		try {
+			managedThreadFactoryDefinitionBean.doLookup("java:module/concurrent/ContextB");
+		} catch (NamingException e) {
+			throw new ServletException(e);
+		}
+	}
+	
     /**
      * A ManagedThreadFactoryDefinition defined on an EJB with all attributes configured enforces priority and propagates context.
      */
@@ -115,7 +130,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
      * and uses java:comp/DefaultContextService to determine context propagation and clearing.
      */
     public void testManagedThreadFactoryDefinitionDefaultsEJB() throws Throwable {
-        ManagedThreadFactory threadFactory = (ManagedThreadFactory) bean.doLookup("java:comp/concurrent/EJBThreadFactoryB");
+        ManagedThreadFactory threadFactory = (ManagedThreadFactory) managedThreadFactoryDefinitionBean.doLookup("java:comp/concurrent/EJBThreadFactoryB");
 
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch allThreadsRunning = new CountDownLatch(2);
@@ -126,7 +141,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
             try {
                 allThreadsRunning.countDown();
                 blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
-                lookupTaskResult.complete(InitialContext.doLookup("java:comp/concurrent/ContextC"));
+                lookupTaskResult.complete(InitialContext.doLookup("java:comp/concurrent/EJBThreadFactoryB"));
             } catch (Throwable x) {
                 txTaskResult.completeExceptionally(x);
             }
@@ -159,17 +174,17 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
             blocker.countDown();
 
             Object result;
-            if ((result = lookupTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS)) instanceof Throwable)
-                throw new AssertionError().initCause((Throwable) result);
-            assertTrue(result instanceof ContextService,
-                       "Application context must be propagated to first thread " +
-                       "per java:comp/concurrent/EJBThreadFactoryB configuration.");
-
             if ((result = txTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS)) instanceof Throwable)
                 throw new AssertionError().initCause((Throwable) result);
             assertEquals(result, Integer.valueOf(Status.STATUS_NO_TRANSACTION),
                          "Transaction context must be cleared from async Callable task " +
                          "per java:comp/concurrent/EJBThreadFactoryB configuration.");
+            
+            if ((result = lookupTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS)) instanceof Throwable)
+                throw new AssertionError().initCause((Throwable) result);
+            assertTrue(result instanceof ManagedThreadFactory,
+                       "Application context must be propagated to first thread " +
+                       "per java:comp/concurrent/EJBThreadFactoryB configuration.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
@@ -185,7 +200,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
         try {
             IntContext.set(1000);
             StringContext.set("testParallelStreamBackedByManagedThreadFactoryEJB-1");
-
+            
             ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/EJBThreadFactoryA");
 
             IntContext.set(2000);

@@ -56,7 +56,6 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 						ManagedScheduledExecutorDefinitionServlet.class,
 						ManagedScheduledExecutorDefinitionOnEJBServlet.class,
 						ContextServiceDefinitionServlet.class)
-//				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedScheduledExecutorDefinitionTests_ejb.jar")

@@ -55,7 +55,6 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 						ManagedExecutorDefinitionServlet.class,
 						ManagedExecutorDefinitionOnEJBServlet.class,
 						ContextServiceDefinitionServlet.class)
-//				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedExecutorDefinitionTests_ejb.jar")
@@ -68,7 +67,6 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 				.addClasses(
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionBean.class);
-//				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedExecutorDefinitionTests.ear").addAsModules(war, jar);

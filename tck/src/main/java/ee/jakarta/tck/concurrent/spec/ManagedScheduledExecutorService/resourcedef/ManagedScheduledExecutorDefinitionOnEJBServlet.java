@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -34,6 +34,7 @@ import javax.naming.NamingException;
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -54,7 +55,11 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
     UserTransaction tx;
     
     @EJB
-    private ManagedScheduleExecutorDefinitionInterface bean;
+    private ManagedScheduleExecutorDefinitionInterface managedScheduleExecutorDefinitionBean;
+    
+    //Needed to initialize the ContextServiceDefinitions
+  	@EJB
+  	private ContextServiceDefinitionInterface contextServiceDefinitionBean;
     
     /**
      * A ManagedScheduledExecutorDefinition defined on an EJB with all attributes configured enforces maxAsync and propagates context.
@@ -109,7 +114,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
      * and uses java:comp/DefaultContextService to determine context propagation and clearing.
      */
     public void testManagedScheduledExecutorDefinitionDefaults_EJB() throws Throwable {
-    	ManagedScheduledExecutorService executor = (ManagedScheduledExecutorService)bean.doLookup("java:comp/concurrent/EJBScheduledExecutorC");
+    	ManagedScheduledExecutorService executor = (ManagedScheduledExecutorService)managedScheduleExecutorDefinitionBean.doLookup("java:comp/concurrent/EJBScheduledExecutorC");
 
     	CountDownLatch blocker = new CountDownLatch(1);
     	CountDownLatch allTasksRunning = new CountDownLatch(4);
@@ -131,7 +136,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
     		allTasksRunning.countDown();
     		try {
     			blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
-    			return (ManagedScheduledExecutorService)bean.doLookup(jndiName);
+    			return (ManagedScheduledExecutorService)managedScheduleExecutorDefinitionBean.doLookup(jndiName);
     		} catch (InterruptedException | NamingException x) {
     			throw new CompletionException(x);
     		}
@@ -162,7 +167,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
     		status = txFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
     		assertEquals(status, Status.STATUS_NO_TRANSACTION, 
     				"Transaction context must be cleared from second async Callable task " +
-    				"per java:comp/concurrent/EJBScheduledExecutorB configuration.");
+    				"per java:comp/concurrent/EJBScheduledExecutorC configuration.");
 
     		assertTrue(lookupFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
     				"Application context must be propagated to first async Function " +
@@ -170,7 +175,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
 
     		assertTrue(lookupFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
     				"Application context must be propagated to second async Function " +
-    				"per java:comp/concurrent/ScheduledExecutorB configuration.");
+    				"per java:comp/concurrent/ScheduledExecutorC configuration.");
     	} finally {
     		IntContext.set(0);
     		blocker.countDown();

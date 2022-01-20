@@ -17,31 +17,20 @@ package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.resourcedef;
 
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
-
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import ee.jakarta.tck.concurrent.common.context.IntContext;
-import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 
 /**
  * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet}
  */
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/EJBThreadFactoryA",
-                                context = "java:app/concurrent/EJBContextD",
+                                context = "java:app/concurrent/EJBContextA",
                                 priority = 4)
 @ManagedThreadFactoryDefinition(name = "java:comp/concurrent/EJBThreadFactoryB")
-//TODO: Can we use context from ContextServiceDefinitionBean?
-@ContextServiceDefinition(name = "java:app/concurrent/EJBContextD",
-                        propagated = { APPLICATION, IntContext.NAME },
-                        cleared = StringContext.NAME,
-                        unchanged = TRANSACTION)
 @Local(ManagedThreadFactoryDefinitionInterface.class)
 @Stateless
 public class ManagedThreadFactoryDefinitionBean implements ManagedThreadFactoryDefinitionInterface {

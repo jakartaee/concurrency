@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,10 +28,12 @@ import javax.naming.NamingException;
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
@@ -46,8 +48,12 @@ public class ManagedExecutorDefinitionOnEJBServlet extends TestServlet {
 	UserTransaction tx;
 
 	@EJB
-	private ManagedExecutorDefinitionInterface bean;
+	private ManagedExecutorDefinitionInterface managedExecutorDefinitionBean;
 
+	//Needed to initialize the ContextServiceDefinitions
+	@EJB
+	private ContextServiceDefinitionInterface contextServiceDefinitionBean;
+	 
 	/**
 	 * ManagedExecutorService creates an incomplete CompletableFuture to which dependent stages
 	 * can be chained. The CompletableFuture can be completed from another thread lacking the
@@ -102,7 +108,7 @@ public class ManagedExecutorDefinitionOnEJBServlet extends TestServlet {
 	 * ManagedExecutorService can create a contextualized copy of an unmanaged CompletableFuture.
 	 */
 	public void testCopyCompletableFutureEJB() throws Throwable {
-		ManagedExecutorService executor = InitialContext.doLookup("java:app/env/concurrent/executorBRef");
+		ManagedExecutorService executor = (ManagedExecutorService) managedExecutorDefinitionBean.doLookup("java:module/concurrent/ExecutorB");
 
 		IntContext.set(271);
 		StringContext.set("testCopyCompletableFutureEJB-1");

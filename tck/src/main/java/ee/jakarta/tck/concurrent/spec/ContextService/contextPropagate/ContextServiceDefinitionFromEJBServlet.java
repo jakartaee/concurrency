@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -59,7 +59,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
     UserTransaction tx;
     
     @EJB
-    private ContextServiceDefinitionInterface ContextServiceDefinitionBean;
+    private ContextServiceDefinitionInterface contextServiceDefinitionBean;
 
     @Override
     public void destroy() {
@@ -172,7 +172,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
      * clears transaction context and propagates other types.
      */
     public void testContextServiceDefinitionFromEJBDefaults() throws Throwable {
-        ContextService contextService = ContextServiceDefinitionBean.getContextC();
+        ContextService contextService = contextServiceDefinitionBean.getContextC();
 
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
         try {
@@ -180,7 +180,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
             new Thread(contextService.contextualRunnable(() -> {
                 results.add(IntContext.get());
                 try {
-                    results.add(ContextServiceDefinitionBean.getContextC());
+                    results.add(contextServiceDefinitionBean.getContextC());
                 } catch (Throwable x) {
                     results.add(x);
                 }
@@ -240,7 +240,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
             StringContext.set("testContextualSupplier-1");
             IntContext.set(61);
 
-            ContextService contextServiceB = ContextServiceDefinitionBean.getContextB();
+            ContextService contextServiceB = contextServiceDefinitionBean.getContextB();
             Supplier<Map.Entry<Integer, String>> supplierB = contextServiceB.contextualSupplier(() ->
                 new SimpleEntry<Integer, String>(IntContext.get(), StringContext.get()));
             CompletableFuture<Map.Entry<Integer, String>> futureB =
@@ -261,57 +261,4 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
             IntContext.set(0);
         }
     }
-    
-//    /**
-//     * A ContextService contextualizes a Function, which can be supplied as a dependent stage action
-//     * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
-//     * the thread that contextualizes the Function, per the configuration of the ContextServiceDefinition.
-//     */
-//    public void testContextualFunction() throws Throwable {
-//        ContextService contextService = ContextServiceDefinitionBean.getContextB();
-//        CompletableFuture<Object[]> future;
-//        tx.begin();
-//        try {
-//            StringContext.set("testContextualFunction-1");
-//            IntContext.set(151);
-//
-//            Function<String, Object[]> contextualFunction = contextService.contextualFunction(jndiName -> {
-//                Object[] results = new Object[4];
-//                try {
-//                    results[0] = InitialContext.doLookup(jndiName);
-//                } catch (NamingException x) {
-//                    results[0] = x;
-//                }
-//                results[1] = IntContext.get();
-//                results[2] = StringContext.get();
-//                try {
-//                    results[3] = tx.getStatus();
-//                } catch (SystemException x) {
-//                    throw new CompletionException(x);
-//                }
-//                return results;
-//            });
-//
-//            future = CompletableFuture.completedFuture("java:module/concurrent/ContextB")
-//                                      .thenApplyAsync(contextualFunction);
-//        } finally {
-//            StringContext.set(null);
-//            IntContext.set(0);
-//            tx.rollback();
-//        }
-//
-//        Object[] results = future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-//        assertTrue(results[0] instanceof NamingException,
-//                "Application context must remain unchanged on contextual Function " +
-//                "per java:module/concurrent/ContextB configuration. Result: " + results[0]);
-//        assertEquals(results[1], Integer.valueOf(0), 
-//                "Third-party context type IntContext must remain unchanged on contextual Function " +
-//                "per java:module/concurrent/ContextB configuration.");
-//        assertEquals(results[2], "testContextualFunction-1",
-//                "Third-party context type StringContext must be propagated to contextual Function " +
-//                "per java:module/concurrent/ContextB configuration.");
-//        assertEquals(results[3], Integer.valueOf(Status.STATUS_NO_TRANSACTION), 
-//                "Transaction context must be cleared from contextual Function " +
-//                "per java:module/concurrent/ContextB configuration.");
-//    }
 }
