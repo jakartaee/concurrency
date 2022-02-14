@@ -1,4 +1,4 @@
-# Jakarta Concurrency TCK
+# Jakarta Concurrency TCK User's Guide
 
 The Jakarta Concurrency Technology Compatibility Kit (TCK) is an automated test project that
 will certify that Application Servers which implement the Jakarta Concurrency API meet the specification
@@ -279,6 +279,80 @@ cd concurrency-api
 mvn clean test
 ```
 
+## Where to File Challenges
+
+To file a challenge against the TCK, open a [new issue](https://github.com/eclipse-ee4j/concurrency-api/issues/new)
+against the concurrency-api project. Add the `challenge` label,
+and follow all of the process that is defined under the Challenges section of the
+[Jakarta EE TCK Process](https://jakarta.ee/committees/specification/tckprocess/).
+
 ## Compatible Implementation
 
-Open Liberty has a compatible implementation with a [working TCK project](https://github.com/OpenLiberty/open-liberty/tree/release/dev/io.openliberty.jakarta.concurrency.3.0_fat_tck) that can be referenced as an example of how to configure a TCK project.
+Open Liberty has a candidate compatible implementation with a [working TCK project](https://github.com/OpenLiberty/open-liberty/tree/release/dev/io.openliberty.jakarta.concurrency.3.0_fat_tck) that can be referenced as an example of how to configure a TCK project.
+
+## Rules for Jakarta Concurrency Products
+
+The following rules apply for each version of an operating system, software component,
+and hardware platform Documented as supporting the Product:
+
+- **Concurrency1** The Product must be able to satisfy all applicable compatibility requirements,
+  including passing all Conformance Tests, in every Product Configuration and in every combination
+  of Product Configurations, except only as specifically exempted by these Rules.
+  For example, if a Product provides distinct Operating Modes to optimize performance,
+  then that Product must satisfy all applicable compatibility requirements for a Product
+  in each Product Configuration, and combination of Product Configurations, of those Operating Modes.
+
+- **Concurrency1.1** If an Operating Mode controls a Resource necessary for the basic execution of the Test Suite,
+  testing may always use a Product Configuration of that Operating Mode providing that Resource,
+  even if other Product Configurations do not provide that Resource. Notwithstanding such exceptions,
+  each Product must have at least one set of Product Configurations of such Operating Modes
+  that is able to pass all the Conformance Tests.
+  For example, a Product with an Operating Mode that controls a security policy (i.e., Security Resource)
+  which has one or more Product Configurations that cause Conformance Tests to fail
+  may be tested using a Product Configuration that allows all Conformance Tests to pass.
+
+- **Concurrency1.2** A Product Configuration of an Operating Mode that causes the Product to report only
+  version, usage, or diagnostic information is exempted from these compatibility rules.
+
+- **Concurrency1.3** An API Definition Product is exempt from all functional testing requirements defined here,
+  except the signature tests.
+
+- **Concurrency2** Some Conformance Tests may have properties that may be changed.
+  Properties that can be changed are identified in the configuration interview.
+  Properties that can be changed are identified in the JavaTest Environment (.jte) files in the Test Suite installation.
+  Apart from changing such properties and other allowed modifications described in this User's Guide (if any),
+  no source or binary code for a Conformance Test may be altered in any way without prior written permission.
+  Any such allowed alterations to the Conformance Tests will be provided via the Jakarta EE Specification Project website
+  and apply to all vendor compatible implementations.
+
+- **Concurrency3** The testing tools supplied as part of the Test Suite or as updated by the
+  Maintenance Lead must be used to certify compliance.
+
+- **Concurrency4** The Exclude List associated with the Test Suite cannot be modified.
+
+- **Concurrency5** The Maintenance Lead can define exceptions to these Rules.
+  Such exceptions would be made available as above, and will apply to all vendor implementations.
+
+- **Concurrency6** All hardware and software component additions, deletions, and modifications to a
+  Documented supporting hardware/software platform, that are not part of the Product but required
+  for the Product to satisfy the compatibility requirements, must be Documented and available to users of the Product.
+  For example, if a patch to a particular version of a supporting operating system is required for the
+  Product to pass the Conformance Tests, that patch must be Documented and available to users of the Product.
+
+- **Concurrency7** The Product must contain the full set of public and protected classes and interfaces
+  for all the Libraries. Those classes and interfaces must contain exactly the set of public and
+  protected methods, constructors, and fields defined by the Specifications for those Libraries.
+  No subsetting, supersetting, or modifications of the public and protected API of the Libraries
+  are allowed except only as specifically exempted by these Rules.
+
+- **Concurrency7.1** If a Product includes Technologies in addition to the Technology Under Test,
+  then it must contain the full set of combined public and protected classes and interfaces.
+  The API of the Product must contain the union of the included Technologies.
+  No further modifications to the APIs of the included Technologies are allowed.
+
+- **Concurrency8** Except for tests specifically required by this TCK to be rebuilt (if any),
+  the binary Conformance Tests supplied as part of the Test Suite or as updated by the
+  Maintenance Lead must be used to certify compliance.
+
+- **Concurrency9** The functional programmatic behavior of any binary class or interface must be
+  that defined by the Specifications.
