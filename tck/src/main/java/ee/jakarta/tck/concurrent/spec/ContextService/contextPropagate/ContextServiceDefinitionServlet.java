@@ -64,7 +64,7 @@ import jakarta.transaction.UserTransaction;
                           unchanged = { APPLICATION, IntContext.NAME },
                           propagated = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:comp/concurrent/ContextC")
-@WebServlet("ContextServiceDefinitionServlet")
+@WebServlet("/ContextServiceDefinitionServlet")
 public class ContextServiceDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

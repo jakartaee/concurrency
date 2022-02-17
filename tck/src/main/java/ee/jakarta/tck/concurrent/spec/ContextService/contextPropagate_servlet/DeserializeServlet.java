@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("DeserializeServlet")
+@WebServlet("/DeserializeServlet")
 public class DeserializeServlet extends HttpServlet {
 
 	@Override

@@ -45,7 +45,7 @@ import jakarta.transaction.Status;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
-@WebServlet("ContextServiceDefinitionFromEJBServlet")
+@WebServlet("/ContextServiceDefinitionFromEJBServlet")
 public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

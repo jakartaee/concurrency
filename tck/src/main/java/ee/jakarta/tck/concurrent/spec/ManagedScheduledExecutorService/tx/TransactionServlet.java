@@ -39,7 +39,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings({"serial", "unused"})
-@WebServlet("TransactionServlet")
+@WebServlet("/TransactionServlet")
 @DataSourceDefinition(
 	name = Constants.DS_JNDI_NAME, 
 	className = "org.apache.derby.jdbc.EmbeddedDataSource", 

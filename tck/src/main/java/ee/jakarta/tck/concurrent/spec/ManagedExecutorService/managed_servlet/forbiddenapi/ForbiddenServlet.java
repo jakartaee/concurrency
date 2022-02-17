@@ -26,7 +26,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("ForbiddenServlet")
+@WebServlet("/ForbiddenServlet")
 public class ForbiddenServlet extends TestServlet {
 	
 	@Resource

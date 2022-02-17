@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("WorkInterfaceServlet")
+@WebServlet("/WorkInterfaceServlet")
 public class WorkInterfaceServlet extends HttpServlet {
 
 	@Override

@@ -33,11 +33,10 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
-@WebServlet("ManagedExecutorDefinitionOnEJBServlet")
+@WebServlet("/ManagedExecutorDefinitionOnEJBServlet")
 public class ManagedExecutorDefinitionOnEJBServlet extends TestServlet {
 	private static final long serialVersionUID = 1L;
 	private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

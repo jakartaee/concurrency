@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("ClassloaderServlet")
+@WebServlet("/ClassloaderServlet")
 public class ClassloaderServlet extends TestServlet {
 
 	@EJB

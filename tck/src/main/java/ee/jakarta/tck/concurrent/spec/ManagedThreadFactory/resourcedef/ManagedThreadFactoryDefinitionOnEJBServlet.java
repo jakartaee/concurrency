@@ -46,7 +46,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
-@WebServlet("ManagedThreadFactoryDefinitionOnEJBServlet")
+@WebServlet("/ManagedThreadFactoryDefinitionOnEJBServlet")
 public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

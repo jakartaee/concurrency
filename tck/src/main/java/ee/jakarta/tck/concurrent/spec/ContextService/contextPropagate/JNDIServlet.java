@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("JNDIServlet")
+@WebServlet("/JNDIServlet")
 public class JNDIServlet extends TestServlet {
 
 	@EJB

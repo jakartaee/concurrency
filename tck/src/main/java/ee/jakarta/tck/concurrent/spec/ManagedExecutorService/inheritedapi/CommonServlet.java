@@ -33,7 +33,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("CommonServlet")
+@WebServlet("/CommonServlet")
 public class CommonServlet extends TestServlet {
 
 	@Resource
