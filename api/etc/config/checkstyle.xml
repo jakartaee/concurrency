@@ -77,9 +77,15 @@
         <property name="format" value="\S+\s+$"/>
         <property name="message" value="Non-empty line has trailing spaces."/>
     </module>
+    
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="LineLength">
+       <property name="max" value="120"/>
+       <property name="ignorePattern" value="@link|@version|@see|@todo|TODO|resource-env-ref-type"/>
+    </module>
 
     <module name="TreeWalker">
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
         <property name="tabWidth" value="4"/>
 
         <!-- Checks for Javadoc comments.                     -->
@@ -135,12 +141,7 @@
         <module name="UnusedImports"/>
 
 
-        <!-- Checks for Size Violations.                    -->
-        <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength">
-            <property name="max" value="120"/>
-            <property name="ignorePattern" value="@link|@version|@see|@todo|TODO|resource-env-ref-type"/>
-        </module>
+
         <module name="MethodLength"/>
         <module name="ParameterNumber">
             <property name="max" value="9"/>
@@ -206,9 +207,10 @@
             <property name="ignoreHashCodeMethod" value="true"/>
         </module-->
         <module name="MissingSwitchDefault"/>
-        <module name="RedundantThrows">
+        <!--<module name="RedundantThrows">
             <property name="allowUnchecked" value="true"/>
         </module>
+        -->
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
 
