@@ -69,19 +69,17 @@
         <testng.version>6.14.3</testng.version>
         <arquillian.version>1.6.0.Final</arquillian.version>
                 
-        <!-- TODO update to 6.0.0 -->
-        <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         
-        <!-- TODO update to 5.0.0 -->
+        <!-- TODO update to 4.0.1 -->
         <jakarta.ejb.version>4.0.0</jakarta.ejb.version>
         
-        <!-- TODO update to 4.0.0 -->
-        <jakarta.jsp.version>3.0.0</jakarta.jsp.version>
+        <jakarta.jsp.version>3.1.0</jakarta.jsp.version>
         
-        <jakarta.annotation.version>2.0.0</jakarta.annotation.version>
+        <jakarta.annotation.version>2.1.0</jakarta.annotation.version>
         
-        <jakarta.interceptor.version>2.0.0</jakarta.interceptor.version>
-        <jakarta.cdi.version>4.0.0.Alpha2</jakarta.cdi.version>
+        <jakarta.interceptor.version>2.0.1</jakarta.interceptor.version>
+        <jakarta.cdi.version>4.0.0</jakarta.cdi.version>
         
     </properties>
 
