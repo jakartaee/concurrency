@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
+  <id>dist</id>
+  <baseDirectory>concurrency-tck-${jakarta.concurrent.version.ga}</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+
+  <files>
+    <!-- This is the final EFTL license -->
+    <file>
+      <source>EFTL.txt</source>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>README.md</source>
+      <destName>README.md</destName>
+    </file>
+    <file>
+      <source>${project.parent.basedir}/tck/README.md</source>
+      <destName>docs/README.md</destName>
+    </file>
+    <file>
+      <source>artifact-install.sh</source>
+      <outputDirectory>artifacts</outputDirectory>
+      <filtered>true</filtered>
+    </file>
+  </files>
+
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck</include>
+        <include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent.parent</include>
+      </includes>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <outputDirectory>artifacts</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>
