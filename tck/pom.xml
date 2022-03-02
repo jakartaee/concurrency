@@ -18,10 +18,10 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-	<groupId>jakarta.enterprise.concurrent</groupId>
-    	<artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+   <parent>
+     <groupId>jakarta.enterprise.concurrent</groupId>
+     <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+     <version>3.0.0-SNAPSHOT</version>
     </parent>
     <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
@@ -48,6 +48,7 @@
         
         <jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
         <jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
+        <sigtest.version>1.6</sigtest.version>
 
     </properties>
     <dependencies>
@@ -71,4 +72,77 @@
 	        </resource>
 	    </resources>
 	</build>
+
+  <profiles>
+
+    <profile>
+      <!--This profile can be used to (re)generate signatures of Concurrency API, note that they differ based on JDK used to build them-->
+      <!--All .sig files should be included in the generated jar files!-->
+      <id>signature-generation</id>
+      <activation>
+        <property>
+          <name>signature</name>
+        </property>
+      </activation>
+      <properties>
+        <!--Default assumed JDK version, can be overriden via -Dmajor.jdk.version=X-->
+        <jdk.major.version>11</jdk.major.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>jakarta.enterprise.concurrent</groupId>
+                      <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+                      <version>${jakarta.concurrent.version.ga}</version>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>
+                      <includes>**/*.class,**/*.xml</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <includes>**/*.java</includes>
+                  <excludes>**/*.properties</excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.netbeans.tools</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>${sigtest.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <classes>${project.build.directory}/concurrency-api</classes>
+              <packages>
+                jakarta.enterprise.concurrent,
+                jakarta.enterprise.concurrent.spi,
+              </packages>
+              <attach>false</attach>
+              <sigfile>${project.build.directory}/concurrency-api-jdk${jdk.major.version}.sig</sigfile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
 </project>
