@@ -1,1 +1,0 @@
-#public abstract interface jakarta.enterprise.concurrent.ManagedThreadFactory extends [interface java.util.concurrent.ThreadFactory, interface java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory]

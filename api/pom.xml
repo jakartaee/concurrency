@@ -21,16 +21,15 @@
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
-	<groupId>jakarta.enterprise.concurrent</groupId>
+		<groupId>jakarta.enterprise.concurrent</groupId>
     	<artifactId>jakarta.enterprise.concurrent.parent</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>jakarta.enterprise.concurrent</groupId>
+    
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-    <name>jakarta.enterprise.concurrent-api</name>
-    <description>Jakarta Concurrency</description>
-
+    
+    <name>Jakarta Concurrency API</name>
+    <description>Jakarta Concurrency API Module</description>
 
     <properties>
 

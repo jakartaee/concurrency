@@ -57,7 +57,7 @@ The TCK is a test library that includes four types of packages:
 - `ee.jakarta.tck.concurrent.api.*` these are basic API tests that ensure methods throw the correct exceptions and return the valid values.
 - `ee.jakarta.tck.concurrent.spec.*` these are more complex SPEC tests that ensure that implementations behave as expected based on the specification.
 - `ee.jakarta.tck.concurrent.common.*` these are common packages shared between test packages.
-- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using TestNG, Arquillian, and java.util.logging easier.
+- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using TestNG, Arquillian, SigTest, and java.util.logging easier.
 
 ### What is not included
 The TCK uses but does not provide the necessary application servers, test frameworks, APIs, SPIs, or implementations required to run. 
@@ -232,9 +232,28 @@ The TCK uses default objects (`java:comp/DefaultManagedExecutorService`) and ann
 to ensure that application servers require minimal customization to run the TCK.
 
 However, the TCK does require that Application Servers define a security context for security-based tests. 
+
 - Username: javajoe
 - Password: javajoe
 - Group: Manager
+
+The TCK uses external libraries that also need to be available on the Application Server's class path. 
+
+- org.apache.derby:derby - For database testing
+- org.testng:testng - For test assertions
+- org.netbeans.tools:sigtest-maven-plugin - For signature testing
+
+
+### Signature Tests
+
+The Concurrency TCK will run signature tests on the application server itself, and not as part of a separate plugin.
+This means that the signature tests will be ran during the maven `test` phase.
+
+You need to configure your application server with a JVM property `-Djimage.dir=<path-your-server-has-access-to>`.
+When running the signature tests on JDK 9+ we need to convert the JDK modules back into class files for signature testing.
+
+For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md][src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md]
+
 
 ### Advanced Configuration
 

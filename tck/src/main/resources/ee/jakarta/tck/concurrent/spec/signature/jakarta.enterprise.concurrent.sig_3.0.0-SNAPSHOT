@@ -225,6 +225,8 @@ meth public boolean skipRun(jakarta.enterprise.concurrent.LastExecution,java.uti
 meth public java.time.ZoneId getZoneId()
 meth public java.util.Date getNextRunTime(jakarta.enterprise.concurrent.LastExecution,java.util.Date)
 
+CLSS abstract interface jakarta.enterprise.concurrent.package-info
+
 CLSS public abstract interface jakarta.enterprise.concurrent.spi.ThreadContextProvider
 meth public abstract jakarta.enterprise.concurrent.spi.ThreadContextSnapshot clearedContext(java.util.Map<java.lang.String,java.lang.String>)
 meth public abstract jakarta.enterprise.concurrent.spi.ThreadContextSnapshot currentContext(java.util.Map<java.lang.String,java.lang.String>)
@@ -237,6 +239,8 @@ meth public abstract void endContext()
 CLSS public abstract interface jakarta.enterprise.concurrent.spi.ThreadContextSnapshot
  anno 0 java.lang.FunctionalInterface()
 meth public abstract jakarta.enterprise.concurrent.spi.ThreadContextRestorer begin()
+
+CLSS abstract interface jakarta.enterprise.concurrent.spi.package-info
 
 CLSS public abstract interface !annotation jakarta.interceptor.InterceptorBinding
  anno 0 java.lang.annotation.Documented()
@@ -297,8 +301,7 @@ meth public void printStackTrace(java.io.PrintStream)
 meth public void printStackTrace(java.io.PrintWriter)
 meth public void setStackTrace(java.lang.StackTraceElement[])
 supr java.lang.Object
-hfds CAUSE_CAPTION,EMPTY_THROWABLE_ARRAY,NULL_CAUSE_MESSAGE,SELF_SUPPRESSION_MESSAGE,SUPPRESSED_CAPTION,SUPPRESSED_SENTINEL,UNASSIGNED_STACK,backtrace,cause,depth,detailMessage,serialVersionUID,stackTrace,suppressedExceptions
-hcls PrintStreamOrWriter,SentinelHolder,WrappedPrintStream,WrappedPrintWriter
+hfds ZeroElementArray,ZeroStackTraceElementArray,cause,detailMessage,disableWritableStackTrace,serialVersionUID,stackTrace,suppressedExceptions,walkback
 
 CLSS public abstract interface java.lang.annotation.Annotation
 meth public abstract boolean equals(java.lang.Object)

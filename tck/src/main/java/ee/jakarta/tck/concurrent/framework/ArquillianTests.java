@@ -67,7 +67,7 @@ public abstract class ArquillianTests extends Arquillian {
 	}
 	
 	protected static final Package getSignaturePackage() {
-		return ee.jakarta.tck.concurrent.spec.signature.SignatureTestServlet.class.getPackage();
+		return ee.jakarta.tck.concurrent.framework.signaturetest.SigTestEE.class.getPackage();
 	}
 	
 
