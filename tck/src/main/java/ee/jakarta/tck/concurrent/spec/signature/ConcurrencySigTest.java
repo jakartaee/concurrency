@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
 package ee.jakarta.tck.concurrent.spec.signature;
 
 import java.io.BufferedReader;
@@ -9,6 +24,9 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
@@ -45,14 +63,23 @@ public class ConcurrencySigTest extends SigTestEE {
 	 * Returns the classpath for the packages we are interested in.
 	 */
 	protected String getClasspath() {
+		// The Jakarta artifacts we want added to our classpath
 		String[] classes = new String[] {
-				"jakarta.enterprise.concurrent.AbortedException",
-				"jakarta.enterprise.util.Nonbinding",
-				"jakarta.interceptor.InterceptorBinding"
+				"jakarta.enterprise.concurrent.AbortedException", // For jakarta.enterprise.concurrent-api-3.0.0.jar
+				"jakarta.enterprise.util.Nonbinding",			  // For jakarta.enterprise.cdi-api-4.0.0.jar
+				"jakarta.interceptor.InterceptorBinding"		  // For jakarta.interceptor-api-2.1.0.jar
 		};
 		
-		Set<String> classPaths = new HashSet<String>();
+		// The JDK modules we want added to our classpath
+		String[] JDKModules = new String[] {
+				"java.base",
+				"java.rmi",
+				"java.sql",
+				"java.naming"
+		};
 		
+		//Get Jakarta artifacts from application server		
+		Set<String> classPaths = new HashSet<String>();
 		for(String c : classes) {
 			try {
 				Class<?> clazz = Class.forName(c);
@@ -65,11 +92,17 @@ public class ConcurrencySigTest extends SigTestEE {
 			}
 		}
 		
+
+		//Get JDK modules from jimage
 		//Add JDK classes to classpath
 		File jimageOutput = new File(testInfo.getJImageDir());
-		for(File subFile : jimageOutput.listFiles()) {
-			if(subFile.isDirectory()) { //This is a module, we should add it to our classpath.
-				classPaths.add(subFile.getAbsolutePath());
+		for (String module : JDKModules) {
+			Path modulePath = Paths.get(jimageOutput.getAbsolutePath(), module);
+			if(Files.isDirectory(modulePath)) {
+				classPaths.add(modulePath.toString());
+			} else {
+				throw new RuntimeException("Unable to load JDK module " + module + " from jimage output " + System.lineSeparator()
+				+ "Searched in directory: " + modulePath.toString());
 			}
 		}
 
