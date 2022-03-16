@@ -40,8 +40,9 @@ public class SignatureTestServlet extends TestServlet {
 		//This is where modules will be converted back to .class files for use in signature testing	
 		assertNotNull(System.getProperty("jimage.dir"), "The system property jimage.dir must be set in order to run the Signature test.");
 		
-		//Ensure user to running on JDK 11, this has to be exact, since the sigtest-maven-plugin output will change depending on JDK level
-		assertTrue(Integer.parseInt(System.getProperty("java.specification.version")) == 11, "The signature tests must be run on an application server using JDK 11 exactly.");
+		//Ensure user to running on JDK 11 or higher
+		int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+		assertTrue( javaSpecVersion >= 11, "The signature tests must be run on an application server using Java 11 or higher.");
 		
 		//Ensure TCK users have the correct security/JDK settings to allow the plugin access to internal JDK classes
         Class intf = Class.forName("jdk.internal.vm.annotation.Contended");        

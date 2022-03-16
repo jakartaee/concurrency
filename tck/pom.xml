@@ -143,6 +143,26 @@
 							</packages>
 							<attach>false</attach>
 							<sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${project.version}</sigfile>
+							<!-- Ensure that the signature file we generated will work for both JDK11 and JDK17 -->
+							<ignoreJDKClasses>
+								<include>java.util.Map</include>
+								<include>java.lang.Object</include>
+								<include>java.io.ByteArrayInputStream</include>
+								<include>java.io.InputStream</include>
+								<include>java.lang.Deprecated</include>
+								<include>java.io.Writer</include>
+								<include>java.io.OutputStream</include>
+								<include>java.util.List</include>
+								<include>java.util.Collection</include>
+								<include>java.lang.instrument.IllegalClassFormatException</include>
+								<include>javax.transaction.xa.XAException</include>
+								<include>java.lang.annotation.Repeatable</include>
+								<include>java.lang.InterruptedException</include>
+								<include>java.lang.CloneNotSupportedException</include>
+								<include>java.lang.Throwable</include>
+								<include>java.lang.Thread</include>
+								<include>java.lang.Enum</include>
+							</ignoreJDKClasses>
 						</configuration>
 					</plugin>
 				</plugins>

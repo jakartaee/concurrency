@@ -36,7 +36,7 @@ public class SignatureTests extends TestClient {
 
 	@Deployment(name = "SignatureTests", testable = false)
 	public static WebArchive createDeployment() {
-		WebArchive web = ShrinkWrap.create(WebArchive.class)
+		WebArchive web = ShrinkWrap.create(WebArchive.class, "signatureTest.war")
 				.addPackages(true, getFrameworkPackage(), getSignaturePackage(), SignatureTests.class.getPackage())
 				.addAsResources(SignatureTests.class.getPackage(), SIG_MAP_NAME, SIG_PKG_NAME,
 						SIG_FILE_NAME + "_3.0.0-SNAPSHOT");
