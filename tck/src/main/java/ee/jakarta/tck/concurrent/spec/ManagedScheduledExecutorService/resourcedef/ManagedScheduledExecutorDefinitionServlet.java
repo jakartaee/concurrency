@@ -68,7 +68,7 @@ import jakarta.transaction.UserTransaction;
                            context = "java:module/concurrent/ContextB",
                            maxAsync = 4)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/ScheduledExecutorC")
-@WebServlet("ManagedScheduledExecutorDefinitionServlet")
+@WebServlet("/ManagedScheduledExecutorDefinitionServlet")
 public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

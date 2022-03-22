@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("ContextServlet")
+@WebServlet("/ContextServlet")
 public class ContextServlet extends TestServlet {
 
 	private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";

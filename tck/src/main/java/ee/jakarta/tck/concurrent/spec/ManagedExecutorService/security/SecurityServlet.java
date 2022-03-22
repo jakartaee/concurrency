@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("SecurityServlet")
+@WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 	
 	@Resource

@@ -38,7 +38,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("SignatureTestServlet")
+@WebServlet("/SignatureTestServlet")
 public class SignatureTestServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     

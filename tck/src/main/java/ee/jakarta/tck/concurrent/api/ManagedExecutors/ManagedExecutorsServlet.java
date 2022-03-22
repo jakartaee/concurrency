@@ -32,7 +32,7 @@ import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 import jakarta.servlet.annotation.WebServlet;
 
-@WebServlet("ManagedExecutorsServlet")
+@WebServlet("/ManagedExecutorsServlet")
 public class ManagedExecutorsServlet extends TestServlet{
 	
 	private static final TestLogger log = TestLogger.get(ManagedExecutorsServlet.class);

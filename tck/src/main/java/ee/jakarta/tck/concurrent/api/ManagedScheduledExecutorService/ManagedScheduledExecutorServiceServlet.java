@@ -26,7 +26,7 @@ import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("ManagedScheduledExecutorServiceServlet")
+@WebServlet("/ManagedScheduledExecutorServiceServlet")
 public class ManagedScheduledExecutorServiceServlet extends TestServlet{
 	
 	public static final String CALLABLETESTTASK1_RUN_RESULT = "CallableTestTask1";

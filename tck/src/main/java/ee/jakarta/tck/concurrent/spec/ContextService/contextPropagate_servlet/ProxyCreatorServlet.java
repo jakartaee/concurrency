@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("ProxyCreatorServlet")
+@WebServlet("/ProxyCreatorServlet")
 public class ProxyCreatorServlet extends TestServlet {
 	
 	private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);

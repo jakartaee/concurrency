@@ -37,7 +37,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings({"serial", "unused"})
-@WebServlet("TransactionServlet")
+@WebServlet("/TransactionServlet")
 @DataSourceDefinition(
 	name = Constants.DS_JNDI_NAME, 
 	className = "org.apache.derby.jdbc.EmbeddedDataSource", 

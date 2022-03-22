@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("SecurityServlet")
+@WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 
 	public void managedScheduledExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {

@@ -52,7 +52,7 @@ import jakarta.transaction.UserTransaction;
                                 context = "java:app/concurrent/ContextA",
                                 priority = 4)
 @ManagedThreadFactoryDefinition(name = "java:comp/concurrent/ThreadFactoryB")
-@WebServlet("ManagedThreadFactoryDefinitionServlet")
+@WebServlet("/ManagedThreadFactoryDefinitionServlet")
 public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

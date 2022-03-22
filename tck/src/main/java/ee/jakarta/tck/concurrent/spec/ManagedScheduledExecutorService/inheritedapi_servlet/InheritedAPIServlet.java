@@ -36,7 +36,7 @@ import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("InheritedAPIServlet")
+@WebServlet("/InheritedAPIServlet")
 public class InheritedAPIServlet extends TestServlet {
 	
 	@Override

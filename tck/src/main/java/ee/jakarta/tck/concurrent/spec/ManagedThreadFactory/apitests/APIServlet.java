@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("APIServlet")
+@WebServlet("/APIServlet")
 public class APIServlet extends TestServlet {
 
 	@Resource(lookup = TestConstants.DefaultManagedThreadFactory)
