@@ -44,7 +44,7 @@ The plugin that generates the signature file has been copied below for reference
 
 - The `classes` configuration points to a location where an earlier plugin has unpacked the api jar form which we are generating the signature file.
 - The `packages` configuration specifies the packages we want to generate signatures from. 
-- The `attach` configuration specifies that we do not want the plugin to use it's default file extension
+- The `attach` configuration specifies that we do not want the plugin to use its default file extension
 - The `sigfile` configurations specifies the signature file we want the plugin to generate
 
 ### Generating the Signature File
@@ -77,7 +77,7 @@ Since the Concurrency TCK can only be run against Jakarta EE Servers we have sim
 Signature tests will be automatically run as part of the TCK via the `ee.jakarta.tck.concurrent.spec.signature` project. 
 
 This project will deploy a servlet application to the Jakarta EE Server. 
-The servlet that will run the signature test using the signaturetest framework from the Platform TCK.
+The servlet runs the signature test using the signaturetest framework from the Platform TCK.
 
 TCK Users will only need to set a single JVM property `-Djimage.dir=<path-your-app-server-has-access-to>`.
 This directory will be populated with class files extracted from the JDK modules.
