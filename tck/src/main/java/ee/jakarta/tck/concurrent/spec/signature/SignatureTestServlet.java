@@ -15,22 +15,12 @@
  */
 package ee.jakarta.tck.concurrent.spec.signature;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+import static org.testng.Assert.assertNotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.TreeSet;
 
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
@@ -40,147 +30,48 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/SignatureTestServlet")
 public class SignatureTestServlet extends TestServlet {
-    private static final long serialVersionUID = 1L;
-    
-    private static final TestLogger log = TestLogger.get(SignatureTestServlet.class);
+	private static final long serialVersionUID = 1L;
+	
+	private static final TestLogger log = TestLogger.get(SignatureTestServlet.class);
 
-    /**
-     * Perform signatures tests for the specified class.
-     *
-     * @param className fully qualified class name.
-     */
-    public void testSignatures(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
-    	String className = req.getParameter("action");
-    	assertNotNull(className, "unknown or missing action for " + getClass().getName() + ": " + className);
-    	
-    	log.info("Class name is " + className);
-    	
-        TreeSet<String> observed = new TreeSet<String>();
-
-        Class<?> c = Class.forName(className);
-
-        StringBuilder b = new StringBuilder(200).append("#").append(c.toGenericString());
-        if (c.getSuperclass() != null)
-            b.append(" extends " + c.getSuperclass().getName());
-        Class<?>[] i = c.getInterfaces();
-        if (i.length > 0)
-            b.append(c.isInterface() ? " extends " : " implements ").append(Arrays.toString(i));
-        observed.add(b.toString());
-
-        for (Annotation a : c.getAnnotations())
-        	observed.add(toString(a));
-
-        for (Constructor<?> ctor : c.getConstructors())
-            if (c.equals(ctor.getDeclaringClass())) {
-                b = new StringBuilder();
-                Annotation[] ctorAnnos = ctor.getAnnotations();
-                for (Annotation a : ctorAnnos)
-                	b.append(toString(a)).append(" ");
-                b.append(ctor.toGenericString());
-                observed.add(b.toString());
-            }
-
-        for (Field f : c.getFields())
-            if (c.equals(f.getDeclaringClass())) {
-                b = new StringBuilder();
-                Annotation[] fieldAnnos = f.getAnnotations();
-                for (Annotation a : fieldAnnos)
-                	b.append(toString(a)).append(" ");
-                b.append(f.toGenericString());
-                observed.add(b.toString());
-            }
-
-        for (Method m : c.getMethods())
-            if (c.equals(m.getDeclaringClass())) {
-                b = new StringBuilder();
-                Annotation[] methodAnnos = m.getAnnotations();
-                for (Annotation a : methodAnnos)
-                	b.append(toString(a)).append(" ");
-                b.append(m.toGenericString());
-                Object annoDefault = m.getDefaultValue();
-                if (annoDefault != null) {
-                    b.append(" default ");
-                    toStringBuilder(b, annoDefault);
-                }
-                observed.add(b.toString());
-            }
-
-        String fileName = "/WEB-INF/signaturetest/" + className.replace('$', '-') + ".sig";
-        InputStream input = getServletContext().getResourceAsStream(fileName);
-        if (input == null) {
-            // When adding a new spec class, copy from System.out to create its expected .sig file,
-            log.info("--- Missing signatures from");
-            log.info(fileName);
-            log.info("Observed signatures are:");
-            for (String item : observed)
-                log.info(item);
-            
-            fail("Error: missing signatures file: " + fileName);
-        }
-
-        TreeSet<String> expected = new TreeSet<String>();
-        BufferedReader in = new BufferedReader(new InputStreamReader(input));
-        try {
-            while (in.ready())
-                expected.add(in.readLine());
-        } finally {
-            in.close();
-        }
-
-        TreeSet<String> missing = new TreeSet<String>(expected);
-        missing.removeAll(observed);
-
-        TreeSet<String> extras = new TreeSet<String>(observed);
-        extras.removeAll(expected);
+	public void testSignatures(HttpServletRequest req, HttpServletResponse resp) throws Throwable {
+		
+		//Ensure that jimage directory is set.
+		//This is where modules will be converted back to .class files for use in signature testing	
+		assertNotNull(System.getProperty("jimage.dir"), "The system property jimage.dir must be set in order to run the Signature test.");
+		
+		//Ensure user to running on JDK 11 or higher
+		int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+		assertTrue( javaSpecVersion >= 11, "The signature tests must be run on an application server using Java 11 or higher.");
+		
+		//Ensure TCK users have the correct security/JDK settings to allow the plugin access to internal JDK classes
+        Class intf = Class.forName("jdk.internal.vm.annotation.Contended");        
+        Method[] mm = intf.getDeclaredMethods();
         
-        assertEquals(missing, Collections.EMPTY_SET,
-                "Found " + className + " that lacks the identified aspects of the specification class. " +
-                                                "Instead includes " + extras.toString() + ".");
-
-        assertEquals(extras, Collections.EMPTY_SET,
-                     "Found " + className + " that differs from the specification class.");
-    }
-    
-    private static String toString(Annotation a) {
-        Class<?> type = a.annotationType();
-        StringBuilder b = new StringBuilder()
-                        .append("@")
-                        .append(type.getName())
-                        .append("(");
-        int count = 0;
-        for (Method m : type.getMethods())
-            if (type.equals(m.getDeclaringClass()) && m.getParameterCount() == 0) {
-                Object value;
-                try {
-                    value = m.invoke(a);
-                } catch (IllegalAccessException | InvocationTargetException x) {
-                    x.printStackTrace();
-                    value = null;
-                }
-                if (value != null) {
-                    if (++count > 1)
-                        b.append(", ");
-                    b.append(m.getName()).append("=");
-                    toStringBuilder(b, value);
-                }
-            }
-        b.append(")");
-        return b.toString();
-    }
-
-    private static void toStringBuilder(StringBuilder b, Object value) {
-        if (value instanceof Class) {
-            b.append(((Class<?>) value).getName()).append(".class");
-        } else if (value.getClass().isArray()) {
-            b.append("{");
-            for (int v = 0; v < Array.getLength(value); v++) {
-                if (v > 0)
-                    b.append(", ");
-                toStringBuilder(b, Array.get(value, v));
-            }
-            b.append("}");
-        } else {
-            b.append(value);
+        for (Method m : mm) {
+        	try {
+        		m.setAccessible(true);
+        	} catch (InaccessibleObjectException ioe) {
+        		//This means that this application (module) does not have access to JDK internals via reflection 
+        		String message = "Tried to call setAccessible on JDK internal method and received an InaccessibleObjectException from the JDK. "
+        				+ "Give this application (module) access to internal messages using the following JVM properties: "
+        				+ "--add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED "
+        				+ "--add-opens java.base/jdk.internal.vm.annotation=ALL-UNNAMED";
+        		
+        		fail(message);
+        	} catch (SecurityException se) {
+        		//This means that this application was running under a security manager that did not allow the method call
+        		String message = "Tried to call setAccessible on JDK internal method and received SecurityException from the security manager. "
+        				+ "Give this application permission to make this method call with the security manager using the following permissions:"
+        				+ "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal\"; "
+        				+ "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.reflect\"; "
+        				+ "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.vm.annotation\";";
+        		fail(message);
+        	}
         }
-    }
+
+
+		ConcurrencySigTest sigTest = new ConcurrencySigTest();
+		sigTest.signatureTest();
+	}
 }

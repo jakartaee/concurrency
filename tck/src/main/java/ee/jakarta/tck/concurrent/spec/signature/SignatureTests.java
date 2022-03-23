@@ -21,92 +21,36 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.URLBuilder;
-import jakarta.enterprise.concurrent.AbortedException;
-import jakarta.enterprise.concurrent.Asynchronous;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import jakarta.enterprise.concurrent.CronTrigger;
-import jakarta.enterprise.concurrent.LastExecution;
-import jakarta.enterprise.concurrent.ManageableThread;
-import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedExecutors;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.ManagedTask;
-import jakarta.enterprise.concurrent.ManagedTaskListener;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
-import jakarta.enterprise.concurrent.SkippedException;
-import jakarta.enterprise.concurrent.Trigger;
-import jakarta.enterprise.concurrent.ZonedTrigger;
-import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
-import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
-import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 
 public class SignatureTests extends TestClient {
-	
-	private static final String APP_NAME = "SignatureTests";
-	
-	private static final Class[] classes = new Class[] {
-			AbortedException.class,
-			Asynchronous.class,
-			Asynchronous.Result.class,
-			ContextService.class,
-			ContextServiceDefinition.class,
-			ContextServiceDefinition.List.class,
-			CronTrigger.class,
-			LastExecution.class,
-			ManageableThread.class,
-			ManagedExecutorDefinition.class,
-			ManagedExecutorDefinition.List.class,
-			ManagedExecutors.class,
-			ManagedExecutorService.class,
-			ManagedScheduledExecutorDefinition.class,
-			ManagedScheduledExecutorDefinition.List.class,
-			ManagedScheduledExecutorService.class,
-			ManagedTask.class,
-			ManagedTaskListener.class,
-			ManagedThreadFactory.class,
-			ManagedThreadFactoryDefinition.class,
-			ManagedThreadFactoryDefinition.List.class,
-			SkippedException.class,
-			ThreadContextProvider.class,
-			ThreadContextRestorer.class,
-			ThreadContextSnapshot.class,
-			Trigger.class,
-			ZonedTrigger.class
-	};
+
+	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
+	public static final String SIG_MAP_NAME = "sig-test.map";
+	public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
 
 	@ArquillianResource
 	URL baseURL;
-	
-	@Deployment(name="SignatureTests", testable=false)
-	public static WebArchive createDeployment() {
-		WebArchive web = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), SignatureTests.class.getPackage());
 
-		for(Class clazz : classes) {
-			String fileName = clazz.getName().replace('$', '-') + ".sig";
-			web.addAsWebInfResource(SignatureTests.class.getPackage(), fileName, "/signaturetest/" + fileName);
-		}
+	@Deployment(name = "SignatureTests", testable = false)
+	public static WebArchive createDeployment() {
+		WebArchive web = ShrinkWrap.create(WebArchive.class, "signatureTest.war")
+				.addPackages(true, getFrameworkPackage(), getSignaturePackage(), SignatureTests.class.getPackage())
+				.addAsResources(SignatureTests.class.getPackage(), SIG_MAP_NAME, SIG_PKG_NAME,
+						SIG_FILE_NAME + "_3.0.0-SNAPSHOT");
 
 		return web;
 	}
-	
-	@DataProvider(name="testClasses")
-	public static Object[] testClasses() {
-		return classes;
+
+	@Override
+	protected String getServletPath() {
+		return "SignatureTestServlet";
 	}
-	
-	@Test(dataProvider = "testClasses")
-    public void testSignatures(Class testClass){
-			URLBuilder b = URLBuilder.get().withBaseURL(baseURL).withPaths("SignatureTestServlet").withTestName(testName).withQueries("action=" + testClass.getName());
-			runTest(b);
-    }
+
+	@Test
+	public void testSignatures() throws Exception {
+		runTest(baseURL);
+	}
 }

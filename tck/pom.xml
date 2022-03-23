@@ -16,133 +16,157 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-   <parent>
-     <groupId>jakarta.enterprise.concurrent</groupId>
-     <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-     <version>3.0.0-SNAPSHOT</version>
-    </parent>
-    <groupId>jakarta.enterprise.concurrent</groupId>
-    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>jakarta.enterprise.concurrent</groupId>
+		<artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+	</parent>
 
-    <name>Jakarta Concurrency TCK</name>
-    <description>Jakarta Concurrency TCK Tests</description>
+	<artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+	<packaging>jar</packaging>
 
-    <licenses>
-        <license>
-            <name>Eclipse Public License 2.0</name>
-            <url>https://projects.eclipse.org/license/epl-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
-            <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<name>Jakarta Concurrency TCK</name>
+	<description>Jakarta Concurrency TCK Tests</description>
 
-    <properties>
-        
-        <jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
-        <jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
-        <sigtest.version>1.6</sigtest.version>
+	<licenses>
+		<license>
+			<name>Eclipse Public License 2.0</name>
+			<url>https://projects.eclipse.org/license/epl-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+		<license>
+			<name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+			<url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    </properties>
-    <dependencies>
-        <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.version.dev}</version>
-            <scope>provided</scope>
-        </dependency>
+	<properties>
 
-    </dependencies>
-    <build>
-	    <resources>
-	        <resource>
-	            <directory>src/main/java</directory>
-	            <includes>
-	                <include>**/*.xml</include>
-	                <include>**/*.sig</include>
-	                <include>**/*.jsp</include>
-	            </includes>
-	        </resource>
-	    </resources>
+		<jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
+		<jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
+		<sigtest.version>1.6</sigtest.version>
+
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>jakarta.enterprise.concurrent</groupId>
+			<artifactId>jakarta.enterprise.concurrent-api</artifactId>
+			<version>${jakarta.concurrent.version.dev}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.netbeans.tools</groupId>
+			<artifactId>sigtest-maven-plugin</artifactId>
+			<version>${sigtest.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.jsp</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 
-  <profiles>
-
-    <profile>
-      <!--This profile can be used to (re)generate signatures of Concurrency API, note that they differ based on JDK used to build them-->
-      <!--All .sig files should be included in the generated jar files!-->
-      <id>signature-generation</id>
-      <activation>
-        <property>
-          <name>signature</name>
-        </property>
-      </activation>
-      <properties>
-        <!--Default assumed JDK version, can be overriden via -Dmajor.jdk.version=X-->
-        <jdk.major.version>11</jdk.major.version>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>jakarta.enterprise.concurrent</groupId>
-                      <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-                      <version>${jakarta.concurrent.version.ga}</version>
-                      <type>jar</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>
-                      <includes>**/*.class,**/*.xml</includes>
-                    </artifactItem>
-                  </artifactItems>
-                  <includes>**/*.java</includes>
-                  <excludes>**/*.properties</excludes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.netbeans.tools</groupId>
-            <artifactId>sigtest-maven-plugin</artifactId>
-            <version>${sigtest.version}</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <classes>${project.build.directory}/concurrency-api</classes>
-              <packages>
-                jakarta.enterprise.concurrent,
-                jakarta.enterprise.concurrent.spi,
-              </packages>
-              <attach>false</attach>
-              <sigfile>${project.build.directory}/concurrency-api-jdk${jdk.major.version}.sig</sigfile>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-  </profiles>
-
+	<profiles>
+		<profile>
+			<!--This profile can be used to (re)generate signatures of Concurrency 
+				API, note that they differ based on JDK used to build them -->
+			<!--All .sig files should be included in the generated jar files! -->
+			<id>signature-generation</id>
+			<activation>
+				<property>
+					<name>signature</name>
+				</property>
+			</activation>
+			<properties>
+				<!--Default assumed JDK version, can be overriden via -Dmajor.jdk.version=X -->
+				<jdk.major.version>11</jdk.major.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>jakarta.enterprise.concurrent</groupId>
+											<artifactId>jakarta.enterprise.concurrent-api</artifactId>
+											<version>${jakarta.concurrent.version.ga}</version>
+											<type>jar</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>
+											<includes>**/*.class,**/*.xml</includes>
+										</artifactItem>
+									</artifactItems>
+									<includes>**/*.java</includes>
+									<excludes>**/*.properties</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.netbeans.tools</groupId>
+						<artifactId>sigtest-maven-plugin</artifactId>
+						<version>${sigtest.version}</version>
+						<executions>
+							<execution>
+								<id>createSigFile</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<classes>${project.build.directory}/concurrency-api</classes>
+							<packages>
+								jakarta.enterprise.concurrent,
+								jakarta.enterprise.concurrent.spi,
+							</packages>
+							<attach>false</attach>
+							<sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${project.version}</sigfile>
+							<!-- Ensure that the signature file we generated will work for both JDK11 and JDK17 -->
+							<ignoreJDKClasses>
+								<include>java.util.Map</include>
+								<include>java.lang.Object</include>
+								<include>java.io.ByteArrayInputStream</include>
+								<include>java.io.InputStream</include>
+								<include>java.lang.Deprecated</include>
+								<include>java.io.Writer</include>
+								<include>java.io.OutputStream</include>
+								<include>java.util.List</include>
+								<include>java.util.Collection</include>
+								<include>java.lang.instrument.IllegalClassFormatException</include>
+								<include>javax.transaction.xa.XAException</include>
+								<include>java.lang.annotation.Repeatable</include>
+								<include>java.lang.InterruptedException</include>
+								<include>java.lang.CloneNotSupportedException</include>
+								<include>java.lang.Throwable</include>
+								<include>java.lang.Thread</include>
+								<include>java.lang.Enum</include>
+							</ignoreJDKClasses>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

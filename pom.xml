@@ -52,6 +52,7 @@
         <developerConnection>scm:git:git@github.com:eclipse-ee4j/concurrency-api.git</developerConnection>
         <url>https://github.com/eclipse-ee4j/concurrency-api</url>
     </scm>
+    
     <developers>
         <developer>
             <id>anthony.lai</id>
@@ -59,6 +60,21 @@
             <organization>Oracle</organization>
         </developer>
     </developers>
+    
+    <!-- For artifacts not yet in Maven Central -->
+    <repositories> 
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,6 +103,7 @@
         <module>api</module>
         <module>tck</module>
     </modules>
+    
     <dependencies>
         <dependency>
             <groupId>jakarta.servlet</groupId>
