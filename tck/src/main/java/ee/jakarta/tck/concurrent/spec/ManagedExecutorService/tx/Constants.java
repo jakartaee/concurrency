@@ -22,7 +22,7 @@ public final class Constants {
 	private Constants() {
 	};
 
-	public static final String CONTEXT_PATH = "TransactionServlet";
+	public static final String CONTEXT_PATH = "/TransactionServlet";
 
 	public static final String DS_JNDI_NAME = "java:comp/env/jdbc/ManagedExecutorServiceDB";
 	
