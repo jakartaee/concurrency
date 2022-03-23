@@ -68,6 +68,14 @@
 	</dependencies>
 	<build>
 		<resources>
+			<!-- The default resource location -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+			<!-- Additional resources kept inside packages for ease of development -->
 			<resource>
 				<directory>src/main/java</directory>
 				<includes>
