@@ -21,9 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -140,7 +137,7 @@ public class ConcurrencySigTest extends SigTestEE {
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		try {
 			File sigfile = new File(
-					tmpdir + File.separator + SignatureTests.SIG_FILE_NAME + SIG_FILE_VER_SEP + packageVersion);
+					tmpdir + File.separator + SignatureTests.SIG_FILE_NAME);
 			if (sigfile.exists()) {
 				sigfile.delete();
 				log.info("Existing signature file deleted to create new one");
@@ -210,8 +207,7 @@ public class ConcurrencySigTest extends SigTestEE {
 			log.info("Package version from mapfile :" + packageVersion);
 
 			InputStream inStreamSigFile = ConcurrencySigTest.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME
-							+ SIG_FILE_VER_SEP + packageVersion);
+					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME);
 			File sigFile = writeStreamToSigFile(inStreamSigFile, packageVersion);
 			log.info("signature File location is :" + sigFile.getCanonicalPath());
 			signatureRepositoryDir = System.getProperty("java.io.tmpdir");
