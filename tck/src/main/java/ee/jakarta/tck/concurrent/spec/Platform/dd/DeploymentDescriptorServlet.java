@@ -19,7 +19,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -42,7 +41,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
-@WebServlet("DeploymentDescriptorServlet")
+@WebServlet("/DeploymentDescriptorServlet")
 public class DeploymentDescriptorServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
