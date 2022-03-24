@@ -27,7 +27,7 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 
 public class SignatureTests extends TestClient {
 
-	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
+	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig_3.0.0";
 	public static final String SIG_MAP_NAME = "sig-test.map";
 	public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
 
@@ -39,7 +39,7 @@ public class SignatureTests extends TestClient {
 		WebArchive web = ShrinkWrap.create(WebArchive.class, "signatureTest.war")
 				.addPackages(true, getFrameworkPackage(), getSignaturePackage(), SignatureTests.class.getPackage())
 				.addAsResources(SignatureTests.class.getPackage(), SIG_MAP_NAME, SIG_PKG_NAME,
-						SIG_FILE_NAME + "_3.0.0-SNAPSHOT");
+						SIG_FILE_NAME);
 
 		return web;
 	}
