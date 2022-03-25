@@ -37,8 +37,6 @@ public class ConcurrencySigTest extends SigTestEE {
 
 	private static final TestLogger log = TestLogger.get(ConcurrencySigTest.class);
 
-	private static final String SIG_FILE_VER_SEP = "_";
-
 	public ConcurrencySigTest() {
 		setup();
 	}
@@ -132,7 +130,7 @@ public class ConcurrencySigTest extends SigTestEE {
 		}
 	}
 
-	protected File writeStreamToSigFile(InputStream inputStream, String packageVersion) throws IOException {
+	protected File writeStreamToSigFile(InputStream inputStream) throws IOException {
 		FileOutputStream outputStream = null;
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		try {
@@ -203,12 +201,10 @@ public class ConcurrencySigTest extends SigTestEE {
 			log.info("packageFile location is :" + packageListFile);
 
 			mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
-			String packageVersion = mapFileAsProps.getProperty("jakarta.enterprise.concurrent");
-			log.info("Package version from mapfile :" + packageVersion);
 
 			InputStream inStreamSigFile = ConcurrencySigTest.class.getClassLoader()
 					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME);
-			File sigFile = writeStreamToSigFile(inStreamSigFile, packageVersion);
+			File sigFile = writeStreamToSigFile(inStreamSigFile);
 			log.info("signature File location is :" + sigFile.getCanonicalPath());
 			signatureRepositoryDir = System.getProperty("java.io.tmpdir");
 

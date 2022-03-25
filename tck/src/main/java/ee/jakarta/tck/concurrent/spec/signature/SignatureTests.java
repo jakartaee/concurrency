@@ -27,7 +27,7 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 
 public class SignatureTests extends TestClient {
 
-	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig_3.0.0";
+	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
 	public static final String SIG_MAP_NAME = "sig-test.map";
 	public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
 
