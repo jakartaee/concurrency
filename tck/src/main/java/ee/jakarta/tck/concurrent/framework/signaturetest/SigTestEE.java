@@ -283,38 +283,6 @@ public abstract class SigTestEE {
 				throw new Exception();
 			}
 
-			// Call verifyJtaJarTest based on some conditions, please check the
-			// comment for verifyJtaJarTest.
-			if ("standalone".equalsIgnoreCase(testInfo.getVehicle())) {
-				Properties mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
-				if (mapFileAsProps == null || mapFileAsProps.size() == 0) {
-					// empty signature file, something unusual
-					System.out.println("SigTestEE.signatureTest() returning, " + "as signature map file is empty.");
-					return;
-				}
-
-				boolean isJTASigTest = false;
-
-				// Determine whether the signature map file contains package
-				// jakarta.transaction
-				String jtaVersion = mapFileAsProps.getProperty("jakarta.transaction");
-				if (jtaVersion == null || "".equals(jtaVersion.trim())) {
-					System.out.println("SigTestEE.signatureTest() returning, "
-							+ "as this is neither JTA TCK run, not Java EE CTS run.");
-					return;
-				}
-
-				System.out.println("jtaVersion " + jtaVersion);
-				// Signature map packaged in JTA TCK will contain a single package
-				// jakarta.transaction
-				if (mapFileAsProps.size() == 1) {
-					isJTASigTest = true;
-				}
-
-				if (isJTASigTest || !jtaVersion.startsWith("1.2")) {
-					verifyJtaJarTest();
-				}
-			}
 			System.out.println("$$$ SigTestEE.signatureTest() returning");
 		} catch (Exception e) {
 			if (results != null && !results.passed()) {
@@ -324,40 +292,6 @@ public abstract class SigTestEE {
 				throw new Fault("signatureTest failed with an unexpected exception", e);
 			}
 		}
-	}
-
-	/**
-	 * Called by the test framework to run this test. This method utilizes the state
-	 * information set in the setup method to run. This test validates that the
-	 * javax.transaction.xa type is not in the JTA API jar
-	 *
-	 * This method is called only for standaone vehicle, as calling the same for all
-	 * the vehicles in the CTS run is not necessary.
-	 *
-	 * This method is called always from JTA 1.3 TCK. The test will be run as part
-	 * of Java EE Signature Test only when the signature map in the CTS bundle is
-	 * using JTA 1.3 (or higher) signature file.
-	 *
-	 * If property ts.jte jtaJarClasspath is removed in ts.jte of the JTA 1.3 TCK,
-	 * this test will display the available options to call SignatureTest and fail.
-	 * Similar failure will be seen in CTS run, if the signature map points to JTA
-	 * 1.3 signature file and the property jtaJarClasspath is removed from ts.jte of
-	 * CTS bundle.
-	 *
-	 * @throws Fault When an error occurs executing the signature tests.
-	 */
-	public void verifyJtaJarTest() throws Exception {
-		System.out.println("SigTestEE#verifyJtaJarTest - Starting:");
-		String repositoryDir = getRepositoryDir();
-		String jtaJarClasspath = testInfo.getJtaJarClasspath();
-		boolean result = getSigTestDriver().verifyJTAJarForNoXA(testInfo.getJtaJarClasspath(), repositoryDir);
-		if (result) {
-			System.out.println("PASS: javax.transaction.xa not found in API jar");
-		} else {
-			System.out.println("FAIL: javax.transaction.xa found in API jar");
-			throw new Fault("javax.transaction.xa validation failed");
-		}
-		System.out.println("SigTestEE#verifyJtaJarTest returning");
 	}
 
 	/**

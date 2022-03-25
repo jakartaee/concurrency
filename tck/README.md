@@ -286,7 +286,7 @@ In this case use:
 ```
 
 
-For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md][src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md]
+For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md](https://github.com/eclipse-ee4j/concurrency-api/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md)
 
 
 ### Advanced Configuration

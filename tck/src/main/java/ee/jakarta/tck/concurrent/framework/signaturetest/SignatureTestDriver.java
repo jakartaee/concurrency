@@ -33,8 +33,6 @@ public abstract class SignatureTestDriver {
 
 	private static final String SIG_FILE_EXT = ".sig";
 
-	private static final String SIG_FILE_VER_SEP = "_";
-
 	// ---------------------------------------------------------- Public Methods
 
 	/**
@@ -462,9 +460,9 @@ public abstract class SignatureTestDriver {
 
 		String sigFile;
 		if (repositoryDir.endsWith(File.separator)) {
-			sigFile = repositoryDir + baseName + SIG_FILE_EXT + SIG_FILE_VER_SEP + version;
+			sigFile = repositoryDir + baseName + SIG_FILE_EXT;
 		} else {
-			sigFile = repositoryDir + File.separator + baseName + SIG_FILE_EXT + SIG_FILE_VER_SEP + version;
+			sigFile = repositoryDir + File.separator + baseName + SIG_FILE_EXT;
 		}
 
 		File testFile = new File(sigFile);
