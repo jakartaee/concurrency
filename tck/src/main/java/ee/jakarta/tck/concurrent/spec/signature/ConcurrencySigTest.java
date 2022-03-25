@@ -275,37 +275,6 @@ public class ConcurrencySigTest extends SigTestEE {
 				throw new Exception();
 			}
 
-			// Call verifyJtaJarTest based on some conditions, please check the
-			// comment for verifyJtaJarTest.
-			if ("standalone".equalsIgnoreCase(testInfo.getVehicle())) {
-				if (mapFileAsProps == null || mapFileAsProps.size() == 0) {
-					// empty signature file, something unusual
-					log.info("ConcurrencySigTest.signatureTest() returning, " + "as signature map file is empty.");
-					return;
-				}
-
-				boolean isJTASigTest = false;
-
-				// Determine whether the signature map file contains package
-				// jakarta.transaction
-				String jtaVersion = mapFileAsProps.getProperty("jakarta.transaction");
-				if (jtaVersion == null || "".equals(jtaVersion.trim())) {
-					log.info("ConcurrencySigTest.signatureTest() returning, "
-							+ "as this is neither JTA TCK run, not Java EE CTS run.");
-					return;
-				}
-
-				log.info("jtaVersion " + jtaVersion);
-				// Signature map packaged in JTA TCK will contain a single package
-				// jakarta.transaction
-				if (mapFileAsProps.size() == 1) {
-					isJTASigTest = true;
-				}
-
-				if (isJTASigTest || !jtaVersion.startsWith("1.2")) {
-					verifyJtaJarTest();
-				}
-			}
 			log.info("$$$ ConcurrencySigTest.signatureTest() returning");
 		} catch (Exception e) {
 			if (results != null && !results.passed()) {

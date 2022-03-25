@@ -17,4 +17,4 @@
 ###############################################################
 # The signature test mapping file for the Concurrency TCK.
 ###############################################################
-jakarta.enterprise.concurrent=3.0.0
+jakarta.enterprise.concurrent=
