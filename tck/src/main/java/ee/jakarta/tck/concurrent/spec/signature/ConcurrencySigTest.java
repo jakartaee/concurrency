@@ -21,9 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,8 +36,6 @@ import ee.jakarta.tck.concurrent.framework.signaturetest.SigTestResult;
 public class ConcurrencySigTest extends SigTestEE {
 
 	private static final TestLogger log = TestLogger.get(ConcurrencySigTest.class);
-
-	private static final String SIG_FILE_VER_SEP = "_";
 
 	public ConcurrencySigTest() {
 		setup();
@@ -135,12 +130,12 @@ public class ConcurrencySigTest extends SigTestEE {
 		}
 	}
 
-	protected File writeStreamToSigFile(InputStream inputStream, String packageVersion) throws IOException {
+	protected File writeStreamToSigFile(InputStream inputStream) throws IOException {
 		FileOutputStream outputStream = null;
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		try {
 			File sigfile = new File(
-					tmpdir + File.separator + SignatureTests.SIG_FILE_NAME + SIG_FILE_VER_SEP + packageVersion);
+					tmpdir + File.separator + SignatureTests.SIG_FILE_NAME);
 			if (sigfile.exists()) {
 				sigfile.delete();
 				log.info("Existing signature file deleted to create new one");
@@ -206,13 +201,10 @@ public class ConcurrencySigTest extends SigTestEE {
 			log.info("packageFile location is :" + packageListFile);
 
 			mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
-			String packageVersion = mapFileAsProps.getProperty("jakarta.enterprise.concurrent");
-			log.info("Package version from mapfile :" + packageVersion);
 
 			InputStream inStreamSigFile = ConcurrencySigTest.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME
-							+ SIG_FILE_VER_SEP + packageVersion);
-			File sigFile = writeStreamToSigFile(inStreamSigFile, packageVersion);
+					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME);
+			File sigFile = writeStreamToSigFile(inStreamSigFile);
 			log.info("signature File location is :" + sigFile.getCanonicalPath());
 			signatureRepositoryDir = System.getProperty("java.io.tmpdir");
 
