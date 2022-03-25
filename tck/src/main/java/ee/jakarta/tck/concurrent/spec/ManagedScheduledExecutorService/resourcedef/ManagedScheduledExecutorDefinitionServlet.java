@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,6 @@ import static org.testng.Assert.assertTrue;
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -544,7 +543,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
 
         ZoneId US_CENTRAL = ZoneId.of("America/Chicago");
 
-        Map<ZonedDateTime, ZonedDateTime> startAndEndTimes = new HashMap<ZonedDateTime, ZonedDateTime>();
+        Map<ZonedDateTime, ZonedDateTime> startAndEndTimes = new ConcurrentHashMap<ZonedDateTime, ZonedDateTime>();
 
         Trigger monthlyOnThe15th = new ZonedTrigger() {
             final Map<Long, ZonedDateTime> schedule = new ConcurrentHashMap<Long, ZonedDateTime>();
