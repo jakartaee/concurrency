@@ -1,43 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
-  <id>dist</id>
-  <baseDirectory>concurrency-tck-${jakarta.concurrent.version.ga}</baseDirectory>
-  <formats>
-    <format>zip</format>
-  </formats>
+<!--
+ /*
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0, which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the
+ * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ * version 2 with the GNU Classpath Exception, which is available at
+ * https://www.gnu.org/software/classpath/license.html.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+ */
+-->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.0 http://maven.apache.org/xsd/assembly-2.1.0.xsd">
 
-  <files>
-    <!-- This is the final EFTL license -->
-    <file>
-      <source>EFTL.txt</source>
-      <destName>LICENSE</destName>
-    </file>
-    <file>
-      <source>README.md</source>
-      <destName>README.md</destName>
-    </file>
-    <file>
-      <source>${project.parent.basedir}/tck/README.md</source>
-      <destName>docs/README.md</destName>
-    </file>
-    <file>
-      <source>artifact-install.sh</source>
-      <outputDirectory>artifacts</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-  </files>
+	<id>dist</id>
+	<formats>
+		<format>zip</format>
+	</formats>
 
-  <dependencySets>
-    <dependencySet>
-      <includes>
-        <include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck</include>
-        <include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent.parent</include>
-      </includes>
-      <useTransitiveDependencies>true</useTransitiveDependencies>
-      <outputDirectory>artifacts</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-    </dependencySet>
-  </dependencySets>
+	<baseDirectory>concurrency-tck-${jakarta.concurrent.version.ga}</baseDirectory>
+
+	<files>
+
+		<!-- This is the final EFTL license -->
+		<file>
+			<source>src/main/EFTL.txt</source>
+			<destName>LICENSE</destName>
+		</file>
+
+		<!-- The readme included in the distribution zip -->
+		<file>
+			<source>src/main/readme/README.md</source>
+			<destName>README.md</destName>
+		</file>
+		
+		<!-- Signature file -->
+		<file>
+			<source>${project.parent.basedir}/tck/src/main/resources/ee/jakarta/tck/concurrent/spec/signature/jakarta.enterprise.concurrent.sig
+			</source>
+			<outputDirectory>/artifacts</outputDirectory>
+		</file>
+	</files>
+
+	<fileSets>
+		<!-- The artifacts -->
+		<fileSet>
+			<directory>src/main/artifacts/</directory>
+			<outputDirectory>/artifacts</outputDirectory>
+			<includes>
+				<include>**/*.sh</include>
+				<include>**/*.txt</include>
+			</includes>
+		</fileSet>
+		<!-- The docs -->
+		<fileSet>
+			<directory>target/generated-docs</directory>
+			<outputDirectory>/docs</outputDirectory>
+			<includes>
+				<include>**/*.html</include>
+				<include>**/*.pdf</include>
+			</includes>
+		</fileSet>
+		<!-- The starter -->
+		<fileSet>
+			<directory>src/main/starter/</directory>
+			<outputDirectory>/starter</outputDirectory>
+			<includes>
+				<include>**/*.xml</include>
+				<include>**/*.properties</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+
+
+	<dependencySets>
+		<dependencySet>
+			<includes>
+				<include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck
+				</include>
+				<include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck:jar:sources
+				</include>
+				<include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent.parent
+				</include>
+			</includes>
+			<useTransitiveDependencies>true</useTransitiveDependencies>
+			<outputDirectory>artifacts</outputDirectory>
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+	</dependencySets>
 
 </assembly>
