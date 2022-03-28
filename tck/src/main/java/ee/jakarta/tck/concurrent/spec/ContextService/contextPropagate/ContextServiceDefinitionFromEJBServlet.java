@@ -253,7 +253,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
             assertEquals(results.getKey(), Integer.valueOf(0), 
                     "Third-party context type IntContext must be cleared from async contextual Supplier " +
                     "per java:module/concurrent/ContextB configuration.");
-            assertEquals(results.getValue(), "testContextualSupplier-2", 
+            assertEquals(results.getValue(), "testContextualSupplier-1",
                     "Third-party context type StringContext must be propagated to async contextual Supplier " +
                     "per java:module/concurrent/ContextB configuration.");
         } finally {

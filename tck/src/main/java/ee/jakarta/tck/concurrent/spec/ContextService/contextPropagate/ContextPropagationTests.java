@@ -273,6 +273,8 @@ public class ContextPropagationTests extends TestClient {
     public void testContextualSupplier() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
 		runTest(requestURL);
+        requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
+        runTest(requestURL);
     }
 
     /**
