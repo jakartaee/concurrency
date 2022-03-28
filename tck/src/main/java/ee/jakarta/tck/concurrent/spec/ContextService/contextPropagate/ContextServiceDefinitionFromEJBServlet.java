@@ -229,36 +229,4 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
                 "Application context must be propagated to contextual Runnable, but instead lookup found: " +
                 result);
     }
-    
-    /**
-     * A ContextService contextualizes a Supplier, which can be supplied as a dependent stage action
-     * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
-     * the thread that contextualizes the Supplier, per the configuration of the ContextServiceDefinition.
-     */
-    public void testContextualSupplier() throws Throwable {
-        try {
-            StringContext.set("testContextualSupplier-1");
-            IntContext.set(61);
-
-            ContextService contextServiceB = contextServiceDefinitionBean.getContextB();
-            Supplier<Map.Entry<Integer, String>> supplierB = contextServiceB.contextualSupplier(() ->
-                new SimpleEntry<Integer, String>(IntContext.get(), StringContext.get()));
-            CompletableFuture<Map.Entry<Integer, String>> futureB =
-                    CompletableFuture.supplyAsync(supplierB, unmanagedThreads);
-
-            StringContext.set("testContextualSupplier-2");
-            IntContext.set(62);
-
-            Map.Entry<Integer, String> results = futureB.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(results.getKey(), Integer.valueOf(0), 
-                    "Third-party context type IntContext must be cleared from async contextual Supplier " +
-                    "per java:module/concurrent/ContextB configuration.");
-            assertEquals(results.getValue(), "testContextualSupplier-2", 
-                    "Third-party context type StringContext must be propagated to async contextual Supplier " +
-                    "per java:module/concurrent/ContextB configuration.");
-        } finally {
-            StringContext.set(null);
-            IntContext.set(0);
-        }
-    }
 }
