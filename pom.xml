@@ -32,7 +32,7 @@
 
     <name>Jakarta Concurrency</name>
     <description>Jakarta Concurrency Parent</description>
-    <url>https://github.com/eclipse-ee4j/concurrency-api</url>
+    <url>https://github.com/jakartaee/concurrency</url>
 
     <licenses>
         <license>
@@ -48,9 +48,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://github.com/eclipse-ee4j/concurrency-api.git</connection>
-        <developerConnection>scm:git:git@github.com:eclipse-ee4j/concurrency-api.git</developerConnection>
-        <url>https://github.com/eclipse-ee4j/concurrency-api</url>
+        <connection>scm:git:https://github.com/jakartaee/concurrency.git</connection>
+        <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
+        <url>https://github.com/jakartaee/concurrency</url>
     </scm>
     
     <developers>
