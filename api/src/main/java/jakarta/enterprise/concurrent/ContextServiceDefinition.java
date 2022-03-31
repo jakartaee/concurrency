@@ -164,7 +164,9 @@ public @interface ContextServiceDefinition {
 
     /**
      * <p>All available thread context types that are not specified
-     * elsewhere.</p>
+     * elsewhere. This includes thread context types from custom
+     * {@link jakarta.enterprise.concurrent.spi.ThreadContextProvider ThreadContextProviders}
+     * that are not specified elsewhere.</p>
      *
      * <p>For example, to define a <code>ContextService</code> that
      * propagates {@link #SECURITY} context,
@@ -210,8 +212,15 @@ public @interface ContextServiceDefinition {
      * <p>Context that controls the transaction that is associated
      * with the thread.</p>
      *
-     * <p>A thread with a cleared transaction context can begin
-     * a new {@link jakarta.transaction.UserTransaction}.</p>
+     * <p>When cleared transaction context is applied to a thread,
+     * any global transaction that was previously present there is
+     * first suspended such that the contextual task or action can
+     * begin and manage, as permitted by the container, its own new
+     * {@link jakarta.transaction.UserTransaction}.
+     * After the contextual task or action completes, the prior
+     * transaction is resumed on the thread. This is equivalent to
+     * the execution property, {@link ManagedTask#TRANSACTION} with
+     * a value of {@link ManagedTask#SUSPEND}.</p>
      *
      * <p>The execution property, {@link ManagedTask#TRANSACTION},
      * if specified, takes precedence over the behavior for
