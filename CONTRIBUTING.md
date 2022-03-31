@@ -17,7 +17,7 @@ more.
 
 The project maintains the following source code repositories
 
- * https://github.com/eclipse-ee4j/concurrency-api
+ * https://github.com/jakartaee/concurrency
  * https://github.com/eclipse-ee4j/concurrency-ri
 
 ## Eclipse Contributor Agreement

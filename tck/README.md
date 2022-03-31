@@ -29,7 +29,7 @@ Knowledge of how these frameworks operate and interact will help during the proj
 To build the TCK locally, first clone this repository and then use the Maven install goal to create the API and TCK modules.
 
 ```sh
-git clone git@github.com:eclipse-ee4j/concurrency-api.git
+git clone git@github.com:jakartaee/concurrency.git
 cd concurrency-api
 mvn install
 ```
@@ -286,7 +286,7 @@ In this case use:
 ```
 
 
-For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md](https://github.com/eclipse-ee4j/concurrency-api/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md)
+For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md](https://github.com/jakartaee/concurrency/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md)
 
 
 ### Advanced Configuration
@@ -334,7 +334,7 @@ mvn clean test
 
 ## Where to File Challenges
 
-To file a challenge against the TCK, open a [new issue](https://github.com/eclipse-ee4j/concurrency-api/issues/new)
+To file a challenge against the TCK, open a [new issue](https://github.com/jakartaee/concurrency/issues/new)
 against the concurrency-api project. Add the `challenge` label,
 and follow all of the process that is defined under the Challenges section of the
 [Jakarta EE TCK Process](https://jakarta.ee/committees/specification/tckprocess/).
