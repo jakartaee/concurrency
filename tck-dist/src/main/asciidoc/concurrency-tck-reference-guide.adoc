@@ -28,19 +28,21 @@ The {APILongName} TCK is provided under the *Eclipse Foundation Technology Compa
 
 === Who Should Use This Guide
 
-This guide will assist in running the test suite verifies implementation compatibility for:
+This guide will assist in running the test suite, which verifies implementation compatibility for:
 
-* implementers of the entire Jakarta EE Platform (of which {APILongName} is one component). 
+* implementers of {APILongName}. 
 
 === Terminology - "SE mode" vs. "EE mode"
 
 Building on the previous point, it is convenient to use, as shorthand, the term "EE mode" when talking about the TCK constructs and requirements specifically for users running the TCK to certify against the entire EE platform. It is a convenient shorthand term too, then, to use the term "SE mode" for users that are only trying to certify against the {APILongName} specification, though this term in some ways might be misleading.  
 
-Some specifications have a subset of tests that can run in "SE mode" without the requirement of running against an entire EE Platform.  The {APIShortName} TCK, however, runs all tests in "EE mode" and will require a full EE platform to test against.
+Some specifications have a subset of tests that can run in "SE mode" without the requirement of running against an entire EE Platform.  The {APIShortName} TCK, however, runs all tests in "EE mode" and will require a Jakarta EE platform to test against.
 
 === Terminology - "Standalone TCK"
 
-We sometimes refer to this {APIShortName} TCK as the "standalone" TCK.  This usage comes from the fact that {APILongName} is part of the Jakarta EE Platform, which has a platform-level TCK, which we're distinguishing this "standalone" TCK from.
+The community will sometimes refer to this TCK as the "standalone" {APIShortName} TCK.  This usage comes from the fact that {APILongName} is part of the Jakarta EE Platform, which has a platform-level TCK, which we're distinguishing this "standalone" TCK from.  
+
+This terminology is confusing, since readers might interpret "standalone" to mean that this TCK can be run in SE Mode, when in-fact, it must be run in EE Mode. A better term would be `Specification TCK`, but that terminology is not yet being used. 
 
 === Terminology - "Test Client" vs "Test Server"
 
@@ -59,6 +61,7 @@ Other useful information and links can be found on the eclipse.org project home 
 This version of the {APILongName} TCK introduces two major changes to the TCK:
 
 1. We change the official execution of the standalone TCK from Ant to Maven. Though the TCK has long been built with Maven and we even have included execution or "runner" Maven modules, our official documentation described an Ant-based execution.  This updated version of the TCK Reference Guide details the requirements and procedures for performing an official Maven-based execution of this TCK.
+1. We changed from using a proprietary "Test Harness" framework to deploy and test applications on Jakarta EE Platforms, to using the open source Arquillian test framework.  
 
 == What Tests Must I Pass To Certify Compatibility? 
 
@@ -69,7 +72,7 @@ To certify compatibility with the entire Jakarta EE Platform (including {APILong
 * {TCKTestPlatform} runtime tests
 * Signature tests
 
-The two types of tests are encapsulated in a single execution or configuration.  This means that the Signature Tests will run alongside all other tests and not additional execution or configuration is required.
+The two types of tests are encapsulated in a single execution or configuration.  This means that the Signature Tests will run alongside all other tests and no additional execution or configuration is required.
 
 By "runtime" tests we simply mean tests simulating {APILongName} applications running against the {APIShortName} implementation attempting to certify compatibility.  These tests verify that the {APIShortName} applications behave according to the details defined in the specification, as validated by the TCK test logic.
 
@@ -326,7 +329,7 @@ my.custom.test.package.MyLoadableExtension
 
 == Running the TCK
 
-One the TCK Runner project is created and configured the {APIShortName} TCK is run as part of the maven test lifecycle. 
+Once the TCK Runner project is created and configured the {APIShortName} TCK is run as part of the maven test lifecycle. 
 
 [source, sh]
 ----
@@ -379,12 +382,12 @@ Here is example output when we, as in the starter runner, run successfully:
 
 == Signature Tests
 
-The signature tests validate the integrity of the `jakarta.enterprise.concurrent` Java "namespace" (or "package prefix") of the {APIShortName} implementation.   This would be especially important for an implementation packaging its own API JAR in which the API must be validated in its entirety.  For implementations expecting their users to rely on the API released by the {APILongName} specification project (e.g. to Maven Central) the signature tests are also important to validate that improper (non-spec-defined) extensions have not been added to `jjakarta.enterprise.concurrent.*` packages/classes/etc.
+The signature tests validate the integrity of the `jakarta.enterprise.concurrent` Java "namespace" (or "package prefix") of the {APIShortName} implementation.   This would be especially important for an implementation packaging its own API JAR in which the API must be validated in its entirety.  For implementations expecting their users to rely on the API released by the {APILongName} specification project (e.g. to Maven Central) the signature tests are also important to validate that improper (non-spec-defined) extensions have not been added to `jakarta.enterprise.concurrent.*` packages/classes/etc.
 
 === Running signature tests
 
 The {APIShortName} TCK will run signature tests on the application server itself, and not as part of a separate plugin / execution.
-This means that the signature tests will be ran during the maven `test` phase.
+This means that the signature tests will run during the maven `test` phase.
 
 You need to configure your application server with a JVM property `-Djimage.dir=<path-your-server-has-access-to>`.
 This is because, when running the signature tests on JDK 9+ we need to convert the JDK modules back into class files for signature testing.
@@ -420,13 +423,13 @@ In this case use:
 --add-opens=java.base/jdk.internal.vm.annotation=ALL-UNNAMED
 ----
 
-For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md](https://github.com/eclipse-ee4j/concurrency-api/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md)
+For more information about generating the signature test file, and how the test run read: [ee.jakarta.tck.concurrent.framework.signaturetest/README.md](https://github.com/jakartaee/concurrency/blob/master/tck/src/main/java/ee/jakarta/tck/concurrent/framework/signaturetest/README.md)
 
 As mentioned in the prerequisite section the signature file formats across the various signature test tools have diverged and this test suite uses the Maven plugin with group:artifact:version coordinates: **{SigPluginGAV}**.
 
 === Expected output
 
-The the Signature Test plugin will log output to `System.out`.  Whereas, the Signature Test framework we use to setup the test will log using `java.util.logging` so you may see these logs output to two separate locations depending on your application server. 
+The the Signature Test plugin will log output to `System.out`.  Whereas, the Signature Test framework we use to set up the test will log using `java.util.logging` so you may see these logs output to two separate locations depending on your application server. 
 
 [source, txt]
 ----
