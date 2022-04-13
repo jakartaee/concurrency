@@ -28,7 +28,7 @@
     
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
     
-    <name>Jakarta Concurrency API</name>
+    <name>Jakarta Concurrency</name>
     <description>Jakarta Concurrency API Module</description>
 
     <properties>
