@@ -1,6 +1,6 @@
 = Jakarta Concurrency TCK Reference Guide
 :author: Kyle Aure
-:email: kyle.aure@ibm.com
+:email: cu-dev@eclipse.org
 :revnumber: v1.0
 :toc:
 :sectnums:
