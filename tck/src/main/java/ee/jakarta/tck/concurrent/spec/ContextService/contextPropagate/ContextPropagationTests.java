@@ -88,14 +88,16 @@ public class ContextPropagationTests extends TestClient {
 	
 	@ArquillianResource(ContextServiceDefinitionFromEJBServlet.class)
 	URL ejbContextURL;
-	
-	@Test
+
+	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
+	@Test(enabled = false)
 	public void testSecurityClearedContext() {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
 		runTest(requestURL);
 	}
-	
-	@Test
+
+	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
+	@Test(enabled = false)
 	public void testSecurityUnchangedContext() {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
 		runTest(requestURL);
