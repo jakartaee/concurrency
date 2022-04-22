@@ -128,35 +128,26 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>${maven.dep.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>copy-server-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.testng</groupId>
-									<artifactId>testng</artifactId>
-									<version>${testng.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.apache.derby</groupId>
-									<artifactId>derby</artifactId>
-									<version>${derby.version}</version>
-								</artifactItem>
-								<dependency>
-									<groupId>org.netbeans.tools</groupId>
-									<artifactId>sigtest-maven-plugin</artifactId>
-									<version>${sigtest.version}</version>
-								</dependency>
-							</artifactItems>
-							<outputDirectory>${application.server.lib}</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>org.testng</groupId>
+							<artifactId>testng</artifactId>
+							<version>${testng.version}</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.apache.derby</groupId>
+							<artifactId>derby</artifactId>
+							<version>${derby.version}</version>
+						</artifactItem>
+						<artifactItem>
+							<groupId>org.netbeans.tools</groupId>
+							<artifactId>sigtest-maven-plugin</artifactId>
+							<version>${sigtest.version}</version>
+						</artifactItem>
+					</artifactItems>
+					<outputDirectory>${application.server.lib}</outputDirectory>
+				</configuration>
 			</plugin>
 			<!-- end::testServerDep[] -->
 			<!-- Compile plugin for any supplemental class files -->

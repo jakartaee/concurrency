@@ -221,7 +221,7 @@ Each of these Arquillian tests run within the runtime's Servlet container, with 
 === Test Server Dependencies
 
 If the Test Server is running on a separate JVM (recommended), then the Test Server
-will also need access to the Arquillian, TestNG, Signature Test, and the Derby JDBC libraries.
+will also need access to the TestNG, Signature Test, and the Derby JDBC libraries.
 The Test Server dependencies can be copied over during the build phase.
 
 Example starter/pom.xml:
@@ -229,6 +229,13 @@ Example starter/pom.xml:
 [source, xml]
 ----
 include::../starter/pom.xml[tag=testServerDep]
+----
+
+Using the maven command:
+
+[source, sh]
+----
+$ mvn dependency:copy
 ----
 
 === Configure {TCKTestPlatform}
