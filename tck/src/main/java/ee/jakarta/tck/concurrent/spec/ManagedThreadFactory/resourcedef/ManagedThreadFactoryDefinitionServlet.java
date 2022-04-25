@@ -70,17 +70,15 @@ public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
 
             ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/ThreadFactoryA");
 
-            IntContext.set(162);
-            StringContext.set("testManagedThreadFactoryDefinitionAllAttributes-2");
-
-            Thread thread1 = threadFactory.newThread(() -> {});
+            Thread thread1 = threadFactory.newThread(() -> {
+            });
             assertEquals(thread1.getPriority(), 4,
                          "New threads must be created with the priority that is specified on " +
                          "ManagedThreadFactoryDefinition");
 
             BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
 
-            threadFactory.newThread(() -> {
+            Thread thread2 = threadFactory.newThread(() -> {
                 results.add(Thread.currentThread().getPriority());
                 results.add(StringContext.get());
                 results.add(IntContext.get());
@@ -89,7 +87,12 @@ public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
                 } catch (Throwable x) {
                     results.add(x);
                 }
-            }).start();
+            });
+
+            thread2.start();
+
+            IntContext.set(162);
+            StringContext.set("testManagedThreadFactoryDefinitionAllAttributes-2");
 
             assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(4),
                          "ManagedThreadFactory must start threads with the configured priority.");
