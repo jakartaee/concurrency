@@ -106,7 +106,7 @@
                 <configuration>
                     <backend>html5</backend>
                     <outputFile>
-                        ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${project.version}.html
+                        ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version.ga}.html
                     </outputFile>
                 </configuration>
             </execution>
@@ -119,7 +119,7 @@
                 <configuration>
                     <backend>pdf</backend>
                     <outputFile>
-                        ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${project.version}.pdf
+                        ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version.ga}.pdf
                     </outputFile>
                 </configuration>
             </execution>
