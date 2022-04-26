@@ -196,13 +196,7 @@ public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
 
             ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/ThreadFactoryA");
 
-            IntContext.set(2000);
-            StringContext.set("testParallelStreamBackedByManagedThreadFactory-2");
-
             fj = new ForkJoinPool(4, threadFactory, null, false);
-
-            IntContext.set(3000);
-            StringContext.set("testParallelStreamBackedByManagedThreadFactory-3");
 
             ForkJoinTask<Optional<Integer>> task = fj.submit(() -> {
                 return Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)
@@ -221,6 +215,9 @@ public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
                                 })
                                 .reduce(Integer::sum);
             });
+
+            IntContext.set(3000);
+            StringContext.set("testParallelStreamBackedByManagedThreadFactory-3");
 
             Optional<Integer> result = task.join();
             assertEquals(result.get(), Integer.valueOf(9180),
