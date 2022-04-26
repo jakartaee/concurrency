@@ -143,7 +143,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
                 blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
                 lookupTaskResult.complete(InitialContext.doLookup("java:comp/concurrent/EJBThreadFactoryB"));
             } catch (Throwable x) {
-                txTaskResult.completeExceptionally(x);
+                lookupTaskResult.completeExceptionally(x);
             }
         };
 
