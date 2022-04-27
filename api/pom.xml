@@ -248,6 +248,14 @@
             <version>4.13</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.interceptor</groupId>
+            <artifactId>jakarta.interceptor-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
