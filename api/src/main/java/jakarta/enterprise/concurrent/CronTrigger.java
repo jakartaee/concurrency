@@ -437,7 +437,7 @@ public class CronTrigger implements ZonedTrigger {
             int year = time.getYear();
             int m = Arrays.binarySearch(months, time.getMonthValue());
             if (m < 0) {
-                time = nextMonth(-m - 2, year, time);
+                time = nextMonth(-m - 2, year);
             } else {
                 int dayOfMonth = time.getDayOfMonth();
                 int lastDayOfMonth = time.getMonth().length(Year.isLeap(year));
@@ -490,7 +490,7 @@ public class CronTrigger implements ZonedTrigger {
         int ld = l + 1 < daysOfMonth.length && daysOfMonth[l + 1] < 0 ? (1 + lastDayOfMonth + daysOfMonth[l + 1]) : 32;
         int dayOfMonth = Math.min(dd, ld);
         if (dayOfMonth > lastDayOfMonth) {
-            return nextMonth(m, year, time);
+            return nextMonth(m, year);
         }
 
         return ZonedDateTime.of(year, months[m], dayOfMonth, hours[0], minutes[0], seconds[0], 0, time.getZone());
@@ -529,7 +529,7 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Advance to next month.
      */
-    private ZonedDateTime nextMonth(final int month, final int year, final ZonedDateTime time) {
+    private ZonedDateTime nextMonth(final int month, final int year) {
         int dayOfMonth, lastDayOfMonth, cycles = 0, m = month, y = year;
         do {
             if (++m >= months.length) {
