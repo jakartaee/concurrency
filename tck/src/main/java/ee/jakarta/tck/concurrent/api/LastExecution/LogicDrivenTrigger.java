@@ -136,7 +136,7 @@ public class LogicDrivenTrigger implements Trigger {
 		if ((lastExecutionInfo.getRunEnd().getTime()
 				- lastExecutionInfo.getRunStart().getTime()) < TestConstants.PollInterval.toMillis()) {
 			log.warning(testName
-					+ "failed, the difference between getRunEnd and getRunStart"
+					+ "failed, the difference between getRunEnd and getRunStart "
 					+ "is shorter than the real running time");
 			return null;
 		}
