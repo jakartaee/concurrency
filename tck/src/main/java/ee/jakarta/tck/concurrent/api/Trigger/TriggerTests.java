@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.common.CommonTriggers;
@@ -47,6 +48,11 @@ public class TriggerTests extends ArquillianTests {
 						getCommonPackage(), 
 						getCommonFixedCounterPackage(), 
 						TriggerTests.class.getPackage());
+	}
+
+	@BeforeMethod
+	public void reset() {
+		StaticCounter.reset();
 	}
 
 	/*
