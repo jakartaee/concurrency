@@ -23,11 +23,13 @@
 	<parent>
 		<groupId>jakarta.enterprise.concurrent</groupId>
 		<artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-		<version>3.0.1-SNAPSHOT</version>
+		<version>3.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+	<version>3.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+
 
 	<name>Jakarta Concurrency TCK</name>
 	<description>Jakarta Concurrency TCK Tests</description>
@@ -47,7 +49,7 @@
 
 	<properties>
 
-		<jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
+		<jakarta.concurrent.version.ga>3.1.0</jakarta.concurrent.version.ga>
 		<jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
 		<sigtest.version>1.6</sigtest.version>
 
