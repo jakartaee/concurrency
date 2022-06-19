@@ -53,7 +53,7 @@
                 <configuration>
                     <spec>
                         <specVersion>${spec.version}</specVersion>
-                        <specImplVersion>3.0.0</specImplVersion>
+                        <specImplVersion>3.0.1</specImplVersion>
                         <apiPackage>${api_package}</apiPackage>
                         
                         <nonFinal>${non.final}</nonFinal>
