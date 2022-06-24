@@ -86,17 +86,16 @@
         <arquillian.version>1.6.0.Final</arquillian.version>
                 
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-        
-        <!-- TODO update to 4.0.1 -->
-        <jakarta.ejb.version>4.0.0</jakarta.ejb.version>
+
+        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         
         <jakarta.jsp.version>3.1.0</jakarta.jsp.version>
         
-        <jakarta.annotation.version>2.1.0</jakarta.annotation.version>
+        <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
         
-        <jakarta.interceptor.version>2.0.1</jakarta.interceptor.version>
-        <jakarta.cdi.version>4.0.0</jakarta.cdi.version>
+        <jakarta.interceptor.version>2.1.0</jakarta.interceptor.version>
         
+        <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
     </properties>
 
     <modules>
@@ -140,6 +139,7 @@
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <version>${jakarta.cdi.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     </dependencyManagement>
