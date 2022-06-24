@@ -33,7 +33,6 @@
     <name>Jakarta Concurrency</name>
     <description>Jakarta Concurrency Parent</description>
     <url>https://github.com/jakartaee/concurrency</url>
-
     <licenses>
         <license>
             <name>EPL 2.0</name>
@@ -47,12 +46,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git:https://github.com/jakartaee/concurrency.git</connection>
-        <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
-        <url>https://github.com/jakartaee/concurrency</url>
-    </scm>
-    
     <developers>
         <developer>
             <id>anthony.lai</id>
@@ -60,87 +53,99 @@
             <organization>Oracle</organization>
         </developer>
     </developers>
-    
-    <!-- For artifacts not yet in Maven Central -->
-    <repositories> 
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
-        
-        <!-- Used in TCK only -->
-        <testng.version>6.14.3</testng.version>
-        <arquillian.version>1.6.0.Final</arquillian.version>
-                
-        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
-
-        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
-        
-        <jakarta.jsp.version>3.1.0</jakarta.jsp.version>
-        
-        <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
-        
-        <jakarta.interceptor.version>2.1.0</jakarta.interceptor.version>
-        
-        <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
-    </properties>
 
     <modules>
         <module>api</module>
         <module>tck</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:https://github.com/jakartaee/concurrency.git</connection>
+        <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
+        <url>https://github.com/jakartaee/concurrency</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>11</maven.compiler.release>
+
+        <!-- Used in TCK only -->
+        <testng.version>6.14.3</testng.version>
+        <arquillian.version>1.6.0.Final</arquillian.version>
+
+        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
+        <jakarta.jsp.version>3.1.0</jakarta.jsp.version>
+        <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
+        <jakarta.interceptor.version>2.1.0</jakarta.interceptor.version>
+        <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
+    </properties>
+
     <dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>${jakarta.servlet.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet.jsp</groupId>
-            <artifactId>jakarta.servlet.jsp-api</artifactId>
-            <version>${jakarta.jsp.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.ejb</groupId>
-            <artifactId>jakarta.ejb-api</artifactId>
-            <version>${jakarta.ejb.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-            <version>${jakarta.annotation.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.interceptor</groupId>
-            <artifactId>jakarta.interceptor-api</artifactId>
-            <version>${jakarta.interceptor.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>jakarta.enterprise.cdi-api</artifactId>
-            <version>${jakarta.cdi.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.servlet.jsp</groupId>
+                <artifactId>jakarta.servlet.jsp-api</artifactId>
+                <version>${jakarta.jsp.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.ejb</groupId>
+                <artifactId>jakarta.ejb-api</artifactId>
+                <version>${jakarta.ejb.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>${jakarta.annotation.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.interceptor</groupId>
+                <artifactId>jakarta.interceptor-api</artifactId>
+                <version>${jakarta.interceptor.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.enterprise</groupId>
+                <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                <version>${jakarta.cdi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- Sets minimal Maven version to 3.6.0 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
