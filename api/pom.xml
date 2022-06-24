@@ -34,6 +34,13 @@
         components without compromising container integrity while still preserving the Jakarta EE 
         platform’s fundamental benefits.
     </description>
+    <url>https://github.com/jakartaee/concurrency</url>
+
+    <scm>
+        <connection>scm:git:https://github.com/jakartaee/concurrency.git</connection>
+        <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
+        <url>https://github.com/jakartaee/concurrency</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -91,7 +98,6 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>5.1.4</version>
-                <extensions>true</extensions>
                 <configuration>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
@@ -135,7 +141,7 @@
                 </configuration>
             </plugin>
             
-                        <!-- 
+            <!-- 
                Create Javadoc for API jar
             -->
             <plugin>
