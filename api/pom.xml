@@ -245,6 +245,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     <outputDirectory>${project.build.directory}/checkstyle</outputDirectory>
                     <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
                     <configLocation>etc/config/checkstyle.xml</configLocation>
+                    <excludes>**/module-info.java</excludes>
                 </configuration>
                 <executions>
                     <execution>
