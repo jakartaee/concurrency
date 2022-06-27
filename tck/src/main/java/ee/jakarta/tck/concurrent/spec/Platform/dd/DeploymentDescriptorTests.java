@@ -87,7 +87,8 @@ public class DeploymentDescriptorTests extends TestClient{
         runTest(baseURL);
     }
 
-    @Test
+    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+    @Test(enabled = false)
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
         runTest(baseURL);
     }

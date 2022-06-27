@@ -99,7 +99,8 @@ public class ManagedExecutorDefinitionTests extends TestClient{
     	runTest(baseURL);
     }
 
-	@Test
+        // TCK Accepted Challenge: https://github.com/jakartaee/concurrency/issues/224
+	@Test(enabled = false)
     public void testCompletedFuture() {
     	runTest(baseURL);
     }
