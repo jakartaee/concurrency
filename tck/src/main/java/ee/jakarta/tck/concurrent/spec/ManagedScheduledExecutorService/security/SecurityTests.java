@@ -63,8 +63,12 @@ public class SecurityTests extends TestClient {
 	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
 	 * then submit a task by ManagedScheduledExecutorService in which call a ejb
 	 * that requires role manager.
+         *
+         * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
+         * fix: https://github.com/jakartaee/concurrency/pull/221
+         * Can be reenabled in the next release of Jakarta Concurrency
 	 */
-	@Test
+	@Test(enabled = false)
 	public void managedScheduledExecutorServiceAPISecurityTest() {
 		runTest(baseURL);
 	}

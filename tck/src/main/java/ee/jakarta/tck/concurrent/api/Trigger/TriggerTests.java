@@ -61,8 +61,11 @@ public class TriggerTests extends ArquillianTests {
 	 * @assertion_ids: CONCURRENCY:JAVADOC:46
 	 * 
 	 * @test_Strategy: Retrieve the next time that the task should run after.
+         *  fix: https://github.com/jakartaee/concurrency/pull/222
+         *  Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/228
+         *  Can be reenabled in next release of Jakarta Concurrency
 	 */
-	@Test
+	@Test(enabled = false)
 	public void triggerGetNextRunTimeTest() throws Exception {
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new CounterRunnableTask(),
 				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));

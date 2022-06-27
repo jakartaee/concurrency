@@ -10,3 +10,4 @@ target/
 nb-configuration.xml
 .DS_Store
 .checkstyle
+api/.flattened-pom.xml

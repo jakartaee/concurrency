@@ -95,8 +95,8 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
     public void testAsynchronousMethodWithMaxAsync3() {
 		runTest(baseURL);
     }
-
-	@Test
+        // Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
+	@Test(enabled = false)
     public void testCompletedFutureMSE() {
 		runTest(baseURL);
     }

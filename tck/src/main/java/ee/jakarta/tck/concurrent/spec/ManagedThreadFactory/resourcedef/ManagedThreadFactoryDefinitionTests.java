@@ -79,12 +79,14 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 		return "ManagedThreadFactoryDefinitionServlet";
 	}
 	
-	@Test
+        // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+	@Test(enabled = false)
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
 		runTest(baseURL);
     }
 	
-	@Test
+        // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+	@Test(enabled = false)
     public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
 		runTest(requestURL);
@@ -101,12 +103,14 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 		runTest(requestURL);
     }
 
-	@Test
+        // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+	@Test(enabled = false)
     public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
 		runTest(baseURL);
     }
 	
-	@Test
+        // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+	@Test(enabled = false)
     public void testParallelStreamBackedByManagedThreadFactoryEJB() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
 		runTest(requestURL);
