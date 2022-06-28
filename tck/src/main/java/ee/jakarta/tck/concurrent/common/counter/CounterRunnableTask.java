@@ -43,7 +43,7 @@ public class CounterRunnableTask implements Runnable {
 			}
 
 			InitialContext context = new InitialContext();
-			CounterRemote counter = (CounterRemote) context.lookup(countSingletionJndi);
+			Counter counter = (Counter) context.lookup(countSingletionJndi);
 			counter.inc();
 
 		} catch (Exception e) {

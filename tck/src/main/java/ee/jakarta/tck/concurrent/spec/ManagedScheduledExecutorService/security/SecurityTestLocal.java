@@ -16,10 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 
-import jakarta.ejb.Remote;
-
-@Remote
-public interface SecurityTestRemote {
+public interface SecurityTestLocal {
 
 	public String managerMethod1();
 

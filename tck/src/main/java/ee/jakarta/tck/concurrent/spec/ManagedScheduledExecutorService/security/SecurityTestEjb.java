@@ -21,7 +21,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.Stateless;
 
 @Stateless
-public class SecurityTestEjb implements SecurityTestRemote {
+public class SecurityTestEjb implements SecurityTestLocal {
 	
 	@RolesAllowed("Manager")
 	public String managerMethod1() {

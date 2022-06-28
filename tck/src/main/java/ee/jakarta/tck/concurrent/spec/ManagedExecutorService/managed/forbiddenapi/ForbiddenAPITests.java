@@ -34,7 +34,7 @@ public class ForbiddenAPITests extends TestClient {
 	}
 
 	@EJB
-	private TestEjbRemote testEjb;
+	private TestEjbLocal testEjb;
 
 	/*
 	 * @testName: testAwaitTermination

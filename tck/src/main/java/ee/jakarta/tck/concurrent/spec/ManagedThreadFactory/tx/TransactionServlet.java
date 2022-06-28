@@ -19,7 +19,6 @@ package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.tx;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -54,7 +53,7 @@ public class TransactionServlet extends TestServlet {
 	private DataSource ds;
 
 	@Override
-	protected void beforeClass() throws RemoteException {
+	protected void beforeClass() throws Exception {
 		log.enter("beforeClass");
 		
 		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {

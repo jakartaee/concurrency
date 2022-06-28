@@ -14,16 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.common.counter;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
 
-import jakarta.ejb.Remote;
 
-@Remote
-public interface CounterRemote {
+public interface SecurityTestLocal {
 
-	public void inc();
+	public String managerMethod1();
 
-	public int getCount();
-
-	public void reset();
 }

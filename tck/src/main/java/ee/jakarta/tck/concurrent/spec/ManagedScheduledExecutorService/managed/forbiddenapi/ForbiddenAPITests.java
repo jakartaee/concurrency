@@ -36,7 +36,7 @@ public class ForbiddenAPITests extends ArquillianTests {
 	}
 
 	@EJB
-	private TestEjbRemote testEjb;
+	private TestEjbLocal testEjb;
 
 	/*
 	 * @testName: testAwaitTermination

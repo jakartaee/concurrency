@@ -16,7 +16,6 @@
 
 package ee.jakarta.tck.concurrent.spec.ContextService.tx;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -60,7 +59,7 @@ public class TransactionServlet extends TestServlet {
 	private UserTransaction ut;
 
 	@Override
-	protected void before() throws RemoteException {
+	protected void before() throws Exception {
 		log.enter("before");
 		
 		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {
@@ -71,8 +70,6 @@ public class TransactionServlet extends TestServlet {
 			}
 			stmt.executeUpdate(Constants.SQL_TEMPLATE_CREATE);
 			log.exit("before");
-		} catch (Exception e) {
-			throw new RemoteException(e.getMessage());
 		}
 	}
 

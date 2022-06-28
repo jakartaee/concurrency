@@ -24,7 +24,7 @@ import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.ejb.Stateless;
 
 @Stateless
-public class TestEjb implements TestEjbRemote {
+public class TestEjb implements TestEjbLocal {
 
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
