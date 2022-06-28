@@ -65,7 +65,7 @@ public final class TestUtil {
 	 * HTTP convenience method for servlets to get a response from another servlet. 
 	 * Test clients should extend the {@link TestClient} class that has its own HTTP methods.
 	 * 
-	 * @param connection - the URLConnection
+	 * @param con - the URLConnection
 	 * @return String - response body
 	 * @throws IOException
 	 */

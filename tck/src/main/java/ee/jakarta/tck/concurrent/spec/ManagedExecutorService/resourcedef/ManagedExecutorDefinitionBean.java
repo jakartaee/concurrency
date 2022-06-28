@@ -15,17 +15,16 @@
  */
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.resourcedef;
 
-import jakarta.annotation.Resource;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * ContextServiceDefinitions are defined under {@link ContextServiceDefinitionBean}
+ * ContextServiceDefinitions are defined under
+ * {@link ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean}
  */
 @ManagedExecutorDefinition(name = "java:app/concurrent/EJBExecutorA",
                            context = "java:app/concurrent/EJBContextA",

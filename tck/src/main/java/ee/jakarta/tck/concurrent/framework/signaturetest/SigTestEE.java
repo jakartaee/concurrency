@@ -19,7 +19,6 @@ package ee.jakarta.tck.concurrent.framework.signaturetest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.PrintStream;
 
@@ -196,13 +195,6 @@ public abstract class SigTestEE {
 	 * Called by the test framework to initialize this test. The method simply
 	 * retrieves some state information that is necessary to run the test when when
 	 * the test framework invokes the run method (actually the test1 method).
-	 *
-	 * @param args List of arguments passed to this test.
-	 * @param p    Properties specified by the test user and passed to this test via
-	 *             the test framework.
-	 *
-	 * @throws Fault When an error occurs reading or saving the state information
-	 *               processed by this method.
 	 */
 	public void setup() {
 		try {
