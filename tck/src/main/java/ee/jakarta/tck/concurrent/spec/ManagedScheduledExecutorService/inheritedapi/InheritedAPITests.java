@@ -18,18 +18,18 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import jakarta.ejb.EJB;
 
 public class InheritedAPITests extends TestClient {
-	public static final String CounterSingletonJNDI = "java:global/inheritedapi/inheritedapi_counter/CounterSingleton";
+	public static final String CounterSingletonJNDI = "java:global/inheritedapi/CounterSingleton";
 	
 	@Deployment(name="InheritedAPITests")
-	public static EnterpriseArchive createDeployment() {
+	public static WebArchive createDeployment() {
 		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
 				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage());
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
@@ -37,10 +37,14 @@ public class InheritedAPITests extends TestClient {
 		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
 				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
-		
-		return ear;
+
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
+				.addAsLibrary(counterJAR)
+				.addAsLibrary(inheritedJAR)
+				;
+
+
+		return war;
 	}
 
 	@EJB

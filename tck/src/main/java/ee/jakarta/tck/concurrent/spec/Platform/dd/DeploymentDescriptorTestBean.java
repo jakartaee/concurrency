@@ -40,7 +40,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-//@Local(DeploymentDescriptorTestBeanInterface.class)
+@Local(DeploymentDescriptorTestBeanInterface.class)
 @Stateless
 public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBeanInterface {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);

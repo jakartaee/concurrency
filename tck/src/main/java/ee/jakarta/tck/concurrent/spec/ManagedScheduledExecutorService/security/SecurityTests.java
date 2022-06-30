@@ -21,7 +21,6 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
@@ -35,19 +34,20 @@ public class SecurityTests extends TestClient {
 	URL baseURL;
 	
 	@Deployment(name="SecurityTests", testable=false)
-	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
-				.deleteClasses(SecurityTestLocal.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestRemote are in the jar
-		
+	public static WebArchive createDeployment() {
+
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
 				.addClasses(SecurityTestLocal.class, SecurityTestEjb.class);
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
-				.addAsModules(war, jar);
+
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
+				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
+				//SecurityTestEjb and SecurityTestRemote are in the jar
+				.deleteClasses(SecurityTestLocal.class, SecurityTestEjb.class)
+				.addAsLibrary(jar)
+				;
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
-		return ear;
+		return war;
 	}
 	
 	@Override

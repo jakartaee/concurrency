@@ -20,7 +20,6 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
@@ -44,20 +43,9 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 	URL ejbContextURL;
 	
 	@Deployment(name="ManagedScheduledExecutorDefinitionTests", testable=false)
-	public static EnterpriseArchive createDeployment() {
+	public static WebArchive createDeployment() {
 		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
-				.addPackages(false,
-						getFrameworkPackage(), 
-						getContextPackage(),
-						getContextProvidersPackage())
-				.addClasses(
-						ReqBean.class,
-						ManagedScheduledExecutorDefinitionServlet.class,
-						ManagedScheduledExecutorDefinitionOnEJBServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
-		
+
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedScheduledExecutorDefinitionTests_ejb.jar")
 				.addPackages(false, getFrameworkPackage(), ManagedScheduledExecutorDefinitionTests.class.getPackage())
 				.deleteClasses(
@@ -69,10 +57,22 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 						ContextServiceDefinitionBean.class)
 				.addAsManifestResource(ManagedScheduledExecutorDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 //				TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
+				.addPackages(false,
+							 getFrameworkPackage(),
+							 getContextPackage(),
+							 getContextProvidersPackage())
+				.addClasses(
+						ReqBean.class,
+						ManagedScheduledExecutorDefinitionServlet.class,
+						ManagedScheduledExecutorDefinitionOnEJBServlet.class,
+						ContextServiceDefinitionServlet.class)
+				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
+				.addAsLibrary(jar)
+				;
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedScheduledExecutorDefinitionTests.ear").addAsModules(war, jar);
-		
-		return ear;
+		return war;
 	}
 	
 	@Override

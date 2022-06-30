@@ -20,7 +20,6 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
@@ -44,19 +43,7 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 	URL ejbContextURL;
 	
 	@Deployment(name="ManagedThreadFactoryDefinitionTests", testable=false)
-	public static EnterpriseArchive createDeployment() {
-		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
-				.addPackages(false,
-						getFrameworkPackage(), 
-						getContextPackage(),
-						getContextProvidersPackage())
-				.addClasses(
-						ManagedThreadFactoryDefinitionOnEJBServlet.class,
-						ManagedThreadFactoryDefinitionServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addAsWebInfResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "web.xml", "web.xml")
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
+	public static WebArchive createDeployment() {
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
 				.addPackages(false, getFrameworkPackage(), ManagedThreadFactoryDefinitionTests.class.getPackage())
@@ -68,10 +55,22 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 						ContextServiceDefinitionBean.class)
 				.addAsManifestResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 //				TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
+				.addPackages(false,
+							 getFrameworkPackage(),
+							 getContextPackage(),
+							 getContextProvidersPackage())
+				.addClasses(
+						ManagedThreadFactoryDefinitionOnEJBServlet.class,
+						ManagedThreadFactoryDefinitionServlet.class,
+						ContextServiceDefinitionServlet.class)
+				.addAsWebInfResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "web.xml", "web.xml")
+				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
+				.addAsLibrary(jar)
+				;
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear").addAsModules(war, jar);
-		
-		return ear;
+		return war;
 	}
 	
 	@Override

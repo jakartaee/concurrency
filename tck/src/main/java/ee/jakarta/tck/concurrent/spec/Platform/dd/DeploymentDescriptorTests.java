@@ -26,41 +26,47 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
 /**
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
+@Test(groups = JAKARTAEE_FULL)
 public class DeploymentDescriptorTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
     URL baseURL;
     
     @Deployment(name="DeploymentDescriptorTests", testable=false)
-    public static WebArchive createDeployment() {
+    public static EnterpriseArchive createDeployment() {
+        
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
+                .addPackages(false,
+                        getFrameworkPackage()) 
+                .addClasses(
+                        DeploymentDescriptorServlet.class);
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "DeploymentDescriptorTests_ejb.jar")
                 .addClasses(
                         DeploymentDescriptorTestBean.class,
                         DeploymentDescriptorTestBeanInterface.class)
                 .addPackages(true,
-                             getContextPackage(),
-                             getContextProvidersPackage())
+                        getContextPackage(),
+                        getContextProvidersPackage())
                 .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                                      IntContextProvider.class.getName(),
-                                      StringContextProvider.class.getName());
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
-                .addAsWebInfResource(DeploymentDescriptorTests.class.getPackage(), "web.xml", "web.xml")
-                .addPackages(false,
-                        getFrameworkPackage()) 
-                .addClasses(
-                        DeploymentDescriptorServlet.class)
-                .addAsLibrary(jar);
-        return war;
+                        IntContextProvider.class.getName(),
+                        StringContextProvider.class.getName());
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "DeploymentDescriptorTests.ear")
+                .addAsManifestResource(DeploymentDescriptorTests.class.getPackage(), "application.xml", "application.xml")
+                .addAsModules(war, jar);
+
+        return ear;
     }
     
     @Override
