@@ -41,30 +41,26 @@ public class DeploymentDescriptorTests extends TestClient{
     URL baseURL;
     
     @Deployment(name="DeploymentDescriptorTests", testable=false)
-    public static EnterpriseArchive createDeployment() {
-        
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
-                .addPackages(false,
-                        getFrameworkPackage()) 
-                .addClasses(
-                        DeploymentDescriptorServlet.class);
+    public static WebArchive createDeployment() {
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "DeploymentDescriptorTests_ejb.jar")
                 .addClasses(
                         DeploymentDescriptorTestBean.class,
                         DeploymentDescriptorTestBeanInterface.class)
                 .addPackages(true,
-                        getContextPackage(),
-                        getContextProvidersPackage())
+                             getContextPackage(),
+                             getContextProvidersPackage())
                 .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                        IntContextProvider.class.getName(),
-                        StringContextProvider.class.getName());
-
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "DeploymentDescriptorTests.ear")
-                .addAsManifestResource(DeploymentDescriptorTests.class.getPackage(), "application.xml", "application.xml")
-                .addAsModules(war, jar);
-
-        return ear;
+                                      IntContextProvider.class.getName(),
+                                      StringContextProvider.class.getName());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
+                .addAsWebInfResource(DeploymentDescriptorTests.class.getPackage(), "web.xml", "web.xml")
+                .addPackages(false,
+                        getFrameworkPackage()) 
+                .addClasses(
+                        DeploymentDescriptorServlet.class)
+                .addAsLibrary(jar);
+        return war;
     }
     
     @Override
