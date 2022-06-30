@@ -216,7 +216,7 @@ public @interface ContextServiceDefinition {
      * any global transaction that was previously present there is
      * first suspended such that the contextual task or action can
      * begin and manage, as permitted by the container, its own new
-     * {@link jakarta.transaction.UserTransaction}.
+     * {@code jakarta.transaction.UserTransaction}.
      * After the contextual task or action completes, the prior
      * transaction is resumed on the thread. This is equivalent to
      * the execution property, {@link ManagedTask#TRANSACTION} with

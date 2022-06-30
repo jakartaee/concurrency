@@ -140,7 +140,7 @@ public abstract class SignatureTestDriver {
 	/**
 	 * <p>
 	 * Execute the signature test. By default, this method passes the result of
-	 * {@link #createTestArguments(String, String, String, String, String)} and
+	 * {@link #createTestArguments(String, String, String, String, String, boolean)} and
 	 * passes the result to {@link #runSignatureTest(String, String[])}.
 	 *
 	 * @param packageListFile        - file containing the packages/classes that are
