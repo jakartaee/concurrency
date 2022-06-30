@@ -21,9 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
@@ -58,6 +60,10 @@ public class ConcurrencySigTest extends SigTestEE {
 	 * Returns the classpath for the packages we are interested in.
 	 */
 	protected String getClasspath() {
+		final String defined = System.getProperty("signature.sigTestClasspath");
+		if (defined != null && !defined.isBlank()) {
+			return defined;
+		}
 		// The Jakarta artifacts we want added to our classpath
 		String[] classes = new String[] {
 				"jakarta.enterprise.concurrent.AbortedException", // For jakarta.enterprise.concurrent-api-3.0.0.jar
@@ -78,7 +84,14 @@ public class ConcurrencySigTest extends SigTestEE {
 		for(String c : classes) {
 			try {
 				Class<?> clazz = Class.forName(c);
-				String path = clazz.getProtectionDomain().getCodeSource().getLocation().getPath().toString();
+				final CodeSource codeSource = clazz.getProtectionDomain().getCodeSource();
+				final URL location = codeSource == null ? null : codeSource.getLocation();
+				// Likely not null, but if so we cannot find the location of the JAR or class
+				if (codeSource == null || location == null) {
+					log.warning(String.format("Could not resolve the the library for %s.", clazz.getName()));
+					continue;
+				}
+				String path = resolvePath(location);
 				if(!classPaths.contains(path)) {
 					classPaths.add(path);
 				}
@@ -284,5 +297,28 @@ public class ConcurrencySigTest extends SigTestEE {
 				throw new Fault("ConcurrencySigTest.signatureTest() failed with an unexpected exception", e);
 			}
 		}
+	}
+
+	private static String resolvePath(final URL resource) {
+		if (resource == null) {
+			return null;
+		}
+		final String path = resource.getPath();
+		final String protocol = resource.getProtocol();
+
+		// Possibly only specific to JBoss Modules. However, executing this will not be an issue for non-jboss-modules
+		// implementations.
+		if ("jar".equals(protocol)) {
+			// The last path segment before "!/" should be the JAR name
+			final int sepIdx = path.lastIndexOf("!/");
+			// We need to ignore jar:file: and use the real filesystem path
+			final int start = path.startsWith("file:") ? 5 : 0;
+			if (sepIdx != -1) {
+				// hit!
+				return path.substring(start, sepIdx);
+			}
+			return path.substring(start);
+		}
+		return path;
 	}
 }
