@@ -21,7 +21,6 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
@@ -35,12 +34,24 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 public class ContextPropagationTests extends TestClient {
 
-	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagationTests_ejb/LimitedBean";
+	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagationTests_web/LimitedBean";
 
 	
 	@Deployment(name="ContextPropagationTests", testable=false)
-	public static EnterpriseArchive createDeployment() {
-		
+	public static WebArchive createDeployment() {
+
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
+				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
+				.deleteClasses(
+						ContextServiceDefinitionServlet.class,
+						ClassloaderServlet.class,
+						JNDIServlet.class,
+						SecurityServlet.class,
+						JSPSecurityServlet.class,
+						ContextServiceDefinitionFromEJBServlet.class)
+				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+		//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagationTests_web.war")
 				.addPackages(true, getFrameworkPackage(), getContextPackage(), getContextProvidersPackage())
 				.addClasses(
@@ -52,23 +63,12 @@ public class ContextPropagationTests extends TestClient {
 						ContextServiceDefinitionFromEJBServlet.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
 				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
-				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
+				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp")
+				.addAsLibrary(jar)
+				;
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
-				.deleteClasses(
-						ContextServiceDefinitionServlet.class,
-						ClassloaderServlet.class,
-						JNDIServlet.class,
-						SecurityServlet.class,
-						JSPSecurityServlet.class,
-						ContextServiceDefinitionFromEJBServlet.class)
-				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagationTests.ear").addAsModules(war, jar);
-		
-		return ear;
+
+		return war;
 	}
 	
 	@ArquillianResource(JNDIServlet.class)
