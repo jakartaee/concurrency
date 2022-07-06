@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,26 +13,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
+package ee.jakarta.tck.concurrent.common;
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
-
-//import jakarta.ejb.Remote;
-
-//@Remote
-public interface TestEjbRemote {
-
-	public void testApiSubmit();
-
-	public void testApiExecute();
-
-	public void testApiInvokeAll();
-
-	public void testApiInvokeAny();
-
-	public void testApiSchedule();
-
-	public void testApiScheduleAtFixedRate();
-
-	public void testApiScheduleWithFixedDelay();
-
+public interface TestGroups {
+    /** Group for tests requiring the full platform */
+    String JAKARTAEE_FULL = "eefull";
 }

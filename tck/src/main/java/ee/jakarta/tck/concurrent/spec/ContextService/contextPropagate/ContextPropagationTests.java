@@ -33,6 +33,9 @@ import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+
+@Test(groups = JAKARTAEE_FULL)
 public class ContextPropagationTests extends TestClient {
 
 	public static final String LimitedBeanAppJNDI = "java:app/ContextPropagationTests_ejb/LimitedBean";

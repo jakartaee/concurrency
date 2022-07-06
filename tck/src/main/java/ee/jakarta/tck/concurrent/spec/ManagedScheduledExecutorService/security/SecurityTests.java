@@ -28,6 +28,9 @@ import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+
+@Test(groups = JAKARTAEE_FULL)
 public class SecurityTests extends TestClient {
 	public static final String SecurityEJBJNDI = "java:global/security/security_ejb/SecurityTestEjb";
 	

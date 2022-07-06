@@ -25,6 +25,9 @@ import org.testng.annotations.Test;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import jakarta.ejb.EJB;
 
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+
+@Test(groups = JAKARTAEE_FULL)
 public class InheritedAPITests extends TestClient {
 	public static final String CounterSingletonJNDI = "java:global/inheritedapi/inheritedapi_counter/CounterSingleton";
 	
