@@ -16,9 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 
-//import jakarta.ejb.Remote;
 
-//@Remote
 public interface SecurityTestRemote {
 
 	public String managerMethod1();

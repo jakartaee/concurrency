@@ -16,9 +16,6 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
 
-//import jakarta.ejb.Remote;
-
-//@Remote
 public interface TestEjbRemote {
 
 	public void testAwaitTermination();

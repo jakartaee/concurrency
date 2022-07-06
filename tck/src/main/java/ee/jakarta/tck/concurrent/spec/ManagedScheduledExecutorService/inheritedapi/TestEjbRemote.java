@@ -16,9 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
-//import jakarta.ejb.Remote;
 
-//@Remote
 public interface TestEjbRemote {
 
 	public void testApiSubmit();

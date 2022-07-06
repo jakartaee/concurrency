@@ -16,9 +16,6 @@
 
 package ee.jakarta.tck.concurrent.common.counter;
 
-//import jakarta.ejb.Remote;
-
-//@Remote
 public interface CounterRemote {
 
 	public void inc();
