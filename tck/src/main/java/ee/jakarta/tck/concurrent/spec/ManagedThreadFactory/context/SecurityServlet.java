@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityServlet extends TestServlet {
 	
 	@EJB
-	private SecurityTestRemote str;
+	private SecurityTestInterface str;
 
 	private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
 
@@ -91,9 +91,9 @@ public class SecurityServlet extends TestServlet {
 	public static class CounterRunnableWithSecurityCheck implements Runnable {
 		private volatile int count = 0;
 		
-		private SecurityTestRemote str;
+		private SecurityTestInterface str;
 		
-		CounterRunnableWithSecurityCheck(SecurityTestRemote str) {
+		CounterRunnableWithSecurityCheck(SecurityTestInterface str) {
 			this.str = str;
 		}
 

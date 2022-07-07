@@ -16,7 +16,7 @@
 
 package ee.jakarta.tck.concurrent.common.counter;
 
-public interface CounterRemote {
+public interface CounterInterface {
 
 	public void inc();
 

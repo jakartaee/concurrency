@@ -25,7 +25,7 @@ import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Stateless
-public class TestEjb implements TestEjbRemote {
+public class TestEjb implements TestEjbInterface {
 	
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 	

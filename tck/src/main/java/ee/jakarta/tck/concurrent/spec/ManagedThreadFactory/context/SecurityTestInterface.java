@@ -14,17 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 
-public interface TestEjbRemote {
 
-	public void testAwaitTermination();
+public interface SecurityTestInterface {
 
-	public void testIsShutdown();
+	public String managerMethod1();
 
-	public void testIsTerminated();
-
-	public void testShutdown();
-
-	public void testShutdownNow();
 }

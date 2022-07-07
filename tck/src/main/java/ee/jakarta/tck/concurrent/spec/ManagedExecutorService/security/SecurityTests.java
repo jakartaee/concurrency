@@ -42,10 +42,10 @@ public class SecurityTests extends TestClient {
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
 				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
-				.deleteClasses(SecurityTestRemote.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestRemote are in the jar;
+				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar;
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
+				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar);

@@ -47,7 +47,7 @@ public class InheritedAPITests extends TestClient {
 	}
 
 	@EJB
-	private TestEjbRemote testEjb;
+	private TestEjbInterface testEjb;
 
 	/*
 	 * @testName: testApiSubmit

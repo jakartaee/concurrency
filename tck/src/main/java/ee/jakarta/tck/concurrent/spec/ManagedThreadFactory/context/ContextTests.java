@@ -40,12 +40,12 @@ public class ContextTests extends TestClient {
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, getFrameworkPackage(), getCommonPackage(), ContextTests.class.getPackage())
-				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestRemote are in the jar
-				.deleteClass(SecurityTestRemote.class)
+				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
+				.deleteClass(SecurityTestInterface.class)
 				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
-				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
+				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
 				.addAsModules(war, jar);

@@ -14,23 +14,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 
 
-public interface TestEjbRemote {
+public interface SecurityTestInterface {
 
-	public void testApiSubmit();
-
-	public void testApiExecute();
-
-	public void testApiInvokeAll();
-
-	public void testApiInvokeAny();
-
-	public void testApiSchedule();
-
-	public void testApiScheduleAtFixedRate();
-
-	public void testApiScheduleWithFixedDelay();
+	public String managerMethod1();
 
 }
