@@ -259,8 +259,12 @@ public class ContextPropagationTests extends TestClient {
      * A ContextService contextualizes a Function, which can be supplied as a dependent stage action
      * to an unmanaged CompletableFuture. The dependent stage action runs with the thread context of
      * the thread that contextualizes the Function, per the configuration of the ContextServiceDefinition.
+     *
+     * Assertions on results[0] and results[1] are both invalid because treating those two UNCHANGED context types as
+     * though they were CLEARED.
+     * TCK challenge: https://github.com/jakartaee/concurrency/issues/253
      */
-	@Test
+	@Test(enabled = false)
     public void testContextualFunction() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
 		runTest(requestURL);
