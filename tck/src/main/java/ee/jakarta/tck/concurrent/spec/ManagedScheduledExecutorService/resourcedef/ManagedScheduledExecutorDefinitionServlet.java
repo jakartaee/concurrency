@@ -222,7 +222,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
 
             try {
                 String result = stage2.join();
-                throw new AssertionError("Application context must be left unchanged per " +
+                throw new AssertionError("Application context must be cleared per " +
                                          "ManagedExecutorDefinition and ContextServiceDefinition config. " +
                                          "Instead, was able to look up " + result);
             } catch (CompletionException x) {
