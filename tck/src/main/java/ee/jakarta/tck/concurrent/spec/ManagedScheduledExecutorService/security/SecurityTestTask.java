@@ -25,7 +25,7 @@ public class SecurityTestTask implements Callable {
 	public String call() {
 		try {
 			InitialContext context = new InitialContext();
-			SecurityTestRemote str = (SecurityTestRemote) context.lookup(SecurityTests.SecurityEJBJNDI);
+			SecurityTestInterface str = (SecurityTestInterface) context.lookup(SecurityTests.SecurityEJBJNDI);
 			return str.managerMethod1();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

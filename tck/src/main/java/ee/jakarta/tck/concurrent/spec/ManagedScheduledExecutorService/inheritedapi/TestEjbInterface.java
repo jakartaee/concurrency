@@ -14,22 +14,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
-import java.util.concurrent.Callable;
 
-import javax.naming.InitialContext;
+public interface TestEjbInterface {
 
-public class SecurityTestTask implements Callable {
+	public void testApiSubmit();
 
-	public String call() {
-		try {
-			InitialContext context = new InitialContext();
-			SecurityTestInterface str = (SecurityTestInterface) context
-					.lookup(SecurityTests.SecurityEJBJNDI);
-			return str.managerMethod1();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+	public void testApiExecute();
+
+	public void testApiInvokeAll();
+
+	public void testApiInvokeAny();
+
+	public void testApiSchedule();
+
+	public void testApiScheduleAtFixedRate();
+
+	public void testApiScheduleWithFixedDelay();
+
 }

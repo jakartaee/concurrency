@@ -28,6 +28,9 @@ import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+
+@Test(groups = JAKARTAEE_FULL)
 public class SecurityTests extends TestClient {
 	public static final String SecurityEJBJNDI = "java:global/security/security_ejb/SecurityTestEjb";
 	
@@ -38,10 +41,10 @@ public class SecurityTests extends TestClient {
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
 				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
-				.deleteClasses(SecurityTestRemote.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestRemote are in the jar
+				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addClasses(SecurityTestRemote.class, SecurityTestEjb.class);
+				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar);

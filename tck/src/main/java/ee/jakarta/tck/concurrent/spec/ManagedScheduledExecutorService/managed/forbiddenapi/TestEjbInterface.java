@@ -14,16 +14,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.common.counter;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
-import jakarta.ejb.Remote;
+public interface TestEjbInterface {
 
-@Remote
-public interface CounterRemote {
+	public void testAwaitTermination();
 
-	public void inc();
+	public void testIsShutdown();
 
-	public int getCount();
+	public void testIsTerminated();
 
-	public void reset();
+	public void testShutdown();
+
+	public void testShutdownNow();
 }

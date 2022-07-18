@@ -31,7 +31,7 @@ public class CounterCallableTask implements Callable {
 	public Integer call() {
 		try {
 			InitialContext context = new InitialContext();
-			CounterRemote counter = (CounterRemote) context.lookup(countSingletionJndi);
+			CounterInterface counter = (CounterInterface) context.lookup(countSingletionJndi);
 			counter.inc();
 			return counter.getCount();
 

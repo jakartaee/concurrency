@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ee.jakarta.tck.concurrent.common.CommonTasks;
-import ee.jakarta.tck.concurrent.common.counter.CounterRemote;
+import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
@@ -36,10 +36,10 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 
 @Stateless
-public class TestEjb implements TestEjbRemote {
+public class TestEjb implements TestEjbInterface {
 
 	@EJB
-	private CounterRemote counter;
+	private CounterInterface counter;
 
 	public void testApiSubmit() {
 		try {

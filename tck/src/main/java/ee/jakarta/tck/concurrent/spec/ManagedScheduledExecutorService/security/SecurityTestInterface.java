@@ -14,12 +14,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 
-import jakarta.ejb.Remote;
 
-@Remote
-public interface SecurityTestRemote {
+public interface SecurityTestInterface {
 
 	public String managerMethod1();
 

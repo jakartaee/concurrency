@@ -26,15 +26,17 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
 /**
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
+@Test(groups = JAKARTAEE_FULL)
 public class DeploymentDescriptorTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
