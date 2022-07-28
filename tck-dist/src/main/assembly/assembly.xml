@@ -25,7 +25,7 @@
 		<format>zip</format>
 	</formats>
 
-	<baseDirectory>concurrency-tck-${jakarta.concurrent.version.ga}</baseDirectory>
+	<baseDirectory>concurrency-tck-${jakarta.concurrent.tck.version}</baseDirectory>
 
 	<files>
 
