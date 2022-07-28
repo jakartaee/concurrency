@@ -22,7 +22,7 @@
     <parent>
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
@@ -45,8 +45,7 @@
     </licenses>
 
     <properties>
-        <jakarta.concurrent.version.ga>3.0.1</jakarta.concurrent.version.ga>
-        <jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
+        <jakarta.concurrent.tck.version>${project.version}</jakarta.concurrent.tck.version>
 
         <maven.site.skip>true</maven.site.skip>
         <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
@@ -59,12 +58,12 @@
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-            <version>${jakarta.concurrent.version.ga}</version>
+            <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-            <version>${jakarta.concurrent.version.ga}</version>
+            <version>${jakarta.concurrent.tck.version}</version>
             <type>pom</type>
         </dependency>
     </dependencies>
@@ -103,7 +102,7 @@
                         <configuration>
                             <backend>html5</backend>
                             <outputFile>
-                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version.ga}.html
+                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.tck.version}.html
                             </outputFile>
                         </configuration>
                     </execution>
@@ -116,7 +115,7 @@
                         <configuration>
                             <backend>pdf</backend>
                             <outputFile>
-                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version.ga}.pdf
+                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.tck.version}.pdf
                             </outputFile>
                         </configuration>
                     </execution>
@@ -143,31 +142,11 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
-                            <finalName>concurrency-tck-${jakarta.concurrent.version.ga}</finalName>
+                            <finalName>concurrency-tck-${jakarta.concurrent.tck.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!--
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>copy-dependencies</id>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>copy-dependencies</goal>
-              </goals>
-              <configuration>
-                <excludeTransitive>true</excludeTransitive>
-                <stripVersion>true</stripVersion>
-                <overWriteReleases>false</overWriteReleases>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        -->
         </plugins>
     </build>
 </project>

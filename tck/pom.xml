@@ -44,8 +44,7 @@
     </licenses>
 
     <properties>
-        <jakarta.concurrent.version.ga>3.0.0</jakarta.concurrent.version.ga>
-        <jakarta.concurrent.version.dev>${project.version}</jakarta.concurrent.version.dev>
+        <jakarta.concurrent.api.version>3.0.1</jakarta.concurrent.api.version>
         <sigtest.version>1.6</sigtest.version>
     </properties>
 
@@ -53,7 +52,7 @@
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.version.dev}</version>
+            <version>${jakarta.concurrent.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -194,7 +193,7 @@
                                         <artifactItem>
                                             <groupId>jakarta.enterprise.concurrent</groupId>
                                             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-                                            <version>${jakarta.concurrent.version.ga}</version>
+                                            <version>${jakarta.concurrent.api.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>

@@ -149,12 +149,12 @@ Here we use the term "suite" informally to describe groups of tests required to 
 
 There are two "suites" included in the TCK.  There is a "suite" for the {APIShortName} API portion of the "Jakarta EE Platform" TCK and there is a second suite for the {APIShortName} SPI portion of the "Jakarta EE Platform".
 
-These "suites" are both represented within the single `artifacts/suite.xml` file and are identified by their package names:
+These "suites" are both represented within the single `artifacts/suite.xml` file for the full profile and `artifacts/suite-web.xml` for the web profile, and are identified by their package names:
 
 1. ee.jakarta.tck.concurrent.api.*
 1. ee.jakarta.tck.concurrent.spec.*
 
-*Note:* An implementation **MUST** run against all tests provided in the suite XML file [underline]#unmodified# for an implementation to pass the TCK.
+*Note:* An implementation **MUST** run against all tests provided in the suite XML file for the given profile [underline]#unmodified# for an implementation of such profile to pass the TCK.
 
 ===== API Signature Files
 
