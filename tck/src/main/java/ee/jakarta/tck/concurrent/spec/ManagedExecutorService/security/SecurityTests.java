@@ -26,15 +26,14 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
+import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
 @Test(groups = JAKARTAEE_FULL)
 public class SecurityTests extends TestClient {
-	
-	public static final String SecurityEJBJNDI = "java:global/security/security_ejb/SecurityTestEjb";
-	
+		
 	@ArquillianResource
 	URL baseURL;
 	
@@ -45,7 +44,8 @@ public class SecurityTests extends TestClient {
 				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar;
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
+				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
+				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);;
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar);

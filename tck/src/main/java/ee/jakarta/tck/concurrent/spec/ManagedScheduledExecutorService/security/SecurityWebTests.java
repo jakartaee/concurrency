@@ -21,38 +21,31 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.URLBuilder;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;
 
-@Test(groups = JAKARTAEE_FULL)
-public class SecurityTests extends TestClient {
+@Test(groups = JAKARTAEE_WEB)
+public class SecurityWebTests extends TestClient {
 	
 	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
 	
 	@Deployment(name="SecurityTests", testable=false)
-	public static EnterpriseArchive createDeployment() {
+	public static WebArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
-				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar
+				.addPackages(true,
+						SecurityWebTests.class.getPackage(),
+						getFrameworkPackage(), 
+						getCommonPackage())
+				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.WebProvider.class);
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addPackage(getFrameworkPackage())
-				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
-				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
-				.addAsModules(war, jar);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		return ear;
+		return war;
 	}
 	
 	@Override
@@ -77,5 +70,4 @@ public class SecurityTests extends TestClient {
 	public void managedScheduledExecutorServiceAPISecurityTest() {
 		runTest(baseURL);
 	}
-
 }
