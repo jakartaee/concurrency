@@ -19,6 +19,6 @@ public interface TestGroups {
     /** Group for tests requiring the full platform */
     String JAKARTAEE_FULL = "eefull";
     
-    /** Group for tests requiring the full platform */
+    /** Group for tests requiring the web platform */
     String JAKARTAEE_WEB = "eeweb";
 }
