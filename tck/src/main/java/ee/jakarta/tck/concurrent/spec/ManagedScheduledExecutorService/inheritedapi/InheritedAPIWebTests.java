@@ -18,33 +18,29 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.testng.annotations.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import jakarta.ejb.EJB;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
+import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
 
-@Test(groups = JAKARTAEE_FULL)
-public class InheritedAPITests extends TestClient {
+@Test(groups = JAKARTAEE_WEB)
+public class InheritedAPIWebTests extends TestClient {
 	
 	@Deployment(name="InheritedAPITests")
-	public static EnterpriseArchive createDeployment() {
-		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage())
-				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.FullProvider.class);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
-				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
-		
-		return ear;
+	public static WebArchive createDeployment() {
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
+				.addPackages(true,
+						InheritedAPIWebTests.class.getPackage(),
+						getFrameworkPackage(),
+						getCommonPackage(),
+						getCommonCounterPackage())
+				.deleteClasses(InheritedAPIWebTests.class, InheritedAPITests.class)
+				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
+		return war;
 	}
 
 	@EJB

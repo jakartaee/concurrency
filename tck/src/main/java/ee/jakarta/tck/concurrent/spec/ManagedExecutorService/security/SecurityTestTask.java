@@ -16,17 +16,21 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
 
+import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
 import javax.naming.InitialContext;
+
+import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 
 public class SecurityTestTask implements Callable {
 
 	public String call() {
 		try {
 			InitialContext context = new InitialContext();
+			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			SecurityTestInterface str = (SecurityTestInterface) context
-					.lookup(SecurityTests.SecurityEJBJNDI);
+					.lookup(nameProvider.getEJBJNDIName());
 			return str.managerMethod1();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

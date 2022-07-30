@@ -16,6 +16,9 @@
 
 package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
+import java.util.ServiceLoader;
+
+import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 
 @SuppressWarnings("serial")
@@ -23,6 +26,7 @@ public class TestSecurityRunnableWork extends BaseTestRunnableWork {
 
 	@Override
 	protected String work() {
-		return ( (LimitedInterface) TestUtil.lookup(ContextPropagationTests.LimitedBeanAppJNDI) ).doSomething();
+		EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+		return ( (LimitedInterface) TestUtil.lookup(nameProvider.getEJBJNDIName()) ).doSomething();
 	}
 }

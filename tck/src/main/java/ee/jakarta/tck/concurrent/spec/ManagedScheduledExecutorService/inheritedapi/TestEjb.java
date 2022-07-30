@@ -21,6 +21,7 @@ import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 import ee.jakarta.tck.concurrent.common.CommonTasks;
 import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.ejb.EJB;
@@ -61,7 +63,8 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiExecute() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().execute(new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI));
+			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+			TestUtil.getManagedScheduledExecutorService().execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
 			waitForCounter(1);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -156,7 +159,8 @@ public class TestEjb implements TestEjbInterface {
 	public void testApiScheduleAtFixedRate() {
 		ScheduledFuture result = null;
 		try {
-			result = TestUtil.getManagedScheduledExecutorService().scheduleAtFixedRate(new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI),
+			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+			result = TestUtil.getManagedScheduledExecutorService().scheduleAtFixedRate(new CounterRunnableTask(nameProvider.getEJBJNDIName()),
 					TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 			TestUtil.sleep(TestConstants.WaitTimeout);
 			TestUtil.assertIntInRange(TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2, counter.getCount());
@@ -178,8 +182,9 @@ public class TestEjb implements TestEjbInterface {
 	public void testApiScheduleWithFixedDelay() {
 		ScheduledFuture result = null;
 		try {
+			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			result = TestUtil.getManagedScheduledExecutorService().scheduleWithFixedDelay(
-					new CounterRunnableTask(InheritedAPITests.CounterSingletonJNDI, TestConstants.PollInterval.toMillis()), //task
+					new CounterRunnableTask(nameProvider.getEJBJNDIName(), TestConstants.PollInterval.toMillis()), //task
 					TestConstants.PollInterval.getSeconds(), //initial delay
 					TestConstants.PollInterval.getSeconds(), //delay
 					TimeUnit.SECONDS); //Time units
