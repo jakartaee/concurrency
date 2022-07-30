@@ -16,9 +16,9 @@
 
 package ee.jakarta.tck.concurrent.common.counter;
 
-import jakarta.ejb.Stateless;
+import jakarta.ejb.Singleton;
 
-@Stateless
+@Singleton
 public class CounterSingleton implements CounterInterface {
 
 	private int count = 0;
