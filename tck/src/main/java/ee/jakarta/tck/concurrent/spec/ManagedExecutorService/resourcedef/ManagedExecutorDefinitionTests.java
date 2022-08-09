@@ -64,6 +64,7 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 				.addPackages(false, getFrameworkPackage(), ManagedExecutorDefinitionTests.class.getPackage())
 				.deleteClasses(
 						AppBean.class,
+						ManagedExecutorDefinitionWebBean.class,
 						ManagedExecutorDefinitionServlet.class,
 						ManagedExecutorDefinitionOnEJBServlet.class,
 						ContextServiceDefinitionServlet.class)

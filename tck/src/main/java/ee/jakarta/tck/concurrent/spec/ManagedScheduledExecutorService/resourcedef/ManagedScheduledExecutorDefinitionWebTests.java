@@ -57,7 +57,7 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 						ContextServiceDefinitionServlet.class,
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionWebBean.class)
-				.addAsWebInfResource(ManagedScheduledExecutorDefinitionWebTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml")
+				.deleteClasses(ManagedScheduledExecutorDefinitionBean.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		return war;

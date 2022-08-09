@@ -58,6 +58,7 @@ public class ManagedExecutorDefinitionWebTests extends TestClient{
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionWebBean.class,
 						ContextServiceDefinitionServlet.class)
+				.deleteClasses(ManagedExecutorDefinitionBean.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		return war;

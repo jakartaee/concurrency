@@ -65,13 +65,13 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 				.addPackages(false, getFrameworkPackage(), ManagedScheduledExecutorDefinitionTests.class.getPackage())
 				.deleteClasses(
 						ReqBean.class,
+						ManagedScheduledExecutorDefinitionWebBean.class,
 						ManagedScheduledExecutorDefinitionServlet.class,
 						ManagedScheduledExecutorDefinitionOnEJBServlet.class)
 				.addClasses(
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionBean.class)
 				.addAsManifestResource(ManagedScheduledExecutorDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-//				TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedScheduledExecutorDefinitionTests.ear").addAsModules(war, jar);
 		
