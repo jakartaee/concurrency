@@ -1,0 +1,29 @@
+= Jakarta Concurrency
+:toc: auto
+
+== Introduction
+
+Jakarta Concurrency provides a specification document, API and TCK for using concurrency from application components without compromising container integrity while still preserving the Jakarta EE platform's fundamental benefits.
+The EE4J project that implements this api is also on [GitHub](https://github.com/eclipse-ee4j/concurrency-ri).
+
+This project is part of the overall Jakarta EE platform and is a project within the Eclipse EE4J Project. Please see the [Eclipse EE4J Project](https://projects.eclipse.org/projects/ee4j) for details of the Top Level project.
+
+
+== Code of Conduct
+
+This project is governed by the Eclipse Foundation Community Code of Conduct. By participating, you are expected to uphold this code of conduct. Please report unacceptable behavior to codeofconduct@eclipse.org.
+
+== Getting Help
+
+Having trouble with Jakarta Concurrency? We'd love to help!
+Report bugs with Jakarta Concurrency at https://github.com/jakartaee/concurrency/issues
+
+Besides, we have a [mailing list](https://accounts.eclipse.org/mailing-list/cu-dev) for discussions.
+
+== Building from Source
+
+You don’t need to build from source to use the project, but you can do so with Maven and Java 8 or higher.
+
+    mvn clean install
+
+We have a [Jenkins Instance](https://ci.eclipse.org/cu/) set up for building and testing.
