@@ -1,7 +1,7 @@
 :sectnums:
 = Jakarta Concurrency Specification, Version 3.0
 
-Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
@@ -2523,7 +2523,7 @@ CDI managed bean method to run asynchronously. The CDI managed bean must
 not be a Jakarta Enterprise Bean, and neither the method nor its class
 can be annotated with the MicroProfile Asynchronous annotation.
 
-Each asynchronous method execution corresponds to a managed
+Each invocation of an asynchronous method by the user corresponds to a managed
 `java.util.concurrent.CompletableFuture` instance that is backed by a
 `jakarta.enterprise.concurrent.ManagedExecutorService` as its default
 asynchronous execution facility. Its dependent stages
@@ -2533,6 +2533,17 @@ which also manages the propagation of context to completion stage actions.
 Application code, including from within the asynchronous method, can query
 the status of the completable future instance and can choose to complete
 it at any time and by any means.
+
+==== Scheduled Asynchronous Methods
+
+The `runAt` attribute of `Asynchronous` allows schedules to be assigned
+to asynchronous methods, such that the
+`java.util.concurrent.CompletableFuture` for the asynchronous method
+represents the completion of all executions in the schedule.
+With each execution, the method indicates that subsequent executions are
+needed by returning a `null` result value. The Jakarta EE Product attempts
+to run the method at its scheduled times until its future is completed
+or the method returns a non-null result value or raises an exception.
 
 ==== Application Component Provider’s Responsibilities
 
@@ -2639,7 +2650,8 @@ implementation by means of the
 Provider completes this instance upon completion of the completion stage
 that is returned by the asynchronous method implementation, which is a
 no-op when the asynchronous method implementation chooses to return the
-same instance. If the asynchronous method return type is `void` or if the
+same instance. If the asynchronous method return type is `void`
+and the asynchronous method does not have a schedule, or if the
 asynchronous method implementation raises an error or exception, the
 Jakarta EE Product Provider completes this instance upon return from the
 asynchronous method implementation. The Jakarta EE Product Provider
