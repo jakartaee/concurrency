@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,6 +22,7 @@ import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import org.junit.Test;
 
@@ -314,6 +315,87 @@ public class CronTriggerTest {
 
         time = trigger.getNextRunTime(new LastExecutionImpl(17, time), scheduledAt);
         assertEquals(ZonedDateTime.of(2021, 9, 30, 10, 0, 0, 0, zone), time); // last
+    }
+
+    /**
+     * Verify that a cron trigger that runs daily at noon can be properly applied to all hours of the day.
+     */
+    @Test
+    public void testDailyAtNoon() {
+        CronTrigger trigger = new CronTrigger("0 12 * * *", ZoneOffset.UTC);
+        ZonedDateTime next;
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 0, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 1, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 2, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 3, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 4, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 5, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 6, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 7, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 8, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 9, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 10, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 11, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 22, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 13, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 14, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 15, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 16, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 17, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 18, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 19, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 20, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 21, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 22, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
+
+        next = trigger.getNextRunTime(null, ZonedDateTime.of(2023, 4, 22, 23, 0, 0, 0, ZoneOffset.UTC));
+        assertEquals(ZonedDateTime.of(2023, 4, 23, 12, 0, 0, 0, ZoneOffset.UTC), next);
     }
 
     /**
