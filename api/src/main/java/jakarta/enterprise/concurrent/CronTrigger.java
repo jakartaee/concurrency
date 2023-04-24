@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -501,12 +501,17 @@ public class CronTrigger implements ZonedTrigger {
      */
     private ZonedDateTime nextHour(final int h, final int d, final int l, final int dayOfMonth,
                                    final int m, final int year, final ZonedDateTime time) {
-        ZonedDateTime dst = ZonedDateTime.of(year, months[m], dayOfMonth,
-                                             hours[h], minutes[0], seconds[0], 0, time.getZone());
-        ZonedDateTime std = dst.plusHours(1);
-        if (dst.getHour() == std.getHour() && time.isAfter(dst) && time.isBefore(std)) {
-            return std; // Daylight Saving Time --> Standard Time
-        } else if (h + 1 < hours.length) {
+        // Determine if the same hour can be kept due to transition from Daylight Saving Time to Standard Time:
+        if (h >= 0) {
+            ZonedDateTime dst = ZonedDateTime.of(year, months[m], dayOfMonth,
+                                                 hours[h], minutes[0], seconds[0], 0, time.getZone());
+            ZonedDateTime std = dst.plusHours(1);
+            if (dst.getHour() == std.getHour() && time.isAfter(dst) && time.isBefore(std)) {
+                return std; // Daylight Saving Time --> Standard Time
+            }
+        }
+
+        if (h + 1 < hours.length) {
             return ZonedDateTime.of(year, months[m], dayOfMonth,
                                     hours[h + 1], minutes[0], seconds[0], 0, time.getZone());
         } else {
