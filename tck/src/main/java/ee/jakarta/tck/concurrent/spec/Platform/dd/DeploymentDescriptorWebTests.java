@@ -15,8 +15,6 @@
  */
 package ee.jakarta.tck.concurrent.spec.Platform.dd;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;
-
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -24,13 +22,14 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
+import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
-import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 /**
@@ -38,6 +37,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * and managed-thread-factory defined in a deployment descriptor.
  */
 @Web
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
 public class DeploymentDescriptorWebTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
@@ -47,11 +47,7 @@ public class DeploymentDescriptorWebTests extends TestClient{
     public static WebArchive createDeployment() {
         
         WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
-                .addPackages(false,
-                		DeploymentDescriptorWebTests.class.getPackage(),
-                        getFrameworkPackage(),
-                        getContextPackage(),
-                        getContextProvidersPackage())
+                .addPackages(false, DeploymentDescriptorWebTests.class.getPackage())
                 .addAsServiceProvider(ThreadContextProvider.class.getName(),
                         IntContextProvider.class.getName(),
                         StringContextProvider.class.getName())

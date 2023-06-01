@@ -25,9 +25,12 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
+@Common({PACKAGE.TASKS})
 public class APITests extends TestClient {
 	
 	@ArquillianResource
@@ -36,7 +39,7 @@ public class APITests extends TestClient {
 	@Deployment(name="APITests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), APITests.class.getPackage());
+				.addPackages(true, APITests.class.getPackage());
 	}
 	
 	@Override

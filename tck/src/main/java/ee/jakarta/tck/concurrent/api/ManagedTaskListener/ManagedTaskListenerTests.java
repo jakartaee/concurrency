@@ -32,15 +32,17 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 
 @Web
-public class ManagedTaskListenerTests extends ArquillianTests {
+@Common({PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS})
+public class ManagedTaskListenerTests {
 
 	private static final TestLogger log = TestLogger.get(ManagedTaskListenerTests.class);
 
@@ -48,7 +50,7 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 	@Deployment(name="ManagedTaskListenerTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonManagedTaskListener(),  ManagedTaskListenerTests.class.getPackage());
+				.addPackages(true,  ManagedTaskListenerTests.class.getPackage());
 	}
 	
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();

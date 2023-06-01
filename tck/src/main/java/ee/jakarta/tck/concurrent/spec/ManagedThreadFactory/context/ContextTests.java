@@ -24,15 +24,15 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
 @Full
+@Common({PACKAGE.TASKS})
 public class ContextTests extends TestClient {
 	
 	@ArquillianResource
@@ -41,7 +41,7 @@ public class ContextTests extends TestClient {
 	@Deployment(name="ContextTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), ContextTests.class.getPackage())
+				.addPackages(true, ContextTests.class.getPackage())
 				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
 				.deleteClass(SecurityTestInterface.class)
 				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");

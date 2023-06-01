@@ -23,14 +23,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManageableThread;
 
 @Web
-public class ManageableThreadTests extends ArquillianTests {
+public class ManageableThreadTests {
 
 	private static final TestLogger log = TestLogger.get(ManageableThreadTests.class);
 	
@@ -38,7 +37,7 @@ public class ManageableThreadTests extends ArquillianTests {
 	@Deployment(name="ManageableThreadTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), ManageableThreadTests.class.getPackage());
+				.addPackages(true,  ManageableThreadTests.class.getPackage());
 	}
 
 	/*

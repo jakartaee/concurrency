@@ -26,21 +26,23 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.common.RunnableTask;
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
 @Web
-public class ManagedTaskTests extends ArquillianTests {
+@Common({PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS})
+public class ManagedTaskTests {
 	
 	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="ManagedTaskTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonManagedTaskListener(), ManagedTaskTests.class.getPackage());
+				.addPackages(true, ManagedTaskTests.class.getPackage());
 	}
 
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();

@@ -24,9 +24,12 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
+@Common({PACKAGE.SIGNATURE})
 public class SignatureTests extends TestClient {
 
 	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
@@ -39,7 +42,7 @@ public class SignatureTests extends TestClient {
 	@Deployment(name = "SignatureTests", testable = false)
 	public static WebArchive createDeployment() {
 		WebArchive web = ShrinkWrap.create(WebArchive.class, "signatureTest.war")
-				.addPackages(true, getFrameworkPackage(), getSignaturePackage(), SignatureTests.class.getPackage())
+				.addPackages(true, SignatureTests.class.getPackage())
 				.addAsResources(SignatureTests.class.getPackage(), SIG_MAP_NAME, SIG_PKG_NAME,
 						SIG_FILE_NAME);
 

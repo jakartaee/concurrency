@@ -36,7 +36,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Deployment(name="ForbiddenAPIServletTests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), ForbiddenAPIServletTests.class.getPackage());
+				.addPackages(true,  ForbiddenAPIServletTests.class.getPackage());
 	}
 	
 	@Override

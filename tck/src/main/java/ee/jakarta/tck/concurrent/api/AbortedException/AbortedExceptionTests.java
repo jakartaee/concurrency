@@ -23,13 +23,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.AbortedException;
 
 @Web
-public class AbortedExceptionTests extends ArquillianTests {
+public class AbortedExceptionTests {
 	
 	private static final TestLogger log = TestLogger.get(AbortedExceptionTests.class);
 	
@@ -37,7 +36,7 @@ public class AbortedExceptionTests extends ArquillianTests {
 	@Deployment(name="AbortedExceptionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), AbortedExceptionTests.class.getPackage());
+				.addPackages(true, AbortedExceptionTests.class.getPackage());
 	}
 
 	/*

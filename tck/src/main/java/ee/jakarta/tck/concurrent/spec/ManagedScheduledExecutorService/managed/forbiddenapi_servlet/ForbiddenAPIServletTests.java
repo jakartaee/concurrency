@@ -25,9 +25,12 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
+@Common({PACKAGE.FIXED_COUNTER})
 public class ForbiddenAPIServletTests extends TestClient {
 
 	@ArquillianResource
@@ -36,7 +39,7 @@ public class ForbiddenAPIServletTests extends TestClient {
 	@Deployment(name="ForbiddenAPIServletTests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonFixedCounterPackage(), ForbiddenAPIServletTests.class.getPackage());
+				.addPackages(true, ForbiddenAPIServletTests.class.getPackage());
 	}
 	
 	@Override

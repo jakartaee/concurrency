@@ -25,28 +25,27 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
+import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
-import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
-import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
 @Full
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
 public class ContextPropagationTests extends TestClient {
 	
 	@Deployment(name="ContextPropagationTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagationTests_web.war")
-				.addPackages(true, getFrameworkPackage(), getContextPackage(), getContextProvidersPackage())
 				.addClasses(
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
@@ -59,7 +58,7 @@ public class ContextPropagationTests extends TestClient {
 				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationTests.class.getPackage())
+				.addPackages(true,  ContextPropagationTests.class.getPackage())
 				.deleteClasses(
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,

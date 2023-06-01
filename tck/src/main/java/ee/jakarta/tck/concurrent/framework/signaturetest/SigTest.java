@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Oracle and/or its affiliates and others.
+ * Copyright (c) 2022, 2023 Oracle and/or its affiliates and others.
  * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -21,9 +21,8 @@
 
 package ee.jakarta.tck.concurrent.framework.signaturetest;
 
-import java.io.PrintWriter;
 import java.io.PrintStream;
-
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**

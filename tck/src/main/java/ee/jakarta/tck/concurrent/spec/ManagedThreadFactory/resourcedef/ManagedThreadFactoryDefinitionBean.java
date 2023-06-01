@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,14 +15,13 @@
  */
 package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.resourcedef;
 
-import jakarta.ejb.Local;
-import jakarta.ejb.Stateless;
-import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
+import jakarta.ejb.Local;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 /**
  * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet}

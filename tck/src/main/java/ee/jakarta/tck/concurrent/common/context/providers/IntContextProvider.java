@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,27 +13,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spi.context;
+package ee.jakarta.tck.concurrent.common.context.providers;
 
 import java.util.Map;
 
-import ee.jakarta.tck.concurrent.common.context.StringContext;
+import ee.jakarta.tck.concurrent.common.context.IntContext;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 
 /**
- * Thread context provider for a mock context type that consists of a String value.
+ * Thread context provider for a mock context type that consists of an int value.
  */
-public class StringContextProvider implements ThreadContextProvider {
+public class IntContextProvider implements ThreadContextProvider {
     public ThreadContextSnapshot currentContext(final Map<String, String> props) {
-        return new StringContextSnapshot(StringContext.get());
+        return new IntContextSnapshot(IntContext.get());
     }
 
     public ThreadContextSnapshot clearedContext(final Map<String, String> props) {
-        return new StringContextSnapshot("");
+        return new IntContextSnapshot(0);
     }
 
     public String getThreadContextType() {
-        return StringContext.NAME;
+        return IntContext.NAME;
     }
 }

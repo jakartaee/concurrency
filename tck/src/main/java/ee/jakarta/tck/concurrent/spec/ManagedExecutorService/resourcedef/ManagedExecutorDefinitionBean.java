@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,12 +15,12 @@
  */
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.resourcedef;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 /**
  * ContextServiceDefinitions are defined under

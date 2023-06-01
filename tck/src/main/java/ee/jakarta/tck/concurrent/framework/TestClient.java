@@ -39,7 +39,7 @@ import org.junit.jupiter.api.TestInfo;
  * The TestClient class will then confirm that it recieved a successful outcome from the test.
  *
  */
-public abstract class TestClient extends ArquillianTests {
+public abstract class TestClient {
 
 	private static final TestLogger log = TestLogger.get(TestClient.class);
 

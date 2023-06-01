@@ -15,9 +15,9 @@
  */
 package ee.jakarta.tck.concurrent.spec.signature;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Method;

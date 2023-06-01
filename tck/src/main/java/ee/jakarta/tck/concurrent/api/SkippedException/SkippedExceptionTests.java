@@ -23,13 +23,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.SkippedException;
 
 @Web
-public class SkippedExceptionTests extends ArquillianTests {
+public class SkippedExceptionTests {
 
 	private static final TestLogger log = TestLogger.get(SkippedExceptionTests.class);
 	
@@ -37,7 +36,7 @@ public class SkippedExceptionTests extends ArquillianTests {
 	@Deployment(name="SkippedExceptionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), SkippedExceptionTests.class.getPackage());
+				.addPackages(true,  SkippedExceptionTests.class.getPackage());
 	}
 
 	/*

@@ -19,27 +19,23 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import jakarta.ejb.EJB;
-
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
+import jakarta.ejb.EJB;;
 
 @Web
+@Common({PACKAGE.TASKS, PACKAGE.COUNTER})
 public class InheritedAPIWebTests extends TestClient {
 	
 	@Deployment(name="InheritedAPITests")
 	public static WebArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
-				.addPackages(true,
-						InheritedAPIWebTests.class.getPackage(),
-						getFrameworkPackage(),
-						getCommonPackage(),
-						getCommonCounterPackage())
+				.addPackages(true, InheritedAPIWebTests.class.getPackage())
 				.deleteClasses(InheritedAPIWebTests.class, InheritedAPITests.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
 		return war;

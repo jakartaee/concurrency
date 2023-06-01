@@ -22,22 +22,22 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
+import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
-import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
-import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
-
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;;
 
 @Web
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
 public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 	
 	@ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
@@ -50,11 +50,7 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 	public static WebArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
-				.addPackages(false,
-						ManagedScheduledExecutorDefinitionWebTests.class.getPackage(),
-						getFrameworkPackage(), 
-						getContextPackage(),
-						getContextProvidersPackage())
+				.addPackages(false, ManagedScheduledExecutorDefinitionWebTests.class.getPackage())
 				.addClasses(
 						ContextServiceDefinitionServlet.class,
 						ContextServiceDefinitionInterface.class,

@@ -36,7 +36,7 @@ public class InheritedAPITests extends TestClient {
 	@Deployment(name="InheritedAPITests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
+				.addPackages(true,  InheritedAPITests.class.getPackage());
 	}
 	
 	@Override

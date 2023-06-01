@@ -41,7 +41,7 @@ public class ContextPropagationServletTests extends TestClient {
 	@Deployment(name = APP_NAME_PROXY, testable=false)
 	public static WebArchive createDeployment1() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_PROXY + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClass(WorkInterfaceServlet.class)
 				.addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
 	}
@@ -49,14 +49,14 @@ public class ContextPropagationServletTests extends TestClient {
 	@Deployment(name = APP_NAME_WORK, testable=false)
 	public static WebArchive createDeployment2() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_WORK + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClass(ProxyCreatorServlet.class);
 	}
 	
 	@Deployment(name = APP_NAME_DESERIALIZE, testable=false)
 	public static WebArchive createDeployment3() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_DESERIALIZE + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
 	}
 	

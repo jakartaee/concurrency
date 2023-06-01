@@ -22,7 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import javax.naming.InitialContext;
 
-import ee.jakarta.tck.concurrent.common.CommonTriggers;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;

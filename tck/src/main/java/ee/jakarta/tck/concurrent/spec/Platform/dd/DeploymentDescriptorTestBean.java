@@ -24,21 +24,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.concurrent.TimeoutException;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
-
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @Local(DeploymentDescriptorTestBeanInterface.class)
 @Stateless

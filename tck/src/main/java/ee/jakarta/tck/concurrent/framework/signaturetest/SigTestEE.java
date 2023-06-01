@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,9 +19,8 @@ package ee.jakarta.tck.concurrent.framework.signaturetest;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.PrintStream;
-
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Properties;
 

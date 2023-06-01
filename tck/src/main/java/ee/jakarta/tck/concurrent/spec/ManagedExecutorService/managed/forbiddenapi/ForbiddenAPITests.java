@@ -31,7 +31,7 @@ public class ForbiddenAPITests extends TestClient {
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, getFrameworkPackage(), ForbiddenAPITests.class.getPackage());
+				.addPackages(true,  ForbiddenAPITests.class.getPackage());
 				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 	}
 

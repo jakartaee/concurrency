@@ -20,29 +20,26 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import jakarta.ejb.EJB;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
 @Full
+@Common({PACKAGE.TASKS, PACKAGE.COUNTER})
 public class InheritedAPITests extends TestClient {
 	
 	@Deployment(name="InheritedAPITests")
 	public static EnterpriseArchive createDeployment() {
 		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage() ,getCommonCounterPackage())
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.FullProvider.class);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
-				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+				.addPackages(true,  InheritedAPITests.class.getPackage());
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
 		

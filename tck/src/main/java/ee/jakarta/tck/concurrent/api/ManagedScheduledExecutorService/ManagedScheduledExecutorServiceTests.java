@@ -25,9 +25,12 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
+@Common({PACKAGE.TASKS})
 public class ManagedScheduledExecutorServiceTests extends TestClient {
 	
 	@ArquillianResource
@@ -37,7 +40,7 @@ public class ManagedScheduledExecutorServiceTests extends TestClient {
 	@Deployment(name="ManagedScheduledExecutorServiceTests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), ManagedScheduledExecutorServiceTests.class.getPackage())
+				.addPackages(true, ManagedScheduledExecutorServiceTests.class.getPackage())
 				.addAsWebInfResource(ManagedScheduledExecutorServiceTests.class.getPackage(), "web.xml", "web.xml");
 	}
 	

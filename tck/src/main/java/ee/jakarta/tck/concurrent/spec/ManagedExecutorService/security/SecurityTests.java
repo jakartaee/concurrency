@@ -25,16 +25,15 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
 @Full
+@Common({PACKAGE.TASKS})
 public class SecurityTests extends TestClient {
 		
 	@ArquillianResource
@@ -43,7 +42,7 @@ public class SecurityTests extends TestClient {
 	@Deployment(name="SecurityTests", testable=false)
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
+				.addPackages(true, SecurityTests.class.getPackage())
 				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar;
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")

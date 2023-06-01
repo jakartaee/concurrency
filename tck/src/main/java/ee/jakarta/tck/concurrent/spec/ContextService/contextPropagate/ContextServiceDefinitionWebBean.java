@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,15 +18,15 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import ee.jakarta.tck.concurrent.common.context.IntContext;
+import ee.jakarta.tck.concurrent.common.context.StringContext;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import ee.jakarta.tck.concurrent.common.context.IntContext;
-import ee.jakarta.tck.concurrent.common.context.StringContext;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @ContextServiceDefinition(name = "java:app/concurrent/EJBContextA",
                           propagated = { APPLICATION, IntContext.NAME },

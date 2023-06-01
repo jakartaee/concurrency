@@ -28,9 +28,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import ee.jakarta.tck.concurrent.common.CommonTasks;
 import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;

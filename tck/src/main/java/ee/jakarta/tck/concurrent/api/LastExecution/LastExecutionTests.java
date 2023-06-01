@@ -32,15 +32,17 @@ import org.junit.jupiter.api.TestInfo;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
 @Web
-public class LastExecutionTests extends ArquillianTests {
+@Common({PACKAGE.FIXED_COUNTER})
+public class LastExecutionTests {
 
 	public static final String IDENTITY_NAME_TEST_ID = "lastExecutionGetIdentityNameTest";
 	
@@ -48,7 +50,7 @@ public class LastExecutionTests extends ArquillianTests {
 	@Deployment(name="LastExecutionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonFixedCounterPackage() ,LastExecutionTests.class.getPackage());
+				.addPackages(true ,LastExecutionTests.class.getPackage());
 	}
 	
 	@BeforeEach

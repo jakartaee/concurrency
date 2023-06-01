@@ -24,22 +24,22 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
+import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
-import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
 @Full
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
 public class ManagedExecutorDefinitionTests extends TestClient{
 	
 	@ArquillianResource(ManagedExecutorDefinitionServlet.class)
@@ -52,10 +52,6 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedExecutorDefinitionTests_web.war")
-				.addPackages(false,
-						getFrameworkPackage(), 
-						getContextPackage(),
-						getContextProvidersPackage())
 				.addClasses(
 						AppBean.class,
 						ManagedExecutorDefinitionServlet.class,
@@ -64,7 +60,7 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedExecutorDefinitionTests_ejb.jar")
-				.addPackages(false, getFrameworkPackage(), ManagedExecutorDefinitionTests.class.getPackage())
+				.addPackages(false,  ManagedExecutorDefinitionTests.class.getPackage())
 				.deleteClasses(
 						AppBean.class,
 						ManagedExecutorDefinitionWebBean.class,

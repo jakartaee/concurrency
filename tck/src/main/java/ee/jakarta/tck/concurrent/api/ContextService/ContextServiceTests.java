@@ -26,14 +26,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Web
-public class ContextServiceTests extends ArquillianTests {
+public class ContextServiceTests {
 
 	private static final TestLogger log = TestLogger.get(ContextServiceTests.class);
 	
@@ -41,7 +40,7 @@ public class ContextServiceTests extends ArquillianTests {
 	@Deployment(name="ContextServiceTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), ContextServiceTests.class.getPackage());
+				.addPackages(true,  ContextServiceTests.class.getPackage());
 	}
 
 	/*

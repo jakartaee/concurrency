@@ -36,7 +36,7 @@ public class TransactionTests extends TestClient {
 	@Deployment(name="TransactionTests", testable=false)
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), TransactionTests.class.getPackage());
+				.addPackages(true,  TransactionTests.class.getPackage());
 	}
 	
 	@Override

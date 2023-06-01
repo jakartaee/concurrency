@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.naming.InitialContext;
 
-import ee.jakarta.tck.concurrent.common.RunnableTask;
+import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
