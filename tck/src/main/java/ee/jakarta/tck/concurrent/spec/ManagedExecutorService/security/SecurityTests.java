@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,14 +24,16 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
-@Test(groups = JAKARTAEE_FULL)
+@Tag(JAKARTAEE_FULL)
 public class SecurityTests extends TestClient {
 		
 	@ArquillianResource
@@ -69,12 +71,12 @@ public class SecurityTests extends TestClient {
 	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
 	 * then submit a task by ManagedExecutorService in which call a ejb that
 	 * requires role manager.
-         *
-         * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-         * fix: https://github.com/jakartaee/concurrency/pull/218  
-         * Can be reenabled in next release of Concurrency
+     *
+     * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
+     * fix: https://github.com/jakartaee/concurrency/pull/218  
+     * Can be reenabled in next release of Concurrency
 	 */
-	@Test(enabled = false)
+	@Disabled
 	public void managedExecutorServiceAPISecurityTest() {
 		runTest(baseURL);
 	}

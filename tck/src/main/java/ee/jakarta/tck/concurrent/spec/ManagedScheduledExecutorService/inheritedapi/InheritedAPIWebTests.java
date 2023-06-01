@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,8 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
@@ -27,7 +28,7 @@ import jakarta.ejb.EJB;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
 
-@Test(groups = JAKARTAEE_WEB)
+@Tag(JAKARTAEE_WEB)
 public class InheritedAPIWebTests extends TestClient {
 	
 	@Deployment(name="InheritedAPITests")

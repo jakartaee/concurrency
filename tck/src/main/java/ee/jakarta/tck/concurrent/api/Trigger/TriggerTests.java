@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,8 +26,9 @@ import java.util.concurrent.TimeoutException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.CommonTriggers;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
@@ -50,7 +50,7 @@ public class TriggerTests extends ArquillianTests {
 						TriggerTests.class.getPackage());
 	}
 
-	@BeforeMethod
+	@BeforeEach
 	public void reset() {
 		StaticCounter.reset();
 	}
@@ -65,7 +65,7 @@ public class TriggerTests extends ArquillianTests {
          *  Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/228
          *  Can be reenabled in next release of Jakarta Concurrency
 	 */
-	@Test(enabled = false)
+	@Disabled
 	public void triggerGetNextRunTimeTest() throws Exception {
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new CounterRunnableTask(),
 				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));

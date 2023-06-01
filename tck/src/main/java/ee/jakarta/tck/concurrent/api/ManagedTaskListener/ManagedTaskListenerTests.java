@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,8 +23,8 @@ import java.util.concurrent.Future;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
@@ -47,7 +47,7 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 	
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
-	@AfterClass
+	@AfterAll
 	public void cleanup() {
 		managedTaskListener.clearEvents();
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
@@ -39,23 +40,6 @@ public class TransactionTests extends TestClient {
 	}
 
 	/*
-	 * @testName: testCommitTransactionWithManagedScheduledExecutorService
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
-	 * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;CONCURRENCY:SPEC:67;
-	 * CONCURRENCY:SPEC:69;CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
-	 * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-	 * 
-	 * @test_Strategy: get UserTransaction inside one task submitted by
-	 * ManagedScheduledExecutorService.it support user-managed global transaction
-	 * demarcation using the jakarta.transaction.UserTransaction interface.
-	 */
-	@Test(dependsOnMethods= {"testRollbackTransactionWithManagedScheduledExecutorService"}) //TODO rewrite test logic to avoid duplicate key violation
-	public void testCommitTransactionWithManagedScheduledExecutorService() {
-		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
-	}
-
-	/*
 	 * @testName: testRollbackTransactionWithManagedScheduledExecutorService
 	 * 
 	 * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
@@ -68,9 +52,28 @@ public class TransactionTests extends TestClient {
 	 * task.
 	 */
 	@Test
+	@Order(1)
 	public void testRollbackTransactionWithManagedScheduledExecutorService() {
 		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
 	}
+	
+	/*
+     * @testName: testCommitTransactionWithManagedScheduledExecutorService
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
+     * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;CONCURRENCY:SPEC:67;
+     * CONCURRENCY:SPEC:69;CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
+     * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
+     * 
+     * @test_Strategy: get UserTransaction inside one task submitted by
+     * ManagedScheduledExecutorService.it support user-managed global transaction
+     * demarcation using the jakarta.transaction.UserTransaction interface.
+     */
+    @Test //TODO rewrite test logic to avoid duplicate key violation
+    @Order(2)
+    public void testCommitTransactionWithManagedScheduledExecutorService() {
+        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
+    }
 
 	/*
 	 * @testName: testCancelTransactionWithManagedScheduledExecutorService
@@ -85,6 +88,7 @@ public class TransactionTests extends TestClient {
 	 * ManagedScheduledExecutorService.cancel the task after submit one task.
 	 */
 	@Test
+	@Order(3)
 	public void testCancelTransactionWithManagedScheduledExecutorService() {
 		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,7 +23,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
@@ -34,7 +36,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
-@Test(groups = JAKARTAEE_WEB)
+@Tag(JAKARTAEE_WEB)
 public class DeploymentDescriptorWebTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
@@ -79,7 +81,7 @@ public class DeploymentDescriptorWebTests extends TestClient{
     }
 
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Test(enabled = false)
+    @Disabled
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
         runTest(baseURL);
     }

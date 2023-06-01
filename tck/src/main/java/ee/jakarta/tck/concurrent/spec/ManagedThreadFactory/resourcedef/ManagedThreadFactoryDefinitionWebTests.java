@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,7 +21,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
@@ -34,8 +36,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
 
-
-@Test(groups = JAKARTAEE_WEB)
+@Tag(JAKARTAEE_WEB)
 public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
 	
 	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
@@ -70,13 +71,13 @@ public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
 	}
 	
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Test(enabled = false)
+	@Disabled
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
 		runTest(baseURL);
     }
 	
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Test(enabled = false)
+	@Disabled
     public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
 		runTest(requestURL);
@@ -94,13 +95,13 @@ public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
     }
 
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Test(enabled = false)
+	@Disabled
     public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
 		runTest(baseURL);
     }
 	
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Test(enabled = false)
+	@Disabled
     public void testParallelStreamBackedByManagedThreadFactoryEJB() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testName);
 		runTest(requestURL);

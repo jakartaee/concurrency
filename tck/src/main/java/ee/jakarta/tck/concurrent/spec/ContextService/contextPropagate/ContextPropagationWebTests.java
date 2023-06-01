@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
@@ -34,7 +36,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
 
-@Test(groups = JAKARTAEE_WEB)
+@Tag(JAKARTAEE_WEB)
 public class ContextPropagationWebTests extends TestClient {
 	
 	@Deployment(name="ContextPropagationTests", testable=false)
@@ -74,14 +76,14 @@ public class ContextPropagationWebTests extends TestClient {
 	URL ejbContextURL;
 
 	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
-	@Test(enabled = false)
+	@Disabled
 	public void testSecurityClearedContext() {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
 		runTest(requestURL);
 	}
 
 	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
-	@Test(enabled = false)
+	@Disabled
 	public void testSecurityUnchangedContext() {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
 		runTest(requestURL);
@@ -126,7 +128,7 @@ public class ContextPropagationWebTests extends TestClient {
 	 * verify JNDI Context.
 	 *
 	 */
-	@Test (enabled = false) //This test will return JNDIContextWeb because we are running with web.xml and not ejb-jar.xml
+	@Disabled //This test will return JNDIContextWeb because we are running with web.xml and not ejb-jar.xml
 	public void testJNDIContextAndCreateProxyInEJB() {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testName);
 		String resp = runTestWithResponse(requestURL, null);
@@ -248,7 +250,7 @@ public class ContextPropagationWebTests extends TestClient {
      * though they were CLEARED.
      * TCK challenge: https://github.com/jakartaee/concurrency/issues/253
      */
-	@Test(enabled = false)
+	@Disabled
     public void testContextualFunction() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
 		runTest(requestURL);
