@@ -29,10 +29,11 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;
 
-@Tag(JAKARTAEE_WEB)
+@Web
 public class SecurityWebTests extends TestClient {
 	
 	@ArquillianResource(SecurityServlet.class)

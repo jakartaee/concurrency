@@ -32,13 +32,14 @@ import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
-@Tag(JAKARTAEE_FULL)
+@Full
 public class ContextPropagationTests extends TestClient {
 	
 	@Deployment(name="ContextPropagationTests", testable=false)

@@ -16,6 +16,8 @@
 
 package ee.jakarta.tck.concurrent.api.Trigger;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -36,8 +38,10 @@ import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.SkippedException;
 
+@Web
 public class TriggerTests extends ArquillianTests {
 	
 	//TODO deploy as EJB and JSP artifacts

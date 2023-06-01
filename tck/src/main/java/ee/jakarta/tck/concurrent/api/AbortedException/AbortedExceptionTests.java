@@ -16,6 +16,8 @@
 
 package ee.jakarta.tck.concurrent.api.AbortedException;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -23,8 +25,10 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.AbortedException;
 
+@Web
 public class AbortedExceptionTests extends ArquillianTests {
 	
 	private static final TestLogger log = TestLogger.get(AbortedExceptionTests.class);

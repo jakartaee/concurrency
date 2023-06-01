@@ -16,6 +16,10 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedTaskListener;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -32,8 +36,10 @@ import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 
+@Web
 public class ManagedTaskListenerTests extends ArquillianTests {
 
 	private static final TestLogger log = TestLogger.get(ManagedTaskListenerTests.class);
@@ -73,8 +79,8 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
 				TestConstants.PollInterval.toMillis());
 		List<ListenerEvent> events = managedTaskListener.events();
-		assertTrue("Listener taskAborted failed", events.contains(ListenerEvent.ABORTED));
-		assertTrue("Listener taskAborted failed", futureResult.isCancelled());
+		assertTrue(events.contains(ListenerEvent.ABORTED), "Listener taskAborted failed");
+		assertTrue(futureResult.isCancelled(), "Listener taskAborted failed");
 	}
 
 	/*
@@ -98,7 +104,7 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
 				TestConstants.PollInterval.toMillis());
 		List<ListenerEvent> events = managedTaskListener.events();
-		assertTrue("Listener taskDone failed in cancel case.", events.contains(ListenerEvent.DONE));
+		assertTrue(events.contains(ListenerEvent.DONE), "Listener taskDone failed in cancel case");
 		managedTaskListener.clearEvents();
 
 		// in normal case
@@ -107,7 +113,7 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 		TestUtil.getManagedExecutorService().submit(runtaskWithListener);
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runevents = managedTaskListener.events();
-		assertTrue("Listener TaskDone failed", runevents.contains(ListenerEvent.DONE));
+		assertTrue(runevents.contains(ListenerEvent.DONE), "Listener TaskDone failed");
 		managedTaskListener.clearEvents();
 
 		// in exception case
@@ -117,8 +123,8 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runeventsWithException = managedTaskListener.events();
 		log.fine("++ runeventsWithException : " + runeventsWithException);
-		assertTrue("Listener TaskDone failed with exception task.",
-				runeventsWithException.contains(ListenerEvent.DONE));
+		assertTrue(runeventsWithException.contains(ListenerEvent.DONE),
+		        "Listener TaskDone failed with exception task.");
 	}
 
 	/*
@@ -166,7 +172,7 @@ public class ManagedTaskListenerTests extends ArquillianTests {
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> events = managedTaskListener.events();
 		int submitAt = events.indexOf(ListenerEvent.SUBMITTED);
-		assertEquals("Listener TaskSubmitted failed to run in expected order", 0, submitAt);
+		assertEquals(0, submitAt, "Listener TaskSubmitted failed to run in expected order");
 	}
 
 }

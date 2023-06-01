@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,6 +15,8 @@
  */
 package ee.jakarta.tck.concurrent.framework;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,6 +25,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Properties;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * This class is intended to be used in conjunction with TestServlet.
@@ -43,6 +48,13 @@ public abstract class TestClient extends ArquillianTests {
 	public static final String TEST_METHOD = TestServlet.TEST_METHOD;
 	
 	public static final String nl = System.lineSeparator();
+	
+	protected String testName;
+	
+	@BeforeEach
+	public void getName(TestInfo testinfo) {
+	    testName = testinfo.getDisplayName();
+	}
 
 	//###### run test without response #####
 	/**
@@ -139,8 +151,8 @@ public abstract class TestClient extends ArquillianTests {
 			
 			log.exit("assertSuccessfulURLResponse", "Response code: " + con.getResponseCode() ,"Response body: " + outputBuilder.toString());
 
-			assertTrue("Connection returned a response code that was greater than 400", con.getResponseCode() < 400);
-			assertTrue("Output did not contain successful message: " + SUCCESS, pass);
+			assertTrue(con.getResponseCode() < 400, "Connection returned a response code that was greater than 400");
+			assertTrue(pass, "Output did not contain successful message: " + SUCCESS);
 		
 			return outputBuilder.toString();
 		} catch (IOException e) {
@@ -168,6 +180,6 @@ public abstract class TestClient extends ArquillianTests {
 	 * @param resp - the response you received from the servlet
 	 */
 	protected void assertStringInResponse(String message, String expected, String resp) {
-		assertTrue(message, resp.toLowerCase().contains(expected.toLowerCase()));
+		assertTrue(resp.toLowerCase().contains(expected.toLowerCase()), message);
 	}
 }

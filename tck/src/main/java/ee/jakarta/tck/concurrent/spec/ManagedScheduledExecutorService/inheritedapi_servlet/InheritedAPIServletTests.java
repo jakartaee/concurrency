@@ -25,7 +25,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
+@Web
 public class InheritedAPIServletTests extends TestClient {
 	
 	@ArquillianResource

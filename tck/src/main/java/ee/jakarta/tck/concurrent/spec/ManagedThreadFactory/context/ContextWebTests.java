@@ -26,10 +26,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;
 
-@Tag(JAKARTAEE_WEB)
+@Web
 public class ContextWebTests extends TestClient {
 	
 	@ArquillianResource

@@ -15,9 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.framework;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test superclass that should be extended by all test classes in this TCK. This
@@ -32,7 +30,6 @@ import org.junit.jupiter.api.TestInfo;
  * Uses JUnit method param ordering for ease of portability
  */
 public abstract class ArquillianTests {
-	private static final TestLogger log = TestLogger.get(ArquillianTests.class);
 	
 	//##### Common test packages #####
 	
@@ -68,92 +65,7 @@ public abstract class ArquillianTests {
 		return ee.jakarta.tck.concurrent.framework.signaturetest.SigTestEE.class.getPackage();
 	}
 	
-
-
-	/**
-	 * Name of the test being executed. Safe to reference inside of a test method.
-	 * Otherwise, set to null.
-	 */
-	protected String testName;
-
-	protected void setupFailure(Throwable t) {
-	    fail("Failed during setup due to an exception", t);
-	}
-
-	protected void cleanupFailure(Throwable t) {
-		fail("Failed during cleanup due to an exception", t);
-	}
-
-	// LIFECYCLE METHODS
-	@BeforeEach
-	public void testServerTestEntry(TestInfo testinfo) throws Exception {
-		testName = testinfo.getDisplayName();
-		log.enter(testName);
-	}
-
-	@AfterEach
-	public void testServerTestExit(TestInfo testinfo) throws Exception {
-	    log.exit(testName);
-		testName = null;
-	}
-
-	// ASSERTION METHODS
-	protected void assertTrue(boolean isTrue) {
-	    org.junit.jupiter.api.Assertions.assertTrue(isTrue, testName + " failed");
-	}
-
-	protected void assertTrue(String message, boolean isTrue) {
-	    org.junit.jupiter.api.Assertions.assertTrue(isTrue, message);
-	}
-
-	protected void assertFalse(boolean isFalse) {
-	    org.junit.jupiter.api.Assertions.assertFalse(isFalse, testName + " failed");
-	}
-
-	protected void assertFalse(String message, boolean isFalse) {
-	    org.junit.jupiter.api.Assertions.assertFalse(isFalse, message);
-	}
-
-	protected void assertEquals(String message, int expected, int actual) {
-	    org.junit.jupiter.api.Assertions.assertEquals(actual, expected, message);
-	}
-
-	protected void assertEquals(String message, String expected, String actual) {
-	    org.junit.jupiter.api.Assertions.assertEquals(actual, expected, message);
-	}
-
-	protected void assertNull(Object obj) {
-		org.junit.jupiter.api.Assertions.assertNull(obj,
-				testName + " failed the task should return null result, actual result=" + obj);
-	}
-
-	protected void assertNull(String message, Object obj) {
-		org.junit.jupiter.api.Assertions.assertNull(obj, message);
-	}
-
-	protected void assertNotNull(Object obj) {
-		org.junit.jupiter.api.Assertions.assertNotNull(obj,
-				testName + " failed the task should return not null result, actual result=" + obj);
-	}
-
-	protected void assertNotNull(String message, Object obj) {
-		org.junit.jupiter.api.Assertions.assertNotNull(obj, message);
-	}
-
-	protected void fail(String message) {
-		org.junit.jupiter.api.Assertions.fail(message);
-	}
-
-	protected void fail(String message, Throwable t) {
-		org.junit.jupiter.api.Assertions.fail(message, t);
-	}
-
-	protected void fail(Throwable t) {
-		org.junit.jupiter.api.Assertions.fail(testName + " failed due to an exception", t);
-	}
-	
 	protected void assertInRange(int value, int min, int max) {
-		assertTrue("Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )", 
-				value > min && value < max);
+		assertTrue(value > min && value < max, "Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )");
 	}
 }

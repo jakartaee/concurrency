@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
 import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
@@ -36,7 +37,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
-@Tag(JAKARTAEE_WEB)
+@Web
 public class DeploymentDescriptorWebTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)

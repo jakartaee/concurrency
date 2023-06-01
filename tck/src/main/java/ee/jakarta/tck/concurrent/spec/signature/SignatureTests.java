@@ -24,7 +24,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
+@Web
 public class SignatureTests extends TestClient {
 
 	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";

@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
@@ -38,7 +39,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
-@Tag(JAKARTAEE_FULL)
+@Full
 public class ManagedThreadFactoryDefinitionTests extends TestClient {
 	
 	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)

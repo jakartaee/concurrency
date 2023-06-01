@@ -16,6 +16,8 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedTask;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,9 +29,11 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.common.RunnableTask;
 import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
+@Web
 public class ManagedTaskTests extends ArquillianTests {
 	
 	//TODO deploy as EJB and JSP artifacts
@@ -65,7 +69,7 @@ public class ManagedTaskTests extends ArquillianTests {
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(testName + " failed to get expected property", managedTask.getExecutionProperties().get("key") == "value");
+			assertTrue(managedTask.getExecutionProperties().get("key") == "value", "failed to get expected property");
 		}
 		
 	}
@@ -87,7 +91,7 @@ public class ManagedTaskTests extends ArquillianTests {
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(testName + " failed to get expected managedTaskListener", managedTask.getManagedTaskListener() == managedTaskListener);
+			assertTrue(managedTask.getManagedTaskListener() == managedTaskListener, "Failed to get expected managedTaskListener");
 		}
 	}
 }

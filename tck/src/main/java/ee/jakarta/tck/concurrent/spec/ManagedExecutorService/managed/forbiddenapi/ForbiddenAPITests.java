@@ -22,8 +22,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
+@Web
 public class ForbiddenAPITests extends TestClient {
 	
 	@Deployment(name="ForbiddenAPITests")

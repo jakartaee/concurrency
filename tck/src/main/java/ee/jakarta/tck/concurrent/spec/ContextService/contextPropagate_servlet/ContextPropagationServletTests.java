@@ -16,6 +16,8 @@
 
 package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.net.URL;
 import java.util.Properties;
 

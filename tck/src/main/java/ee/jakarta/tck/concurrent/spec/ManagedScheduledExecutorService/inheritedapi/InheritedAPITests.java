@@ -25,11 +25,12 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import jakarta.ejb.EJB;
 
 import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
 
-@Tag(JAKARTAEE_FULL)
+@Full
 public class InheritedAPITests extends TestClient {
 	
 	@Deployment(name="InheritedAPITests")
