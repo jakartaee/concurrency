@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,7 +13,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spec.signature;
+package ee.jakarta.tck.concurrent.common.signaturetest;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InaccessibleObjectException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,14 +38,18 @@ import java.util.Properties;
 import java.util.Set;
 
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.signaturetest.SigTestEE;
-import ee.jakarta.tck.concurrent.framework.signaturetest.SigTestResult;
 
-public class ConcurrencySigTest extends SigTestEE {
+public class ConcurrencySignatureTestRunner extends SigTestEE {
+    
+    public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
+    public static final String SIG_MAP_NAME = "sig-test.map";
+    public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
+    
+    public static final String[] SIG_RESOURCES = {SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME};
 
-	private static final TestLogger log = TestLogger.get(ConcurrencySigTest.class);
+	private static final TestLogger log = TestLogger.get(ConcurrencySignatureTestRunner.class);
 
-	public ConcurrencySigTest() {
+	public ConcurrencySignatureTestRunner() {
 		setup();
 	}
 
@@ -148,7 +158,7 @@ public class ConcurrencySigTest extends SigTestEE {
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		try {
 			File sigfile = new File(
-					tmpdir + File.separator + SignatureTests.SIG_FILE_NAME);
+					tmpdir + File.separator + SIG_FILE_NAME);
 			if (sigfile.exists()) {
 				sigfile.delete();
 				log.info("Existing signature file deleted to create new one");
@@ -201,22 +211,22 @@ public class ConcurrencySigTest extends SigTestEE {
 		Properties mapFileAsProps = null;
 		try {
 
-			InputStream inStreamMapfile = ConcurrencySigTest.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_MAP_NAME);
+			InputStream inStreamMapfile = ConcurrencySignatureTestRunner.class.getClassLoader()
+					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_MAP_NAME);
 			File mFile = writeStreamToTempFile(inStreamMapfile, "sig-test", ".map");
 			mapFile = mFile.getCanonicalPath();
 			log.info("mapFile location is :" + mapFile);
 
-			InputStream inStreamPackageFile = ConcurrencySigTest.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_PKG_NAME);
+			InputStream inStreamPackageFile = ConcurrencySignatureTestRunner.class.getClassLoader()
+					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_PKG_NAME);
 			File pFile = writeStreamToTempFile(inStreamPackageFile, "sig-test-pkg-list", ".txt");
 			packageListFile = pFile.getCanonicalPath();
 			log.info("packageFile location is :" + packageListFile);
 
 			mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
 
-			InputStream inStreamSigFile = ConcurrencySigTest.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SignatureTests.SIG_FILE_NAME);
+			InputStream inStreamSigFile = ConcurrencySignatureTestRunner.class.getClassLoader()
+					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_FILE_NAME);
 			File sigFile = writeStreamToSigFile(inStreamSigFile);
 			log.info("signature File location is :" + sigFile.getCanonicalPath());
 			signatureRepositoryDir = System.getProperty("java.io.tmpdir");
@@ -298,6 +308,56 @@ public class ConcurrencySigTest extends SigTestEE {
 			}
 		}
 	}
+	
+    /**
+     * Ensures the test project to configured correctly to run signature tests
+     * before attempting to run signature tests.
+     */
+    public static void assertProjectSetup() {
+        // Ensure that jimage directory is set.
+        // This is where modules will be converted back to .class files for use in
+        // signature testing
+        assertNotNull(System.getProperty("jimage.dir"),
+                "The system property jimage.dir must be set in order to run the Signature test.");
+
+        // Ensure user is running on JDK 11 or higher, different JDKs produce different
+        // signatures
+        int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
+        assertTrue(javaSpecVersion >= 11, "The signature tests must be run on a JVM using Java 11 or higher.");
+
+        // Ensure user has the correct security/JDK settings to allow the plugin access
+        // to internal JDK classes.
+        Class<?> intf;
+        try {
+            // This class is just a known internal class, but we could have used any class.
+            intf = Class.forName("jdk.internal.vm.annotation.Contended");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Unable to load an internal JDK class", e);
+        }
+
+            for (Method m : intf.getDeclaredMethods()) {
+                try {
+                    m.setAccessible(true);
+                } catch (InaccessibleObjectException ioe) {
+                    // This means that this application (module) does not have access to JDK
+                    // internals via reflection
+                    String message = "Tried to call setAccessible on JDK internal method and received an InaccessibleObjectException from the JDK. "
+                            + "Give this application (module) access to internal messages using the following JVM properties: "
+                            + "--add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED "
+                            + "--add-opens java.base/jdk.internal.vm.annotation=ALL-UNNAMED";
+                    fail(message, ioe);
+                } catch (SecurityException se) {
+                    // This means that this application was running under a security manager that
+                    // did not allow the method call
+                    String message = "Tried to call setAccessible on JDK internal method and received SecurityException from the security manager. "
+                            + "Give this application permission to make this method call with the security manager using the following permissions:"
+                            + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal\"; "
+                            + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.reflect\"; "
+                            + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.vm.annotation\";";
+                    fail(message, se);
+                }
+        }
+    }
 
 	private static String resolvePath(final URL resource) {
 		if (resource == null) {

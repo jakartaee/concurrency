@@ -18,7 +18,7 @@
  * $Id$
  */
 
-package ee.jakarta.tck.concurrent.framework.signaturetest;
+package ee.jakarta.tck.concurrent.common.signaturetest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

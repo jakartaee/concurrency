@@ -17,7 +17,7 @@
 /*
  * $Id$
  */
-package ee.jakarta.tck.concurrent.framework.signaturetest;
+package ee.jakarta.tck.concurrent.common.signaturetest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

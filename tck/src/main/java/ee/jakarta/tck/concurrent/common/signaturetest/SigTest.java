@@ -19,7 +19,7 @@
  * $Id$
  */
 
-package ee.jakarta.tck.concurrent.framework.signaturetest;
+package ee.jakarta.tck.concurrent.common.signaturetest;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
