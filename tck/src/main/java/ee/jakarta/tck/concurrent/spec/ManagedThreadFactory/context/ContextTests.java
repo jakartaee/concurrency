@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -30,15 +31,16 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full
+@Full @RunAsClient
 @Common({PACKAGE.TASKS})
 public class ContextTests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ContextTests", testable=false)
+	@Deployment(name="ContextTests")
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, ContextTests.class.getPackage())
@@ -56,6 +58,9 @@ public class ContextTests extends TestClient {
 		return ear;
 	}
 	
+    @TestName
+    String testname;
+	
 	@Override
 	protected String getServletPath() {
 		return "SecurityServlet";
@@ -71,12 +76,12 @@ public class ContextTests extends TestClient {
 	 */
 	@Test
 	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 	
 	@Test
 	public void jndiClassloaderPropagationWithSecurityTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 }

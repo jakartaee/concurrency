@@ -15,6 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,8 +25,10 @@ import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
-import org.jboss.shrinkwrap.api.container.LibraryContainer;
+import org.jboss.shrinkwrap.api.container.EnterpriseContainer;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 
@@ -44,21 +47,21 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
             return;
         }
         
-        Package[] packages = (Package[]) 
-                Stream.of(testClass.getAnnotation(Common.class).value())
-                .map(PACKAGE -> PACKAGE.getPackage())
-                .collect(Collectors.toList()).toArray();
+        List<String> packages = Stream.of(testClass.getAnnotation(Common.class).value())
+                .map(pkg -> pkg.getPackageName())
+                .collect(Collectors.toList());
         
-        // If archive is a JAR or WAR
-        if (applicationArchive instanceof ClassContainer) {
-            log.info("Application Archive [" + applicationName + "] is being appended with packages [" + packages +"]");
-            ((ClassContainer<?>) applicationArchive).addPackages(true, packages);
+        if (applicationArchive instanceof WebArchive || applicationArchive instanceof JavaArchive) {
+            log.info("Application Archive [" + applicationName + "] is being appended with packages " + packages);
+            packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg) );
+            
         }
         
-        // If archive is an EAR
-        if (applicationArchive instanceof LibraryContainer) {
-            log.info("Application Archive [" + applicationName + "] is being appended with a library containing packages [" + packages +"]");
-            ((LibraryContainer<?>)applicationArchive).addAsLibrary(ShrinkWrap.create(JavaArchive.class).addPackages(true, packages));
+        if (applicationArchive instanceof EnterpriseArchive) {
+            log.info("Application Archive [" + applicationName + "] is being appended with a library containing packages " + packages);
+            JavaArchive module = ShrinkWrap.create(JavaArchive.class, "jakarta-common-module.jar");
+            packages.stream().forEach(pkg -> module.addPackage(pkg));
+            ((EnterpriseContainer<?>)applicationArchive).addAsModule(module);
         }
     }
 }

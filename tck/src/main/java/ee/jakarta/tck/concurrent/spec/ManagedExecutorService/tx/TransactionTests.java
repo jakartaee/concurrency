@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.tx;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,13 +30,13 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web
+@Web @RunAsClient
 public class TransactionTests extends TestClient {
 
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="TransactionTests", testable=false)
+	@Deployment(name="TransactionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true,  TransactionTests.class.getPackage());

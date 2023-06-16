@@ -27,7 +27,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
@@ -36,6 +35,7 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
@@ -50,13 +50,16 @@ public class LastExecutionTests {
 	@Deployment(name="LastExecutionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true ,LastExecutionTests.class.getPackage());
+				.addPackages(true, LastExecutionTests.class.getPackage());
 	}
 	
 	@BeforeEach
 	public void reset() {
 		StaticCounter.reset();
 	}
+	
+	@TestName
+	public String testname;
 
 	/*
 	 * @testName: lastExecutionGetIdentityNameTest
@@ -68,14 +71,14 @@ public class LastExecutionTests {
 	 * implements the ManagedTask interface.
 	 */
 	@Test
-	public void lastExecutionGetIdentityNameTest(TestInfo testinfo) {
+	public void lastExecutionGetIdentityNameTest() {
 
 		Map<String, String> executionProperties = new HashMap<String, String>();
 		executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testinfo.getDisplayName()));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals( LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -91,11 +94,11 @@ public class LastExecutionTests {
 	 * @test_Strategy: Result of the last execution.
 	 */
 	@Test
-	public void lastExecutionGetResultRunnableTest(TestInfo testinfo) {
+	public void lastExecutionGetResultRunnableTest() {
 		// test with runnable, LastExecution should return null
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService()
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
-						TestConstants.PollInterval.toMillis(), testinfo.getDisplayName()));
+						TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals(
@@ -112,10 +115,10 @@ public class LastExecutionTests {
 	 * @test_Strategy: Result of the last execution.
 	 */
 	@Test
-	public void lastExecutionGetResultCallableTest(TestInfo testinfo) {
+	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testinfo.getDisplayName()));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
 		assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -132,10 +135,10 @@ public class LastExecutionTests {
 	 * @test_Strategy: The last time in which the task was completed.
 	 */
 	@Test
-	public void lastExecutionGetRunningTimeTest(TestInfo testinfo) {
+	public void lastExecutionGetRunningTimeTest() {
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(
 				new CounterRunnableTask(TestConstants.PollInterval.toMillis()), null, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testinfo.getDisplayName()));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 		assertEquals(
 		        LogicDrivenTrigger.RIGHT_COUNT, // expected

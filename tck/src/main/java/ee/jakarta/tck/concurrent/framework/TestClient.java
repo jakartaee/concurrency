@@ -26,9 +26,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Properties;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
-
 /**
  * This class is intended to be used in conjunction with TestServlet.
  * TestServlets are deployed to the application server and has custom doGet/doPost methods
@@ -48,21 +45,8 @@ public abstract class TestClient {
 	public static final String TEST_METHOD = TestServlet.TEST_METHOD;
 	
 	public static final String nl = System.lineSeparator();
-	
-	protected String testName;
-	
-	@BeforeEach
-	public void getName(TestInfo testinfo) {
-	    testName = testinfo.getDisplayName();
-	}
 
 	//###### run test without response #####
-	/**
-	 * Runs test against servlet at baseURL, and assumes the testName.
-	 */
-	public void runTest(URL baseURL) {
-		runTest(baseURL, testName);
-	}
 	
 	/**
 	 * Runs test against servlet at baseURL, and will run against a specified testName.
@@ -83,14 +67,6 @@ public abstract class TestClient {
 	}
 	
 	//###### run test with response	######
-	
-	/**
-	 * Runs test against servlet at baseURL, and assumes the testName.
-	 * Provide properties if you want them included in a POST request, otherwise pass in null.
-	 */
-	public String runTestWithResponse(URL baseURL, Properties props) {
-		return runTestWithResponse(baseURL, testName, props);
-	}
 	
 	/**
 	 * Runs test against servlet at baseURL, and will run against a specified testName.

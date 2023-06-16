@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.common.signaturetest;
+package ee.jakarta.tck.concurrent.common.signature;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -212,13 +212,13 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 		try {
 
 			InputStream inStreamMapfile = ConcurrencySignatureTestRunner.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_MAP_NAME);
+					.getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_MAP_NAME);
 			File mFile = writeStreamToTempFile(inStreamMapfile, "sig-test", ".map");
 			mapFile = mFile.getCanonicalPath();
 			log.info("mapFile location is :" + mapFile);
 
 			InputStream inStreamPackageFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_PKG_NAME);
+					.getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_PKG_NAME);
 			File pFile = writeStreamToTempFile(inStreamPackageFile, "sig-test-pkg-list", ".txt");
 			packageListFile = pFile.getCanonicalPath();
 			log.info("packageFile location is :" + packageListFile);
@@ -226,7 +226,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 			mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
 
 			InputStream inStreamSigFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-					.getResourceAsStream("ee/jakarta/tck/concurrent/spec/signature/" + SIG_FILE_NAME);
+					.getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_FILE_NAME);
 			File sigFile = writeStreamToSigFile(inStreamSigFile);
 			log.info("signature File location is :" + sigFile.getCanonicalPath());
 			signatureRepositoryDir = System.getProperty("java.io.tmpdir");

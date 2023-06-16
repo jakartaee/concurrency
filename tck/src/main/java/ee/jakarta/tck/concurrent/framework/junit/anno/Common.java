@@ -10,22 +10,18 @@ import java.lang.annotation.Target;
 public @interface Common {
     
     public enum PACKAGE {
-        CONTEXT("ee.jakarta.tck.concurrent.common.context"),
-        CONTEXT_PROVIDER("ee.jakarta.tck.concurrent.common.context.provider"),
-        COUNTER("ee.jakarta.tck.concurrent.common.counter"),
-        FIXED_COUNTER("ee.jakarta.tck.concurrent.common.fixed.counter"),
-        MANAGED_TASK_LISTENER("ee.jakarta.tck.concurrent.common.managedTaskListener"),
-        TASKS("ee.jakarta.tck.concurrent.common.tasks"),
-        SIGNATURE("ee.jakarta.tck.concurrent.framework.signaturetest");
+        CONTEXT,
+        CONTEXT_PROVIDERS,
+        COUNTER,
+        FIXED_COUNTER,
+        MANAGED_TASK_LISTENER,
+        TASKS,
+        SIGNATURE;
         
-        private Package pkg;
+        private static final String prefix = "ee/jakarta/tck/concurrent/common/";
         
-        PACKAGE(String packageName) {
-            this.pkg = ClassLoader.getSystemClassLoader().getDefinedPackage(packageName);
-        }
-        
-        public Package getPackage() {
-            return pkg;
+        public String getPackageName() {
+            return prefix + this.name().toLowerCase().replace("_", "/");
         }
     }
     

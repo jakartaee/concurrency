@@ -21,12 +21,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
 @Web
-public class ForbiddenAPITests extends TestClient {
+public class ForbiddenAPITests {
 	
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {

@@ -39,8 +39,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;

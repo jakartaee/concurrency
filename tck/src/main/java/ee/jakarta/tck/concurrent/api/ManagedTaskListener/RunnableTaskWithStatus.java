@@ -18,8 +18,8 @@ package ee.jakarta.tck.concurrent.api.ManagedTaskListener;
 
 import java.util.concurrent.TimeUnit;
 
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 
 public class RunnableTaskWithStatus implements Runnable {
 	private final ManagedTaskListenerImpl listener;

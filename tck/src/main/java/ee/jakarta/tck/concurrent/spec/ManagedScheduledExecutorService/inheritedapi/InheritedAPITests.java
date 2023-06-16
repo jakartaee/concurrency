@@ -23,25 +23,21 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
-import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import jakarta.ejb.EJB;
 
 @Full
-@Common({PACKAGE.TASKS, PACKAGE.COUNTER})
-public class InheritedAPITests extends TestClient {
+public class InheritedAPITests {
 	
 	@Deployment(name="InheritedAPITests")
 	public static EnterpriseArchive createDeployment() {
-		JavaArchive counterJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi_counter.jar")
+		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
+		        .addClasses(InheritedAPITests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
+				.addPackages(true, PACKAGE.TASKS.getPackageName(), PACKAGE.COUNTER.getPackageName()) 
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.FullProvider.class);
 		
-		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
-				.addPackages(true,  InheritedAPITests.class.getPackage());
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(counterJAR, inheritedJAR);
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(inheritedJAR);
 		
 		return ear;
 	}

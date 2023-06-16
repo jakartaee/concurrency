@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.api.ManagedExecutors;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,9 +28,10 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web
+@Web @RunAsClient
 @Common({PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS})
 public class ManagedExecutorsTests extends TestClient {
 
@@ -37,12 +39,15 @@ public class ManagedExecutorsTests extends TestClient {
 	URL baseURL;
 	
 	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ManagedExecutorsTests", testable=false)
+	@Deployment(name="ManagedExecutorsTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, ManagedExecutorsTests.class.getPackage())
 				.addAsWebInfResource(ManagedExecutorsTests.class.getPackage(), "web.xml", "web.xml");
 	}
+	
+	@TestName
+	String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -60,7 +65,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void IsCurrentThreadShutdown() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -73,7 +78,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void IsCurrentThreadShutdown_ManageableThread() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -90,7 +95,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithTaskListener() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -103,7 +108,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithNullArg() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -118,7 +123,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithTaskListenerAndMap() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -131,7 +136,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageRunnableTaskWithMapAndNullArg() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -146,7 +151,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithTaskListener() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -159,7 +164,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithNullArg() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -175,7 +180,7 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithTaskListenerAndMap() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -188,6 +193,6 @@ public class ManagedExecutorsTests extends TestClient {
 	 */
 	@Test
 	public void ManageCallableTaskWithMapAndNullArg() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 }

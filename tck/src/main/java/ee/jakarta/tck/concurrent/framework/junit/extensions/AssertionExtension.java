@@ -16,10 +16,13 @@
 package ee.jakarta.tck.concurrent.framework.junit.extensions;
 
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
 /**
  * If a test fails or is disabled we can warn the vendor of the assertion
@@ -28,17 +31,35 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * 
  * @see ee.jakarta.tck.data.framework.junit.anno.Assertion
  */
-public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTestExecutionCallback{
+public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTestExecutionCallback {
+    
     private static final Logger log = Logger.getLogger(AssertionExtension.class.getCanonicalName());
     
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         log.info(">>> Begin test: " + context.getDisplayName());
+        injectTestName(context, context.getRequiredTestMethod().getName());
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         log.info("<<< End test: " + context.getDisplayName());
+        injectTestName(context, null);
+    }
+    
+    private void injectTestName(ExtensionContext context, String testname) {        
+        Class<?> testClass = context.getRequiredTestClass();
+        
+        Stream.of(testClass.getDeclaredFields())
+            .filter(field -> field.isAnnotationPresent(TestName.class))
+            .forEach(field -> {
+                field.setAccessible(true);
+                try {
+                    field.set(context.getRequiredTestInstance(), testname);
+                } catch (Exception e) {
+                    log.warning("Unable to set TestName field on test class: " + testClass.getCanonicalName() + " Error:" + e.getLocalizedMessage());
+                }
+            });
     }
 
 }

@@ -15,30 +15,48 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
+import java.util.logging.Logger;
+
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
 import ee.jakarta.tck.concurrent.framework.TestUtil;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
 
 /**
  * This extension will intercept all archives before they are deployed to the container and append 
  * a library with the following:
  * 
  * Package - ee.jakarta.tck.concurrent.framework
+ * Package - ee.jakarta.tck.concurrent.framework.arquillian.extensions
+ * Package - ee.jakarta.tck.concurrent.framework.junit.extensions
  * 
  */
 public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
     
+    private static final Logger log = Logger.getLogger(TCKFrameworkAppender.class.getCanonicalName());
+    
     private static final Package utilPackage = TestUtil.class.getPackage();
-    private static final Package annoPackage = Web.class.getPackage();
+    private static final Package annoPackage = Common.class.getPackage();
+    private static final Package extePackage = AssertionExtension.class.getPackage();
+    
+    private static final String archiveName = "jakarta-concurrent-framework.jar";
+    
+    private static JavaArchive framework = null;
 
     @Override
     public Archive<?> createAuxiliaryArchive() {
-        JavaArchive framework = ShrinkWrap.create(JavaArchive.class, "jakarta-concurrent-framework.jar");
-        framework.addPackages(false, utilPackage, annoPackage);
+        if(framework != null) {
+            return framework;
+        }
+        
+        log.info("Creating auxiliary archive: " + archiveName);
+        
+        framework = ShrinkWrap.create(JavaArchive.class, archiveName);
+        framework.addPackages(false, utilPackage, annoPackage, extePackage);
         return framework;
     }
 

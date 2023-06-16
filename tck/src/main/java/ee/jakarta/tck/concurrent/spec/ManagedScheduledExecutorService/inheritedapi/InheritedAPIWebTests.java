@@ -22,7 +22,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
-import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -30,13 +29,12 @@ import jakarta.ejb.EJB;;
 
 @Web
 @Common({PACKAGE.TASKS, PACKAGE.COUNTER})
-public class InheritedAPIWebTests extends TestClient {
+public class InheritedAPIWebTests {
 	
 	@Deployment(name="InheritedAPITests")
 	public static WebArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
-				.addPackages(true, InheritedAPIWebTests.class.getPackage())
-				.deleteClasses(InheritedAPIWebTests.class, InheritedAPITests.class)
+		        .addClasses(InheritedAPIWebTests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
 		return war;
 	}

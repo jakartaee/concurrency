@@ -18,6 +18,7 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.resourcedef;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -33,13 +34,14 @@ import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
+@Full @RunAsClient
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ManagedExecutorDefinitionTests extends TestClient{
 	
 	@ArquillianResource(ManagedExecutorDefinitionServlet.class)
@@ -48,7 +50,7 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 	@ArquillianResource(ManagedExecutorDefinitionOnEJBServlet.class)
 	URL ejbContextURL;
 	
-	@Deployment(name="ManagedExecutorDefinitionTests", testable=false)
+	@Deployment(name="ManagedExecutorDefinitionTests")
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedExecutorDefinitionTests_web.war")
@@ -77,6 +79,9 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 		return ear;
 	}
 	
+    @TestName
+    String testname;
+	
 	@Override
 	protected String getServletPath() {
 		return "ManagedExecutorDefinitionServlet";
@@ -84,60 +89,60 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 	
 	@Test
     public void testAsyncCompletionStage() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 	@Test
     public void testAsynchronousMethodReturnsCompletableFuture() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 	@Test
     public void testAsynchronousMethodReturnsCompletionStage() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 	@Test
     public void testAsynchronousMethodVoidReturnType() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
     // TCK Accepted Challenge: https://github.com/jakartaee/concurrency/issues/224
 	@Disabled
     public void testCompletedFuture() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 	@Test
     public void testCopyCompletableFuture() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 	
 	@Test
     public void testCopyCompletableFutureEJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
 	@Test
     public void testIncompleteFuture() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 	
 	@Test
     public void testIncompleteFutureEJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
 	@Test
     public void testManagedExecutorDefinitionAllAttributes() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 	@Test
     public void testManagedExecutorDefinitionDefaults() {
-    	runTest(baseURL);
+    	runTest(baseURL, testname);
     }
 
 }

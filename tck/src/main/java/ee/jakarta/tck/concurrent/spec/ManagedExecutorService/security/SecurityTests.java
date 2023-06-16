@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -31,15 +32,16 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full
+@Full @RunAsClient
 @Common({PACKAGE.TASKS})
 public class SecurityTests extends TestClient {
 		
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="SecurityTests", testable=false)
+	@Deployment(name="SecurityTests")
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
 				.addPackages(true, SecurityTests.class.getPackage())
@@ -55,6 +57,9 @@ public class SecurityTests extends TestClient {
 		
 		return ear;
 	}
+	
+    @TestName
+    String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -78,7 +83,7 @@ public class SecurityTests extends TestClient {
 	 */
 	@Disabled
 	public void managedExecutorServiceAPISecurityTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 }

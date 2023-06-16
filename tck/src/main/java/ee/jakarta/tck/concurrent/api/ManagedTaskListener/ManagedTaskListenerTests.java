@@ -27,11 +27,11 @@ import java.util.concurrent.Future;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ListenerEvent;
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
@@ -55,7 +55,7 @@ public class ManagedTaskListenerTests {
 	
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
-	@AfterAll
+	@AfterEach
 	public void cleanup() {
 		managedTaskListener.clearEvents();
 	}

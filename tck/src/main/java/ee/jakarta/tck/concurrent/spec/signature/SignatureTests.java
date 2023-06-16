@@ -20,16 +20,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.common.signaturetest.ConcurrencySignatureTestRunner;
-import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @Signature
-@Common({PACKAGE.SIGNATURE})
-public class SignatureTests extends TestClient {
+@Web
+@Signature
+public class SignatureTests {
 
 	@Deployment(name = "SignatureTests")
 	public static WebArchive createDeployment() {

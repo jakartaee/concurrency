@@ -18,7 +18,7 @@
  * $Id$
  */
 
-package ee.jakarta.tck.concurrent.common.signaturetest;
+package ee.jakarta.tck.concurrent.common.signature;
 
 import java.util.Properties;
 

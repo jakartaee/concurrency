@@ -18,6 +18,7 @@ package ee.jakarta.tck.concurrent.spec.Platform.dd;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,6 +30,7 @@ import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
@@ -36,14 +38,14 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
-@Web
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
+@Web @RunAsClient
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class DeploymentDescriptorWebTests extends TestClient{
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
     URL baseURL;
     
-    @Deployment(name="DeploymentDescriptorTests", testable=false)
+    @Deployment(name="DeploymentDescriptorTests")
     public static WebArchive createDeployment() {
         
         WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
@@ -57,6 +59,9 @@ public class DeploymentDescriptorWebTests extends TestClient{
         return war;
     }
     
+    @TestName
+    String testname;
+    
     @Override
     protected String getServletPath() {
         return "DeploymentDescriptorServlet";
@@ -64,22 +69,22 @@ public class DeploymentDescriptorWebTests extends TestClient{
     
     @Test
     public void testDeploymentDescriptorDefinesContextService() {
-        runTest(baseURL);
+        runTest(baseURL, testname);
     }
 
     @Test
     public void testDeploymentDescriptorDefinesManagedExecutor() {
-        runTest(baseURL);
+        runTest(baseURL, testname);
     }
 
     @Test
     public void testDeploymentDescriptorDefinesManagedScheduledExecutor() {
-        runTest(baseURL);
+        runTest(baseURL, testname);
     }
 
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
     @Disabled
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
-        runTest(baseURL);
+        runTest(baseURL, testname);
     }
 }

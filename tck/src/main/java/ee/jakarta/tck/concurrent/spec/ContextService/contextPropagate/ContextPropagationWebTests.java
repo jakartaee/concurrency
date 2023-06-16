@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,14 +34,15 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import jakarta.enterprise.concurrent.spi.ThreadContextProvider;;
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Web
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDER})
+@Web @RunAsClient
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ContextPropagationWebTests extends TestClient {
 	
-	@Deployment(name="ContextPropagationTests", testable=false)
+	@Deployment(name="ContextPropagationTests")
 	public static WebArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagationTests_web.war")
@@ -54,6 +56,9 @@ public class ContextPropagationWebTests extends TestClient {
 		return war;
 	}
 	
+	@TestName
+    String testname;
+	    
 	@ArquillianResource(JNDIServlet.class)
 	URL jndiURL;
 	
@@ -75,20 +80,20 @@ public class ContextPropagationWebTests extends TestClient {
 	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
 	@Disabled
 	public void testSecurityClearedContext() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testname);
 		runTest(requestURL);
 	}
 
 	// HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed
 	@Disabled
 	public void testSecurityUnchangedContext() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testname);
 		runTest(requestURL);
 	}
 	
 	@Test
 	public void testSecurityPropagatedContext() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testname);
 		runTest(requestURL);
 	}
 
@@ -106,9 +111,9 @@ public class ContextPropagationWebTests extends TestClient {
 	 */
 	@Test
 	public void testJNDIContextAndCreateProxyInServlet() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testname);
 		String resp = runTestWithResponse(requestURL, null);
-		this.assertStringInResponse(testName + "failed to get correct result.", "JNDIContextWeb", resp);
+		this.assertStringInResponse(testname + "failed to get correct result.", "JNDIContextWeb", resp);
 	}
 
 	/*
@@ -127,9 +132,9 @@ public class ContextPropagationWebTests extends TestClient {
 	 */
 	@Disabled //This test will return JNDIContextWeb because we are running with web.xml and not ejb-jar.xml
 	public void testJNDIContextAndCreateProxyInEJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(jndiURL).withPaths("JNDIServlet").withTestName(testname);
 		String resp = runTestWithResponse(requestURL, null);
-		this.assertStringInResponse(testName + "failed to get correct result.", "JNDIContextEJB", resp);
+		this.assertStringInResponse(testname + "failed to get correct result.", "JNDIContextEJB", resp);
 	}
 
 	/*
@@ -146,9 +151,9 @@ public class ContextPropagationWebTests extends TestClient {
 	 */
 	@Test
 	public void testClassloaderAndCreateProxyInServlet() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(securityURL).withPaths("ClassloaderServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(securityURL).withPaths("ClassloaderServlet").withTestName(testname);
 		String resp = runTestWithResponse(requestURL, null);
-		this.assertStringInResponse(testName + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
+		this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
 	}
 
 	/*
@@ -166,9 +171,9 @@ public class ContextPropagationWebTests extends TestClient {
 	 */
 	@Test
 	public void testSecurityAndCreateProxyInServlet() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(classloaderURL).withPaths("SecurityServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(classloaderURL).withPaths("SecurityServlet").withTestName(testname);
 		String resp = runTestWithResponse(requestURL, null);
-		this.assertStringInResponse(testName + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
+		this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
 	}
 	
     /**
@@ -179,7 +184,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextServiceDefinitionAllAttributes() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 	
@@ -191,7 +196,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextServiceDefinitionFromEJBAllAttributes() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
@@ -201,7 +206,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextServiceDefinitionDefaults() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 	
@@ -211,7 +216,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextServiceDefinitionFromEJBDefaults() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
@@ -223,7 +228,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextServiceDefinitionWithThirdPartyContext() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
@@ -234,7 +239,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextualConsumer() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
@@ -249,7 +254,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Disabled
     public void testContextualFunction() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
@@ -260,9 +265,9 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testContextualSupplier() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
-        requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testName);
+        requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ContextServiceDefinitionFromEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
@@ -271,7 +276,7 @@ public class ContextPropagationWebTests extends TestClient {
      */
 	@Test
     public void testCopyWithContextCapture() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testname);
 		runTest(requestURL);
     }
 }
