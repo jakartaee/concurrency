@@ -39,8 +39,8 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient
-public class ManagedExecutorDefinitionTests extends TestClient{
+@Full @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
+public class ManagedExecutorDefinitionFullTests extends TestClient{
 	
 	@ArquillianResource(ManagedExecutorDefinitionServlet.class)
 	URL baseURL;
@@ -61,7 +61,7 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedExecutorDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedExecutorDefinitionTests.class.getPackage())
+				.addPackages(false,  ManagedExecutorDefinitionFullTests.class.getPackage())
 				.deleteClasses(
 						AppBean.class,
 						ManagedExecutorDefinitionWebBean.class,

@@ -35,7 +35,7 @@ import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to POST requests
 public class ContextPropagationServletTests extends TestClient {
 	
 	private static final String APP_NAME_PROXY = "ContextPropagationServletTests.Proxy";

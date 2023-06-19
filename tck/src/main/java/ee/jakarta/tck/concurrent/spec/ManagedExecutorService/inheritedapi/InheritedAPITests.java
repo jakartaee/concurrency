@@ -16,78 +16,124 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.inheritedapi;
 
-import java.net.URL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 
-@Web @RunAsClient
-public class InheritedAPITests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="InheritedAPITests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true,  InheritedAPITests.class.getPackage());
-	}
-	
-	@Override
-	protected String getServletPath() {
-		return "CommonServlet";
-	}
-	
-    @TestName
-    String testname;
+@Web
+public class InheritedAPITests {
 
-	/*
-	 * @testName: testBasicManagedExecutorService
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:10.2;CONCURRENCY:SPEC:13;CONCURRENCY:SPEC:13.1;CONCURRENCY
-	 * :SPEC:13.2;
-	 * CONCURRENCY:SPEC:14;CONCURRENCY:SPEC:14.1;CONCURRENCY:SPEC:14.2;CONCURRENCY
-	 * :SPEC:14.3;
-	 * CONCURRENCY:SPEC:14.4;CONCURRENCY:SPEC:6.1;CONCURRENCY:SPEC:6.2;CONCURRENCY
-	 * :SPEC:8;
-	 * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:10;CONCURRENCY:
-	 * SPEC:10.2; CONCURRENCY:SPEC:12;CONCURRENCY:SPEC:19;CONCURRENCY:SPEC:27;
-	 * 
-	 * @test_Strategy: test basic function for ManagedExecutorService include
-	 * execute, submit, invokeAny, invokeAll, atMostOnce
-	 */
-	
-	@Test
-	public void testExecute() {
-		runTest(baseURL, testname);
-	}
+    @Deployment(name = "InheritedAPITests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addClass(Task.class);
+    }
 
-	@Test
-	public void testSubmit() {
-		runTest(baseURL, testname);
-	}
+    @Resource
+    public ManagedExecutorService mes;
 
-	@Test
-	public void testInvokeAny() {
-		runTest(baseURL, testname);
-	}
+    /*
+     * @testName: testBasicManagedExecutorService
+     * 
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:10.2;CONCURRENCY:SPEC:13;CONCURRENCY:SPEC:13.1;CONCURRENCY
+     * :SPEC:13.2;
+     * CONCURRENCY:SPEC:14;CONCURRENCY:SPEC:14.1;CONCURRENCY:SPEC:14.2;CONCURRENCY
+     * :SPEC:14.3;
+     * CONCURRENCY:SPEC:14.4;CONCURRENCY:SPEC:6.1;CONCURRENCY:SPEC:6.2;CONCURRENCY
+     * :SPEC:8;
+     * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:10;CONCURRENCY:
+     * SPEC:10.2; CONCURRENCY:SPEC:12;CONCURRENCY:SPEC:19;CONCURRENCY:SPEC:27;
+     * 
+     * @test_Strategy: test basic function for ManagedExecutorService include
+     * execute, submit, invokeAny, invokeAll, atMostOnce
+     */
 
-	@Test
-	public void testInvokeAll() {
-		runTest(baseURL, testname);
-	}
+    @Test
+    public void testExecute() {
+        Task<?> commonTask = new Task.CommonTask(0);
+        mes.execute(commonTask);
+        // wait for a while.
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            fail(e.toString());
+        }
+    }
 
-	@Test
-	public void testAtMostOnce() {
-		runTest(baseURL, testname);
-	}
+    @Test
+    public void testSubmit() {
+        Task<?> commonTask = new Task.CommonTask(0);
+        Future<?> noRes = mes.submit((Runnable) commonTask);
+        try {
+            TestUtil.waitForTaskComplete(noRes);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testInvokeAny() {
+        Task.CommonTask commonTask0 = new Task.CommonTask(0);
+        Task.CommonTask commonTask1 = new Task.CommonTask(1);
+        List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
+        tasks.add(commonTask0);
+        tasks.add(commonTask1);
+        int res = -1;
+        try {
+            res = mes.invokeAny(tasks);
+        } catch (InterruptedException e) {
+            fail(e.toString());
+        } catch (ExecutionException e) {
+            fail(e.toString());
+        }
+        assertTrue(tasks.get(res).isRan());
+    }
+
+    @Test
+    public void testInvokeAll() {
+        Task.CommonTask commonTask0 = new Task.CommonTask(0);
+        Task.CommonTask commonTask1 = new Task.CommonTask(1);
+        List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
+        tasks.add(commonTask0);
+        tasks.add(commonTask1);
+        List<Future<Integer>> res = null;
+        try {
+            res = mes.invokeAll(tasks);
+            TestUtil.waitForTaskComplete(res.get(0));
+            TestUtil.waitForTaskComplete(res.get(1));
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+        assertTrue(commonTask0.isRan());
+        assertTrue(commonTask1.isRan());
+    }
+
+    @Test
+    public void testAtMostOnce() {
+        Task.CommonTask commonTask = new Task.CommonTask(0);
+        Future<?> future = mes.submit((Runnable) commonTask);
+        try {
+            TestUtil.waitForTaskComplete(future);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+        // check number.
+        assertEquals(commonTask.runCount(), 1);
+    }
 }

@@ -36,7 +36,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@SuppressWarnings({"serial", "unused"})
 @WebServlet("/TransactionServlet")
 @DataSourceDefinition(
 	name = Constants.DS_JNDI_NAME, 

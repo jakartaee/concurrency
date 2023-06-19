@@ -38,7 +38,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
 @Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ContextPropagationWebTests extends TestClient {
 	

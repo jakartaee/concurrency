@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
 
 import java.net.URL;
 
@@ -25,32 +25,32 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
+import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full @RunAsClient
-public class ContextTests extends TestClient {
-	
+@Full @RunAsClient //Requires client testing due to login request 
+public class SecurityFullTests extends TestClient {
+		
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ContextTests")
+	@Deployment(name="SecurityTests")
 	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ContextTests.class.getPackage())
-				.addPackages(false, PACKAGE.TASKS.getPackageName())
-				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
-				.deleteClass(SecurityTestInterface.class)
-				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
+				.addPackages(true, SecurityFullTests.class.getPackage())
+				.addPackages(true, PACKAGE.TASKS.getPackageName())
+				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar;
 		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
-				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
+				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
+				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);;
 		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
+		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar);
 		
 		return ear;
@@ -63,22 +63,24 @@ public class ContextTests extends TestClient {
 	protected String getServletPath() {
 		return "SecurityServlet";
 	}
-	
+
 	/*
-	 * @testName: jndiClassloaderPropagationTest
+	 * @testName: managedExecutorServiceAPISecurityTest
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
-	 * CONCURRENCY:SPEC:106;
+	 * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
+	 * CONCURRENCY:SPEC:85; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:106;
+	 * CONCURRENCY:SPEC:22;
 	 * 
-	 * @test_Strategy:
+	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
+	 * then submit a task by ManagedExecutorService in which call a ejb that
+	 * requires role manager.
+     *
+     * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
+     * fix: https://github.com/jakartaee/concurrency/pull/218  
+     * Can be reenabled in next release of Concurrency
 	 */
-	@Test
-	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL, testname);
-	}
-	
-	@Test
-	public void jndiClassloaderPropagationWithSecurityTest() {
+	@Disabled
+	public void managedExecutorServiceAPISecurityTest() {
 		runTest(baseURL, testname);
 	}
 

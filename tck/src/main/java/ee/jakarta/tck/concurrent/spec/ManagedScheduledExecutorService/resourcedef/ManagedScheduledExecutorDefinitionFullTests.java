@@ -39,8 +39,8 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient
-public class ManagedScheduledExecutorDefinitionTests extends TestClient {
+@Full @RunAsClient //Requires client testing due to annotation configuration
+public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
 	
 	@ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
 	URL baseURL;
@@ -61,7 +61,7 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedScheduledExecutorDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedScheduledExecutorDefinitionTests.class.getPackage())
+				.addPackages(false,  ManagedScheduledExecutorDefinitionFullTests.class.getPackage())
 				.deleteClasses(
 						ReqBean.class,
 						ManagedScheduledExecutorDefinitionWebBean.class,
@@ -70,7 +70,7 @@ public class ManagedScheduledExecutorDefinitionTests extends TestClient {
 				.addClasses(
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionBean.class)
-				.addAsManifestResource(ManagedScheduledExecutorDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+				.addAsManifestResource(ManagedScheduledExecutorDefinitionFullTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedScheduledExecutorDefinitionTests.ear").addAsModules(war, jar);
 		

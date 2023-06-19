@@ -16,99 +16,136 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
 
-import java.net.URL;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.concurrent.TimeUnit;
+
+import javax.naming.InitialContext;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
-@Web @RunAsClient
-@Common({PACKAGE.FIXED_COUNTER})
-public class ForbiddenAPIServletTests extends TestClient {
+@Web
+@Common({ PACKAGE.FIXED_COUNTER })
+public class ForbiddenAPIServletTests {
 
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="ForbiddenAPIServletTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ForbiddenAPIServletTests.class.getPackage());
-	}
-	
-    @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ForbiddenServlet";
-	}
+    @Deployment(name = "ForbiddenAPIServletTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class);
+    }
 
-	/*
-	 * @testName: testAwaitTermination
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.1
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testAwaitTermination() {
-		runTest(baseURL, testname);
-	}
+    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-	/*
-	 * @testName: testIsShutdown
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.2
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsShutdown() {
-		runTest(baseURL, testname);
-	}
+    private ManagedScheduledExecutorService getService() {
+        try {
+            InitialContext context = new InitialContext();
+            ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
+                    .lookup(TestConstants.DefaultManagedScheduledExecutorService);
+            return executorService;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/*
-	 * @testName: testIsTerminated
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.3
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsTerminated() {
-		runTest(baseURL, testname);
-	}
+    @BeforeEach
+    protected void before() {
+        StaticCounter.reset();
+    }
 
-	/*
-	 * @testName: testShutdown
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.4
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdown() {
-		runTest(baseURL, testname);
-	}
+    /*
+     * @testName: testAwaitTermination
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:57.1
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testAwaitTermination() {
+        try {
+            getService().awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            fail(e.getMessage());
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	/*
-	 * @testName: testShutdownNow
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.5
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdownNow() {
-		runTest(baseURL, testname);
-	}
+    /*
+     * @testName: testIsShutdown
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:57.2
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsShutdown() {
+        try {
+            getService().isShutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    /*
+     * @testName: testIsTerminated
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:57.3
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsTerminated() {
+        try {
+            getService().isTerminated();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    /*
+     * @testName: testShutdown
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:57.4
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdown() {
+        try {
+            getService().shutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    /*
+     * @testName: testShutdownNow
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:57.5
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdownNow() {
+        try {
+            getService().shutdownNow();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 }

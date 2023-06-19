@@ -39,6 +39,8 @@ public class RunnableTask implements Runnable {
 	private final String contexualClassName;
 
 	private final long blockTime;
+	
+	private volatile int count = 0;
 
 	@Override
 	public void run() {
@@ -55,6 +57,7 @@ public class RunnableTask implements Runnable {
 			throw new RuntimeException(
 					"jndi test passed: " + jndiPassed + ", class loading test passed: " + loadClassPassed);
 		}
+		count++;
 	}
 
 	/**
@@ -110,6 +113,10 @@ public class RunnableTask implements Runnable {
 
 		return passed;
 	}
+	
+    public int getCount() {
+        return count;
+    }
 
 	protected boolean loadClass() {
 		boolean passed = false;

@@ -16,54 +16,58 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context_servlet;
 
-import java.net.URL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import javax.naming.InitialContext;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
-@Web @RunAsClient
-@Common({PACKAGE.TASKS})
-public class ContextServletTests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="ContextServletTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ContextServletTests.class.getPackage())
-				.addAsWebInfResource(ContextServletTests.class.getPackage(), "web.xml", "web.xml");
-	}
-	
-    @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ContextServlet";
-	}
+@Web
+@Common({ PACKAGE.TASKS })
+public class ContextServletTests {
 
-	/*
-	 * @testName: jndiClassloaderPropagationTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
-	 * CONCURRENCY:SPEC:106;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL, testname);
-	}
+    @Deployment(name = "ContextServletTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsWebInfResource(ContextServletTests.class.getPackage(), "web.xml", "web.xml");
+    }
+
+    private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
+
+    private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
+
+    private static final String TEST_CLASSLOADER_CLASS_NAME = ContextServletTests.class.getCanonicalName();
+
+    /*
+     * @testName: jndiClassloaderPropagationTest
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
+     * CONCURRENCY:SPEC:106;
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void jndiClassloaderPropagationTest() throws Exception {
+        InitialContext context = new InitialContext();
+        ManagedThreadFactory factory = (ManagedThreadFactory) context.lookup(TestConstants.DefaultManagedThreadFactory);
+
+        RunnableTask task = new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+                TEST_CLASSLOADER_CLASS_NAME);
+        Thread thread = factory.newThread(task);
+        thread.start();
+        TestUtil.waitTillThreadFinish(thread);
+        assertEquals(task.getCount(), 1);
+    }
 
 }

@@ -37,8 +37,10 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 /**
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
+ * 
+ * Needs to run as client due to servlet class annotations
  */
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to annotation configuration
 @Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class DeploymentDescriptorWebTests extends TestClient{
     
