@@ -267,7 +267,7 @@ public class ContextPropagationTests extends TestClient {
      * though they were CLEARED.
      * TCK challenge: https://github.com/jakartaee/concurrency/issues/253
      */
-	@Test(enabled = false)
+	@Test
     public void testContextualFunction() throws Throwable {
 		URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet").withTestName(testName);
 		runTest(requestURL);

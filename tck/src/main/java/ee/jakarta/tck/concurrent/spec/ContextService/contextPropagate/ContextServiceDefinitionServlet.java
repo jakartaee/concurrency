@@ -60,8 +60,8 @@ import jakarta.transaction.UserTransaction;
                           cleared = StringContext.NAME,
                           unchanged = TRANSACTION)
 @ContextServiceDefinition(name = "java:module/concurrent/ContextB",
-                          cleared = TRANSACTION,
-                          unchanged = { APPLICATION, IntContext.NAME },
+                          cleared = {TRANSACTION, APPLICATION},
+                          unchanged = { IntContext.NAME },
                           propagated = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:comp/concurrent/ContextC")
 @WebServlet("/ContextServiceDefinitionServlet")
@@ -407,7 +407,7 @@ public class ContextServiceDefinitionServlet extends TestServlet {
 
         Object[] results = future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
         assertTrue(results[0] instanceof NamingException,
-                "Application context must remain unchanged on contextual Function " +
+                "Application context must be cleared on contextual Function " +
                 "per java:module/concurrent/ContextB configuration. Result: " + results[0]);
         assertEquals(results[1], Integer.valueOf(0), 
                 "Third-party context type IntContext must remain unchanged on contextual Function " +
