@@ -51,7 +51,7 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
         
         //TODO research to see if there is a way around this
         if(applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
-            throw new RuntimeException("Cannot append packages to Enterprise Archvies since modules are immutable");
+            throw new RuntimeException("Cannot append packages to Enterprise Archives since modules are immutable");
         }
         
         if (applicationArchive instanceof WebArchive || applicationArchive instanceof JavaArchive) {
