@@ -16,7 +16,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -79,7 +82,7 @@
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.netbeans.tools</groupId>
             <artifactId>sigtest-maven-plugin</artifactId>
@@ -152,7 +155,7 @@
                         </goals>
                         <configuration>
                             <source>17</source>
-                            <quiet>true</quiet>                          
+                            <quiet>true</quiet>
                             <additionalJOption>-Xdoclint:none</additionalJOption>
                         </configuration>
                     </execution>
@@ -174,7 +177,7 @@
             </activation>
             <properties>
                 <!--Default assumed JDK version, can be overriden via -Dmajor.jdk.version=X -->
-                <jdk.major.version>11</jdk.major.version>
+                <jdk.major.version>17</jdk.major.version>
             </properties>
             <build>
                 <plugins>
@@ -207,6 +210,28 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>extractModules</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>jimage</executable>
+                            <arguments>
+                                <argument>extract</argument>
+                                <argument>--dir=${project.build.directory}/jimage</argument>
+                                <argument>${java.home}/lib/modules</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.netbeans.tools</groupId>
                         <artifactId>sigtest-maven-plugin</artifactId>
                         <version>${sigtest.version}</version>
@@ -220,32 +245,13 @@
                         </executions>
                         <configuration>
                             <classes>${project.build.directory}/concurrency-api</classes>
+                            <classes>${project.build.directory}/jimage/java.base</classes>
                             <packages>
                                 jakarta.enterprise.concurrent,
                                 jakarta.enterprise.concurrent.spi,
                             </packages>
                             <attach>false</attach>
                             <sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${project.version}</sigfile>
-                            <!-- Ensure that the signature file we generated will work for both JDK11 and JDK17 -->
-                            <ignoreJDKClasses>
-                                <include>java.util.Map</include>
-                                <include>java.lang.Object</include>
-                                <include>java.io.ByteArrayInputStream</include>
-                                <include>java.io.InputStream</include>
-                                <include>java.lang.Deprecated</include>
-                                <include>java.io.Writer</include>
-                                <include>java.io.OutputStream</include>
-                                <include>java.util.List</include>
-                                <include>java.util.Collection</include>
-                                <include>java.lang.instrument.IllegalClassFormatException</include>
-                                <include>javax.transaction.xa.XAException</include>
-                                <include>java.lang.annotation.Repeatable</include>
-                                <include>java.lang.InterruptedException</include>
-                                <include>java.lang.CloneNotSupportedException</include>
-                                <include>java.lang.Throwable</include>
-                                <include>java.lang.Thread</include>
-                                <include>java.lang.Enum</include>
-                            </ignoreJDKClasses>
                         </configuration>
                     </plugin>
                 </plugins>
