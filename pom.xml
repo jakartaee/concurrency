@@ -74,7 +74,7 @@
         <junit5.version>5.9.3</junit5.version>
         <arquillian.version>1.7.0.Final</arquillian.version>
 
-		<!-- TODO update for Jakarta 11 -->
+        <!-- TODO update for Jakarta 11 -->
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.jsp.version>3.1.0</jakarta.jsp.version>

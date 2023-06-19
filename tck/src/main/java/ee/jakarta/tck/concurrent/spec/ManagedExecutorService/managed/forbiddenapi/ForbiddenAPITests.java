@@ -31,7 +31,6 @@ public class ForbiddenAPITests {
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
 				.addPackages(true,  ForbiddenAPITests.class.getPackage());
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 	}
 
 	@EJB

@@ -31,7 +31,6 @@ import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -40,8 +39,7 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
+@Full @RunAsClient 
 public class ManagedThreadFactoryDefinitionTests extends TestClient {
 	
 	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
@@ -54,6 +52,7 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
+		        .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
 				.addClasses(
 						ManagedThreadFactoryDefinitionOnEJBServlet.class,
 						ManagedThreadFactoryDefinitionServlet.class,
@@ -70,7 +69,6 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionBean.class)
 				.addAsManifestResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-//				TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear").addAsModules(war, jar);
 		

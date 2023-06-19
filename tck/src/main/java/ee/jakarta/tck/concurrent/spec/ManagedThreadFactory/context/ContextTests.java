@@ -28,13 +28,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
 @Full @RunAsClient
-@Common({PACKAGE.TASKS})
 public class ContextTests extends TestClient {
 	
 	@ArquillianResource
@@ -44,6 +42,7 @@ public class ContextTests extends TestClient {
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, ContextTests.class.getPackage())
+				.addPackages(false, PACKAGE.TASKS.getPackageName())
 				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
 				.deleteClass(SecurityTestInterface.class)
 				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
@@ -53,7 +52,6 @@ public class ContextTests extends TestClient {
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
 				.addAsModules(war, jar);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		return ear;
 	}

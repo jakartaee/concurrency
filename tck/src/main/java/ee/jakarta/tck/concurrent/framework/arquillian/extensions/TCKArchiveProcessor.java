@@ -23,9 +23,7 @@ import java.util.stream.Stream;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
-import org.jboss.shrinkwrap.api.container.EnterpriseContainer;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -51,17 +49,17 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
                 .map(pkg -> pkg.getPackageName())
                 .collect(Collectors.toList());
         
+        //TODO research to see if there is a way around this
+        if(applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
+            throw new RuntimeException("Cannot append packages to Enterprise Archvies since modules are immutable");
+        }
+        
         if (applicationArchive instanceof WebArchive || applicationArchive instanceof JavaArchive) {
             log.info("Application Archive [" + applicationName + "] is being appended with packages " + packages);
             packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg) );
             
         }
         
-        if (applicationArchive instanceof EnterpriseArchive) {
-            log.info("Application Archive [" + applicationName + "] is being appended with a library containing packages " + packages);
-            JavaArchive module = ShrinkWrap.create(JavaArchive.class, "jakarta-common-module.jar");
-            packages.stream().forEach(pkg -> module.addPackage(pkg));
-            ((EnterpriseContainer<?>)applicationArchive).addAsModule(module);
-        }
+        
     }
 }

@@ -25,11 +25,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
 /**
- * If a test fails or is disabled we can warn the vendor of the assertion
- * ID As well as provide test strategy information to aid in resolving the
- * issue. This data is obtained by the {@code @Assertion} annotation.
- * 
- * @see ee.jakarta.tck.data.framework.junit.anno.Assertion
+ * Logs before and after test execution, and injects the name of the test into the @TestName field.
  */
 public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTestExecutionCallback {
     
@@ -47,6 +43,7 @@ public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTe
         injectTestName(context, null);
     }
     
+    //TODO could consider using getFields to allow for injection into superclass, but will affect performance.
     private void injectTestName(ExtensionContext context, String testname) {        
         Class<?> testClass = context.getRequiredTestClass();
         

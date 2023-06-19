@@ -31,7 +31,6 @@ import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -41,7 +40,6 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 @Full @RunAsClient
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ManagedExecutorDefinitionTests extends TestClient{
 	
 	@ArquillianResource(ManagedExecutorDefinitionServlet.class)
@@ -54,6 +52,7 @@ public class ManagedExecutorDefinitionTests extends TestClient{
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedExecutorDefinitionTests_web.war")
+		        .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
 				.addClasses(
 						AppBean.class,
 						ManagedExecutorDefinitionServlet.class,

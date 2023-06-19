@@ -34,20 +34,19 @@ import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 @Full @RunAsClient
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ContextPropagationTests extends TestClient {
 	
 	@Deployment(name="ContextPropagationTests")
 	public static EnterpriseArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ContextPropagationTests_web.war")
+		        .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
 				.addClasses(
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
@@ -60,7 +59,7 @@ public class ContextPropagationTests extends TestClient {
 				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
-				.addPackages(true,  ContextPropagationTests.class.getPackage())
+				.addPackages(true, ContextPropagationTests.class.getPackage())
 				.deleteClasses(
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
@@ -71,7 +70,6 @@ public class ContextPropagationTests extends TestClient {
 						ContextServiceDefinitionWebBean.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, ContextEJBProvider.FullProvider.class)
 				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagationTests.ear").addAsModules(war, jar);
 		
