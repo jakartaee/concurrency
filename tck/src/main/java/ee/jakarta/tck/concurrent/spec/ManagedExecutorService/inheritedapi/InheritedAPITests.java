@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.annotation.Resource;
@@ -43,9 +44,9 @@ public class InheritedAPITests {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addClass(Task.class);
     }
-
-    @Resource
-    public ManagedExecutorService mes;
+    
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    public ManagedExecutorService executor;
 
     /*
      * @testName: testBasicManagedExecutorService
@@ -67,7 +68,7 @@ public class InheritedAPITests {
     @Test
     public void testExecute() {
         Task<?> commonTask = new Task.CommonTask(0);
-        mes.execute(commonTask);
+        executor.execute(commonTask);
         // wait for a while.
         try {
             TimeUnit.SECONDS.sleep(3);
@@ -79,7 +80,7 @@ public class InheritedAPITests {
     @Test
     public void testSubmit() {
         Task<?> commonTask = new Task.CommonTask(0);
-        Future<?> noRes = mes.submit((Runnable) commonTask);
+        Future<?> noRes = executor.submit((Runnable) commonTask);
         try {
             TestUtil.waitForTaskComplete(noRes);
         } catch (Exception e) {
@@ -96,7 +97,7 @@ public class InheritedAPITests {
         tasks.add(commonTask1);
         int res = -1;
         try {
-            res = mes.invokeAny(tasks);
+            res = executor.invokeAny(tasks);
         } catch (InterruptedException e) {
             fail(e.toString());
         } catch (ExecutionException e) {
@@ -114,7 +115,7 @@ public class InheritedAPITests {
         tasks.add(commonTask1);
         List<Future<Integer>> res = null;
         try {
-            res = mes.invokeAll(tasks);
+            res = executor.invokeAll(tasks);
             TestUtil.waitForTaskComplete(res.get(0));
             TestUtil.waitForTaskComplete(res.get(1));
         } catch (Exception e) {
@@ -127,7 +128,7 @@ public class InheritedAPITests {
     @Test
     public void testAtMostOnce() {
         Task.CommonTask commonTask = new Task.CommonTask(0);
-        Future<?> future = mes.submit((Runnable) commonTask);
+        Future<?> future = executor.submit((Runnable) commonTask);
         try {
             TestUtil.waitForTaskComplete(future);
         } catch (Exception e) {

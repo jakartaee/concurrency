@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed_servlet.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -37,7 +38,7 @@ public class ForbiddenAPIServletTests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    @Resource
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
     public ManagedExecutorService mes;
 
     /*

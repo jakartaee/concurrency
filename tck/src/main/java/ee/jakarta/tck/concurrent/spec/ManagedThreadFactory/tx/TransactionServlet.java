@@ -26,6 +26,7 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
@@ -51,6 +52,9 @@ public class TransactionServlet extends TestServlet {
 
 	@Resource(lookup = Constants.DS_JNDI_NAME)
 	private DataSource ds;
+	
+    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    public ManagedThreadFactory threadFactory;
 
 	@Override
 	protected void beforeClass() throws RemoteException {
@@ -71,8 +75,7 @@ public class TransactionServlet extends TestServlet {
 
 	public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
-		ManagedThreadFactory factory = TestUtil.getManagedThreadFactory();
-		Thread thread = factory.newThread(new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD,
+		Thread thread = threadFactory.newThread(new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT));
 		thread.start();
 		TestUtil.waitTillThreadFinish(thread);
@@ -82,8 +85,7 @@ public class TransactionServlet extends TestServlet {
 		int originTableCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT);
-		ManagedThreadFactory factory = TestUtil.getManagedThreadFactory();
-		Thread thread = factory.newThread(cancelledTask);
+		Thread thread = threadFactory.newThread(cancelledTask);
 		thread.start();
 		// then cancel it after transaction begin and
 		Util.waitForTransactionBegan(cancelledTask);

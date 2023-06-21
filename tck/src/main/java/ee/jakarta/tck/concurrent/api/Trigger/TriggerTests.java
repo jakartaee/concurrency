@@ -41,6 +41,8 @@ import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.SkippedException;
 
 @Web
@@ -53,6 +55,9 @@ public class TriggerTests {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true, TriggerTests.class.getPackage());
 	}
+	
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
 	@BeforeEach
 	public void reset() {
@@ -71,7 +76,7 @@ public class TriggerTests {
 	 */
 	@Disabled
 	public void triggerGetNextRunTimeTest() throws Exception {
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new CounterRunnableTask(),
+		ScheduledFuture sf = scheduledExecutor.schedule(new CounterRunnableTask(),
 				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
 
 		try {
@@ -104,7 +109,7 @@ public class TriggerTests {
 	 */
 	@Test
 	public void triggerSkipRunTest() {
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new Callable() {
+		ScheduledFuture sf = scheduledExecutor.schedule(new Callable() {
 			public Object call() {
 				return "ok";
 			}

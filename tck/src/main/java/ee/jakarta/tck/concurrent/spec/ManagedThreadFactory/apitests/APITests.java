@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
@@ -46,8 +47,8 @@ public class APITests extends TestClient {
 	}
 	
 
-    @Resource
-    public ManagedThreadFactory factory;
+    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    public ManagedThreadFactory threadFactory;
 	
 
 	/*
@@ -63,7 +64,7 @@ public class APITests extends TestClient {
 	@Test
 	public void interruptThreadApiTest() {
 	    CounterRunnableTask task = new CounterRunnableTask();
-        Thread thread = factory.newThread(task);
+        Thread thread = threadFactory.newThread(task);
         thread.start();
         thread.interrupt();
         TestUtil.waitTillThreadFinish(thread);
@@ -80,7 +81,7 @@ public class APITests extends TestClient {
 	@Test
 	public void implementsManageableThreadInterfaceTest() {
 	    CounterRunnableTask task = new CounterRunnableTask();
-        Thread thread = factory.newThread(task);
+        Thread thread = threadFactory.newThread(task);
         assertTrue(thread instanceof ManageableThread, "The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
 	}
 

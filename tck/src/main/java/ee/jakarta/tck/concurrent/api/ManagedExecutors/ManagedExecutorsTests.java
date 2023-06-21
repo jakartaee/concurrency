@@ -32,13 +32,17 @@ import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 @Web
 @Common({ PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS })
@@ -60,6 +64,12 @@ public class ManagedExecutorsTests {
     private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
     private boolean shutdown = true;
+    
+    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    public ManagedThreadFactory threadFactory;
+    
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    public ManagedExecutorService executor;
 
     @AfterEach
     public void after() {
@@ -110,7 +120,7 @@ public class ManagedExecutorsTests {
      */
     @Test
     public void IsCurrentThreadShutdown() {
-        Thread createdThread = TestUtil.getManagedThreadFactory().newThread(new Runnable() {
+        Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
             public void run() {
                 shutdown = ManagedExecutors.isCurrentThreadShutdown();
@@ -136,7 +146,7 @@ public class ManagedExecutorsTests {
      */
     @Test
     public void IsCurrentThreadShutdown_ManageableThread() {
-        Thread createdThread = TestUtil.getManagedThreadFactory().newThread(new Runnable() {
+        Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
             public void run() {
                 shutdown = ManagedExecutors.isCurrentThreadShutdown();
@@ -145,7 +155,7 @@ public class ManagedExecutorsTests {
         // Executors.newSingleThreadExecutor(managedThreadFactory) uses
         // ManagedThreadFactory
         // to create new (Manageable) thread.
-        Future<?> future = Executors.newSingleThreadExecutor(TestUtil.getManagedThreadFactory()).submit(createdThread);
+        Future<?> future = Executors.newSingleThreadExecutor(threadFactory).submit(createdThread);
         TestUtil.waitForTaskComplete(future);
         if (shutdown) {
             throw new RuntimeException("Failed because shutdown is set to be true when running job");
@@ -168,7 +178,7 @@ public class ManagedExecutorsTests {
     public void ManageRunnableTaskWithTaskListener() {
         RunnableTask runnableTask = createRunnableTask();
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
-        Future<?> futureResult = TestUtil.getManagedExecutorService().submit(taskWithListener);
+        Future<?> futureResult = executor.submit(taskWithListener);
         assertTaskAndListenerComplete(futureResult, runnableTask);
     }
 
@@ -217,7 +227,7 @@ public class ManagedExecutorsTests {
                 throw new RuntimeException("Failed to get expected property");
         }
 
-        assertTaskAndListenerComplete(TestUtil.getManagedExecutorService().submit(task), runnableTask);
+        assertTaskAndListenerComplete(executor.submit(task), runnableTask);
     }
 
     /*
@@ -258,7 +268,7 @@ public class ManagedExecutorsTests {
         CallableTask<String> callableTask = createCallableTask(expectedResultStr);
         Callable<String> taskWithListener = ManagedExecutors.managedTask((Callable<String>) callableTask,
                 managedTaskListener);
-        Future<String> futureResult = TestUtil.getManagedExecutorService().submit(taskWithListener);
+        Future<String> futureResult = executor.submit(taskWithListener);
         assertTaskAndListenerComplete(expectedResultStr, futureResult, callableTask);
     }
 
@@ -311,7 +321,7 @@ public class ManagedExecutorsTests {
             if (managedTask.getExecutionProperties().get("key") != "value")
                 throw new RuntimeException("Failed to get expected property");
         }
-        assertTaskAndListenerComplete(expectedResultStr, TestUtil.getManagedExecutorService().submit(task),
+        assertTaskAndListenerComplete(expectedResultStr, executor.submit(task),
                 callableTask);
     }
 

@@ -27,10 +27,13 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 @Web
 @Common({ PACKAGE.TASKS })
@@ -51,6 +54,9 @@ public class ManagedScheduledExecutorServiceTests {
 
     private static final String TEST_CLASSLOADER_CLASS_NAME = ManagedScheduledExecutorServiceTests.class
             .getCanonicalName();
+    
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
     /*
      * @testName: normalScheduleProcess1Test
@@ -64,7 +70,7 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess1Test() throws Exception {
-        ScheduledFuture result = TestUtil.getManagedScheduledExecutorService().schedule(
+        ScheduledFuture result = scheduledExecutor.schedule(
                 new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME),
                 new CommonTriggers.OnceTrigger());
         TestUtil.waitForTaskComplete(result);
@@ -87,7 +93,7 @@ public class ManagedScheduledExecutorServiceTests {
         Runnable command = null;
 
         try {
-            TestUtil.getManagedScheduledExecutorService().schedule(command, new CommonTriggers.OnceTrigger());
+            scheduledExecutor.schedule(command, new CommonTriggers.OnceTrigger());
         } catch (NullPointerException e) {
             return; // expected
         }
@@ -108,7 +114,7 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess2Test() throws Exception {
-        ScheduledFuture result = TestUtil.getManagedScheduledExecutorService()
+        ScheduledFuture result = scheduledExecutor
                 .schedule(
                         (Callable) new CallableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                                 TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
@@ -136,7 +142,7 @@ public class ManagedScheduledExecutorServiceTests {
         Callable callable = null;
 
         try {
-            TestUtil.getManagedScheduledExecutorService().schedule(callable, new CommonTriggers.OnceTrigger());
+            scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());
         } catch (NullPointerException e) {
             return; // expected
         }

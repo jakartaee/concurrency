@@ -37,7 +37,9 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutors;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedTask;
 
 @Web
@@ -60,6 +62,9 @@ public class LastExecutionTests {
 	
 	@TestName
 	public String testname;
+	
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
 	/*
 	 * @testName: lastExecutionGetIdentityNameTest
@@ -76,7 +81,7 @@ public class LastExecutionTests {
 		Map<String, String> executionProperties = new HashMap<String, String>();
 		executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(
+		ScheduledFuture sf = scheduledExecutor.schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
@@ -96,7 +101,7 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultRunnableTest() {
 		// test with runnable, LastExecution should return null
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService()
+		ScheduledFuture sf = scheduledExecutor
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
 						TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
@@ -117,7 +122,7 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
+		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
@@ -136,7 +141,7 @@ public class LastExecutionTests {
 	 */
 	@Test
 	public void lastExecutionGetRunningTimeTest() {
-		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(
+		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
 				new CounterRunnableTask(TestConstants.PollInterval.toMillis()), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);

@@ -41,10 +41,6 @@ import javax.naming.NamingException;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 /**
  * Utility methods to be used on the client or server side. 
@@ -144,22 +140,6 @@ public final class TestUtil {
 			}
 		}
 		return targetObject;
-	}
-	
-	public static ContextService getContextService() {
-		return lookup(TestConstants.DefaultContextService);
-	}
-	
-	public static ManagedExecutorService getManagedExecutorService() {
-		return lookup(TestConstants.DefaultManagedExecutorService);
-	}
-	
-	public static ManagedScheduledExecutorService getManagedScheduledExecutorService() {
-		return lookup(TestConstants.DefaultManagedScheduledExecutorService);
-	}
-	
-	public static ManagedThreadFactory getManagedThreadFactory() {
-		return lookup(TestConstants.DefaultManagedThreadFactory);
 	}
 	
 	//########## Waiters ##########

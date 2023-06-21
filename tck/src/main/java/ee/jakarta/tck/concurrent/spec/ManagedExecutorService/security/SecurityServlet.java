@@ -33,12 +33,12 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 	
-	@Resource
-	private ManagedExecutorService mes;
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    public ManagedExecutorService executor;
 
 	public void managedExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		req.login("javajoe", "javajoe");
-		Future<?> future = mes.submit(new SecurityTestTask());
+		Future<?> future = executor.submit(new SecurityTestTask());
 		Object result = TestUtil.waitForTaskComplete(future);
 		assertEquals(result, TestConstants.SimpleReturnValue);
 	}

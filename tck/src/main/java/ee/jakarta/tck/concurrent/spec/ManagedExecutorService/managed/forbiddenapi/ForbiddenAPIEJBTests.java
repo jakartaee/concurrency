@@ -25,12 +25,12 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
 @Web
-public class ForbiddenAPITests {
+public class ForbiddenAPIEJBTests {
 	
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true,  ForbiddenAPITests.class.getPackage());
+				.addPackages(true,  ForbiddenAPIEJBTests.class.getPackage());
 	}
 
 	@EJB

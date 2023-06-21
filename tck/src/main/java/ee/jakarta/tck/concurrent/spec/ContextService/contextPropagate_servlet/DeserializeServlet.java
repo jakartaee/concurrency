@@ -23,7 +23,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -33,11 +35,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet("/DeserializeServlet")
 public class DeserializeServlet extends HttpServlet {
+    
+    @Resource(lookup = TestConstants.DefaultContextService)
+    public ContextService context;
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestJNDIRunnableWork(),
+			Object proxy = context.createContextualProxy(new TestJNDIRunnableWork(),
 					Runnable.class, TestWorkInterface.class, Serializable.class);
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			ObjectOutputStream out = new ObjectOutputStream(bout);

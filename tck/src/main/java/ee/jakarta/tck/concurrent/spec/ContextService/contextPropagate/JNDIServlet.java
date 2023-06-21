@@ -18,9 +18,11 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
 import java.io.Serializable;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,9 +34,12 @@ public class JNDIServlet extends TestServlet {
 	@EJB
 	private ContextPropagateInterface intf;
 	
+    @Resource(lookup = TestConstants.DefaultContextService)
+    public ContextService context;
+	
 
 	public void testJNDIContextAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		String result = intf.executeWorker((TestWorkInterface) TestUtil.getContextService()
+		String result = intf.executeWorker((TestWorkInterface) context
 				.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
 						Serializable.class));
 		resp.getWriter().println(result);
