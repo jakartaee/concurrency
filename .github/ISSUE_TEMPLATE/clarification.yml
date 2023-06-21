@@ -1,0 +1,30 @@
+name: Clarification
+description: Jakarta Concurrency Clarification
+title: "[clarification]: "
+labels: ["question"] #Verified - label exists
+body:
+- type: markdown
+  attributes: 
+    value: >
+      Request that some aspect of the specification be clarified.
+- type: input
+  id: specification
+  validations:
+    required: true
+  attributes: 
+    label: Specification
+    description: What specification is the clarification related to? Provide a link to the API class or SPEC document section. 
+    placeholder: |
+      ex. [Aborted Exception](https://github.com/jakartaee/concurrency/blob/master/api/src/main/java/jakarta/enterprise/concurrent/AbortedException.java#L22)
+- type: textarea
+  validations:
+    required: true
+  attributes:
+    label: I need clarification on ...
+    value: |
+      > Description of the clarification needed.
+- type: textarea
+  attributes:
+    label: Additional information
+    value: |
+      > Proposed solutions, code examples, ect. 
