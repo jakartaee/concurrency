@@ -18,8 +18,10 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
 import java.util.ServiceLoader;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 
 @SuppressWarnings("serial")
 public class TestSecurityRunnableWork extends BaseTestRunnableWork {
@@ -27,6 +29,12 @@ public class TestSecurityRunnableWork extends BaseTestRunnableWork {
 	@Override
 	protected String work() {
 		EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-		return ( (LimitedInterface) TestUtil.lookup(nameProvider.getEJBJNDIName()) ).doSomething();
+		LimitedInterface limited;
+        try {
+            limited = InitialContext.doLookup(nameProvider.getEJBJNDIName());
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+		return limited.doSomething();
 	}
 }

@@ -28,14 +28,14 @@ import jakarta.ejb.EJB;
 
 @Web
 @Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
-public class ForbiddenAPITests {
+public class ForbiddenAPIEJBTests {
 	
 	private static final String APP_NAME = "ManagedScheduledExecutorService.ForbiddenAPITests";
 	
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, ForbiddenAPITests.class.getPackage());
+				.addPackages(true, ForbiddenAPIEJBTests.class.getPackage());
 	}
 
 	@EJB

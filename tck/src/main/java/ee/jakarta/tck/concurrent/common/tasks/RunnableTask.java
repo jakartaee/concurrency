@@ -95,20 +95,13 @@ public class RunnableTask implements Runnable {
 
 	protected boolean lookupEnvRef() {
 		boolean passed = false;
-		Context ctx = null;
 		String value = null;
 		try {
-			ctx = new InitialContext();
-			value = (String) ctx.lookup(jndiName);
+			value = InitialContext.doLookup(jndiName);
 			if (expectedJndiValue.equals(value)) {
 				passed = true;
 			}
 		} catch (NamingException e) {
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException e) {
-			}
 		}
 
 		return passed;

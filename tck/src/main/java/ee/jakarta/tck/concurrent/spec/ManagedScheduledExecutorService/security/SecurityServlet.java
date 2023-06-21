@@ -38,9 +38,7 @@ public class SecurityServlet extends TestServlet {
 	public void managedScheduledExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 			req.login("javajoe", "javajoe");
 			
-			InitialContext context = new InitialContext();
-			ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-					.lookup(TestConstants.DefaultManagedScheduledExecutorService);
+			ManagedScheduledExecutorService executorService = InitialContext.doLookup(TestConstants.DefaultManagedScheduledExecutorService);
 			ScheduledFuture future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
 
 			Object result = TestUtil.waitForTaskComplete(future);

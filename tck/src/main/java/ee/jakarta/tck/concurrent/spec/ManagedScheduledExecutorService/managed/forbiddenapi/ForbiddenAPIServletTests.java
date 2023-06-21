@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -33,6 +33,7 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 @Web
@@ -46,16 +47,8 @@ public class ForbiddenAPIServletTests {
 
     private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-    private ManagedScheduledExecutorService getService() {
-        try {
-            InitialContext context = new InitialContext();
-            ManagedScheduledExecutorService executorService = (ManagedScheduledExecutorService) context
-                    .lookup(TestConstants.DefaultManagedScheduledExecutorService);
-            return executorService;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
     protected void before() {
@@ -72,7 +65,7 @@ public class ForbiddenAPIServletTests {
     @Test
     public void testAwaitTermination() {
         try {
-            getService().awaitTermination(10, TimeUnit.SECONDS);
+            scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             fail(e.getMessage());
         } catch (IllegalStateException e) {
@@ -91,7 +84,7 @@ public class ForbiddenAPIServletTests {
     @Test
     public void testIsShutdown() {
         try {
-            getService().isShutdown();
+            scheduledExecutor.isShutdown();
         } catch (IllegalStateException e) {
             return;
         }
@@ -108,7 +101,7 @@ public class ForbiddenAPIServletTests {
     @Test
     public void testIsTerminated() {
         try {
-            getService().isTerminated();
+            scheduledExecutor.isTerminated();
         } catch (IllegalStateException e) {
             return;
         }
@@ -125,7 +118,7 @@ public class ForbiddenAPIServletTests {
     @Test
     public void testShutdown() {
         try {
-            getService().shutdown();
+            scheduledExecutor.shutdown();
         } catch (IllegalStateException e) {
             return;
         }
@@ -142,7 +135,7 @@ public class ForbiddenAPIServletTests {
     @Test
     public void testShutdownNow() {
         try {
-            getService().shutdownNow();
+            scheduledExecutor.shutdownNow();
         } catch (IllegalStateException e) {
             return;
         }

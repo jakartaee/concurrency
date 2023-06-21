@@ -16,13 +16,18 @@
 
 package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 @SuppressWarnings("serial")
 public class TestJNDIRunnableWork extends BaseTestRunnableWork {
 
 	@Override
 	protected String work() {
-		return TestUtil.lookup("java:comp/env/myMessage");
+		try {
+            return InitialContext.doLookup("java:comp/env/myMessage");
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
 	}
 }

@@ -59,8 +59,7 @@ public class ContextServletTests {
      */
     @Test
     public void jndiClassloaderPropagationTest() throws Exception {
-        InitialContext context = new InitialContext();
-        ManagedThreadFactory factory = (ManagedThreadFactory) context.lookup(TestConstants.DefaultManagedThreadFactory);
+        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
 
         RunnableTask task = new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                 TEST_CLASSLOADER_CLASS_NAME);

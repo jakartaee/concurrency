@@ -42,8 +42,7 @@ public class CounterRunnableTask implements Runnable {
 				TestUtil.sleep(Duration.ofMillis(sleepTime));
 			}
 
-			InitialContext context = new InitialContext();
-			CounterInterface counter = (CounterInterface) context.lookup(countSingletionJndi);
+			CounterInterface counter = InitialContext.doLookup(countSingletionJndi);
 			counter.inc();
 
 		} catch (Exception e) {

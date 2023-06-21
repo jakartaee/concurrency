@@ -45,9 +45,7 @@ public class SecurityServlet extends TestServlet {
 
 	public void jndiClassloaderPropagationTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-			InitialContext context = new InitialContext();
-			ManagedThreadFactory factory = (ManagedThreadFactory) context
-					.lookup(TestConstants.DefaultManagedThreadFactory);
+			ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
 
 			CounterRunnableWithContext task = new CounterRunnableWithContext();
 			Thread thread = factory.newThread(task);
@@ -60,9 +58,7 @@ public class SecurityServlet extends TestServlet {
 
 		req.login("javajoe", "javajoe");
 		
-		InitialContext context = new InitialContext();
-		ManagedThreadFactory factory = (ManagedThreadFactory) context
-				.lookup(TestConstants.DefaultManagedThreadFactory);
+		ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
 
 		CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
 		Thread thread = factory.newThread(task);
