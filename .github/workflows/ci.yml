@@ -5,20 +5,20 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ] #TODO change to main
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ] #TODO change to main
+    branches: [ "main" ]
 
 permissions:
   contents: read
 
 jobs:
   build:
+    strategy:
+      matrix:
+        java-version: [ '17', '21-ea' ]
 
     runs-on: ubuntu-latest
-
-    matrix:
-      java-version: [ '17', '21-ea' ]
 
     steps:
     - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
