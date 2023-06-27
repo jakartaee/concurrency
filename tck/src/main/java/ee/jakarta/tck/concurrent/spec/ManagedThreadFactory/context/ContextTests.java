@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,27 +19,30 @@ package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
-@Test(groups = JAKARTAEE_FULL)
+@Full @RunAsClient
 public class ContextTests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="ContextTests", testable=false)
+	@Deployment(name="ContextTests")
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), ContextTests.class.getPackage())
+				.addPackages(true, ContextTests.class.getPackage())
+				.addPackages(false, PACKAGE.TASKS.getPackageName())
 				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
 				.deleteClass(SecurityTestInterface.class)
 				.addAsWebInfResource(ContextTests.class.getPackage(), "web.xml", "web.xml");
@@ -49,10 +52,12 @@ public class ContextTests extends TestClient {
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
 				.addAsModules(war, jar);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		return ear;
 	}
+	
+    @TestName
+    String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -69,12 +74,12 @@ public class ContextTests extends TestClient {
 	 */
 	@Test
 	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 	
 	@Test
 	public void jndiClassloaderPropagationWithSecurityTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 }

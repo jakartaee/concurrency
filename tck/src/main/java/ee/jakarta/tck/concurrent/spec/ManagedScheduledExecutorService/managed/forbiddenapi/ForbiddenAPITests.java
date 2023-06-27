@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,20 +19,23 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.f
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
-public class ForbiddenAPITests extends ArquillianTests {
+@Web
+@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
+public class ForbiddenAPITests {
 	
 	private static final String APP_NAME = "ManagedScheduledExecutorService.ForbiddenAPITests";
 	
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonFixedCounterPackage(), ForbiddenAPITests.class.getPackage());
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
+				.addPackages(true, ForbiddenAPITests.class.getPackage());
 	}
 
 	@EJB

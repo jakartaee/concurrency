@@ -11,7 +11,7 @@
 <%@ page import="jakarta.enterprise.concurrent.ManagedExecutorService" %>
 <%@ page import="jakarta.servlet.ServletException" %>
 
-<%@ page import="org.testng.Assert" %>
+<%@ page import="org.junit.jupiter.api.Assertions" %>
 
 
 <%!
@@ -28,8 +28,8 @@ public void testSecurityClearedContext(HttpServletRequest request, HttpServletRe
 	        return request.getUserPrincipal() == null ? "null" : request.getUserPrincipal().getName();
 	    });
 		result = contextualSupplier.get();
-		Assert.assertNotNull(result, "Security context result should have been set to a string value");
-		Assert.assertEquals(result, "null", "Security context should have been cleared.");
+		Assertions.assertNotNull(result, "Security context result should have been set to a string value");
+		Assertions.assertEquals("null", result, "Security context should have been cleared.");
 	} catch (Exception e) { //Return any exceptions thrown by the test as a string for easier debugging
 		log.warning("Exception thrown: " + e.getMessage());
 	   	throw new ServletException(e);
@@ -47,8 +47,8 @@ public void testSecurityUnchangedContext(HttpServletRequest request, HttpServlet
 	        return request.getUserPrincipal() == null ? "null" : request.getUserPrincipal().getName();
 	    });
 		result = contextualSupplier.get();
-	    Assert.assertNotNull(result, "Security context result should have been set to a string value");
-	    Assert.assertEquals(result, "javajoe", "Security Context should have been left unchanged.");
+		Assertions.assertNotNull(result, "Security context result should have been set to a string value");
+		Assertions.assertEquals("javajoe", result, "Security Context should have been left unchanged.");
 	    
 	    ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/executor2");
 	    CompletableFuture<String> future = executor.supplyAsync(() -> {
@@ -56,8 +56,8 @@ public void testSecurityUnchangedContext(HttpServletRequest request, HttpServlet
 	        return request.getUserPrincipal() == null ? "null" : request.getUserPrincipal().getName();
 	    });
 	    result = future.join();
-	    Assert.assertNotNull(result, "Security context result should have been set to a string value");
-	    Assert.assertEquals(result, "null", "Security context should not have been propogated.");
+	    Assertions.assertNotNull(result, "Security context result should have been set to a string value");
+	    Assertions.assertEquals("null", result, "Security context should not have been propogated.");
 	} catch (Exception e) { //Return any exceptions thrown by the test as a string for easier debugging
 		log.warning("Exception thrown: " + e.getMessage());
 	   	throw new ServletException(e);
@@ -75,8 +75,8 @@ public void testSecurityPropagatedContext(HttpServletRequest request, HttpServle
 	        return request.getUserPrincipal() == null ? "null" : request.getUserPrincipal().getName();
 	    });
 	    result = future.join();
-	    Assert.assertNotNull(result, "Security context result should have been set to a string value");
-	    Assert.assertEquals(result, "javajoe", "Security Context should have been propagated");
+	    Assertions.assertNotNull(result, "Security context result should have been set to a string value");
+	    Assertions.assertEquals("javajoe", result, "Security Context should have been propagated");
 	} catch (Exception e) { //Return any exceptions thrown by the test as a string for easier debugging
 		log.warning("Exception thrown: " + e.getMessage());
 	   	throw new ServletException(e);

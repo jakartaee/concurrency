@@ -8,11 +8,11 @@
 :APIShortName: Concurrency
 :APIShortNameLC: concurrency
 :APILongName: Jakarta Concurrency
-:APIVersion: 3.0.0
+:APIVersion: 3.1.0
 :APISpecSite: https://jakarta.ee/specifications/concurrency/3.0/
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
-:TCKTestPlatform: TestNG
+:TCKTestPlatform: Junit5
 :RuntimeTestCount: 164
 :SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:1.6
 
@@ -95,7 +95,6 @@ To better understand how this TCK works, knowing what testing frameworks are bei
 Knowledge of how these frameworks operate and interact will help during the project setup.
 
 1. **Arquillian** - Since the EE Platform TCK uses Arquillian to execute tests within an Arquillian "container" for certifying against the EE Platform, you must configure an Arquillian https://arquillian.org/guides/developing_a_container_adapter/[adapter] for your target runtime. Version 1.6.0 or later
-1. **TestNG** - Since the EE Platform TCK uses TestNG as the entrypoint for tests, and deployments using Arquillian, you must configure a TestNG configuration file to ensure all tests are found and executed.
 1. **Signature Test Tool** - No action is needed here, but we note that the signature files were built and should be validated with the Maven plugin with group:artifact:version coordinates: **{SigPluginGAV}**, as used by the sample sigtest runner included in the TCK zip. This is a more specific direction than in earlier releases, in which it was left more open for the user to use a compatible tool.  Since there are small differences in the various signature test tools, we standardize on this version.
 
 == A Guide to the TCK Distribution
@@ -141,7 +140,7 @@ The {APIShortName} TCK is a test library that includes four types of packages:
 - `ee.jakarta.tck.concurrent.api.*` these are basic API tests that ensure methods throw the correct exceptions and return the valid values.
 - `ee.jakarta.tck.concurrent.spec.*` these are more complex SPEC tests that ensure that implementations behave as expected based on the specification.
 - `ee.jakarta.tck.concurrent.common.*` these are common packages shared between test packages.
-- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using TestNG, Arquillian, SigTest, and java.util.logging easier.
+- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using {TCKTestPlatform}, Arquillian, SigTest, and java.util.logging easier.
 
 ===== {TCKTestPlatform} "suite" definition XML files
 
@@ -171,9 +170,8 @@ It is up to the tester to include those dependencies and set up a test project t
 Here is an essential checklist of what you will need, and links to the section that describe how to satisfy these requirements:
 
 - An Application Server to test against | <<Software To Install>>
-- The {APIShortName} API, {APIShortName} TCK, Arquillian, and TestNG libraries available to the `Test Client` | <<Test Client Dependencies>>
-- The Arquillian, TestNG, Derby JDBC, and Signature Test libraries available to the `Test Server` | <<Test Server Dependencies>>
-- A TestNG configuration file available to the `Test Client` | <<Configure {TCKTestPlatform}>>
+- The {APIShortName} API, {APIShortName} TCK, Arquillian, and {TCKTestPlatform} libraries available to the `Test Client` | <<Test Client Dependencies>>
+- The Arquillian, {TCKTestPlatform}, Derby JDBC, and Signature Test libraries available to the `Test Server` | <<Test Server Dependencies>>
 - An Arquillian SPI implementation for your Application Server | <<Configure Arquillian>>
 - An Application Server configuration with specific security roles | <<Configure Application Server>>
 - A logging configuration for TCK logging on `Test Client` and `Test Server` | <<Configure Logging>>
@@ -221,7 +219,7 @@ Each of these Arquillian tests run within the runtime's Servlet container, with 
 === Test Server Dependencies
 
 If the Test Server is running on a separate JVM (recommended), then the Test Server
-will also need access to the TestNG, Signature Test, and the Derby JDBC libraries.
+will also need access to the {TCKTestPlatform}, Signature Test, and the Derby JDBC libraries.
 The Test Server dependencies can be copied over during the build phase.
 
 Example starter/pom.xml:
@@ -240,9 +238,7 @@ $ mvn dependency:copy
 
 === Configure {TCKTestPlatform}
 
-{TCKTestPlatform} needs to be configured to know which packages contain tests to run.
-This configuration is done via a configuration file. The {TCKTestPlatform} configuration 
-file has been provided in the `artifacts/` and `starter/` directories. 
+{TCKTestPlatform} needs to be configured to know which Jakarta EE profile to test against.
 
 In order for your maven project to execute these tests the surefire plugin needs to be configured.
 
@@ -250,7 +246,7 @@ Example starter/pom.xml:
 
 [source, xml]
 ----
-include::../starter/pom.xml[tags=configTestNG;!ignore;!logging]
+include::../starter/pom.xml[tags=configSurefire;!arquillian;!logging]
 ----
 
 === Configure Arquillian
@@ -271,7 +267,7 @@ However, the {APIShortName} TCK does require that Application Servers define a s
 The TCK uses external libraries that also need to be available on the Application Server's class path. 
 
 - org.apache.derby:derby - For database testing
-- org.testng:testng - For test assertions
+- org.junit.jupiter:junit-jupiter - For test assertions
 - org.netbeans.tools:sigtest-maven-plugin - For signature testing
 
 See <<Test Server Dependencies>>
@@ -359,7 +355,6 @@ Here is example output when we, as in the starter runner, run successfully:
 	-------------------------------------------------------
 	Running TestSuite
 	...
-	... TestNG 6.14.3 by Cédric Beust (cedric@beust.com)
 	...
 	
 	Tests run: 162, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 410.985 sec - in TestSuite

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,42 +15,28 @@
  */
 package ee.jakarta.tck.concurrent.spec.signature;
 
-import java.net.URL;
-
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-public class SignatureTests extends TestClient {
+@Web
+@Signature
+public class SignatureTests {
 
-	public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
-	public static final String SIG_MAP_NAME = "sig-test.map";
-	public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
-
-	@ArquillianResource
-	URL baseURL;
-
-	@Deployment(name = "SignatureTests", testable = false)
+	@Deployment(name = "SignatureTests")
 	public static WebArchive createDeployment() {
-		WebArchive web = ShrinkWrap.create(WebArchive.class, "signatureTest.war")
-				.addPackages(true, getFrameworkPackage(), getSignaturePackage(), SignatureTests.class.getPackage())
-				.addAsResources(SignatureTests.class.getPackage(), SIG_MAP_NAME, SIG_PKG_NAME,
-						SIG_FILE_NAME);
-
-		return web;
-	}
-
-	@Override
-	protected String getServletPath() {
-		return "SignatureTestServlet";
+		return ShrinkWrap.create(WebArchive.class, "signatureTest.war");
 	}
 
 	@Test
 	public void testSignatures() throws Exception {
-		runTest(baseURL);
+	    ConcurrencySignatureTestRunner.assertProjectSetup();
+        ConcurrencySignatureTestRunner sigTest = new ConcurrencySignatureTestRunner();
+        sigTest.signatureTest();
 	}
 }

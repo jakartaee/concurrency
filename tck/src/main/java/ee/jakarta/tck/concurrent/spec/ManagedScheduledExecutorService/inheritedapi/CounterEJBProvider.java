@@ -11,7 +11,7 @@ public class CounterEJBProvider {
 		public FullProvider() {}
 		@Override
 		public String getEJBJNDIName() {
-			return "java:global/inheritedapi/inheritedapi_counter/CounterSingleton";
+			return "java:global/inheritedapi/inheritedapi/CounterSingleton";
 		}
 	}
 	

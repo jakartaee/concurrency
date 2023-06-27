@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,17 +16,20 @@
 
 package ee.jakarta.tck.concurrent.api.ManageableThread;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManageableThread;
 
-public class ManageableThreadTests extends ArquillianTests {
+@Web
+public class ManageableThreadTests {
 
 	private static final TestLogger log = TestLogger.get(ManageableThreadTests.class);
 	
@@ -34,7 +37,7 @@ public class ManageableThreadTests extends ArquillianTests {
 	@Deployment(name="ManageableThreadTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), ManageableThreadTests.class.getPackage());
+				.addPackages(true,  ManageableThreadTests.class.getPackage());
 	}
 
 	/*

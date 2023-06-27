@@ -18,15 +18,15 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import ee.jakarta.tck.concurrent.common.context.IntContext;
+import ee.jakarta.tck.concurrent.common.context.StringContext;
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import ee.jakarta.tck.concurrent.common.context.IntContext;
-import ee.jakarta.tck.concurrent.common.context.StringContext;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @ContextServiceDefinition(name = "java:app/concurrent/EJBContextA",
                           propagated = { APPLICATION, IntContext.NAME },

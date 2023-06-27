@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,23 +19,33 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
+@Web @RunAsClient
+@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
 public class InheritedAPIServletTests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="InheritedAPIServletTests", testable=false)
+	@Deployment(name="InheritedAPIServletTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonFixedCounterPackage(), InheritedAPIServletTests.class.getPackage());
+				.addPackages(true, InheritedAPIServletTests.class.getPackage());
 	}
+	
+    @TestName
+    String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -51,7 +61,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiSubmit() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -63,7 +73,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiExecute() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -75,7 +85,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiInvokeAll() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -87,7 +97,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiInvokeAny() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -99,7 +109,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiSchedule() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -111,7 +121,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiScheduleAtFixedRate() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	/*
@@ -123,7 +133,7 @@ public class InheritedAPIServletTests extends TestClient {
 	 */
 	@Test
 	public void testApiScheduleWithFixedDelay() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 }

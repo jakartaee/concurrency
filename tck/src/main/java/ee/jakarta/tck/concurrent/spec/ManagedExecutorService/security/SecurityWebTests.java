@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,34 +19,37 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.security;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
-
-@Test(groups = JAKARTAEE_WEB)
+@Web @RunAsClient
+@Common({PACKAGE.TASKS})
 public class SecurityWebTests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="SecurityTests", testable=false)
+	@Deployment(name="SecurityTests")
 	public static WebArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, 
-						SecurityWebTests.class.getPackage(),
-						getFrameworkPackage(), 
-						getCommonPackage())
-				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.WebProvider.class);
-;		
+				.addPackages(true, SecurityWebTests.class.getPackage())
+				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.WebProvider.class);	
 		
 		return war;
 	}
+	
+    @TestName
+    String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -63,13 +66,13 @@ public class SecurityWebTests extends TestClient {
 	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
 	 * then submit a task by ManagedExecutorService in which call a ejb that
 	 * requires role manager.
-         *
-         * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-         * fix: https://github.com/jakartaee/concurrency/pull/218  
-         * Can be reenabled in next release of Concurrency
+     *
+     * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
+     * fix: https://github.com/jakartaee/concurrency/pull/218  
+     * Can be reenabled in next release of Concurrency
 	 */
-	@Test(enabled = false)
+	@Disabled
 	public void managedExecutorServiceAPISecurityTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 }

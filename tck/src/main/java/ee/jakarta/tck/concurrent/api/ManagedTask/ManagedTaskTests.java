@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,27 +16,33 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedTask;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.common.RunnableTask;
-import ee.jakarta.tck.concurrent.common.managedTaskListener.ManagedTaskListenerImpl;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
-public class ManagedTaskTests extends ArquillianTests {
+@Web
+@Common({PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS})
+public class ManagedTaskTests {
 	
 	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="ManagedTaskTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), getCommonManagedTaskListener(), ManagedTaskTests.class.getPackage());
+				.addPackages(true, ManagedTaskTests.class.getPackage());
 	}
 
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
@@ -65,7 +71,7 @@ public class ManagedTaskTests extends ArquillianTests {
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(testName + " failed to get expected property", managedTask.getExecutionProperties().get("key") == "value");
+			assertTrue(managedTask.getExecutionProperties().get("key") == "value", "failed to get expected property");
 		}
 		
 	}
@@ -87,7 +93,7 @@ public class ManagedTaskTests extends ArquillianTests {
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(testName + " failed to get expected managedTaskListener", managedTask.getManagedTaskListener() == managedTaskListener);
+			assertTrue(managedTask.getManagedTaskListener() == managedTaskListener, "Failed to get expected managedTaskListener");
 		}
 	}
 }

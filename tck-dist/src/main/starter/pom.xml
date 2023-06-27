@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,13 +30,13 @@
     <properties>
         <!-- General properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
 
         <!-- Dependency and Plugin Versions -->
-        <jakarta.concurrent.version>3.0.0</jakarta.concurrent.version>
-        <arquillian.version>1.7.0.Alpha10</arquillian.version>
-        <testng.version>6.14.3</testng.version>
+        <jakarta.concurrent.version>3.1.0</jakarta.concurrent.version>
+        <arquillian.version>1.7.0.Final</arquillian.version>
+        <junit5.version>5.9.3</junit5.version>
         <sigtest.version>1.6</sigtest.version>
         <derby.version>10.15.2.0</derby.version>
         <maven.dep.plugin.version>3.3.0</maven.dep.plugin.version>
@@ -45,12 +45,6 @@
 
         <!-- Location to put test application dependencies -->
         <application.server.lib>[path/to/appserver/lib]</application.server.lib>
-
-        <!-- Pointer to suite.xml file that has the TestNG configuration. 
-             Use suite.xml to test the full profile
-             Use suite-web.xml to test the web profile
-         -->
-        <suiteXmlFile>suite.xml</suiteXmlFile>
         
         <!-- Pointer to logging.properties file that has the java.util.logging configuration -->
         <logging.config>logging.properties</logging.config>
@@ -93,10 +87,10 @@
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>
-        <!-- Arquillian Implementation for TestNG -->
+        <!-- Arquillian Implementation for JUnit5 -->
         <dependency>
-            <groupId>org.jboss.arquillian.testng</groupId>
-            <artifactId>arquillian-testng-container</artifactId>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
             <version>${arquillian.version}</version>
         </dependency>
         <!-- TODO add Arquillian SPI impl for your Jakarta EE Platform -->
@@ -106,11 +100,11 @@
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet.version}</version>
         </dependency>
-        <!-- TestNG -->
+        <!-- JUnit5 -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter</artifactId>
+            <version>${junit5.version}</version>
         </dependency>
         <!-- Signature Test Plugin -->
         <dependency>
@@ -134,9 +128,9 @@
                 <configuration>
                     <artifactItems>
                         <artifactItem>
-                            <groupId>org.testng</groupId>
-                            <artifactId>testng</artifactId>
-                            <version>${testng.version}</version>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter</artifactId>
+                            <version>${junit5.version}</version>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.apache.derby</groupId>
@@ -163,40 +157,29 @@
                     <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-            <!-- tag::configTestNG[] -->
-            <!-- Surefire plugin - Entrypoint for TestNG -->
+            <!-- tag::configSurefire[] -->
+            <!-- Surefire plugin - Entrypoint for Junit -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
-                    <!-- tag::logging[] -->
-                    <systemProperties>
-                        <property>
-                            <name>java.util.logging.config.file</name>
-                            <value>${logging.config}</value>
-                        </property>
-                    </systemProperties>
-                    <!-- end::logging[] -->
-                    <!-- tag::ignore[] -->
                     <systemPropertyVariables>
-                        <!-- Properties shared with Arquillian -->
+                    	<!-- tag::arquillian[] -->
                         <tck_server>[TODO]</tck_server>
-                        <tck_hostname>[TODO]</tck_hostname>
-                        <tck_username>[TODO]</tck_username>
-                        <tck_password>[TODO]</tck_password>
                         <tck_port>[TODO]</tck_port>
-                        <tck_port>[TODO]</tck_port>
+                        <!-- end::arquillian[] -->
+                        <!-- tag::logging[] -->
+                        <java.util.logging.config.file>${logging.config}</java.util.logging.config.file>
+                        <!-- end::logging[] -->
                     </systemPropertyVariables>
-                    <!-- end::ignore[] -->
-                    <suiteXmlFiles>
-                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                    </suiteXmlFiles>
+                    <groups>${test.included}</groups>                        <!-- Groups to include i.e. web/full -->
+                    <excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
                     <!-- Ensure surfire plugin looks under src/main/java instead of src/test/java -->
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                 </configuration>
             </plugin>
-            <!-- end::configTestNG[] -->
+            <!-- end::configSurefire[] -->
             <!-- TODO: you can include a plugin to start your application server here -->
         </plugins>
     </build>

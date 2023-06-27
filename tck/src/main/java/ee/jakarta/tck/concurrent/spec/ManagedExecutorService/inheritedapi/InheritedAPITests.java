@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,28 +19,35 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.inheritedapi;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
+@Web @RunAsClient
 public class InheritedAPITests extends TestClient {
 	
 	@ArquillianResource
 	URL baseURL;
 	
-	@Deployment(name="InheritedAPITests", testable=false)
+	@Deployment(name="InheritedAPITests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), InheritedAPITests.class.getPackage());
+				.addPackages(true,  InheritedAPITests.class.getPackage());
 	}
 	
 	@Override
 	protected String getServletPath() {
 		return "CommonServlet";
 	}
+	
+    @TestName
+    String testname;
 
 	/*
 	 * @testName: testBasicManagedExecutorService
@@ -61,26 +68,26 @@ public class InheritedAPITests extends TestClient {
 	
 	@Test
 	public void testExecute() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	@Test
 	public void testSubmit() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	@Test
 	public void testInvokeAny() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	@Test
 	public void testInvokeAll() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 	@Test
 	public void testAtMostOnce() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 }

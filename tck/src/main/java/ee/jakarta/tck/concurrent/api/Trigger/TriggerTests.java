@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +16,9 @@
 
 package ee.jakarta.tck.concurrent.api.Trigger;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -27,30 +29,32 @@ import java.util.concurrent.TimeoutException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.common.CommonTriggers;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.SkippedException;
 
-public class TriggerTests extends ArquillianTests {
+@Web
+@Common({PACKAGE.FIXED_COUNTER, PACKAGE.TASKS})
+public class TriggerTests {
 	
 	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="TriggerTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), 
-						getCommonPackage(), 
-						getCommonFixedCounterPackage(), 
-						TriggerTests.class.getPackage());
+				.addPackages(true, TriggerTests.class.getPackage());
 	}
 
-	@BeforeMethod
+	@BeforeEach
 	public void reset() {
 		StaticCounter.reset();
 	}
@@ -65,7 +69,7 @@ public class TriggerTests extends ArquillianTests {
          *  Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/228
          *  Can be reenabled in next release of Jakarta Concurrency
 	 */
-	@Test(enabled = false)
+	@Disabled
 	public void triggerGetNextRunTimeTest() throws Exception {
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(new CounterRunnableTask(),
 				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
@@ -126,4 +130,8 @@ public class TriggerTests extends ArquillianTests {
 
 		fail("SkippedException should be caught.");
 	}
+	
+	private void assertInRange(int value, int min, int max) {
+        assertTrue(value > min && value < max, "Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )");
+    }
 }

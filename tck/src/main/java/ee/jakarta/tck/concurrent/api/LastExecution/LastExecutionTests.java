@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,6 +16,8 @@
 
 package ee.jakarta.tck.concurrent.api.LastExecution;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -23,19 +25,24 @@ import java.util.concurrent.ScheduledFuture;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
-import ee.jakarta.tck.concurrent.framework.ArquillianTests;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
-public class LastExecutionTests extends ArquillianTests {
+@Web
+@Common({PACKAGE.FIXED_COUNTER})
+public class LastExecutionTests {
 
 	public static final String IDENTITY_NAME_TEST_ID = "lastExecutionGetIdentityNameTest";
 	
@@ -43,13 +50,16 @@ public class LastExecutionTests extends ArquillianTests {
 	@Deployment(name="LastExecutionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, getFrameworkPackage(), getCommonFixedCounterPackage() ,LastExecutionTests.class.getPackage());
+				.addPackages(true, LastExecutionTests.class.getPackage());
 	}
 	
-	@BeforeMethod
+	@BeforeEach
 	public void reset() {
 		StaticCounter.reset();
 	}
+	
+	@TestName
+	public String testname;
 
 	/*
 	 * @testName: lastExecutionGetIdentityNameTest
@@ -68,11 +78,12 @@ public class LastExecutionTests extends ArquillianTests {
 
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
-		assertEquals("Got wrong identity name. See server log for more details.", LogicDrivenTrigger.RIGHT_COUNT, // expected
-				StaticCounter.getCount()); // actual
+		assertEquals( LogicDrivenTrigger.RIGHT_COUNT, // expected
+				StaticCounter.getCount(), // actual
+				"Got wrong identity name. See server log for more details."); 
 	}
 
 	/*
@@ -87,12 +98,13 @@ public class LastExecutionTests extends ArquillianTests {
 		// test with runnable, LastExecution should return null
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService()
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
-						TestConstants.PollInterval.toMillis(), testName));
+						TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
-		assertEquals("Got wrong last execution result. See server log for more details.",
+		assertEquals(
 				LogicDrivenTrigger.RIGHT_COUNT, // expected
-				StaticCounter.getCount()); // actual
+				StaticCounter.getCount(), // actual
+				"Got wrong last execution result. See server log for more details."); 
 	}
 	
 	/*
@@ -106,12 +118,12 @@ public class LastExecutionTests extends ArquillianTests {
 	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
-		assertEquals("Got wrong last execution result. See server log for more details.",
-				LogicDrivenTrigger.RIGHT_COUNT, // expected
-				StaticCounter.getCount()); // actual
+		assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
+				StaticCounter.getCount(), // actual
+				"Got wrong last execution result. See server log for more details."); 
 	}
 
 	/*
@@ -126,10 +138,12 @@ public class LastExecutionTests extends ArquillianTests {
 	public void lastExecutionGetRunningTimeTest() {
 		ScheduledFuture sf = TestUtil.getManagedScheduledExecutorService().schedule(ManagedExecutors.managedTask(
 				new CounterRunnableTask(TestConstants.PollInterval.toMillis()), null, null),
-				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testName));
+				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
-		assertEquals("Got wrong last execution result.", LogicDrivenTrigger.RIGHT_COUNT, // expected
-				StaticCounter.getCount()); // actual
+		assertEquals(
+		        LogicDrivenTrigger.RIGHT_COUNT, // expected
+				StaticCounter.getCount(), // actual
+				"Got wrong last execution result."); 
 	}
 
 }

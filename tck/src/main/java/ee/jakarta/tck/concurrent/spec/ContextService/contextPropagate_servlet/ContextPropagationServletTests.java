@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,47 +16,56 @@
 
 package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.net.URL;
 import java.util.Properties;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.OperateOnDeployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
+@Web @RunAsClient
 public class ContextPropagationServletTests extends TestClient {
 	
 	private static final String APP_NAME_PROXY = "ContextPropagationServletTests.Proxy";
 	private static final String APP_NAME_WORK = "ContextPropagationServletTests.Work";
 	private static final String APP_NAME_DESERIALIZE = "ContextPropagationServletTests.Deserialize";
 	
-	@Deployment(name = APP_NAME_PROXY, testable=false)
+	@Deployment(name = APP_NAME_PROXY)
 	public static WebArchive createDeployment1() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_PROXY + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClass(WorkInterfaceServlet.class)
 				.addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
 	}
 	
-	@Deployment(name = APP_NAME_WORK, testable=false)
+	@Deployment(name = APP_NAME_WORK)
 	public static WebArchive createDeployment2() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_WORK + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClass(ProxyCreatorServlet.class);
 	}
 	
-	@Deployment(name = APP_NAME_DESERIALIZE, testable=false)
+	@Deployment(name = APP_NAME_DESERIALIZE)
 	public static WebArchive createDeployment3() {
 		return ShrinkWrap.create(WebArchive.class, APP_NAME_DESERIALIZE + ".war")
-				.addPackages(true, getFrameworkPackage(), ContextPropagationServletTests.class.getPackage())
+				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
 				.deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
 	}
+	
+	@TestName
+	String testname;
 	
 	@ArquillianResource
 	@OperateOnDeployment(APP_NAME_PROXY)
@@ -86,15 +95,15 @@ public class ContextPropagationServletTests extends TestClient {
 	@Test
 	public void testJNDIContextInServlet() {
 		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testname);
 		
 		Properties props = new Properties();
 		props.put("proxyURL", proxyURL.toString());
-		props.put(TEST_METHOD, testName);
+		props.put(TEST_METHOD, testname);
 		
 		String resp = runTestWithResponse(requestURL, props);
 		assertNotNull("Response should not be null", resp);
-		assertStringInResponse(testName + " failed to get correct result.", "JNDIContextWeb", resp.trim());
+		assertStringInResponse(testname + " failed to get correct result.", "JNDIContextWeb", resp.trim());
 	}
 
 	/*
@@ -112,14 +121,14 @@ public class ContextPropagationServletTests extends TestClient {
 	@Test
 	public void testClassloaderInServlet() {
 		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testname);
 		
 		Properties props = new Properties();
 		props.put("proxyURL", proxyURL.toString());
-		props.put(TEST_METHOD, testName);
+		props.put(TEST_METHOD, testname);
 		
 		String resp = runTestWithResponse(requestURL, props);
 		assertNotNull("Response should not be null", resp);
-		assertStringInResponse(testName + " failed to get correct result.", TestConstants.ComplexReturnValue, resp.trim());
+		assertStringInResponse(testname + " failed to get correct result.", TestConstants.ComplexReturnValue, resp.trim());
 	}
 }

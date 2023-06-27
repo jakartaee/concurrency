@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,24 +18,28 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.resourced
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
+import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
-import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-import ee.jakarta.tck.concurrent.spi.context.IntContextProvider;
-import ee.jakarta.tck.concurrent.spi.context.StringContextProvider;
-import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
-
-
-@Test(groups = JAKARTAEE_WEB)
+@Web @RunAsClient
+@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 	
 	@ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
@@ -44,15 +48,11 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 	@ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
 	URL ejbContextURL;
 	
-	@Deployment(name="ManagedScheduledExecutorDefinitionTests", testable=false)
+	@Deployment(name="ManagedScheduledExecutorDefinitionTests")
 	public static WebArchive createDeployment() {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
-				.addPackages(false,
-						ManagedScheduledExecutorDefinitionWebTests.class.getPackage(),
-						getFrameworkPackage(), 
-						getContextPackage(),
-						getContextProvidersPackage())
+				.addPackages(false, ManagedScheduledExecutorDefinitionWebTests.class.getPackage())
 				.addClasses(
 						ContextServiceDefinitionServlet.class,
 						ContextServiceDefinitionInterface.class,
@@ -63,6 +63,9 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 		return war;
 	}
 	
+    @TestName
+    String testname;
+	
 	@Override
 	protected String getServletPath() {
 		return "ManagedScheduledExecutorDefinitionServlet";
@@ -71,69 +74,70 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
 
 	@Test
     public void testAsyncCompletionStageMSE() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 
 	@Test
     public void testAsynchronousMethodRunsWithContext() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 
 	@Test
     public void testAsynchronousMethodWithMaxAsync3() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
-        // Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
-	@Test(enabled = false)
+    
+	// Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
+	@Disabled
     public void testCompletedFutureMSE() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 
 	@Test
     public void testIncompleteFutureMSE() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 	
 	@Test
     public void testIncompleteFutureMSE_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
 	@Test
     public void testManagedScheduledExecutorDefinitionAllAttributes() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 	
 	@Test
     public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
 	@Test
     public void testManagedScheduledExecutorDefinitionDefaults() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 	
 	@Test
     public void testManagedScheduledExecutorDefinitionDefaults_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testName);
+		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
 		runTest(requestURL);
     }
 
 	@Test
     public void testNotAnAsynchronousMethod() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 
 	@Test
     public void testScheduleWithCronTrigger() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 
 	@Test
     public void testScheduleWithZonedTrigger() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,41 +19,45 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 import java.net.URL;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_FULL;
-
-@Test(groups = JAKARTAEE_FULL)
+@Full @RunAsClient 
 public class SecurityTests extends TestClient {
 	
 	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
 	
-	@Deployment(name="SecurityTests", testable=false)
+	@Deployment(name="SecurityTests")
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, getFrameworkPackage(), getCommonPackage(), SecurityTests.class.getPackage())
+				.addPackages(true, SecurityTests.class.getPackage())
+				.addPackages(true, PACKAGE.TASKS.getPackageName())
 				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addPackage(getFrameworkPackage())
 				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
 				.addAsModules(war, jar);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
 		
 		return ear;
 	}
+	
+    @TestName
+    String testname;
 	
 	@Override
 	protected String getServletPath() {
@@ -68,14 +72,14 @@ public class SecurityTests extends TestClient {
 	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
 	 * then submit a task by ManagedScheduledExecutorService in which call a ejb
 	 * that requires role manager.
-         *
-         * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-         * fix: https://github.com/jakartaee/concurrency/pull/221
-         * Can be reenabled in the next release of Jakarta Concurrency
+     *
+     * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
+     * fix: https://github.com/jakartaee/concurrency/pull/221
+     * Can be reenabled in the next release of Jakarta Concurrency
 	 */
-	@Test(enabled = false)
+	@Disabled
 	public void managedScheduledExecutorServiceAPISecurityTest() {
-		runTest(baseURL);
+		runTest(baseURL, testname);
 	}
 
 }

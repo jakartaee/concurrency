@@ -23,7 +23,7 @@ You will need to download and install the following software before you begin.
 To better understand how this TCK works, knowing what testing frameworks are being utilized is helpful.
 Knowledge of how these frameworks operate and interact will help during the project setup.
 
-- [TestNG](https://testng.org/doc/documentation-main.html) is used for test execution and lifecycle.
+- [JUnit5](https://junit.org/junit5/) is used for test execution and lifecycle.
 - [Arquillian](https://arquillian.org/guides/) is used for application management and deployment.
 
 ## Getting Started
@@ -61,7 +61,7 @@ The TCK is a test library that includes four types of packages:
 - `ee.jakarta.tck.concurrent.api.*` these are basic API tests that ensure methods throw the correct exceptions and return the valid values.
 - `ee.jakarta.tck.concurrent.spec.*` these are more complex SPEC tests that ensure that implementations behave as expected based on the specification.
 - `ee.jakarta.tck.concurrent.common.*` these are common packages shared between test packages.
-- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using TestNG, Arquillian, SigTest, and java.util.logging easier.
+- `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using Junit5, Arquillian, SigTest, and java.util.logging easier.
 
 ### What is not included
 The TCK uses but does not provide the necessary application servers, test frameworks, APIs, SPIs, or implementations required to run. 
@@ -72,8 +72,7 @@ Here is an essential checklist of what you will need, and in the later sections,
 - An Application Server configuration with specific security roles
 - An Arquillian library available to the `Test Client`
 - An Arquillian SPI implementation for your Application Server
-- A TestNG library available to both the `Test Client` and `Test Server`
-- A TestNG configuration file available to the `Test Client`
+- A Junit5 library available to both the `Test Client` and `Test Server`
 - A Derby JDBC driver available to the Test Server
 
 ## Configure and Run the TCK

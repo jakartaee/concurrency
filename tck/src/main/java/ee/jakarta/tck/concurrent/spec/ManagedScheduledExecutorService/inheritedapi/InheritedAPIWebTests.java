@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,26 +19,22 @@ package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inherited
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
-import ee.jakarta.tck.concurrent.framework.TestClient;
-import jakarta.ejb.EJB;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.ejb.EJB;;
 
-import static ee.jakarta.tck.concurrent.common.TestGroups.JAKARTAEE_WEB;;
-
-@Test(groups = JAKARTAEE_WEB)
-public class InheritedAPIWebTests extends TestClient {
+@Web
+@Common({PACKAGE.TASKS, PACKAGE.COUNTER})
+public class InheritedAPIWebTests {
 	
 	@Deployment(name="InheritedAPITests")
 	public static WebArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
-				.addPackages(true,
-						InheritedAPIWebTests.class.getPackage(),
-						getFrameworkPackage(),
-						getCommonPackage(),
-						getCommonCounterPackage())
-				.deleteClasses(InheritedAPIWebTests.class, InheritedAPITests.class)
+		        .addClasses(InheritedAPIWebTests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
 		return war;
 	}

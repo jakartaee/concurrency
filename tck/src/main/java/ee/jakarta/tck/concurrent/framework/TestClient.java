@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -14,6 +14,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 package ee.jakarta.tck.concurrent.framework;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -34,7 +36,7 @@ import java.util.Properties;
  * The TestClient class will then confirm that it recieved a successful outcome from the test.
  *
  */
-public abstract class TestClient extends ArquillianTests {
+public abstract class TestClient {
 
 	private static final TestLogger log = TestLogger.get(TestClient.class);
 
@@ -45,12 +47,6 @@ public abstract class TestClient extends ArquillianTests {
 	public static final String nl = System.lineSeparator();
 
 	//###### run test without response #####
-	/**
-	 * Runs test against servlet at baseURL, and assumes the testName.
-	 */
-	public void runTest(URL baseURL) {
-		runTest(baseURL, testName);
-	}
 	
 	/**
 	 * Runs test against servlet at baseURL, and will run against a specified testName.
@@ -71,14 +67,6 @@ public abstract class TestClient extends ArquillianTests {
 	}
 	
 	//###### run test with response	######
-	
-	/**
-	 * Runs test against servlet at baseURL, and assumes the testName.
-	 * Provide properties if you want them included in a POST request, otherwise pass in null.
-	 */
-	public String runTestWithResponse(URL baseURL, Properties props) {
-		return runTestWithResponse(baseURL, testName, props);
-	}
 	
 	/**
 	 * Runs test against servlet at baseURL, and will run against a specified testName.
@@ -139,8 +127,8 @@ public abstract class TestClient extends ArquillianTests {
 			
 			log.exit("assertSuccessfulURLResponse", "Response code: " + con.getResponseCode() ,"Response body: " + outputBuilder.toString());
 
-			assertTrue("Connection returned a response code that was greater than 400", con.getResponseCode() < 400);
-			assertTrue("Output did not contain successful message: " + SUCCESS, pass);
+			assertTrue(con.getResponseCode() < 400, "Connection returned a response code that was greater than 400");
+			assertTrue(pass, "Output did not contain successful message: " + SUCCESS);
 		
 			return outputBuilder.toString();
 		} catch (IOException e) {
@@ -168,6 +156,6 @@ public abstract class TestClient extends ArquillianTests {
 	 * @param resp - the response you received from the servlet
 	 */
 	protected void assertStringInResponse(String message, String expected, String resp) {
-		assertTrue(message, resp.toLowerCase().contains(expected.toLowerCase()));
+		assertTrue(resp.toLowerCase().contains(expected.toLowerCase()), message);
 	}
 }
