@@ -236,7 +236,7 @@ public class InheritedAPIServletTests {
         ScheduledFuture result = null;
         try {
             result = scheduledExecutor.scheduleWithFixedDelay(
-                    new CounterRunnableTask(TestConstants.PollInterval.toMillis()),
+                    new CounterRunnableTask(TestConstants.PollInterval),
                     TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
             TestUtil.sleep(TestConstants.WaitTimeout);
             TestUtil.assertIntInRange((TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2,

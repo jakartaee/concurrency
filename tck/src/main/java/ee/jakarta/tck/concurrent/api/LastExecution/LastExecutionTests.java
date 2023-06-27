@@ -142,7 +142,7 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetRunningTimeTest() {
 		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
-				new CounterRunnableTask(TestConstants.PollInterval.toMillis()), null, null),
+				new CounterRunnableTask(TestConstants.PollInterval), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 		assertEquals(

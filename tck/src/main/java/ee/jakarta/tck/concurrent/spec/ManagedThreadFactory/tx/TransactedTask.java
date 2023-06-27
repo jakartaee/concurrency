@@ -88,7 +88,7 @@ public class TransactedTask implements Runnable {
 			} catch (Exception e1) {
 				log.finer("Got exception when trying to do rollback on failed test", e1);
 			}
-			fail("Got exception when trying to run TransactedTask");
+			fail("Got exception when trying to run TransactedTask", e);
 		} finally {
 			try {
 				pStmt.close();

@@ -63,12 +63,12 @@ public class APITests extends TestClient {
 	 */
 	@Test
 	public void interruptThreadApiTest() {
-	    CounterRunnableTask task = new CounterRunnableTask();
+	    CounterRunnableTask task = new CounterRunnableTask(TestConstants.PollInterval);
         Thread thread = threadFactory.newThread(task);
         thread.start();
         thread.interrupt();
         TestUtil.waitTillThreadFinish(thread);
-        assertEquals(StaticCounter.getCount(), 0);
+        assertEquals(0, StaticCounter.getCount());
 	}
 
 	/*
