@@ -18,7 +18,6 @@ package ee.jakarta.tck.concurrent.common.tasks;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 

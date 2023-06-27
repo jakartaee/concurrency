@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -50,7 +51,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiSubmit() {
 		try {
-			Future result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
+			Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
 			TestUtil.waitTillFutureIsDone(result);
 			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
@@ -80,12 +81,12 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiInvokeAll() {
 		try {
-			List taskList = new ArrayList();
+			List<Callable<Integer>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			List<Future> resultList = scheduledExecutor.invokeAll(taskList);
-			for (Future each : resultList) {
+			List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
+			for (Future<?> each : resultList) {
 				TestUtil.waitTillFutureIsDone(each);
 			}
 			assertEquals(resultList.get(0).get(), 1);
@@ -93,7 +94,7 @@ public class TestEjb implements TestEjbInterface {
 			assertEquals(resultList.get(2).get(), 3);
 
 			resultList = scheduledExecutor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-			for (Future each : resultList) {
+			for (Future<?> each : resultList) {
 				TestUtil.waitTillFutureIsDone(each);
 			}
 			assertEquals(resultList.get(0).get(), 1);
@@ -104,12 +105,11 @@ public class TestEjb implements TestEjbInterface {
 		}
 
 		try {
-			List taskList = new ArrayList();
+			List<Callable<String>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-			List<Future> resultList = scheduledExecutor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),
-					TimeUnit.SECONDS);
-			for (Future each : resultList) {
+			List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
+			for (Future<?> each : resultList) {
 				TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
 			}
 		} catch (Exception ex) {
@@ -119,7 +119,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiInvokeAny() {
 		try {
-			List taskList = new ArrayList();
+			List<Callable<?>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
@@ -133,10 +133,10 @@ public class TestEjb implements TestEjbInterface {
 		}
 
 		try {
-			List taskList = new ArrayList();
+			List<Callable<?>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-			Object result = scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+			scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 		} catch (TimeoutException e) {
 			return; //expected
 		} catch (Exception ex) {
@@ -147,7 +147,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiSchedule() {
 		try {
-			Future result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
+			Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
 					TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 			TestUtil.waitTillFutureIsDone(result);
 			assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
@@ -162,7 +162,7 @@ public class TestEjb implements TestEjbInterface {
 	}
 
 	public void testApiScheduleAtFixedRate() {
-		ScheduledFuture result = null;
+		ScheduledFuture<?> result = null;
 		try {
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(nameProvider.getEJBJNDIName()),
@@ -185,7 +185,7 @@ public class TestEjb implements TestEjbInterface {
 	}
 
 	public void testApiScheduleWithFixedDelay() {
-		ScheduledFuture result = null;
+		ScheduledFuture<?> result = null;
 		try {
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			result = scheduledExecutor.scheduleWithFixedDelay(

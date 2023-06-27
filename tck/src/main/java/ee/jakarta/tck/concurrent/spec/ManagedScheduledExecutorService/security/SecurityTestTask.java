@@ -23,7 +23,7 @@ import javax.naming.InitialContext;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 
-public class SecurityTestTask implements Callable {
+public class SecurityTestTask implements Callable<String> {
 
 	public String call() {
 		try {

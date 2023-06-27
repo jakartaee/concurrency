@@ -19,7 +19,10 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
 import java.io.Serializable;
 
 public abstract class BaseTestRunnableWork implements Serializable, Runnable, TestWorkInterface {
-	private String message;
+    
+    private static final long serialVersionUID = 1L;
+    
+    private String message;
 
 	public void run() {
 		message = work();

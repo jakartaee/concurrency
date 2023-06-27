@@ -20,7 +20,7 @@ import java.util.concurrent.Callable;
 
 import javax.naming.InitialContext;
 
-public class CounterCallableTask implements Callable {
+public class CounterCallableTask implements Callable<Integer> {
 
 	private String countSingletionJndi = "";
 

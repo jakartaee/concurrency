@@ -18,7 +18,7 @@ package ee.jakarta.tck.concurrent.common.fixed.counter;
 
 import java.util.concurrent.Callable;
 
-public class CounterCallableTask implements Callable {
+public class CounterCallableTask implements Callable<Integer> {
 
 	public Integer call() {
 		StaticCounter.inc();

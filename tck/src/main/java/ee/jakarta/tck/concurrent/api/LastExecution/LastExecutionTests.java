@@ -81,7 +81,7 @@ public class LastExecutionTests {
 		Map<String, String> executionProperties = new HashMap<String, String>();
 		executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
-		ScheduledFuture sf = scheduledExecutor.schedule(
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
@@ -101,7 +101,7 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultRunnableTest() {
 		// test with runnable, LastExecution should return null
-		ScheduledFuture sf = scheduledExecutor
+		ScheduledFuture<?> sf = scheduledExecutor
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
 						TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
@@ -122,7 +122,8 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
-		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
+		        new CounterCallableTask(), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);
 
@@ -141,7 +142,7 @@ public class LastExecutionTests {
 	 */
 	@Test
 	public void lastExecutionGetRunningTimeTest() {
-		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
 				new CounterRunnableTask(TestConstants.PollInterval), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
 		TestUtil.waitTillFutureIsDone(sf);

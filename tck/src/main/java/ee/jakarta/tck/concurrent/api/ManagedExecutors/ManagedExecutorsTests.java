@@ -220,7 +220,6 @@ public class ManagedExecutorsTests {
         properties.put("key", "value");
         RunnableTask runnableTask = createRunnableTask();
         Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-        boolean pass = false;
         if (task instanceof ManagedTask) {
             ManagedTask managedTask = (ManagedTask) task;
             if (managedTask.getExecutionProperties().get("key") != "value")
@@ -315,7 +314,6 @@ public class ManagedExecutorsTests {
         Callable<String> task = ManagedExecutors.managedTask((Callable<String>) callableTask, properties,
                 managedTaskListener);
 
-        boolean pass = false;
         if (task instanceof ManagedTask) {
             ManagedTask managedTask = (ManagedTask) task;
             if (managedTask.getExecutionProperties().get("key") != "value")

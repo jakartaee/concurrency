@@ -67,7 +67,6 @@ public class ManagedTaskTests {
 		properties.put("key", "value");
 		Runnable runnableTask = createRunnableTask();
 		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-		boolean pass = false;
 
 		if (task instanceof ManagedTask) {
 			ManagedTask managedTask = (ManagedTask) task;

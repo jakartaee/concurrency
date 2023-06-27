@@ -37,7 +37,7 @@ public class ContextPropagateBean implements ContextPropagateInterface {
 	public TestWorkInterface createWorker(String classname) {
 		try {
 			return (TestWorkInterface) context.createContextualProxy(
-					Class.forName(classname).newInstance(), Runnable.class, TestWorkInterface.class);
+					Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
 		} catch (Exception en) {
 			throw new RuntimeException(en);
 		}

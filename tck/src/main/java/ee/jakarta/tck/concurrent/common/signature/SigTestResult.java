@@ -25,15 +25,17 @@ import java.util.List;
 
 public class SigTestResult implements Serializable {
 
-	private static final String NL = System.getProperty("line.separator", "\n");
+    private static final long serialVersionUID = 1L;
 
-	private List failedPkgs = new ArrayList();
+    private static final String NL = System.getProperty("line.separator", "\n");
 
-	private List passedPkgs = new ArrayList();
+	private List<String> failedPkgs = new ArrayList<>();
 
-	private List failedClasses = new ArrayList();
+	private List<String> passedPkgs = new ArrayList<>();
 
-	private List passedClasses = new ArrayList();
+	private List<String> failedClasses = new ArrayList<>();
+
+	private List<String> passedClasses = new ArrayList<>();
 
 	// ---------------------------------------------------------- Public Methods
 
@@ -106,11 +108,11 @@ public class SigTestResult implements Serializable {
 
 	// --------------------------------------------------------- Private Methods
 
-	private synchronized void formatList(List list, StringBuffer buf) {
+	private synchronized void formatList(List<String> list, StringBuffer buf) {
 
 		synchronized (this) {
 			for (int i = 0; i < list.size(); i++) {
-				String pkg = (String) (list.get(i));
+				String pkg = list.get(i);
 				buf.append("\t\t").append(pkg).append(NL);
 			}
 		}

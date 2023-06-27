@@ -34,10 +34,6 @@ public abstract class SigTestEE {
 
 	String[] sVehicles;
 
-	private Object theSharedObject;
-
-	private Object theSharedObjectArray[];
-
 	protected SignatureTestDriver driver;
 
 	/**

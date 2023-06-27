@@ -70,7 +70,7 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess1Test() throws Exception {
-        ScheduledFuture result = scheduledExecutor.schedule(
+        ScheduledFuture<?> result = scheduledExecutor.schedule(
                 new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME),
                 new CommonTriggers.OnceTrigger());
         TestUtil.waitForTaskComplete(result);
@@ -114,9 +114,8 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess2Test() throws Exception {
-        ScheduledFuture result = scheduledExecutor
-                .schedule(
-                        (Callable) new CallableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+        ScheduledFuture<?> result = scheduledExecutor.schedule( (Callable<?>)
+                        new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                                 TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
                         new CommonTriggers.OnceTrigger());
         TestUtil.waitForTaskComplete(result);
@@ -139,7 +138,7 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void nullCallableScheduleProcessTest() {
-        Callable callable = null;
+        Callable<?> callable = null;
 
         try {
             scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());

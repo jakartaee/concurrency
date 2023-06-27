@@ -16,6 +16,10 @@
 
 package ee.jakarta.tck.concurrent.api.ContextService;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -27,7 +31,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
@@ -36,356 +39,280 @@ import jakarta.enterprise.concurrent.ManagedTaskListener;
 @Web
 public class ContextServiceTests {
 
-	private static final TestLogger log = TestLogger.get(ContextServiceTests.class);
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ContextServiceTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true,  ContextServiceTests.class.getPackage());
-	}
-	
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "ContextServiceTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, ContextServiceTests.class.getPackage());
+    }
+
     @Resource(lookup = TestConstants.DefaultContextService)
     public ContextService context;
 
-	/*
-	 * @testName: ContextServiceWithIntf
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:5
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using instance and interface.
-	 */
-	@Test
-	public void ContextServiceWithIntf() {
-		boolean pass = false;
-		try {
-			Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), Runnable.class);
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithIntf
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:5
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using instance and interface.
+     */
+    @Test
+    public void ContextServiceWithIntf() {
+        assertAll(() -> {
+            Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), Runnable.class);
+            assertNotNull(proxy);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithIntfAndIntfNoImplemented
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:6
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using instance and interface. if the instance does not implement the
-	 * specified interface, IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithIntfAndIntfNoImplemented() {
-		boolean pass = false;
-		try {
-			Object proxy = context.createContextualProxy(new Object(), Runnable.class);
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithIntfAndIntfNoImplemented
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:6
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using instance and interface. if the instance does not implement the
+     * specified interface, IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithIntfAndIntfNoImplemented() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            context.createContextualProxy(new Object(), Runnable.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithIntfAndInstanceIsNull
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:6
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using instance and interface. if the instance is null,
-	 * IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithIntfAndInstanceIsNull() {
-		boolean pass = false;
-		try {
-			Object proxy = context.createContextualProxy(null, Runnable.class);
-			log.info(proxy.toString());
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithIntfAndInstanceIsNull
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:6
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using instance and interface. if the instance is null,
+     * IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithIntfAndInstanceIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            context.createContextualProxy(null, Runnable.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfs
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:7
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using instance and multiple interfaces.
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfs() {
-		boolean pass = false;
-		try {
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class);
-			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithMultiIntfs
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:7
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using instance and multiple interfaces.
+     */
+    @Test
+    public void ContextServiceWithMultiIntfs() {
+        assertAll(() -> {
+            Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class,
+                    TestWorkInterface.class);
+            assertNotNull(proxy);
+            assertTrue(proxy instanceof Runnable);
+            assertTrue(proxy instanceof TestWorkInterface);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfsAndIntfNoImplemented
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:8
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using instance and multi interfaces. if the instance does not implement the
-	 * specified interface, IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
-		boolean pass = false;
-		try {
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
-					ManagedTaskListener.class);
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithMultiIntfsAndIntfNoImplemented
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:8
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using instance and multi interfaces. if the instance does not implement the
+     * specified interface, IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
+                    ManagedTaskListener.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfsAndInstanceIsNull
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:8
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using object and multi interfaces. if the instance is null,
-	 * IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
-		boolean pass = false;
-		try {
-			Object proxy = context.createContextualProxy(null, Runnable.class, TestWorkInterface.class);
-			log.info(proxy.toString());
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: ContextServiceWithMultiIntfsAndInstanceIsNull
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:8
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using object and multi interfaces. if the instance is null,
+     * IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            context.createContextualProxy(null, Runnable.class, TestWorkInterface.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithIntfAndProperties
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:9
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and interface.
-	 */
-	@Test
-	public void ContextServiceWithIntfAndProperties() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithIntfAndProperties
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:9
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and interface.
+     */
+    @Test
+    public void ContextServiceWithIntfAndProperties() {
+        assertAll(() -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class);
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), execProps,
+                    Runnable.class);
+            assertNotNull(proxy);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfsAndProperties
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:11
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and multiple interfaces.
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfsAndProperties() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithMultiIntfsAndProperties
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:11
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and multiple interfaces.
+     */
+    @Test
+    public void ContextServiceWithMultiIntfsAndProperties() {
+        assertAll(() -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-					TestWorkInterface.class);
-			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+                    TestWorkInterface.class);
+            assertNotNull(proxy);
+            assertTrue(proxy instanceof Runnable);
+            assertTrue(proxy instanceof TestWorkInterface);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithIntfAndPropertiesAndIntfNoImplemented
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:10
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and interface. if the instance does not implement
-	 * the specified interface, IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithIntfAndPropertiesAndIntfNoImplemented
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:10
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and interface. if the instance does not implement
+     * the specified interface, IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-					ManagedTaskListener.class);
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class, ManagedTaskListener.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithIntfsAndPropertiesAndInstanceIsNull
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:10
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and interfaces. if the instance is null,
-	 * IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithIntfsAndPropertiesAndInstanceIsNull
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:10
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and interfaces. if the instance is null,
+     * IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(null, execProps, Runnable.class);
-			log.info(proxy.toString());
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            context.createContextualProxy(null, execProps, Runnable.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:12
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and multiple interfaces. if the instance does not
-	 * implement the specified interface, IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:12
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and multiple interfaces. if the instance does not
+     * implement the specified interface, IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-					TestWorkInterface.class, ManagedTaskListener.class);
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class, TestWorkInterface.class,
+                    ManagedTaskListener.class);
+        });
+    }
 
-	/*
-	 * @testName: ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:12
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and multiple interfaces. if the instance is null,
-	 * IllegalArgumentException will be thrown
-	 */
-	@Test
-	public void ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("vendor_a.security.tokenexpiration", "15000");
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:12
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and multiple interfaces. if the instance is null,
+     * IllegalArgumentException will be thrown
+     */
+    @Test
+    public void ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("vendor_a.security.tokenexpiration", "15000");
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
-			log.info(proxy.toString());
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+            context.createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
+        });
+    }
 
-	/*
-	 * @testName: GetExecutionProperties
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:13
-	 * 
-	 * @test_Strategy: Lookup default ContextService object and create proxy object
-	 * using ExecutionProperties and multiple interfaces. Retrieve
-	 * ExecutionProperties from proxy object and verify property value.
-	 */
-	@Test
-	public void GetExecutionProperties() {
-		boolean pass = false;
-		try {
-			Map<String, String> execProps = new HashMap<String, String>();
-			execProps.put("USE_PARENT_TRANSACTION", "true");
+    /*
+     * @testName: GetExecutionProperties
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:13
+     * 
+     * @test_Strategy: Lookup default ContextService object and create proxy object
+     * using ExecutionProperties and multiple interfaces. Retrieve
+     * ExecutionProperties from proxy object and verify property value.
+     */
+    @Test
+    public void GetExecutionProperties() {
+        assertAll(() -> {
+            Map<String, String> execProps = new HashMap<String, String>();
+            execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-					TestWorkInterface.class);
-			Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);
+            Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+                    TestWorkInterface.class);
+            assertNotNull(proxy);
+            
+            Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);
+            assertEquals("true", returnedExecProps.get("USE_PARENT_TRANSACTION"));
+        });
+    }
 
-			if (!"true".equals(returnedExecProps.get("USE_PARENT_TRANSACTION"))) {
-				log.severe("Expected:true, actual message=" + returnedExecProps.get("USE_PARENT_TRANSACTION"));
-			} else {
-				pass = true;
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
-
-	/*
-	 * @testName: GetExecutionPropertiesNoProxy
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:14
-	 * 
-	 * @test_Strategy: Lookup default ContextService object. Retrieve
-	 * ExecutionProperties from plain object.
-	 */
-	@Test
-	public void GetExecutionPropertiesNoProxy() {
-		boolean pass = false;
-		try {
-			Map<String, String> returnedExecProps = context.getExecutionProperties(new Object());
-			pass = true;
-		} catch (IllegalArgumentException ie) {
-			pass = true;
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
-	}
+    /*
+     * @testName: GetExecutionPropertiesNoProxy
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:14
+     * 
+     * @test_Strategy: Lookup default ContextService object. Retrieve
+     * ExecutionProperties from plain object.
+     */
+    @Test
+    public void GetExecutionPropertiesNoProxy() {
+        assertAll(() -> {
+            try {
+                context.getExecutionProperties(new Object());
+            } catch (IllegalArgumentException ie) {
+                // Pass if IAE is thrown, but fail otherwise.
+            }
+        });
+    }
 }

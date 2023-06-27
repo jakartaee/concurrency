@@ -208,7 +208,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 		String mapFile = null;
 		String packageListFile = null;
 		String signatureRepositoryDir = null;
-		Properties mapFileAsProps = null;
 		try {
 
 			InputStream inStreamMapfile = ConcurrencySignatureTestRunner.class.getClassLoader()
@@ -222,8 +221,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 			File pFile = writeStreamToTempFile(inStreamPackageFile, "sig-test-pkg-list", ".txt");
 			packageListFile = pFile.getCanonicalPath();
 			log.info("packageFile location is :" + packageListFile);
-
-			mapFileAsProps = getSigTestDriver().loadMapFile(mapFile);
 
 			InputStream inStreamSigFile = ConcurrencySignatureTestRunner.class.getClassLoader()
 					.getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_FILE_NAME);

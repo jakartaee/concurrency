@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -70,7 +71,7 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiSubmit() throws Exception {
-        Future result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
+        Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
         TestUtil.waitTillFutureIsDone(result);
         assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
@@ -106,33 +107,37 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiInvokeAll() throws Exception {
-        List taskList = new ArrayList();
-        taskList.add(new CommonTasks.SimpleArgCallable(1));
-        taskList.add(new CommonTasks.SimpleArgCallable(2));
-        taskList.add(new CommonTasks.SimpleArgCallable(3));
-        List<Future> resultList = scheduledExecutor.invokeAll(taskList);
-        for (Future each : resultList) {
-            TestUtil.waitTillFutureIsDone(each);
+        try {
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
+            for (Future<?> each : resultList) {
+                TestUtil.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
+            resultList = scheduledExecutor.invokeAll(taskList,
+                    TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            for (Future<?> each : resultList) {
+                TestUtil.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
+        } catch (Exception ex) {
+            fail(ex.getMessage());
         }
-        assertEquals(resultList.get(0).get(), 1);
-        assertEquals(resultList.get(1).get(), 2);
-        assertEquals(resultList.get(2).get(), 3);
-        resultList = scheduledExecutor.invokeAll(taskList,
-                TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-        for (Future each : resultList) {
-            TestUtil.waitTillFutureIsDone(each);
-        }
-        assertEquals(resultList.get(0).get(), 1);
-        assertEquals(resultList.get(1).get(), 2);
-        assertEquals(resultList.get(2).get(), 3);
 
         try {
-            taskList = new ArrayList();
+            List<Callable<String>> taskList = new ArrayList<>();
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-            resultList = scheduledExecutor.invokeAll(taskList,
+            List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList,
                     TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-            for (Future each : resultList) {
+            for (Future<?> each : resultList) {
                 TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
             }
         } catch (Exception ex) {
@@ -149,21 +154,25 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiInvokeAny() throws Exception {
-        List taskList = new ArrayList();
-        taskList.add(new CommonTasks.SimpleArgCallable(1));
-        taskList.add(new CommonTasks.SimpleArgCallable(2));
-        taskList.add(new CommonTasks.SimpleArgCallable(3));
-        Object result = scheduledExecutor.invokeAny(taskList);
-        TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
-        result = scheduledExecutor.invokeAny(taskList,
-                TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-        TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
-
         try {
-            taskList = new ArrayList();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            Object result = scheduledExecutor.invokeAny(taskList);
+            TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
             result = scheduledExecutor.invokeAny(taskList,
+                    TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+        }
+        
+        try {
+            List<Callable<String>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+            scheduledExecutor.invokeAny(taskList,
                     TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             return; // expected
@@ -182,7 +191,7 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiSchedule() throws Exception {
-        Future result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
+        Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
         TestUtil.waitTillFutureIsDone(result);
         assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
@@ -202,7 +211,7 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiScheduleAtFixedRate() {
-        ScheduledFuture result = null;
+        ScheduledFuture<?> result = null;
 
         try {
             result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(),
@@ -233,7 +242,7 @@ public class InheritedAPIServletTests {
      */
     @Test
     public void testApiScheduleWithFixedDelay() {
-        ScheduledFuture result = null;
+        ScheduledFuture<?> result = null;
         try {
             result = scheduledExecutor.scheduleWithFixedDelay(
                     new CounterRunnableTask(TestConstants.PollInterval),

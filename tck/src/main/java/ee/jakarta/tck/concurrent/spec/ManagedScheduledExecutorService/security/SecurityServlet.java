@@ -39,7 +39,7 @@ public class SecurityServlet extends TestServlet {
 			req.login("javajoe", "javajoe");
 			
 			ManagedScheduledExecutorService executorService = InitialContext.doLookup(TestConstants.DefaultManagedScheduledExecutorService);
-			ScheduledFuture future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
+			ScheduledFuture<?> future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
 
 			Object result = TestUtil.waitForTaskComplete(future);
 			assertEquals(result, TestConstants.SimpleReturnValue);

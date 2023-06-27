@@ -230,7 +230,7 @@ public final class TestUtil {
 	 * 
 	 * @param future - the future to wait for
 	 */
-	public static void waitTillFutureThrowsException(Future future, Class<?> expected) {
+	public static void waitTillFutureThrowsException(Future<?> future, Class<?> expected) {
 		long start = System.currentTimeMillis();
 
 		while (true) {

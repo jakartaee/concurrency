@@ -46,97 +46,97 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.SkippedException;
 
 @Web
-@Common({PACKAGE.FIXED_COUNTER, PACKAGE.TASKS})
+@Common({ PACKAGE.FIXED_COUNTER, PACKAGE.TASKS })
 public class TriggerTests {
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="TriggerTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, TriggerTests.class.getPackage());
-	}
-	
+
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "TriggerTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, TriggerTests.class.getPackage());
+    }
+
     @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
-	@BeforeEach
-	public void reset() {
-		StaticCounter.reset();
-	}
+    @BeforeEach
+    public void reset() {
+        StaticCounter.reset();
+    }
 
-	/*
-	 * @testName: triggerGetNextRunTimeTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:46
-	 * 
-	 * @test_Strategy: Retrieve the next time that the task should run after.
-         *  fix: https://github.com/jakartaee/concurrency/pull/222
-         *  Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/228
-         *  Can be reenabled in next release of Jakarta Concurrency
-	 */
-	@Disabled
-	public void triggerGetNextRunTimeTest() throws Exception {
-		ScheduledFuture sf = scheduledExecutor.schedule(new CounterRunnableTask(),
-				new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
+    /*
+     * @testName: triggerGetNextRunTimeTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:46
+     * 
+     * @test_Strategy: Retrieve the next time that the task should run after. fix:
+     * https://github.com/jakartaee/concurrency/pull/222 Accepted TCK challenge:
+     * https://github.com/jakartaee/concurrency/issues/228 Can be reenabled in next
+     * release of Jakarta Concurrency
+     */
+    @Disabled
+    public void triggerGetNextRunTimeTest() throws Exception {
+        scheduledExecutor.schedule(new CounterRunnableTask(),
+                new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
 
-		try {
-			if (StaticCounter.getCount() != 0) {
-				throw new RuntimeException("The first trigger is too fast.");
-			}
+        try {
+            if (StaticCounter.getCount() != 0) {
+                throw new RuntimeException("The first trigger is too fast.");
+            }
 
-			TestUtil.sleep(TestConstants.WaitTimeout);
-			int result = StaticCounter.getCount();
-			assertInRange(result, TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
-		} finally {
-			// make sure the task schedule by this case is stop
-			try {
-				TestUtil.sleep(TestConstants.WaitTimeout.multipliedBy(2));
-			} catch (InterruptedException ignore) {
-			}
-		}
-	}
+            TestUtil.sleep(TestConstants.WaitTimeout);
+            int result = StaticCounter.getCount();
+            assertInRange(result, TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
+        } finally {
+            // make sure the task schedule by this case is stop
+            try {
+                TestUtil.sleep(TestConstants.WaitTimeout.multipliedBy(2));
+            } catch (InterruptedException ignore) {
+            }
+        }
+    }
 
-	/*
-	 * @testName: triggerSkipRunTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:47
-	 * 
-	 * @test_Strategy: Return true if this run instance should be skipped. This is
-	 * useful if the task shouldn't run because it is late or if the task is paused
-	 * or suspended. Once this task is skipped, the state of it's Future's result
-	 * will throw a SkippedException. Unchecked exceptions will be wrapped in a
-	 * SkippedException.
-	 */
-	@Test
-	public void triggerSkipRunTest() {
-		ScheduledFuture sf = scheduledExecutor.schedule(new Callable() {
-			public Object call() {
-				return "ok";
-			}
-		}, new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval.toMillis()));
+    /*
+     * @testName: triggerSkipRunTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:47
+     * 
+     * @test_Strategy: Return true if this run instance should be skipped. This is
+     * useful if the task shouldn't run because it is late or if the task is paused
+     * or suspended. Once this task is skipped, the state of it's Future's result
+     * will throw a SkippedException. Unchecked exceptions will be wrapped in a
+     * SkippedException.
+     */
+    @Test
+    public void triggerSkipRunTest() {
+        ScheduledFuture<?> sf = scheduledExecutor.schedule(new Callable<String>() {
+            public String call() {
+                return "ok";
+            }
+        }, new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval.toMillis()));
 
-		long start = System.currentTimeMillis();
-		try {
-			while (!sf.isDone()) {
-				try {
-					sf.get(100, TimeUnit.MILLISECONDS);
-				} catch (SkippedException se) {
-					return;
-				} catch (ExecutionException ee) {
-				} catch (TimeoutException | InterruptedException e) {
-				}
-				if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
-					fail("wait task timeout");
-				}
-			}
-		} finally {
-			sf.cancel(true);
-		}
+        long start = System.currentTimeMillis();
+        try {
+            while (!sf.isDone()) {
+                try {
+                    sf.get(100, TimeUnit.MILLISECONDS);
+                } catch (SkippedException se) {
+                    return;
+                } catch (ExecutionException ee) {
+                } catch (TimeoutException | InterruptedException e) {
+                }
+                if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
+                    fail("wait task timeout");
+                }
+            }
+        } finally {
+            sf.cancel(true);
+        }
 
-		fail("SkippedException should be caught.");
-	}
-	
-	private void assertInRange(int value, int min, int max) {
-        assertTrue(value > min && value < max, "Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )");
+        fail("SkippedException should be caught.");
+    }
+
+    private void assertInRange(int value, int min, int max) {
+        assertTrue(value > min && value < max,
+                "Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )");
     }
 }

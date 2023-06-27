@@ -26,7 +26,7 @@ public class CommonTasks {
 
 	public static final String SIMPLE_RETURN_STRING = "ok";
 
-	public static class SimpleCallable implements Callable {
+	public static class SimpleCallable implements Callable<String> {
 		private long waitTime = 0;
 
 		public SimpleCallable() {
@@ -60,7 +60,7 @@ public class CommonTasks {
 		}
 	}
 
-	public static class SimpleArgCallable implements Callable {
+	public static class SimpleArgCallable implements Callable<Integer> {
 		private int value = -1;
 
 		public SimpleArgCallable(int arg) {

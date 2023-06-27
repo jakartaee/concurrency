@@ -98,7 +98,7 @@ public class TransactionServlet extends TestServlet {
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			Map<String, String> m = new HashMap();
+			Map<String, String> m = new HashMap<>();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
@@ -142,7 +142,7 @@ public class TransactionServlet extends TestServlet {
 			work.setUserName(Constants.USERNAME);
 			work.setPassword(Constants.PASSWORD);
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			Map<String, String> m = new HashMap();
+			Map<String, String> m = new HashMap<>();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
@@ -187,7 +187,7 @@ public class TransactionServlet extends TestServlet {
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			work.needBeginTx(true);
 			work.needCommit(true);
-			Map<String, String> m = new HashMap();
+			Map<String, String> m = new HashMap<>();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
@@ -232,7 +232,7 @@ public class TransactionServlet extends TestServlet {
 			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
 			work.needBeginTx(true);
 			work.needRollback(true);
-			Map<String, String> m = new HashMap();
+			Map<String, String> m = new HashMap<>();
 			m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
 			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
 			proxy.doSomeWork();
