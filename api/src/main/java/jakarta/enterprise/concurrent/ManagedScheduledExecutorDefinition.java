@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -143,7 +143,8 @@ public @interface ManagedScheduledExecutorDefinition {
      * {@link java.util.concurrent.CompletableFuture#join()} and the
      * action runs inline if it has not yet started.
      * This constraint also does not apply to tasks that are scheduled
-     * via the <code>schedule*</code> methods.</p>
+     * via the <code>schedule*</code> methods or
+     * {@link Asynchronous#runAt()}.</p>
      *
      * <p>The default value of <code>-1</code> indicates unbounded,
      * although still subject to resource constraints of the system.</p>

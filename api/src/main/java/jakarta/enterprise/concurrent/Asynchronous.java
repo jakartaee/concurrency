@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -178,6 +178,62 @@ public @interface Asynchronous {
      */
     @Nonbinding
     String executor() default "java:comp/DefaultManagedExecutorService";
+
+    /**
+     * <p>Establishes a schedule for repeated execution of the method.
+     * A single future represents the completion of all executions in the schedule.
+     * The Jakarta EE product attempts to run the method at the scheduled times
+     * until its future is completed or the method returns a non-null result value
+     * or raises an exception.</p>
+     *
+     * <p>Computation of the start time for the next execution occurs
+     * after the completion of the current execution. This prevents overlap
+     * of executions from the same asynchronous method request. Scheduled
+     * execution times that overlap a prior execution that is still running
+     * are skipped. For example, if an asynchronous method is scheduled to
+     * run every minute on the minute and execution of the method starts at
+     * 8:00 AM, lasting for 2 minutes and 10 seconds, then the Jakarta EE product
+     * attempts to start the next execution of the method at 8:03 AM.</p>
+     *
+     * <p>Scheduled asynchronous methods are treated similar to other scheduled
+     * tasks in that they are not subject to {@code max-async} constaints of
+     * {@code managed-scheduled-executor-definition} and
+     * {@code managed-executor-definition} and the corresponding
+     * {@link ManagedScheduledExecutorDefinition#maxAsync()} and
+     * {@link ManagedExecutorDefinition#maxAsync()}.</p>
+     *
+     * <p>When a list of multiple {@link Schedule} annotations is specified,
+     * the next execution time is computed according to each, choosing the
+     * closest future time after the current time. This allows composite
+     * schedules such as,
+     * </p>
+     *
+     * <pre>
+     * {@literal @}Asynchronous(runAt = {
+     *     {@literal @}Schedule(daysOfWeek = { DayOfWeek.TUESDAY, DayOfWeek.THURSDAY }, hours = 8),
+     *     {@literal @}Schedule(daysOfweek = DayOfWeek.WEDNESDAY, hours = 10, minutes = 30)
+     * })
+     * public CompletableFuture{@literal <String>} attendLectureAndLab(String course) {
+     *     ...
+     *     if (endOfSemester)
+     *         return Asynchronous.Result.complete(courseRecord);
+     *     else
+     *         return null; // continue at next scheduled time
+     * }
+     *
+     * ...
+     *
+     * student.attendLectureAndLab(courseName).thenApply(this::assignGrade);
+     * </pre>
+     *
+     * <p>The default value of empty array indicates that the task does not
+     * run on a schedule and instead runs one time.</p>
+     *
+     * @return a schedule for the task or an empty array, where the latter indicates
+     *         to run once without a schedule.
+     */
+    @Nonbinding
+    Schedule[] runAt() default {};
 
     /**
      * Mechanism by which the Jakarta EE Product Provider makes available
