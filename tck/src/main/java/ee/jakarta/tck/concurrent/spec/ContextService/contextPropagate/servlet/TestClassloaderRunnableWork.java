@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 
@@ -25,7 +25,7 @@ public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
 	protected String work() {
 		try {
 			Thread.currentThread().getContextClassLoader().loadClass(
-					"ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet.ProxyCreatorServlet");
+					"ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet.ProxyCreatorServlet");
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}

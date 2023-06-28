@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.apitests;
+package ee.jakarta.tck.concurrent.api.ManagedThreadFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,12 +38,12 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 @Web
 @Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
-public class APITests extends TestClient {
+public class ManagedThreadFactoryTests extends TestClient {
 	
 	@Deployment(name="APITests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, APITests.class.getPackage());
+				.addPackages(true, ManagedThreadFactoryTests.class.getPackage());
 	}
 	
 

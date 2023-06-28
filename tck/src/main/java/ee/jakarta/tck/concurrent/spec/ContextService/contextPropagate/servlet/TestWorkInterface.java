@@ -14,20 +14,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate_servlet;
+package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.io.Serializable;
 
-@SuppressWarnings("serial")
-public class TestJNDIRunnableWork extends BaseTestRunnableWork {
+public interface TestWorkInterface extends Runnable, Serializable {
+	public String doSomeWork();
 
-	@Override
-	protected String work() {
-		try {
-            return InitialContext.doLookup("java:comp/env/myMessage");
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
-	}
+	public String getResult();
 }
