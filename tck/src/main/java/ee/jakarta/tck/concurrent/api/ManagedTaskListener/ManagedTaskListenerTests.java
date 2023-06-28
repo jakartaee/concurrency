@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithStatus;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestUtil;

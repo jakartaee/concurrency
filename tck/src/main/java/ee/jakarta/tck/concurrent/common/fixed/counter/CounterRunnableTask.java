@@ -20,24 +20,24 @@ import java.time.Duration;
 
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 
-public class CounterRunnableTask implements Runnable {
-	private Duration sleepTime = Duration.ZERO;
+public class CounterRunnableTask implements Runnable, WorkInterface {
+    private Duration sleepTime = Duration.ZERO;
 
-	public CounterRunnableTask() {
-	}
-	
-   public CounterRunnableTask(Duration sleepTime) {
+    public CounterRunnableTask() {
+    }
+
+    public CounterRunnableTask(Duration sleepTime) {
         this.sleepTime = sleepTime;
     }
 
-	public void run() {
-		try {
-			if (! sleepTime.isZero()) {
-				TestUtil.sleep(sleepTime);
-			}
-			StaticCounter.inc();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public void run() {
+        try {
+            if (!sleepTime.isZero()) {
+                TestUtil.sleep(sleepTime);
+            }
+            StaticCounter.inc();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

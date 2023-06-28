@@ -30,19 +30,24 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.WorkInterface;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Web
+@Common( { PACKAGE.FIXED_COUNTER } )
 public class ContextServiceTests {
 
     // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ContextServiceTests")
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addPackages(true, ContextServiceTests.class.getPackage());
+        return ShrinkWrap.create(WebArchive.class);
     }
 
     @Resource(lookup = TestConstants.DefaultContextService)
@@ -59,7 +64,7 @@ public class ContextServiceTests {
     @Test
     public void ContextServiceWithIntf() {
         assertAll(() -> {
-            Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), Runnable.class);
+            Runnable proxy = (Runnable) context.createContextualProxy(new CounterRunnableTask(), Runnable.class);
             assertNotNull(proxy);
         });
     }
@@ -107,11 +112,11 @@ public class ContextServiceTests {
     @Test
     public void ContextServiceWithMultiIntfs() {
         assertAll(() -> {
-            Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class,
-                    TestWorkInterface.class);
+            Object proxy = context.createContextualProxy(new CounterRunnableTask(), Runnable.class,
+                    WorkInterface.class);
             assertNotNull(proxy);
             assertTrue(proxy instanceof Runnable);
-            assertTrue(proxy instanceof TestWorkInterface);
+            assertTrue(proxy instanceof WorkInterface);
         });
     }
 
@@ -127,7 +132,7 @@ public class ContextServiceTests {
     @Test
     public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
-            context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
+            context.createContextualProxy(new CounterRunnableTask(), Runnable.class, WorkInterface.class,
                     ManagedTaskListener.class);
         });
     }
@@ -144,7 +149,7 @@ public class ContextServiceTests {
     @Test
     public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
-            context.createContextualProxy(null, Runnable.class, TestWorkInterface.class);
+            context.createContextualProxy(null, Runnable.class, WorkInterface.class);
         });
     }
 
@@ -163,7 +168,7 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), execProps,
+            Runnable proxy = (Runnable) context.createContextualProxy(new CounterRunnableTask(), execProps,
                     Runnable.class);
             assertNotNull(proxy);
         });
@@ -184,11 +189,11 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-                    TestWorkInterface.class);
+            Object proxy = context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
+                    WorkInterface.class);
             assertNotNull(proxy);
             assertTrue(proxy instanceof Runnable);
-            assertTrue(proxy instanceof TestWorkInterface);
+            assertTrue(proxy instanceof WorkInterface);
         });
     }
 
@@ -208,7 +213,7 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class, ManagedTaskListener.class);
+            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class, ManagedTaskListener.class);
         });
     }
 
@@ -248,7 +253,7 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class, TestWorkInterface.class,
+            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class, WorkInterface.class,
                     ManagedTaskListener.class);
         });
     }
@@ -269,7 +274,7 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            context.createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
+            context.createContextualProxy(null, execProps, Runnable.class, CounterRunnableTask.class);
         });
     }
 
@@ -288,8 +293,8 @@ public class ContextServiceTests {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
-                    TestWorkInterface.class);
+            Object proxy = context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
+                    WorkInterface.class);
             assertNotNull(proxy);
             
             Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);

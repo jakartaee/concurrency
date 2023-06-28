@@ -14,8 +14,34 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.api.ContextService;
+package ee.jakarta.tck.concurrent.common.managed.task.listener;
 
-public interface TestWorkInterface {
-	public String doSomeWork();
+import java.util.concurrent.TimeUnit;
+
+public class RunnableTaskWithStatus implements Runnable {
+    
+	protected final ManagedTaskListenerImpl listener;
+	
+	private final int blockTime;
+
+	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
+		this.listener = listener;
+		blockTime = 0;
+	}
+
+	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, int blockTime) {
+		this.listener = listener;
+		this.blockTime = blockTime;
+	}
+
+	public void run() {
+		listener.update(ListenerEvent.TASK_RUN);
+		if (blockTime > 0) {
+			try {
+				TimeUnit.SECONDS.sleep(blockTime);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+
 }

@@ -18,11 +18,12 @@ package ee.jakarta.tck.concurrent.common.fixed.counter;
 
 import java.util.concurrent.Callable;
 
-public class CounterCallableTask implements Callable<Integer> {
+public class CounterCallableTask implements Callable<Integer>, WorkInterface {
 
-	public Integer call() {
-		StaticCounter.inc();
-		return StaticCounter.getCount();
-	}
+    @Override
+    public Integer call() {
+        StaticCounter.inc();
+        return StaticCounter.getCount();
+    }
 
 }

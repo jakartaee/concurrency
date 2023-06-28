@@ -119,7 +119,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testApiInvokeAny() {
 		try {
-			List<Callable<?>> taskList = new ArrayList<>();
+			List<Callable<Integer>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));

@@ -23,14 +23,18 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 @Web
+@Common( { PACKAGE.FIXED_COUNTER } )
 public class ManageableThreadTests {
 
 	private static final TestLogger log = TestLogger.get(ManageableThreadTests.class);
@@ -57,7 +61,7 @@ public class ManageableThreadTests {
 	public void isShutdown() {
 		boolean pass = false;
 		try {
-			ManageableThread m = (ManageableThread) threadFactory.newThread(new TestRunnableWork());
+			ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
 			pass = !m.isShutdown();
 		} catch (Exception e) {
 			log.warning("Unexpected Exception Caught", e);

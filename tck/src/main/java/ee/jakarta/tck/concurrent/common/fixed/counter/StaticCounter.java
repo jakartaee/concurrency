@@ -18,18 +18,18 @@ package ee.jakarta.tck.concurrent.common.fixed.counter;
 
 public class StaticCounter {
 
-	private static int count = 0;
+    private static int count = 0;
 
-	public static synchronized int getCount() {
-		return count;
-	}
+    public static synchronized int getCount() {
+        return count;
+    }
 
-	public static synchronized void inc() {
-		count++;
-	}
+    public static synchronized void inc() {
+        count++;
+    }
 
-	public static synchronized void reset() {
-		count = 0;
-	}
+    public static synchronized void reset() {
+        count = 0;
+    }
 
 }
