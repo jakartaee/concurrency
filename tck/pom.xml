@@ -48,7 +48,7 @@
 
     <properties>
         <jakarta.concurrent.api.version>3.1.0-SNAPSHOT</jakarta.concurrent.api.version>
-        <sigtest.version>1.6</sigtest.version>
+        <sigtest.version>1.7</sigtest.version>
     </properties>
 
     <dependencies>
