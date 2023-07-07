@@ -1,5 +1,5 @@
 #Signature file v4.1
-#Version 3.0.0-SNAPSHOT
+#Version 3.1.0-SNAPSHOT
 
 CLSS public jakarta.enterprise.concurrent.AbortedException
 cons public init()
@@ -250,6 +250,9 @@ intf java.lang.annotation.Annotation
 
 CLSS public abstract interface java.io.Serializable
 
+CLSS public abstract interface java.lang.AutoCloseable
+meth public abstract void close() throws java.lang.Exception
+
 CLSS public java.lang.Exception
 cons protected init(java.lang.String,java.lang.Throwable,boolean,boolean)
 cons public init()
@@ -269,7 +272,7 @@ CLSS public java.lang.Object
 cons public init()
 meth protected java.lang.Object clone() throws java.lang.CloneNotSupportedException
 meth protected void finalize() throws java.lang.Throwable
- anno 0 java.lang.Deprecated(boolean forRemoval=false, java.lang.String since="9")
+ anno 0 java.lang.Deprecated(boolean forRemoval=true, java.lang.String since="9")
 meth public boolean equals(java.lang.Object)
 meth public final java.lang.Class<?> getClass()
 meth public final void notify()
@@ -301,7 +304,8 @@ meth public void printStackTrace(java.io.PrintStream)
 meth public void printStackTrace(java.io.PrintWriter)
 meth public void setStackTrace(java.lang.StackTraceElement[])
 supr java.lang.Object
-hfds ZeroElementArray,ZeroStackTraceElementArray,cause,detailMessage,disableWritableStackTrace,serialVersionUID,stackTrace,suppressedExceptions,walkback
+hfds CAUSE_CAPTION,EMPTY_THROWABLE_ARRAY,NULL_CAUSE_MESSAGE,SELF_SUPPRESSION_MESSAGE,SUPPRESSED_CAPTION,SUPPRESSED_SENTINEL,UNASSIGNED_STACK,backtrace,cause,depth,detailMessage,serialVersionUID,stackTrace,suppressedExceptions
+hcls PrintStreamOrWriter,SentinelHolder,WrappedPrintStream,WrappedPrintWriter
 
 CLSS public abstract interface java.lang.annotation.Annotation
 meth public abstract boolean equals(java.lang.Object)
@@ -368,6 +372,7 @@ CLSS public abstract interface java.util.concurrent.Executor
 meth public abstract void execute(java.lang.Runnable)
 
 CLSS public abstract interface java.util.concurrent.ExecutorService
+intf java.lang.AutoCloseable
 intf java.util.concurrent.Executor
 meth public abstract <%0 extends java.lang.Object> java.util.List<java.util.concurrent.Future<{%%0}>> invokeAll(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>) throws java.lang.InterruptedException
 meth public abstract <%0 extends java.lang.Object> java.util.List<java.util.concurrent.Future<{%%0}>> invokeAll(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>,long,java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
@@ -381,6 +386,7 @@ meth public abstract boolean isTerminated()
 meth public abstract java.util.List<java.lang.Runnable> shutdownNow()
 meth public abstract java.util.concurrent.Future<?> submit(java.lang.Runnable)
 meth public abstract void shutdown()
+meth public void close()
 
 CLSS public java.util.concurrent.ForkJoinPool
 cons public init()
@@ -395,10 +401,15 @@ meth protected <%0 extends java.lang.Object> java.util.concurrent.RunnableFuture
 meth protected int drainTasksTo(java.util.Collection<? super java.util.concurrent.ForkJoinTask<?>>)
 meth protected java.util.concurrent.ForkJoinTask<?> pollSubmission()
 meth public <%0 extends java.lang.Object> java.util.List<java.util.concurrent.Future<{%%0}>> invokeAll(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>)
+meth public <%0 extends java.lang.Object> java.util.List<java.util.concurrent.Future<{%%0}>> invokeAll(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>,long,java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
+meth public <%0 extends java.lang.Object> java.util.concurrent.ForkJoinTask<{%%0}> externalSubmit(java.util.concurrent.ForkJoinTask<{%%0}>)
+meth public <%0 extends java.lang.Object> java.util.concurrent.ForkJoinTask<{%%0}> lazySubmit(java.util.concurrent.ForkJoinTask<{%%0}>)
 meth public <%0 extends java.lang.Object> java.util.concurrent.ForkJoinTask<{%%0}> submit(java.lang.Runnable,{%%0})
 meth public <%0 extends java.lang.Object> java.util.concurrent.ForkJoinTask<{%%0}> submit(java.util.concurrent.Callable<{%%0}>)
 meth public <%0 extends java.lang.Object> java.util.concurrent.ForkJoinTask<{%%0}> submit(java.util.concurrent.ForkJoinTask<{%%0}>)
 meth public <%0 extends java.lang.Object> {%%0} invoke(java.util.concurrent.ForkJoinTask<{%%0}>)
+meth public <%0 extends java.lang.Object> {%%0} invokeAny(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>) throws java.lang.InterruptedException,java.util.concurrent.ExecutionException
+meth public <%0 extends java.lang.Object> {%%0} invokeAny(java.util.Collection<? extends java.util.concurrent.Callable<{%%0}>>,long,java.util.concurrent.TimeUnit) throws java.lang.InterruptedException,java.util.concurrent.ExecutionException,java.util.concurrent.TimeoutException
 meth public boolean awaitQuiescence(long,java.util.concurrent.TimeUnit)
 meth public boolean awaitTermination(long,java.util.concurrent.TimeUnit) throws java.lang.InterruptedException
 meth public boolean getAsyncMode()
@@ -412,6 +423,7 @@ meth public int getParallelism()
 meth public int getPoolSize()
 meth public int getQueuedSubmissionCount()
 meth public int getRunningThreadCount()
+meth public int setParallelism(int)
 meth public java.lang.String toString()
 meth public java.lang.Thread$UncaughtExceptionHandler getUncaughtExceptionHandler()
 meth public java.util.List<java.lang.Runnable> shutdownNow()
@@ -422,12 +434,13 @@ meth public long getStealCount()
 meth public static int getCommonPoolParallelism()
 meth public static java.util.concurrent.ForkJoinPool commonPool()
 meth public static void managedBlock(java.util.concurrent.ForkJoinPool$ManagedBlocker) throws java.lang.InterruptedException
+meth public void close()
 meth public void execute(java.lang.Runnable)
 meth public void execute(java.util.concurrent.ForkJoinTask<?>)
 meth public void shutdown()
 supr java.util.concurrent.AbstractExecutorService
-hfds ADD_WORKER,COMMON_MAX_SPARES,COMMON_PARALLELISM,CTL,DEFAULT_COMMON_MAX_SPARES,DEFAULT_KEEPALIVE,DORMANT,FIFO,INITIAL_QUEUE_CAPACITY,MAXIMUM_QUEUE_CAPACITY,MAX_CAP,MODE,OWNED,QA,QLOCK,QUIET,RC_MASK,RC_SHIFT,RC_UNIT,SEED_INCREMENT,SHUTDOWN,SMASK,SP_MASK,SQMASK,SS_SEQ,STOP,SWIDTH,TC_MASK,TC_SHIFT,TC_UNIT,TERMINATED,TIMEOUT_SLOP,TOP_BOUND_SHIFT,UC_MASK,UNSIGNALLED,bounds,common,ctl,factory,indexSeed,keepAlive,mode,modifyThreadPermission,poolNumberSequence,saturate,stealCount,ueh,workQueues,workerNamePrefix
-hcls DefaultForkJoinWorkerThreadFactory,InnocuousForkJoinWorkerThreadFactory,WorkQueue
+hfds CLEAR_TLS,CTL,DEFAULT_COMMON_MAX_SPARES,DEFAULT_KEEPALIVE,FIFO,INACTIVE,INITIAL_QUEUE_CAPACITY,ISCOMMON,MAX_CAP,PARALLELISM,PARKED,POOLIDS,POOLIDS_BASE,PRESET_SIZE,RC_MASK,RC_SHIFT,RC_UNIT,RUNSTATE,SHUTDOWN,SMASK,SP_MASK,SRC,SS_SEQ,STOP,SWIDTH,TC_MASK,TC_SHIFT,TC_UNIT,TERMINATED,THREADIDS,TIMEOUT_SLOP,TRIMMED,U,UC_MASK,UNCOMPENSATE,bounds,common,config,container,ctl,factory,keepAlive,modifyThreadPermission,parallelism,poolIds,queues,registrationLock,runState,saturate,stealCount,termination,threadIds,ueh,workerNamePrefix
+hcls DefaultForkJoinWorkerThreadFactory,InvokeAnyRoot,InvokeAnyTask,WorkQueue
 
 CLSS public abstract interface static java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
  outer java.util.concurrent.ForkJoinPool
