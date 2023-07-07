@@ -31,6 +31,7 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -80,7 +81,7 @@ public class TransactionServlet extends TestServlet {
 		Future<?> taskResult = managedScheduledExecutorService.schedule(
 				new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT),
 				new OnceTrigger());
-		TestUtil.waitForTaskComplete(taskResult);
+		Wait.waitForTaskComplete(taskResult);
 	}
 
 	public void cancelTest() {

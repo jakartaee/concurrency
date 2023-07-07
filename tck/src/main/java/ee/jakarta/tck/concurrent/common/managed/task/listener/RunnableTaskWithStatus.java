@@ -16,31 +16,30 @@
 
 package ee.jakarta.tck.concurrent.common.managed.task.listener;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class RunnableTaskWithStatus implements Runnable {
     
 	protected final ManagedTaskListenerImpl listener;
 	
-	private final int blockTime;
+	private final Duration blockTime;
 
 	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
 		this.listener = listener;
-		blockTime = 0;
+		blockTime = Duration.ZERO;
 	}
 
-	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, int blockTime) {
+	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, Duration blockTime) {
 		this.listener = listener;
 		this.blockTime = blockTime;
 	}
 
 	public void run() {
 		listener.update(ListenerEvent.TASK_RUN);
-		if (blockTime > 0) {
-			try {
-				TimeUnit.SECONDS.sleep(blockTime);
-			} catch (InterruptedException e) {
-			}
+		if (! blockTime.isZero()) {
+		    Wait.sleep(blockTime);
 		}
 	}
 

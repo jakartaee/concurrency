@@ -28,13 +28,13 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import jakarta.ejb.EJB;
 
 @Full
-public class InheritedAPITests {
+public class InheritedAPIFullTests {
 	
 	@Deployment(name="InheritedAPITests")
 	public static EnterpriseArchive createDeployment() {
 		JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
-		        .addClasses(InheritedAPITests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
-				.addPackages(true, PACKAGE.TASKS.getPackageName(), PACKAGE.COUNTER.getPackageName()) 
+		        .addClasses(InheritedAPIFullTests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
+				.addPackages(true, PACKAGE.TASKS.getPackageName(), PACKAGE.COUNTER.getPackageName(), PACKAGE.FIXED_COUNTER.getPackageName()) 
 				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.FullProvider.class);
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear").addAsModules(inheritedJAR);

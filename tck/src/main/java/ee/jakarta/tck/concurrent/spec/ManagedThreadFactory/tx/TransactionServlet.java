@@ -29,7 +29,7 @@ import javax.sql.DataSource;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
@@ -79,7 +79,7 @@ public class TransactionServlet extends TestServlet {
 		Thread thread = threadFactory.newThread(new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT));
 		thread.start();
-		TestUtil.waitTillThreadFinish(thread);
+		Wait.waitTillThreadFinish(thread);
 	}
 
 	public void cancelTest() {

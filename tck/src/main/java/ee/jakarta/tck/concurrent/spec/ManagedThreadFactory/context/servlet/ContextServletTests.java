@@ -18,8 +18,6 @@ package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context.servlet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.naming.InitialContext;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,10 +25,11 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 @Web
@@ -48,6 +47,9 @@ public class ContextServletTests {
     private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
 
     private static final String TEST_CLASSLOADER_CLASS_NAME = ContextServletTests.class.getCanonicalName();
+    
+    @Resource (lookup = TestConstants.DefaultManagedThreadFactory)
+    ManagedThreadFactory factory;
 
     /*
      * @testName: jndiClassloaderPropagationTest
@@ -59,13 +61,11 @@ public class ContextServletTests {
      */
     @Test
     public void jndiClassloaderPropagationTest() throws Exception {
-        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
-
         RunnableTask task = new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                 TEST_CLASSLOADER_CLASS_NAME);
         Thread thread = factory.newThread(task);
         thread.start();
-        TestUtil.waitTillThreadFinish(thread);
+        Wait.waitTillThreadFinish(thread);
         assertEquals(task.getCount(), 1);
     }
 

@@ -16,7 +16,7 @@
 
 package ee.jakarta.tck.concurrent.api.ManageableThread;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
@@ -36,8 +35,6 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 @Web
 @Common( { PACKAGE.FIXED_COUNTER } )
 public class ManageableThreadTests {
-
-	private static final TestLogger log = TestLogger.get(ManageableThreadTests.class);
 	
 	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="ManageableThreadTests")
@@ -59,13 +56,7 @@ public class ManageableThreadTests {
 	 */
 	@Test
 	public void isShutdown() {
-		boolean pass = false;
-		try {
-			ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
-			pass = !m.isShutdown();
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
+	    ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
+	    assertFalse(m.isShutdown());
 	}
 }

@@ -28,7 +28,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;;
 
 @Web
-@Common({PACKAGE.TASKS, PACKAGE.COUNTER})
+@Common({PACKAGE.TASKS, PACKAGE.COUNTER, PACKAGE.FIXED_COUNTER})
 public class InheritedAPIWebTests {
 	
 	@Deployment(name="InheritedAPITests")

@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -79,7 +79,7 @@ public class TransactionServlet extends TestServlet {
 		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
 		Future<?> taskResult = scheduledExecutor.submit(new TransactedTask(isCommit,
 				Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT));
-		TestUtil.waitForTaskComplete(taskResult);
+		Wait.waitForTaskComplete(taskResult);
 }
 
 	public void cancelTest() {

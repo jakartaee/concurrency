@@ -16,6 +16,11 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedExecutors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -34,10 +39,10 @@ import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
@@ -86,27 +91,26 @@ public class ManagedExecutorsTests {
     }
 
     private void assertTaskAndListenerComplete(Future<?> future, RunnableTask runnableTask) {
-        TestUtil.waitForTaskComplete(future);
+        Wait.waitForTaskComplete(future);
         assertListenerComplete(runnableTask);
     }
 
     private void assertTaskAndListenerComplete(String expectedResult, Future<String> future,
             CallableTask<?> callableTask) {
-        String result = TestUtil.waitForTaskComplete(future);
-        if (!expectedResult.endsWith(result))
-            throw new RuntimeException("Task return different value with expected one.");
+        String result = Wait.waitForTaskComplete(future);
+        assertTrue(expectedResult.endsWith(result));
         assertListenerComplete(callableTask);
     }
 
     private void assertListenerComplete(RunnableTask task) {
         // wait for the listener run done.
-        TestUtil.waitForListenerComplete(managedTaskListener);
+        Wait.waitForListenerComplete(managedTaskListener);
+        
         // check listener status.
-        if (!(managedTaskListener.eventCalled(ListenerEvent.SUBMITTED)
-                && managedTaskListener.eventCalled(ListenerEvent.STARTING)
-                && managedTaskListener.eventCalled(ListenerEvent.DONE))) {
-            throw new RuntimeException("TaskListener is not completely executed.");
-        }
+        assertTrue(managedTaskListener.eventCalled(ListenerEvent.SUBMITTED));
+        assertTrue(managedTaskListener.eventCalled(ListenerEvent.STARTING));
+        assertTrue(managedTaskListener.eventCalled(ListenerEvent.DONE));
+        
     }
 
     /*
@@ -130,10 +134,8 @@ public class ManagedExecutorsTests {
         // to create new thread. So the thread used in this test is a non Manageable
         // Thread.
         Future<?> future = Executors.newSingleThreadExecutor().submit(createdThread);
-        TestUtil.waitForTaskComplete(future);
-        if (shutdown) {
-            throw new RuntimeException("Failed because shutdown is set to be true when running job");
-        }
+        Wait.waitForTaskComplete(future);
+        assertFalse(shutdown, "Failed because shutdown is set to be true when running job");
     }
 
     /*
@@ -156,10 +158,8 @@ public class ManagedExecutorsTests {
         // ManagedThreadFactory
         // to create new (Manageable) thread.
         Future<?> future = Executors.newSingleThreadExecutor(threadFactory).submit(createdThread);
-        TestUtil.waitForTaskComplete(future);
-        if (shutdown) {
-            throw new RuntimeException("Failed because shutdown is set to be true when running job");
-        }
+        Wait.waitForTaskComplete(future);
+        assertFalse(shutdown, "Failed because shutdown is set to be true when running job");
     }
 
     /*
@@ -193,15 +193,9 @@ public class ManagedExecutorsTests {
     @Test
     public void ManageRunnableTaskWithNullArg() {
         Runnable nullTask = null;
-        try {
+        assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, managedTaskListener);
-        } catch (IllegalArgumentException e) {
-            return; // expected
-        } catch (Exception e) {
-            log.warning("Unexpected Exception Caught", e);
-        }
-
-        throw new RuntimeException("Failed to get expected exception");
+        });
     }
 
     /*
@@ -220,11 +214,11 @@ public class ManagedExecutorsTests {
         properties.put("key", "value");
         RunnableTask runnableTask = createRunnableTask();
         Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-        if (task instanceof ManagedTask) {
-            ManagedTask managedTask = (ManagedTask) task;
-            if (managedTask.getExecutionProperties().get("key") != "value")
-                throw new RuntimeException("Failed to get expected property");
-        }
+        
+        assertTrue(task instanceof ManagedTask);
+        ManagedTask managedTask = (ManagedTask) task;
+        
+        assertEquals("value", managedTask.getExecutionProperties().get("key"));
 
         assertTaskAndListenerComplete(executor.submit(task), runnableTask);
     }
@@ -241,14 +235,10 @@ public class ManagedExecutorsTests {
     public void ManageRunnableTaskWithMapAndNullArg() {
         Runnable nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
-        try {
+        
+        assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
-        } catch (IllegalArgumentException e) {
-            return; // expected
-        } catch (Exception e) {
-            log.warning("Unexpected Exception Caught", e);
-        }
-        throw new RuntimeException("Failed to get expected exception");
+        });
     }
 
     /*
@@ -282,14 +272,9 @@ public class ManagedExecutorsTests {
     @Test
     public void ManageCallableTaskWithNullArg() {
         Callable<?> nullTask = null;
-        try {
+        assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, managedTaskListener);
-        } catch (IllegalArgumentException e) {
-            return; // expected
-        } catch (Exception e) {
-            log.warning("Unexpected Exception Caught", e);
-        }
-        throw new RuntimeException("Failed to get expected exception");
+        });
     }
 
     /*
@@ -313,12 +298,13 @@ public class ManagedExecutorsTests {
         CallableTask<String> callableTask = createCallableTask(expectedResultStr);
         Callable<String> task = ManagedExecutors.managedTask((Callable<String>) callableTask, properties,
                 managedTaskListener);
+        
+        assertTrue(task instanceof ManagedTask);
+        
+        ManagedTask managedTask = (ManagedTask) task;
+        
+        assertEquals("value", managedTask.getExecutionProperties().get("key"));
 
-        if (task instanceof ManagedTask) {
-            ManagedTask managedTask = (ManagedTask) task;
-            if (managedTask.getExecutionProperties().get("key") != "value")
-                throw new RuntimeException("Failed to get expected property");
-        }
         assertTaskAndListenerComplete(expectedResultStr, executor.submit(task),
                 callableTask);
     }
@@ -335,13 +321,9 @@ public class ManagedExecutorsTests {
     public void ManageCallableTaskWithMapAndNullArg() {
         Callable<?> nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
-        try {
+        
+        assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
-        } catch (IllegalArgumentException e) {
-            return; // expected
-        } catch (Exception e) {
-            log.warning("Unexpected Exception Caught", e);
-        }
-        throw new RuntimeException("Failed to get expected exception");
+        });
     }
 }

@@ -23,7 +23,7 @@ import javax.naming.InitialContext;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.servlet.annotation.WebServlet;
@@ -50,7 +50,7 @@ public class SecurityServlet extends TestServlet {
 			CounterRunnableWithContext task = new CounterRunnableWithContext();
 			Thread thread = factory.newThread(task);
 			thread.start();
-			TestUtil.waitTillThreadFinish(thread);
+			Wait.waitTillThreadFinish(thread);
 			assertEquals(task.getCount(), 1);
 	}
 	
@@ -63,7 +63,7 @@ public class SecurityServlet extends TestServlet {
 		CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
 		Thread thread = factory.newThread(task);
 		thread.start();
-		TestUtil.waitTillThreadFinish(thread);
+		Wait.waitTillThreadFinish(thread);
 		assertEquals(task.getCount(), 1);
 }
 

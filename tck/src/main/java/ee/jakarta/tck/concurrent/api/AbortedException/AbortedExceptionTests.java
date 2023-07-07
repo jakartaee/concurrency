@@ -32,7 +32,6 @@ import jakarta.enterprise.concurrent.AbortedException;
 @Web // TODO couldn't this be a unit test?
 public class AbortedExceptionTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "AbortedExceptionTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, AbortedExceptionTests.class.getPackage());

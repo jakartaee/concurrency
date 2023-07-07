@@ -16,12 +16,14 @@
 
 package ee.jakarta.tck.concurrent.api.Trigger;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -35,12 +37,15 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Assertions;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.SkippedException;
@@ -75,23 +80,16 @@ public class TriggerTests {
      */
     @Disabled
     public void triggerGetNextRunTimeTest() throws Exception {
-        scheduledExecutor.schedule(new CounterRunnableTask(),
+        Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
                 new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
+        
+        assertFalse(StaticCounter.getCount() == 0, "The first trigger is too fast.");
 
         try {
-            if (StaticCounter.getCount() != 0) {
-                throw new RuntimeException("The first trigger is too fast.");
-            }
-
-            TestUtil.sleep(TestConstants.WaitTimeout);
-            int result = StaticCounter.getCount();
-            assertInRange(result, TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
-        } finally {
-            // make sure the task schedule by this case is stop
-            try {
-                TestUtil.sleep(TestConstants.WaitTimeout.multipliedBy(2));
-            } catch (InterruptedException ignore) {
-            }
+            Wait.sleep(TestConstants.WaitTimeout);
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
+        } finally {      
+            Wait.waitTillFutureIsDone(result);
         }
     }
 
@@ -108,35 +106,14 @@ public class TriggerTests {
      */
     @Test
     public void triggerSkipRunTest() {
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(new Callable<String>() {
-            public String call() {
-                return "ok";
-            }
-        }, new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval.toMillis()));
-
-        long start = System.currentTimeMillis();
+        ScheduledFuture<?> sf = scheduledExecutor.schedule(
+                new CommonTasks.SimpleCallable(),
+                new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval));
+        
         try {
-            while (!sf.isDone()) {
-                try {
-                    sf.get(100, TimeUnit.MILLISECONDS);
-                } catch (SkippedException se) {
-                    return;
-                } catch (ExecutionException ee) {
-                } catch (TimeoutException | InterruptedException e) {
-                }
-                if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
-                    fail("wait task timeout");
-                }
-            }
+            Wait.waitTillFutureThrowsException(sf, SkippedException.class);
         } finally {
             sf.cancel(true);
         }
-
-        fail("SkippedException should be caught.");
-    }
-
-    private void assertInRange(int value, int min, int max) {
-        assertTrue(value > min && value < max,
-                "Expected " + value + " to be in the exclusive range ( " + min + " - " + max + " )");
     }
 }

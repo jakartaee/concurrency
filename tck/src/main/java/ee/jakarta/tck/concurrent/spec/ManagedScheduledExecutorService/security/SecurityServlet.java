@@ -25,7 +25,7 @@ import javax.naming.InitialContext;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class SecurityServlet extends TestServlet {
 			ManagedScheduledExecutorService executorService = InitialContext.doLookup(TestConstants.DefaultManagedScheduledExecutorService);
 			ScheduledFuture<?> future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
 
-			Object result = TestUtil.waitForTaskComplete(future);
+			Object result = Wait.waitForTaskComplete(future);
 			assertEquals(result, TestConstants.SimpleReturnValue);
 	}
 }

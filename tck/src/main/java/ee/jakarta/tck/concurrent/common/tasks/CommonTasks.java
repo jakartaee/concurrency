@@ -21,27 +21,28 @@ import java.util.concurrent.Callable;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CommonTasks {
 
 	public static final String SIMPLE_RETURN_STRING = "ok";
 
 	public static class SimpleCallable implements Callable<String> {
-		private long waitTime = 0;
+		private Duration waitTime = Duration.ZERO;
 
 		public SimpleCallable() {
 		}
 
-		public SimpleCallable(long argWaitTime) {
-			this.waitTime = argWaitTime;
+		public SimpleCallable(Duration waitTime) {
+			this.waitTime = waitTime;
 		}
 
 		public String call() {
 			try {
-				if (waitTime != 0) {
-					TestUtil.sleep(Duration.ofMillis(waitTime));
+				if (!waitTime.isZero()) {
+				    Wait.sleep(waitTime);
 				} else {
-					TestUtil.sleep(TestConstants.PollInterval);
+				    Wait.sleep(TestConstants.PollInterval);
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);

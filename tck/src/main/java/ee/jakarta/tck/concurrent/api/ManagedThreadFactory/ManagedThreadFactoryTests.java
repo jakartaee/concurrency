@@ -28,10 +28,10 @@ import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
@@ -67,7 +67,7 @@ public class ManagedThreadFactoryTests extends TestClient {
         Thread thread = threadFactory.newThread(task);
         thread.start();
         thread.interrupt();
-        TestUtil.waitTillThreadFinish(thread);
+        Wait.waitTillThreadFinish(thread);
         assertEquals(0, StaticCounter.getCount());
 	}
 

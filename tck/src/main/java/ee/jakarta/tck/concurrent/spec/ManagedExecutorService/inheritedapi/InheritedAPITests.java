@@ -17,32 +17,41 @@
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.inheritedapi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Assertions;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Web
+@Common({ PACKAGE.TASKS, PACKAGE.FIXED_COUNTER })
 public class InheritedAPITests {
 
     @Deployment(name = "InheritedAPITests")
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class).addClass(Task.class);
+        return ShrinkWrap.create(WebArchive.class);
     }
     
     @Resource(lookup = TestConstants.DefaultManagedExecutorService)
@@ -67,74 +76,89 @@ public class InheritedAPITests {
 
     @Test
     public void testExecute() {
-        Task<?> commonTask = new Task.CommonTask(0);
-        executor.execute(commonTask);
-        // wait for a while.
         try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            fail(e.toString());
+            executor.execute(new CounterRunnableTask());
+            StaticCounter.waitTill(1); 
+        } finally {
+            StaticCounter.reset();
         }
     }
 
     @Test
-    public void testSubmit() {
-        Task<?> commonTask = new Task.CommonTask(0);
-        Future<?> noRes = executor.submit((Runnable) commonTask);
-        try {
-            TestUtil.waitForTaskComplete(noRes);
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+    public void testSubmit() throws Exception {
+        Future<?> result = executor.submit(new CommonTasks.SimpleCallable());
+        Wait.waitTillFutureIsDone(result);
+        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+
+        result = executor.submit(new CommonTasks.SimpleRunnable());
+        Wait.waitTillFutureIsDone(result);
+        result.get();
+
+        result = executor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+        Wait.waitTillFutureIsDone(result);
+        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
     }
 
     @Test
     public void testInvokeAny() {
-        Task.CommonTask commonTask0 = new Task.CommonTask(0);
-        Task.CommonTask commonTask1 = new Task.CommonTask(1);
-        List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
-        tasks.add(commonTask0);
-        tasks.add(commonTask1);
-        int res = -1;
         try {
-            res = executor.invokeAny(tasks);
-        } catch (InterruptedException e) {
-            fail(e.toString());
-        } catch (ExecutionException e) {
-            fail(e.toString());
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            Integer result = executor.invokeAny(taskList);
+            Assertions.assertBetween(result, 1, 3);
+
+            result = executor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            Assertions.assertBetween(result, 1, 3);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        assertTrue(tasks.get(res).isRan());
+        
+        assertThrows(TimeoutException.class, () -> {
+            List<Callable<?>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            executor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+        });
     }
 
     @Test
     public void testInvokeAll() {
-        Task.CommonTask commonTask0 = new Task.CommonTask(0);
-        Task.CommonTask commonTask1 = new Task.CommonTask(1);
-        List<Task.CommonTask> tasks = new ArrayList<Task.CommonTask>();
-        tasks.add(commonTask0);
-        tasks.add(commonTask1);
-        List<Future<Integer>> res = null;
         try {
-            res = executor.invokeAll(tasks);
-            TestUtil.waitForTaskComplete(res.get(0));
-            TestUtil.waitForTaskComplete(res.get(1));
-        } catch (Exception e) {
-            fail(e.toString());
-        }
-        assertTrue(commonTask0.isRan());
-        assertTrue(commonTask1.isRan());
-    }
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            List<Future<Integer>> resultList = executor.invokeAll(taskList);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
 
-    @Test
-    public void testAtMostOnce() {
-        Task.CommonTask commonTask = new Task.CommonTask(0);
-        Future<?> future = executor.submit((Runnable) commonTask);
-        try {
-            TestUtil.waitForTaskComplete(future);
+            resultList = executor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
         } catch (Exception e) {
-            fail(e.toString());
+            fail(e.getMessage());
         }
-        // check number.
-        assertEquals(commonTask.runCount(), 1);
+
+        try {
+            List<Callable<String>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureThrowsException(each, CancellationException.class);
+            }
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+        }
     }
 }

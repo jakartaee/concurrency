@@ -16,6 +16,7 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedTask;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -67,12 +68,12 @@ public class ManagedTaskTests {
 		properties.put("key", "value");
 		Runnable runnableTask = createRunnableTask();
 		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-
-		if (task instanceof ManagedTask) {
-			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(managedTask.getExecutionProperties().get("key") == "value", "failed to get expected property");
-		}
 		
+		assertTrue(task instanceof ManagedTask);
+		
+        ManagedTask managedTask = (ManagedTask) task;
+        
+        assertEquals("value", managedTask.getExecutionProperties().get("key"));
 	}
 
 	/*
@@ -89,10 +90,11 @@ public class ManagedTaskTests {
 		properties.put("key", "value");
 		RunnableTask runnableTask = createRunnableTask();
 		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
+		
+		assertTrue(task instanceof ManagedTask);
+		
+        ManagedTask managedTask = (ManagedTask) task;
+        assertEquals(managedTaskListener, managedTask.getManagedTaskListener());
 
-		if (task instanceof ManagedTask) {
-			ManagedTask managedTask = (ManagedTask) task;
-			assertTrue(managedTask.getManagedTaskListener() == managedTaskListener, "Failed to get expected managedTaskListener");
-		}
 	}
 }

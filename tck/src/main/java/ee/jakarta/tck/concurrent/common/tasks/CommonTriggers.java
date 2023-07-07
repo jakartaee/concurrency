@@ -16,6 +16,7 @@
 
 package ee.jakarta.tck.concurrent.common.tasks;
 
+import java.time.Duration;
 import java.util.Date;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
@@ -44,18 +45,18 @@ public class CommonTriggers {
 	 * A trigger that will skip.
 	 */
 	public static class OnceTriggerDelaySkip implements Trigger {
+	    
+	    private Duration delay;
 
-		public OnceTriggerDelaySkip(long argDelay) {
-			delay = argDelay;
+		public OnceTriggerDelaySkip(Duration delay) {
+			this.delay = delay;
 		}
-
-		private long delay;
 
 		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
 			if (lastExecutionInfo != null) {
 				return null;
 			}
-			return new Date(new Date().getTime() + delay);
+			return new Date(new Date().getTime() + delay.toMillis());
 		}
 
 		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {

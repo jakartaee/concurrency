@@ -31,10 +31,12 @@ import java.util.concurrent.TimeoutException;
 
 import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Assertions;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -52,15 +54,15 @@ public class TestEjb implements TestEjbInterface {
 	public void testApiSubmit() {
 		try {
 			Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
-			TestUtil.waitTillFutureIsDone(result);
+			Wait.waitTillFutureIsDone(result);
 			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
 			result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
-			TestUtil.waitTillFutureIsDone(result);
+			Wait.waitTillFutureIsDone(result);
 			result.get();
 
 			result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
-			TestUtil.waitTillFutureIsDone(result);
+			Wait.waitTillFutureIsDone(result);
 			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -71,9 +73,7 @@ public class TestEjb implements TestEjbInterface {
 		try {
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			scheduledExecutor.execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
-			waitForCounter(1);
-		} catch (Exception e) {
-			fail(e.getMessage());
+			StaticCounter.waitTillSurpassed(1);
 		}finally {
 			counter.reset();
 		}
@@ -87,7 +87,7 @@ public class TestEjb implements TestEjbInterface {
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
 			List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
 			for (Future<?> each : resultList) {
-				TestUtil.waitTillFutureIsDone(each);
+				Wait.waitTillFutureIsDone(each);
 			}
 			assertEquals(resultList.get(0).get(), 1);
 			assertEquals(resultList.get(1).get(), 2);
@@ -95,7 +95,7 @@ public class TestEjb implements TestEjbInterface {
 
 			resultList = scheduledExecutor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
 			for (Future<?> each : resultList) {
-				TestUtil.waitTillFutureIsDone(each);
+				Wait.waitTillFutureIsDone(each);
 			}
 			assertEquals(resultList.get(0).get(), 1);
 			assertEquals(resultList.get(1).get(), 2);
@@ -106,11 +106,11 @@ public class TestEjb implements TestEjbInterface {
 
 		try {
 			List<Callable<String>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
 			List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
 			for (Future<?> each : resultList) {
-				TestUtil.waitTillFutureThrowsException(each, CancellationException.class);
+				Wait.waitTillFutureThrowsException(each, CancellationException.class);
 			}
 		} catch (Exception ex) {
 			fail(ex.getMessage());
@@ -123,19 +123,19 @@ public class TestEjb implements TestEjbInterface {
 			taskList.add(new CommonTasks.SimpleArgCallable(1));
 			taskList.add(new CommonTasks.SimpleArgCallable(2));
 			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			Object result = scheduledExecutor.invokeAny(taskList);
-			TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
+			Integer result = scheduledExecutor.invokeAny(taskList);
+			Assertions.assertBetween(result, 1, 3);
 
 			result = scheduledExecutor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-			TestUtil.assertInRange(new Integer[] { 1, 2, 3 }, result);
+			Assertions.assertBetween(result, 1, 3);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		try {
 			List<Callable<?>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout.toMillis()));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
 			scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
 		} catch (TimeoutException e) {
 			return; //expected
@@ -149,12 +149,12 @@ public class TestEjb implements TestEjbInterface {
 		try {
 			Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
 					TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-			TestUtil.waitTillFutureIsDone(result);
+			Wait.waitTillFutureIsDone(result);
 			assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 
 			result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.PollInterval.getSeconds(),
 					TimeUnit.SECONDS);
-			TestUtil.waitTillFutureIsDone(result);
+			Wait.waitTillFutureIsDone(result);
 			assertEquals(result.get(), null);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -167,19 +167,14 @@ public class TestEjb implements TestEjbInterface {
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(nameProvider.getEJBJNDIName()),
 					TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-			TestUtil.sleep(TestConstants.WaitTimeout);
-			TestUtil.assertIntInRange(TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2, counter.getCount());
+			Wait.sleep(TestConstants.WaitTimeout);
+			Assertions.assertBetween(counter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		} finally {
-			if (result != null) {
-				result.cancel(true);
-				// Sleep to ensure cancel take effect.
-				try {
-					TestUtil.sleep(TestConstants.PollInterval);
-				} catch (Exception e) {
-				}
-			}
+            if (result != null) {
+                Wait.waitCancelFuture(result);
+            }
 			counter.reset();
 		}
 	}
@@ -193,35 +188,16 @@ public class TestEjb implements TestEjbInterface {
 					TestConstants.PollInterval.getSeconds(), //initial delay
 					TestConstants.PollInterval.getSeconds(), //delay
 					TimeUnit.SECONDS); //Time units
-			TestUtil.sleep(TestConstants.WaitTimeout);
-			TestUtil.assertIntInRange((TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2, counter.getCount());
+			Wait.sleep(TestConstants.WaitTimeout);
+			Assertions.assertBetween(counter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2);
 		} catch (Exception e) {
 			fail(e.getMessage());
 		} finally {
 			if (result != null) {
-				result.cancel(true);
-				// Sleep to ensure cancel take effect.
-				try {
-					TestUtil.sleep(TestConstants.PollInterval);
-				} catch (Exception e) {
-				}
+			    Wait.waitCancelFuture(result);
 			}
 			counter.reset();
 		}
 	}
 	
-	private void waitForCounter(int expected) {
-		long start = System.currentTimeMillis();
-
-		while (expected != counter.getCount()) {
-			try {
-				TestUtil.sleep(TestConstants.PollInterval);
-			} catch (InterruptedException ignore) {
-			}
-
-			if ((System.currentTimeMillis() - start) > TestConstants.WaitTimeout.toMillis()) {
-				throw new RuntimeException("Static counter did not produce expected counter before timeout. Expected: " + expected + " Actual: " + counter.getCount());
-			}
-		}
-	}
 }
