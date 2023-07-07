@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -48,10 +48,8 @@
         <jakarta.concurrent.tck.version>${project.version}</jakarta.concurrent.tck.version>
 
         <maven.site.skip>true</maven.site.skip>
-        <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
-        <asciidoctorj.version>2.5.3</asciidoctorj.version>
-        <asciidoctorj.pdf.version>1.6.2</asciidoctorj.pdf.version>
-        <jruby.version>9.2.20.1</jruby.version>
+        <asciidoctor-maven.version>2.2.4</asciidoctor-maven.version>
+        <asciidoctorj-pdf.version>2.3.7</asciidoctorj-pdf.version>
     </properties>
 
     <dependencies>
@@ -74,22 +72,12 @@
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
-                <version>${asciidoctor.maven.plugin.version}</version>
+                <version>${asciidoctor-maven.version}</version>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.jruby</groupId>
-                        <artifactId>jruby-complete</artifactId>
-                        <version>${jruby.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctorj</artifactId>
-                        <version>${asciidoctorj.version}</version>
-                    </dependency>
                     <dependency>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoctorj-pdf</artifactId>
-                        <version>${asciidoctorj.pdf.version}</version>
+                        <version>${asciidoctorj-pdf.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -121,8 +109,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <toc>left</toc>
+                    <sourceDirectory>src/main/asciidoc</sourceDirectory>
                     <sourceDocumentName>concurrency-tck-reference-guide.adoc</sourceDocumentName>
+                    <embedAssets>true</embedAssets>
+                    <toc>left</toc>
                     <sourceHighlighter>coderay</sourceHighlighter>
                     <skip>${maven.adoc.skip}</skip>
                 </configuration>

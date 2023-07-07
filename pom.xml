@@ -77,7 +77,7 @@
         <!-- TODO update for Jakarta 11 -->
         <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
-        <jakarta.jsp.version>3.1.0</jakarta.jsp.version>
+        <jakarta.jsp.version>3.1.1</jakarta.jsp.version>
         <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
         <jakarta.interceptor.version>2.1.0</jakarta.interceptor.version>
         <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
@@ -126,7 +126,7 @@
 
     <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.6.0 -->
+            <!-- Sets minimal Maven version to 3.8.0 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>

@@ -28,5 +28,9 @@ jobs:
         java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: Build API and TCK
       run: mvn -B package --file pom.xml
+    - name: Build SPEC
+      run: mvn -B package --file specification/pom.xml
+    - name: Build TCK-DIST
+      run: mvn -B package --file tck-dist/pom.xml
