@@ -35,16 +35,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 /**
  * Utility methods to be used on the client or server side. 
@@ -126,40 +118,6 @@ public final class TestUtil {
 				buf.append("&");
 		}
 		return buf.toString();
-	}
-	
-	//########## Lookups ##########	
-	public static <T> T lookup(String jndiName) {
-		Context ctx = null;
-		T targetObject = null;
-		try {
-			ctx = new InitialContext();
-			targetObject = (T) ctx.lookup(jndiName);
-		} catch (NamingException e) {
-			throw new RuntimeException("failed to lookup resource.", e);
-		} finally {
-			try {
-				ctx.close();
-			} catch (Exception ignore) {
-			}
-		}
-		return targetObject;
-	}
-	
-	public static ContextService getContextService() {
-		return lookup(TestConstants.DefaultContextService);
-	}
-	
-	public static ManagedExecutorService getManagedExecutorService() {
-		return lookup(TestConstants.DefaultManagedExecutorService);
-	}
-	
-	public static ManagedScheduledExecutorService getManagedScheduledExecutorService() {
-		return lookup(TestConstants.DefaultManagedScheduledExecutorService);
-	}
-	
-	public static ManagedThreadFactory getManagedThreadFactory() {
-		return lookup(TestConstants.DefaultManagedThreadFactory);
 	}
 	
 	//########## Waiters ##########

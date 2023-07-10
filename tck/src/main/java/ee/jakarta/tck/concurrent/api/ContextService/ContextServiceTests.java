@@ -26,9 +26,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Web
@@ -42,6 +44,9 @@ public class ContextServiceTests {
 		return ShrinkWrap.create(WebArchive.class)
 				.addPackages(true,  ContextServiceTests.class.getPackage());
 	}
+	
+    @Resource(lookup = TestConstants.DefaultContextService)
+    public ContextService context;
 
 	/*
 	 * @testName: ContextServiceWithIntf
@@ -55,7 +60,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithIntf() {
 		boolean pass = false;
 		try {
-			Runnable proxy = (Runnable) TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class);
+			Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), Runnable.class);
 			pass = true;
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
@@ -76,7 +81,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithIntfAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(new Object(), Runnable.class);
+			Object proxy = context.createContextualProxy(new Object(), Runnable.class);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
 		} catch (Exception e) {
@@ -98,7 +103,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithIntfAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(null, Runnable.class);
+			Object proxy = context.createContextualProxy(null, Runnable.class);
 			log.info(proxy.toString());
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -120,7 +125,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithMultiIntfs() {
 		boolean pass = false;
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class);
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class);
 			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
@@ -141,7 +146,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
 		boolean pass = false;
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), Runnable.class, TestWorkInterface.class,
 					ManagedTaskListener.class);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -164,7 +169,7 @@ public class ContextServiceTests {
 	public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
 		boolean pass = false;
 		try {
-			Object proxy = TestUtil.getContextService().createContextualProxy(null, Runnable.class, TestWorkInterface.class);
+			Object proxy = context.createContextualProxy(null, Runnable.class, TestWorkInterface.class);
 			log.info(proxy.toString());
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -190,7 +195,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Runnable proxy = (Runnable) TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class);
+			Runnable proxy = (Runnable) context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class);
 			pass = true;
 		} catch (Exception e) {
 			log.severe("Unexpected Exception Caught", e);
@@ -214,7 +219,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class);
 			pass = proxy instanceof Runnable && proxy instanceof TestWorkInterface;
 		} catch (Exception e) {
@@ -240,7 +245,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					ManagedTaskListener.class);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -267,7 +272,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(null, execProps, Runnable.class);
+			Object proxy = context.createContextualProxy(null, execProps, Runnable.class);
 			log.info(proxy.toString());
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -294,7 +299,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class, ManagedTaskListener.class);
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -321,7 +326,7 @@ public class ContextServiceTests {
 			execProps.put("vendor_a.security.tokenexpiration", "15000");
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
+			Object proxy = context.createContextualProxy(null, execProps, Runnable.class, TestWorkInterface.class);
 			log.info(proxy.toString());
 		} catch (IllegalArgumentException ie) {
 			pass = true;
@@ -347,9 +352,9 @@ public class ContextServiceTests {
 			Map<String, String> execProps = new HashMap<String, String>();
 			execProps.put("USE_PARENT_TRANSACTION", "true");
 
-			Object proxy = TestUtil.getContextService().createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
+			Object proxy = context.createContextualProxy(new TestRunnableWork(), execProps, Runnable.class,
 					TestWorkInterface.class);
-			Map<String, String> returnedExecProps = TestUtil.getContextService().getExecutionProperties(proxy);
+			Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);
 
 			if (!"true".equals(returnedExecProps.get("USE_PARENT_TRANSACTION"))) {
 				log.severe("Expected:true, actual message=" + returnedExecProps.get("USE_PARENT_TRANSACTION"));
@@ -374,7 +379,7 @@ public class ContextServiceTests {
 	public void GetExecutionPropertiesNoProxy() {
 		boolean pass = false;
 		try {
-			Map<String, String> returnedExecProps = TestUtil.getContextService().getExecutionProperties(new Object());
+			Map<String, String> returnedExecProps = context.getExecutionProperties(new Object());
 			pass = true;
 		} catch (IllegalArgumentException ie) {
 			pass = true;

@@ -27,11 +27,13 @@ import java.util.concurrent.Future;
 
 import javax.sql.DataSource;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,6 +54,9 @@ public class TransactionServlet extends TestServlet {
 
 	@Resource(lookup = Constants.DS_JNDI_NAME)
 	private DataSource ds;
+	
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
 	@Override
 	protected void beforeClass() throws RemoteException {
@@ -72,7 +77,7 @@ public class TransactionServlet extends TestServlet {
 
 	public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
-		Future<?> taskResult = TestUtil.getManagedExecutorService().submit(new TransactedTask(isCommit,
+		Future<?> taskResult = scheduledExecutor.submit(new TransactedTask(isCommit,
 				Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT));
 		TestUtil.waitForTaskComplete(taskResult);
 }
@@ -81,7 +86,7 @@ public class TransactionServlet extends TestServlet {
 		int originTableCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT);
-		Future<?> future = TestUtil.getManagedExecutorService().submit(cancelledTask);
+		Future<?> future = scheduledExecutor.submit(cancelledTask);
 		// then cancel it after transaction begin and
 		Util.waitForTransactionBegan(cancelledTask);
 		// before it commit.

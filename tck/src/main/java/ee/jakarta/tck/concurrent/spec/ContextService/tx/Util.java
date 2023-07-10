@@ -21,10 +21,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 
 public class Util {
 
@@ -106,7 +107,12 @@ public class Util {
 	}
 
 	public static Connection getConnection(boolean autoCommit, String username, String password) {
-		DataSource ds = TestUtil.lookup(Constants.DS_JNDI_NAME);
+		DataSource ds;
+        try {
+            ds = InitialContext.doLookup(Constants.DS_JNDI_NAME);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
 		Connection conn = Util.getConnection(ds, username, password, autoCommit);
 		return conn;
 	}

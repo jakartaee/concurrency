@@ -33,8 +33,8 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full @RunAsClient 
-public class SecurityTests extends TestClient {
+@Full @RunAsClient //Requires client testing due to login request 
+public class SecurityFullTests extends TestClient {
 	
 	@ArquillianResource(SecurityServlet.class)
 	URL baseURL;
@@ -42,7 +42,7 @@ public class SecurityTests extends TestClient {
 	@Deployment(name="SecurityTests")
 	public static EnterpriseArchive createDeployment() {
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, SecurityTests.class.getPackage())
+				.addPackages(true, SecurityFullTests.class.getPackage())
 				.addPackages(true, PACKAGE.TASKS.getPackageName())
 				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar
 		

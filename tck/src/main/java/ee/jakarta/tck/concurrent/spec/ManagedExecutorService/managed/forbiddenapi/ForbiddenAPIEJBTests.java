@@ -14,28 +14,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
+package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
 @Web
-@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
-public class ForbiddenAPITests {
-	
-	private static final String APP_NAME = "ManagedScheduledExecutorService.ForbiddenAPITests";
+public class ForbiddenAPIEJBTests {
 	
 	@Deployment(name="ForbiddenAPITests")
 	public static JavaArchive createDeployment() {
 		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, ForbiddenAPITests.class.getPackage());
+				.addPackages(true,  ForbiddenAPIEJBTests.class.getPackage());
 	}
 
 	@EJB
@@ -44,7 +39,8 @@ public class ForbiddenAPITests {
 	/*
 	 * @testName: testAwaitTermination
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.1
+	 * @assertion_ids:
+	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
 	 * 
 	 * @test_Strategy:
 	 */
@@ -56,7 +52,9 @@ public class ForbiddenAPITests {
 	/*
 	 * @testName: testIsShutdown
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.2
+	 * @assertion_ids:
+	 * 
+	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
 	 * 
 	 * @test_Strategy:
 	 */
@@ -68,7 +66,8 @@ public class ForbiddenAPITests {
 	/*
 	 * @testName: testIsTerminated
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.3
+	 * @assertion_ids:
+	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
 	 * 
 	 * @test_Strategy:
 	 */
@@ -80,7 +79,8 @@ public class ForbiddenAPITests {
 	/*
 	 * @testName: testShutdown
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.4
+	 * @assertion_ids:
+	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
 	 * 
 	 * @test_Strategy:
 	 */
@@ -92,7 +92,8 @@ public class ForbiddenAPITests {
 	/*
 	 * @testName: testShutdownNow
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.5
+	 * @assertion_ids:
+	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
 	 * 
 	 * @test_Strategy:
 	 */

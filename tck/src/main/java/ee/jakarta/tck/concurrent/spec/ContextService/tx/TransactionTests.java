@@ -29,7 +29,7 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to annotation configuration
 public class TransactionTests extends TestClient {
 
     @ArquillianResource

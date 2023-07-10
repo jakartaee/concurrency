@@ -39,8 +39,8 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * Covers context-service, managed-executor, managed-scheduled-executor,
  * and managed-thread-factory defined in a deployment descriptor.
  */
-@Full @RunAsClient
-public class DeploymentDescriptorTests extends TestClient {
+@Full @RunAsClient //Requires client testing due to annotation configuration
+public class DeploymentDescriptorFullTests extends TestClient {
     
     @ArquillianResource(DeploymentDescriptorServlet.class)
     URL baseURL;
@@ -62,7 +62,7 @@ public class DeploymentDescriptorTests extends TestClient {
                         StringContextProvider.class.getName());
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "DeploymentDescriptorTests.ear")
-                .addAsManifestResource(DeploymentDescriptorTests.class.getPackage(), "application.xml", "application.xml")
+                .addAsManifestResource(DeploymentDescriptorFullTests.class.getPackage(), "application.xml", "application.xml")
                 .addAsModules(war, jar);
 
         return ear;

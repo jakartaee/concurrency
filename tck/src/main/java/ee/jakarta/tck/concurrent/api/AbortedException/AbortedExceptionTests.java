@@ -16,192 +16,138 @@
 
 package ee.jakarta.tck.concurrent.api.AbortedException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.AbortedException;
 
-@Web
+@Web //TODO couldn't this be a unit test? 
 public class AbortedExceptionTests {
-	
-	private static final TestLogger log = TestLogger.get(AbortedExceptionTests.class);
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="AbortedExceptionTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, AbortedExceptionTests.class.getPackage());
-	}
 
-	/*
-	 * @testName: AbortedExceptionNoArgTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:1
-	 * 
-	 * @test_Strategy: Constructs an AbortedException.
-	 */
-	@Test
-	public void AbortedExceptionNoArgTest() {
-		boolean pass = false;
-		try {
-			throw new AbortedException();
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			if (ae.getMessage() == null) {
-				log.info("Received expected null message");
-				pass = true;
-			} else {
-				log.warning("AbortedException should have had null message, actual message=" + ae.getMessage());
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "AbortedExceptionTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, AbortedExceptionTests.class.getPackage());
+    }
 
-		assertTrue(pass);
-	}
+    /*
+     * @testName: AbortedExceptionNoArgTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:1
+     * 
+     * @test_Strategy: Constructs an AbortedException.
+     */
+    @Test
+    public void AbortedExceptionNoArgTest() {
+        AbortedException thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException();
+        });
 
-	/*
-	 * @testName: AbortedExceptionStringTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:3
-	 * 
-	 * @test_Strategy: Constructs an AbortedException.
-	 */
-	@Test
-	public void AbortedExceptionStringTest() {
-		boolean pass = false;
-		String expected = "thisisthedetailmessage";
-		try {
-			throw new AbortedException(expected);
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			if (ae.getMessage().equals(expected)) {
-				log.info("Received expected message");
-				pass = true;
-			} else {
-				log.warning("Expected:" + expected + ", actual message=" + ae.getMessage());
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+        assertNull(thrown.getMessage());
+    }
 
-		assertTrue(pass);
-	}
+    /*
+     * @testName: AbortedExceptionStringTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:3
+     * 
+     * @test_Strategy: Constructs an AbortedException.
+     */
+    @Test
+    public void AbortedExceptionStringTest() {
+        final String expected = "thisisthedetailmessage";
 
-	/*
-	 * @testName: AbortedExceptionThrowableTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:4
-	 * 
-	 * @test_Strategy: Constructs an AbortedException.
-	 */
-	@Test
-	public void AbortedExceptionThrowableTest() {
-		boolean pass1 = false;
-		boolean pass2 = false;
-		Throwable expected = new Throwable("thisisthethrowable");
-		try {
-			throw new AbortedException(expected);
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			Throwable cause = ae.getCause();
-			if (cause.equals(expected)) {
-				log.info("Received expected cause");
-				pass1 = true;
-			} else {
-				log.warning("Expected:" + expected + ", actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+        AbortedException thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(expected);
+        });
 
-		expected = null;
-		try {
-			throw new AbortedException(expected);
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			Throwable cause = ae.getCause();
-			if (cause == null) {
-				log.info("Received expected null cause");
-				pass2 = true;
-			} else {
-				log.warning("Expected:null, actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+        assertNotNull(thrown.getMessage());
+        assertEquals(expected, thrown.getMessage());
+    }
 
-		assertTrue(pass1);
-		assertTrue(pass2);
-	}
+    /*
+     * @testName: AbortedExceptionThrowableTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:4
+     * 
+     * @test_Strategy: Constructs an AbortedException.
+     */
+    @Test
+    public void AbortedExceptionThrowableTest() {
+        AbortedException thrown;
 
-	/*
-	 * @testName: AbortedExceptionStringThrowableTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:2
-	 * 
-	 * @test_Strategy: Constructs an AbortedException.
-	 */
-	@Test
-	public void AbortedExceptionStringThrowableTest() {
-		boolean pass1 = false;
-		boolean pass2 = false;
-		boolean pass3 = false;
-		boolean pass4 = false;
-		String sExpected = "thisisthedetailmessage";
-		Throwable tExpected = new Throwable("thisisthethrowable");
-		try {
-			throw new AbortedException(sExpected, tExpected);
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			if (ae.getMessage().equals(sExpected)) {
-				log.info("Received expected message");
-				pass1 = true;
-			} else {
-				log.warning("Expected:" + sExpected + ", actual message=" + ae.getMessage());
-			}
-			Throwable cause = ae.getCause();
-			if (cause.equals(tExpected)) {
-				log.info("Received expected cause");
-				pass2 = true;
-			} else {
-				log.warning("Expected:" + tExpected + ", actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+        final Throwable expected = new Throwable("thisisthethrowable");
 
-		tExpected = null;
-		try {
-			throw new AbortedException(sExpected, tExpected);
-		} catch (AbortedException ae) {
-			log.info("AbortedException Caught as Expected");
-			if (ae.getMessage().equals(sExpected)) {
-				log.info("Received expected message");
-				pass3 = true;
-			} else {
-				log.warning("Expected:" + sExpected + ", actual message=" + ae.getMessage());
-			}
-			Throwable cause = ae.getCause();
-			if (cause == null) {
-				log.info("Received expected null cause");
-				pass4 = true;
-			} else {
-				log.warning("Expected:null, actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.severe("Unexpected Exception Caught", e);
-		}
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(expected);
+        });
 
-		assertTrue(pass1);
-		assertTrue(pass2);
-		assertTrue(pass3);
-		assertTrue(pass4);
-	}
+        assertNotNull(thrown.getCause());
+        assertEquals(expected, thrown.getCause());
+
+        final Throwable expectedNull = null;
+
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(expectedNull);
+        });
+
+        assertNull(thrown.getCause());
+    }
+
+    /*
+     * @testName: AbortedExceptionStringThrowableTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:2
+     * 
+     * @test_Strategy: Constructs an AbortedException.
+     */
+    @Test
+    public void AbortedExceptionStringThrowableTest() {
+        AbortedException thrown;
+        
+        String sExpected = "thisisthedetailmessage";
+        String sExpectedNull = null;
+        final Throwable tExpected = new Throwable("thisisthethrowable");
+        final Throwable tExpectedNull = null;
+        
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(sExpected, tExpected);
+        });
+        
+        assertNotNull(thrown.getMessage());
+        assertNotNull(thrown.getCause());
+        assertEquals(sExpected, thrown.getMessage());
+        assertEquals(tExpected, thrown.getCause());
+        
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(sExpected, tExpectedNull);
+        });
+        
+        assertNotNull(thrown.getMessage());
+        assertNull(thrown.getCause());
+        assertEquals(sExpected, thrown.getMessage());
+        
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(sExpectedNull, tExpected);
+        });
+        
+        assertNull(thrown.getMessage());
+        assertNotNull(thrown.getCause());
+        assertEquals(tExpected, thrown.getCause());
+        
+        thrown = assertThrows(AbortedException.class, () -> {
+            throw new AbortedException(sExpectedNull, tExpectedNull);
+        });
+        
+        assertNull(thrown.getMessage());
+        assertNull(thrown.getCause());
+    }
 }

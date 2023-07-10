@@ -38,7 +38,7 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;;
 
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
 @Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
 public class ManagedExecutorDefinitionWebTests extends TestClient{
 	

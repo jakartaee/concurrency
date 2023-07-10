@@ -27,10 +27,8 @@ public class SecurityTestTask implements Callable {
 
 	public String call() {
 		try {
-			InitialContext context = new InitialContext();
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-			SecurityTestInterface str = (SecurityTestInterface) context
-					.lookup(nameProvider.getEJBJNDIName());
+			SecurityTestInterface str = InitialContext.doLookup(nameProvider.getEJBJNDIName());
 			return str.managerMethod1();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

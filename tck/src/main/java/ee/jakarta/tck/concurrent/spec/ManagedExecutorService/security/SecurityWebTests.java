@@ -32,7 +32,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient
+@Web @RunAsClient //Requires client testing due to login request 
 @Common({PACKAGE.TASKS})
 public class SecurityWebTests extends TestClient {
 	

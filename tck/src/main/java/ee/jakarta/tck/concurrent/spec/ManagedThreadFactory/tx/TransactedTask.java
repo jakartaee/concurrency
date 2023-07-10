@@ -23,9 +23,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.transaction.UserTransaction;
 
 public class TransactedTask implements Runnable {
@@ -49,7 +51,12 @@ public class TransactedTask implements Runnable {
 		String tableName = Constants.TABLE_P;
 		int originCount = Util.getCount(tableName, username, password);
 
-		UserTransaction ut = TestUtil.lookup(TestConstants.UserTransaction);
+		UserTransaction ut;
+        try {
+            ut = InitialContext.doLookup(TestConstants.UserTransaction);
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
 		assertNotNull(ut, "didn't get user transaction inside the submitted task.");
 
 		Connection conn = Util.getConnection(false, username, password);
@@ -81,7 +88,7 @@ public class TransactedTask implements Runnable {
 			} catch (Exception e1) {
 				log.finer("Got exception when trying to do rollback on failed test", e1);
 			}
-			fail("Got exception when trying to run TransactedTask");
+			fail("Got exception when trying to run TransactedTask", e);
 		} finally {
 			try {
 				pStmt.close();

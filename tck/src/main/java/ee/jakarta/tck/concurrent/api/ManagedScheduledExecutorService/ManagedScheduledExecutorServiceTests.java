@@ -16,97 +16,138 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedScheduledExecutorService;
 
-import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledFuture;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
+import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
+import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
-@Web @RunAsClient
-@Common({PACKAGE.TASKS})
-public class ManagedScheduledExecutorServiceTests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ManagedScheduledExecutorServiceTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ManagedScheduledExecutorServiceTests.class.getPackage())
-				.addAsWebInfResource(ManagedScheduledExecutorServiceTests.class.getPackage(), "web.xml", "web.xml");
-	}
-	
-	@Override
-	protected String getServletPath() {
-		return "ManagedScheduledExecutorServiceServlet";
-	}
-	
-	@TestName
-	String testname;
+@Web
+@Common({ PACKAGE.TASKS })
+public class ManagedScheduledExecutorServiceTests {
 
-	/*
-	 * @testName: normalScheduleProcess1Test
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:30;CONCURRENCY:SPEC:42;
-	 * CONCURRENCY:SPEC:42.2;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.1;
-	 * CONCURRENCY:SPEC:49;CONCURRENCY:SPEC:51; CONCURRENCY:SPEC:54;
-	 * 
-	 * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
-	 * determines when the task should run and how often.
-	 */
-	@Test
-	public void normalScheduleProcess1Test() {
-		runTest(baseURL, testname);
-	}
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "ManagedScheduledExecutorServiceTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class)
+                .addAsWebInfResource(ManagedScheduledExecutorServiceTests.class.getPackage(), "web.xml", "web.xml");
+    }
 
-	/*
-	 * @testName: nullCommandScheduleProcessTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:32
-	 * 
-	 * @test_Strategy: if command is null.
-	 */
-	@Test
-	public void nullCommandScheduleProcessTest() {
-		runTest(baseURL, testname);
-	}
+    private static final String CALLABLETESTTASK1_RUN_RESULT = "CallableTestTask1";
 
-	/*
-	 * @testName: normalScheduleProcess2Test
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:JAVADOC:33;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.2;
-	 * CONCURRENCY:SPEC:54;CONCURRENCY:SPEC:52;
-	 *
-	 * 
-	 * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
-	 * determines when the task should run and how often.
-	 */
-	@Test
-	public void normalScheduleProcess2Test() {
-		runTest(baseURL, testname);
-	}
+    private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
 
-	/*
-	 * @testName: nullCallableScheduleProcessTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:35
-	 * 
-	 * @test_Strategy: if callable is null.
-	 */
-	@Test
-	public void nullCallableScheduleProcessTest() {
-		runTest(baseURL, testname);
-	}
+    private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedScheduledExecutorService_test_string";
+
+    private static final String TEST_CLASSLOADER_CLASS_NAME = ManagedScheduledExecutorServiceTests.class
+            .getCanonicalName();
+    
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
+
+    /*
+     * @testName: normalScheduleProcess1Test
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:30;CONCURRENCY:SPEC:42;
+     * CONCURRENCY:SPEC:42.2;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.1;
+     * CONCURRENCY:SPEC:49;CONCURRENCY:SPEC:51; CONCURRENCY:SPEC:54;
+     * 
+     * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
+     * determines when the task should run and how often.
+     */
+    @Test
+    public void normalScheduleProcess1Test() throws Exception {
+        ScheduledFuture result = scheduledExecutor.schedule(
+                new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME),
+                new CommonTriggers.OnceTrigger());
+        TestUtil.waitForTaskComplete(result);
+
+        Object obj = result.get();
+        if (obj != null) {
+            throw new RuntimeException("expected null, instead got result: " + obj.toString());
+        }
+    }
+
+    /*
+     * @testName: nullCommandScheduleProcessTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:32
+     * 
+     * @test_Strategy: if command is null.
+     */
+    @Test
+    public void nullCommandScheduleProcessTest() {
+        Runnable command = null;
+
+        try {
+            scheduledExecutor.schedule(command, new CommonTriggers.OnceTrigger());
+        } catch (NullPointerException e) {
+            return; // expected
+        }
+
+        throw new RuntimeException("NullPointerException should be thrown when arg command is null");
+    }
+
+    /*
+     * @testName: normalScheduleProcess2Test
+     * 
+     * @assertion_ids:
+     * CONCURRENCY:JAVADOC:33;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.2;
+     * CONCURRENCY:SPEC:54;CONCURRENCY:SPEC:52;
+     *
+     * 
+     * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
+     * determines when the task should run and how often.
+     */
+    @Test
+    public void normalScheduleProcess2Test() throws Exception {
+        ScheduledFuture result = scheduledExecutor
+                .schedule(
+                        (Callable) new CallableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+                                TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
+                        new CommonTriggers.OnceTrigger());
+        TestUtil.waitForTaskComplete(result);
+
+        Object obj = result.get();
+
+        if (CALLABLETESTTASK1_RUN_RESULT.equals(obj)) {
+            return;
+        } else {
+            throw new RuntimeException("get wrong result:" + obj);
+        }
+    }
+
+    /*
+     * @testName: nullCallableScheduleProcessTest
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:35
+     * 
+     * @test_Strategy: if callable is null.
+     */
+    @Test
+    public void nullCallableScheduleProcessTest() {
+        Callable callable = null;
+
+        try {
+            scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());
+        } catch (NullPointerException e) {
+            return; // expected
+        }
+
+        throw new RuntimeException("NullPointerException should be thrown when arg command is null");
+    }
 
 }

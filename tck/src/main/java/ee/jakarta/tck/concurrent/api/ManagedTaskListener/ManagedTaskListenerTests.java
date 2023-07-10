@@ -38,6 +38,8 @@ import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 
 @Web
@@ -54,6 +56,9 @@ public class ManagedTaskListenerTests {
 	}
 	
 	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
+	
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    public ManagedExecutorService executor;
 
 	@AfterEach
 	public void cleanup() {
@@ -75,7 +80,7 @@ public class ManagedTaskListenerTests {
 		int blockTime = 3000;// (ms)
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener, blockTime);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
-		Future<?> futureResult = TestUtil.getManagedExecutorService().submit(taskWithListener);
+		Future<?> futureResult = executor.submit(taskWithListener);
 		TestUtil.sleep(Duration.ofMillis(1000));
 		futureResult.cancel(true);
 		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
@@ -100,7 +105,7 @@ public class ManagedTaskListenerTests {
 		final int blockTime = 3000;// (ms)
 		Runnable taskToCancelled = new RunnableTaskWithStatus(managedTaskListener, blockTime);
 		Runnable taskToCancelledWithListener = ManagedExecutors.managedTask(taskToCancelled, managedTaskListener);
-		Future<?> futureResult = TestUtil.getManagedExecutorService().submit(taskToCancelledWithListener);
+		Future<?> futureResult = executor.submit(taskToCancelledWithListener);
 		TestUtil.sleep(Duration.ofMillis(1000));
 		futureResult.cancel(true);
 		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
@@ -112,7 +117,7 @@ public class ManagedTaskListenerTests {
 		// in normal case
 		Runnable runTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable runtaskWithListener = ManagedExecutors.managedTask(runTask, managedTaskListener);
-		TestUtil.getManagedExecutorService().submit(runtaskWithListener);
+		executor.submit(runtaskWithListener);
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runevents = managedTaskListener.events();
 		assertTrue(runevents.contains(ListenerEvent.DONE), "Listener TaskDone failed");
@@ -121,7 +126,7 @@ public class ManagedTaskListenerTests {
 		// in exception case
 		Runnable taskWithException = new RunnableTaskWithException(managedTaskListener);
 		Runnable taskWithExceptionListener = ManagedExecutors.managedTask(taskWithException, managedTaskListener);
-		TestUtil.getManagedExecutorService().submit(taskWithExceptionListener);
+		executor.submit(taskWithExceptionListener);
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runeventsWithException = managedTaskListener.events();
 		log.fine("++ runeventsWithException : " + runeventsWithException);
@@ -144,7 +149,7 @@ public class ManagedTaskListenerTests {
 	public void TaskStarting() {
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
-		TestUtil.getManagedExecutorService().submit(taskWithListener);
+		executor.submit(taskWithListener);
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> events = managedTaskListener.events();
 		int submitAt = events.indexOf(ListenerEvent.SUBMITTED);
@@ -170,7 +175,7 @@ public class ManagedTaskListenerTests {
 	public void TaskSubmitted() {
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
-		TestUtil.getManagedExecutorService().submit(taskWithListener);
+		executor.submit(taskWithListener);
 		TestUtil.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> events = managedTaskListener.events();
 		int submitAt = events.indexOf(ListenerEvent.SUBMITTED);

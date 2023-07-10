@@ -39,8 +39,8 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient
-public class ContextPropagationTests extends TestClient {
+@Full @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
+public class ContextPropagationFullTests extends TestClient {
 	
 	@Deployment(name="ContextPropagationTests")
 	public static EnterpriseArchive createDeployment() {
@@ -55,11 +55,11 @@ public class ContextPropagationTests extends TestClient {
 						JSPSecurityServlet.class,
 						ContextServiceDefinitionFromEJBServlet.class)
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName())
-				.addAsWebInfResource(ContextPropagationTests.class.getPackage(), "web.xml", "web.xml")
-				.addAsWebResource(ContextPropagationTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
+				.addAsWebInfResource(ContextPropagationFullTests.class.getPackage(), "web.xml", "web.xml")
+				.addAsWebResource(ContextPropagationFullTests.class.getPackage(), "jspTests.jsp", "jspTests.jsp");
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ContextPropagationTests_ejb.jar")
-				.addPackages(true, ContextPropagationTests.class.getPackage())
+				.addPackages(true, ContextPropagationFullTests.class.getPackage())
 				.deleteClasses(
 						ContextServiceDefinitionServlet.class,
 						ClassloaderServlet.class,
@@ -69,7 +69,7 @@ public class ContextPropagationTests extends TestClient {
 						ContextServiceDefinitionFromEJBServlet.class,
 						ContextServiceDefinitionWebBean.class)
 				.addAsServiceProvider(EJBJNDIProvider.class, ContextEJBProvider.FullProvider.class)
-				.addAsManifestResource(ContextPropagationTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+				.addAsManifestResource(ContextPropagationFullTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ContextPropagationTests.ear").addAsModules(war, jar);
 		

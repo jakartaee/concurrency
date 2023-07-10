@@ -14,101 +14,90 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi_servlet;
-
-import java.net.URL;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.ejb.EJB;
 
-@Web @RunAsClient
-@Common({PACKAGE.FIXED_COUNTER})
-public class ForbiddenAPIServletTests extends TestClient {
+@Web
+@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
+public class ForbiddenAPIEJBTests {
+	
+	private static final String APP_NAME = "ManagedScheduledExecutorService.ForbiddenAPITests";
+	
+	@Deployment(name="ForbiddenAPITests")
+	public static JavaArchive createDeployment() {
+		return ShrinkWrap.create(JavaArchive.class)
+				.addPackages(true, ForbiddenAPIEJBTests.class.getPackage());
+	}
 
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="ForbiddenAPIServletTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ForbiddenAPIServletTests.class.getPackage());
-	}
-	
-    @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ForbiddenServlet";
-	}
+	@EJB
+	private TestEjbInterface testEjb;
 
 	/*
 	 * @testName: testAwaitTermination
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.1
+	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.1
 	 * 
 	 * @test_Strategy:
 	 */
 	@Test
 	public void testAwaitTermination() {
-		runTest(baseURL, testname);
+		testEjb.testAwaitTermination();
 	}
 
 	/*
 	 * @testName: testIsShutdown
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.2
+	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.2
 	 * 
 	 * @test_Strategy:
 	 */
 	@Test
 	public void testIsShutdown() {
-		runTest(baseURL, testname);
+		testEjb.testIsShutdown();
 	}
 
 	/*
 	 * @testName: testIsTerminated
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.3
+	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.3
 	 * 
 	 * @test_Strategy:
 	 */
 	@Test
 	public void testIsTerminated() {
-		runTest(baseURL, testname);
+		testEjb.testIsTerminated();
 	}
 
 	/*
 	 * @testName: testShutdown
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.4
+	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.4
 	 * 
 	 * @test_Strategy:
 	 */
 	@Test
 	public void testShutdown() {
-		runTest(baseURL, testname);
+		testEjb.testShutdown();
 	}
 
 	/*
 	 * @testName: testShutdownNow
 	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:57.5
+	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.5
 	 * 
 	 * @test_Strategy:
 	 */
 	@Test
 	public void testShutdownNow() {
-		runTest(baseURL, testname);
+		testEjb.testShutdownNow();
 	}
 }

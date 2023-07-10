@@ -21,7 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import javax.naming.InitialContext;
+
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings("serial")
@@ -49,7 +50,7 @@ public class TestTransactionWork implements TestWorkInterface, Serializable {
 
 		if (beginTran) {
 			try {
-				ut = TestUtil.lookup(Constants.UT_JNDI_NAME);
+				ut = InitialContext.doLookup(Constants.UT_JNDI_NAME);
 				ut.begin();
 			} catch (Exception e) {
 				throw new RuntimeException(e);

@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.TimeUnit;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -29,12 +30,12 @@ public class TestEjb implements TestEjbInterface {
 	
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 	
-	@Resource
-	private ManagedExecutorService mes;
+    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    public ManagedExecutorService executor;
 
 	public void testAwaitTermination() {
 		try {
-			mes.awaitTermination(10, TimeUnit.SECONDS);
+		    executor.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			fail(e.toString());
 		} catch (IllegalStateException e) {
@@ -46,7 +47,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testIsShutdown() {
 		try {
-			mes.isShutdown();
+		    executor.isShutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -56,7 +57,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testIsTerminated() {
 		try {
-			mes.isTerminated();
+		    executor.isTerminated();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -66,7 +67,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testShutdown() {
 		try {
-			mes.shutdown();
+		    executor.shutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -76,7 +77,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testShutdownNow() {
 		try {
-			mes.shutdownNow();
+		    executor.shutdownNow();
 		} catch (IllegalStateException e) {
 			return;
 		}

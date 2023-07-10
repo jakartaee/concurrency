@@ -39,8 +39,8 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient 
-public class ManagedThreadFactoryDefinitionTests extends TestClient {
+@Full @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
+public class ManagedThreadFactoryDefinitionFullTests extends TestClient {
 	
 	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
 	URL baseURL;
@@ -57,18 +57,18 @@ public class ManagedThreadFactoryDefinitionTests extends TestClient {
 						ManagedThreadFactoryDefinitionOnEJBServlet.class,
 						ManagedThreadFactoryDefinitionServlet.class,
 						ContextServiceDefinitionServlet.class)
-				.addAsWebInfResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "web.xml", "web.xml")
+				.addAsWebInfResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "web.xml", "web.xml")
 				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
 		
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedThreadFactoryDefinitionTests.class.getPackage())
+				.addPackages(false,  ManagedThreadFactoryDefinitionFullTests.class.getPackage())
 				.deleteClasses(
 						ManagedThreadFactoryDefinitionOnEJBServlet.class,
 						ManagedThreadFactoryDefinitionServlet.class)
 				.addClasses(
 						ContextServiceDefinitionInterface.class,
 						ContextServiceDefinitionBean.class)
-				.addAsManifestResource(ManagedThreadFactoryDefinitionTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
+				.addAsManifestResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
 		
 		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear").addAsModules(war, jar);
 		

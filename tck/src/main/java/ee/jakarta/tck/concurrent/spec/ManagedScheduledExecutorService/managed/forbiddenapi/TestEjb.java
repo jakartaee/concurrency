@@ -20,17 +20,22 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.concurrent.TimeUnit;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
 @Stateless
 public class TestEjb implements TestEjbInterface {
 
 	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
+	
+    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    public ManagedScheduledExecutorService scheduledExecutor;
 
 	public void testAwaitTermination() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().awaitTermination(10, TimeUnit.SECONDS);
+			scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		} catch (IllegalStateException e) {
@@ -41,7 +46,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testIsShutdown() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().isShutdown();
+			scheduledExecutor.isShutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -50,7 +55,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testIsTerminated() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().isTerminated();
+			scheduledExecutor.isTerminated();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -59,7 +64,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testShutdown() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().shutdown();
+			scheduledExecutor.shutdown();
 		} catch (IllegalStateException e) {
 			return;
 		}
@@ -68,7 +73,7 @@ public class TestEjb implements TestEjbInterface {
 
 	public void testShutdownNow() {
 		try {
-			TestUtil.getManagedScheduledExecutorService().shutdownNow();
+			scheduledExecutor.shutdownNow();
 		} catch (IllegalStateException e) {
 			return;
 		}

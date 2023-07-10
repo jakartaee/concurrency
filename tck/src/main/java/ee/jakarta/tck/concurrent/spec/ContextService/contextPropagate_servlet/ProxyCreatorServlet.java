@@ -24,9 +24,12 @@ import java.net.URL;
 import java.util.Base64;
 import java.util.Properties;
 
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +39,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ProxyCreatorServlet extends TestServlet {
 	
 	private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
+	
+    @Resource(lookup = TestConstants.DefaultContextService)
+    public ContextService context;
 
 	public void testJNDIContextInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		Object proxy = true;
@@ -46,7 +52,7 @@ public class ProxyCreatorServlet extends TestServlet {
 
 		URL url = new URL(proxyURLString);
 		
-		proxy = TestUtil.getContextService().createContextualProxy(new TestJNDIRunnableWork(),
+		proxy = context.createContextualProxy(new TestJNDIRunnableWork(),
 				Runnable.class, TestWorkInterface.class, Serializable.class);
 
 		Properties p = new Properties();
@@ -65,7 +71,7 @@ public class ProxyCreatorServlet extends TestServlet {
 
 		URL url = new URL(proxyURLString);
 
-		proxy = TestUtil.getContextService().createContextualProxy(new TestClassloaderRunnableWork(),
+		proxy = context.createContextualProxy(new TestClassloaderRunnableWork(),
 				Runnable.class, TestWorkInterface.class, Serializable.class);
 
 		Properties p = new Properties();

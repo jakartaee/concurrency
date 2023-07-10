@@ -21,24 +21,23 @@ import java.time.Duration;
 import ee.jakarta.tck.concurrent.framework.TestUtil;
 
 public class CounterRunnableTask implements Runnable {
-	private long sleepTime = 0;
+	private Duration sleepTime = Duration.ZERO;
 
 	public CounterRunnableTask() {
 	}
-
-	public CounterRunnableTask(long sleepTime) {
-		this.sleepTime = sleepTime;
-	}
+	
+   public CounterRunnableTask(Duration sleepTime) {
+        this.sleepTime = sleepTime;
+    }
 
 	public void run() {
 		try {
-			if (sleepTime > 0) {
-				TestUtil.sleep(Duration.ofMillis(sleepTime));
+			if (! sleepTime.isZero()) {
+				TestUtil.sleep(sleepTime);
 			}
 			StaticCounter.inc();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 }

@@ -16,27 +16,29 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.apitests;
 
-import java.net.URL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
+import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManageableThread;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
-@Web @RunAsClient
-@Common({PACKAGE.TASKS})
+@Web
+@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
 public class APITests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
 	
 	@Deployment(name="APITests")
 	public static WebArchive createDeployment() {
@@ -44,13 +46,10 @@ public class APITests extends TestClient {
 				.addPackages(true, APITests.class.getPackage());
 	}
 	
-    @TestName
-    String testname;
+
+    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    public ManagedThreadFactory threadFactory;
 	
-	@Override
-	protected String getServletPath() {
-		return "APIServlet";
-	}
 
 	/*
 	 * @testName: interruptThreadApiTest
@@ -64,7 +63,12 @@ public class APITests extends TestClient {
 	 */
 	@Test
 	public void interruptThreadApiTest() {
-		runTest(baseURL, testname);
+	    CounterRunnableTask task = new CounterRunnableTask(TestConstants.PollInterval);
+        Thread thread = threadFactory.newThread(task);
+        thread.start();
+        thread.interrupt();
+        TestUtil.waitTillThreadFinish(thread);
+        assertEquals(0, StaticCounter.getCount());
 	}
 
 	/*
@@ -76,7 +80,9 @@ public class APITests extends TestClient {
 	 */
 	@Test
 	public void implementsManageableThreadInterfaceTest() {
-		runTest(baseURL, testname);
+	    CounterRunnableTask task = new CounterRunnableTask();
+        Thread thread = threadFactory.newThread(task);
+        assertTrue(thread instanceof ManageableThread, "The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
 	}
 
 }
