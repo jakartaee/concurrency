@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.transaction.CancelledTransactedTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 
@@ -115,6 +116,12 @@ public class Wait {
     public static void waitTillThreadFinish(final Thread thread) {
         assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
             for(; thread.isAlive(); sleep(TestConstants.PollInterval));
+        });
+    }
+    
+    public static void waitForTransactionBegan(CancelledTransactedTask task) {
+        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
+            for(; ! task.beginTransaction.get(); sleep(TestConstants.PollInterval));
         });
     }
     

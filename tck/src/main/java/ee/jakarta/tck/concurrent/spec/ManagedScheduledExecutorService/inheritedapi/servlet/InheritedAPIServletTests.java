@@ -172,7 +172,7 @@ public class InheritedAPIServletTests {
         Assertions.assertBetween(result, 1, 3);
 
         assertThrows(TimeoutException.class, () -> {
-            List<Callable<?>> taskList2 = new ArrayList<>();
+            List<Callable<String>> taskList2 = new ArrayList<>();
             taskList2.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
             taskList2.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
             scheduledExecutor.invokeAny(taskList2, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);

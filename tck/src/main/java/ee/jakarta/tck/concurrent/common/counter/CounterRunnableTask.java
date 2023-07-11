@@ -20,26 +20,26 @@ import java.time.Duration;
 
 import javax.naming.InitialContext;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CounterRunnableTask implements Runnable {
 
 	private String countSingletionJndi = "";
-	private long sleepTime = 0;
+	private Duration sleepTime = Duration.ZERO;
 
 	public CounterRunnableTask(String countSingletionJndi) {
 		this.countSingletionJndi = countSingletionJndi;
 	}
 
-	public CounterRunnableTask(String countSingletionJndi, long sleepTime) {
+	public CounterRunnableTask(String countSingletionJndi, Duration sleepTime) {
 		this.countSingletionJndi = countSingletionJndi;
 		this.sleepTime = sleepTime;
 	}
 
 	public void run() {
 		try {
-			if (sleepTime > 0) {
-				TestUtil.sleep(Duration.ofMillis(sleepTime));
+			if (! sleepTime.isZero()) {
+				Wait.sleep(sleepTime);
 			}
 
 			CounterInterface counter = InitialContext.doLookup(countSingletionJndi);

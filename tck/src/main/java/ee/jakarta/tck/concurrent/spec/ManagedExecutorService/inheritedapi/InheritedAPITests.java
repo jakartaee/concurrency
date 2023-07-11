@@ -116,7 +116,7 @@ public class InheritedAPITests {
         }
         
         assertThrows(TimeoutException.class, () -> {
-            List<Callable<?>> taskList = new ArrayList<>();
+            List<Callable<String>> taskList = new ArrayList<>();
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
             executor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);

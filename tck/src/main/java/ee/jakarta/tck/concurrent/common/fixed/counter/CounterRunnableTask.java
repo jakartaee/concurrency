@@ -19,6 +19,7 @@ package ee.jakarta.tck.concurrent.common.fixed.counter;
 import java.time.Duration;
 
 import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CounterRunnableTask implements Runnable, WorkInterface {
     private Duration sleepTime = Duration.ZERO;
@@ -33,7 +34,7 @@ public class CounterRunnableTask implements Runnable, WorkInterface {
     public void run() {
         try {
             if (!sleepTime.isZero()) {
-                TestUtil.sleep(sleepTime);
+                Wait.sleep(sleepTime);
             }
             StaticCounter.inc();
         } catch (Exception e) {

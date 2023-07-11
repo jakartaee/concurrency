@@ -54,7 +54,7 @@ public class CommonTasks {
 	public static class SimpleRunnable implements Runnable {
 		public void run() {
 			try {
-				TestUtil.sleep(TestConstants.PollInterval);
+				Wait.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -70,7 +70,7 @@ public class CommonTasks {
 
 		public Integer call() {
 			try {
-				TestUtil.sleep(TestConstants.PollInterval);
+				Wait.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

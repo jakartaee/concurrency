@@ -133,7 +133,7 @@ public class TestEjb implements TestEjbInterface {
 		}
 
 		try {
-			List<Callable<?>> taskList = new ArrayList<>();
+			List<Callable<String>> taskList = new ArrayList<>();
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
 			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
 			scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
@@ -184,7 +184,7 @@ public class TestEjb implements TestEjbInterface {
 		try {
 			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
 			result = scheduledExecutor.scheduleWithFixedDelay(
-					new CounterRunnableTask(nameProvider.getEJBJNDIName(), TestConstants.PollInterval.toMillis()), //task
+					new CounterRunnableTask(nameProvider.getEJBJNDIName(), TestConstants.PollInterval), //task
 					TestConstants.PollInterval.getSeconds(), //initial delay
 					TestConstants.PollInterval.getSeconds(), //delay
 					TimeUnit.SECONDS); //Time units

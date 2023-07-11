@@ -16,8 +16,6 @@
 
 package ee.jakarta.tck.concurrent.framework;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -27,16 +25,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
-import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 
 /**
  * Utility methods to be used on the client or server side. 
@@ -118,23 +108,5 @@ public final class TestUtil {
 				buf.append("&");
 		}
 		return buf.toString();
-	}
-	
-	//########## Waiters ##########
-	
-	/**
-	 * USE WITH CAUTION!! 
-	 * When possible tests should use waitFor methods to wait for specific condition to be meet.
-	 * Pausing the thread for a specific duration will directly impact test performance but in some cases is required. 
-	 * 
-	 * Pauses the calling thread for the specified duration
-	 * 
-	 * @param duration - duration to sleep
-	 * @throws InterruptedException 
-	 */
-	public static void sleep(Duration duration) throws InterruptedException {
-		log.config("Sleeping " + duration.toMillis() + " milliseconds");
-		Thread.sleep(duration.toMillis());
-	}
-	
+	}	
 }
