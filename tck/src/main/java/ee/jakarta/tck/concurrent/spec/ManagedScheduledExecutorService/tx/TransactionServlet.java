@@ -35,7 +35,6 @@ import ee.jakarta.tck.concurrent.common.transaction.TransactedTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;

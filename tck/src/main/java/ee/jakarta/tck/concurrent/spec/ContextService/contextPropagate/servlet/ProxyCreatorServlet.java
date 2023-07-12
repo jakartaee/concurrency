@@ -27,7 +27,6 @@ import java.util.Properties;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.servlet.annotation.WebServlet;
@@ -58,7 +57,7 @@ public class ProxyCreatorServlet extends TestServlet {
 		Properties p = new Properties();
 		p.setProperty("proxy", proxyToString(proxy));
 		
-		result = TestUtil.getResponse(TestUtil.sendPostData(url, p));
+		result = getResponse(sendPostData(url, p));
 		resp.getWriter().println(result);
 	}
 	
@@ -77,7 +76,7 @@ public class ProxyCreatorServlet extends TestServlet {
 		Properties p = new Properties();
 		p.setProperty("proxy", proxyToString(proxy));
 		
-		result = TestUtil.getResponse(TestUtil.sendPostData(url, p));
+		result = getResponse(sendPostData(url, p));
 		resp.getWriter().println(result);
 	}
 

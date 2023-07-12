@@ -20,7 +20,6 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CommonTasks {

@@ -30,8 +30,8 @@ import ee.jakarta.tck.concurrent.common.transaction.Constants;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web @RunAsClient //Requires client testing due to annotation configuration
 @Common({ PACKAGE.TRANSACTION })

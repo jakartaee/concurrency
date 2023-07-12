@@ -17,6 +17,7 @@
 package ee.jakarta.tck.concurrent.api.ManagedThreadFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -49,6 +50,20 @@ public class ManagedThreadFactoryTests extends TestClient {
 
     @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
+    
+    /*
+     * @testName: isShutdown
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:20;CONCURRENCY:SPEC:99.1;
+     * 
+     * @test_Strategy: Lookup default ManagedThreadFactory object and create new
+     * thread. Check return value of method isShutdown of new thread.
+     */
+    @Test
+    public void isShutdown() {
+        ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
+        assertFalse(m.isShutdown());
+    }
 	
 
 	/*

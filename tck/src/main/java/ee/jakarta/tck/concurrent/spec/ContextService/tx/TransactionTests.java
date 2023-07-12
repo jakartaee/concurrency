@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 
 @Web @RunAsClient //Requires client testing due to annotation configuration
 @Common({ PACKAGE.TRANSACTION })

@@ -15,10 +15,16 @@
  */
 package ee.jakarta.tck.concurrent.framework;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -36,6 +42,8 @@ public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private static final TestLogger log = TestLogger.get(TestServlet.class);
+	
+	public static final String nl = System.lineSeparator();
 	
 	private boolean runBeforeClass = true;
 	
@@ -141,4 +149,54 @@ public class TestServlet extends HttpServlet {
 				+ " with any of the following signatures:   " + method + "(HttpServletRequest, HttpServletResponse)   "
 				+ method + "()");
 	}
+	
+	   /**
+     * HTTP convenience method for servlets to get a response from another servlet. 
+     * Test clients should extend the {@link TestClient} class that has its own HTTP methods.
+     * 
+     * @param con - the URLConnection
+     * @return String - response body
+     * @throws IOException
+     */
+    public static String getResponse(URLConnection con) throws IOException {    
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+            
+            StringBuffer response = new StringBuffer();
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                response.append(line).append(nl);
+            }
+
+            return response.toString();
+        }
+    }
+
+    /**
+     * HTTP convenience method for servlets to create a URLConnection and post properties 
+     * to that connection. 
+     * 
+     * Test clients should extend the {@link TestClient} class that has its own HTTP methods.
+     * 
+     * @param url - the URL to open a connection to
+     * @param props - the properties to put into the connection input stream
+     * 
+     * @return the connection for further testing
+     * @throws IOException
+     */
+    public static URLConnection sendPostData(URL url, Properties props) throws IOException {
+        log.info("Opening url connection to: " + url.toString());
+        URLConnection urlConn = url.openConnection();
+        // Begin POST of properties to SERVLET
+        String argString = TestClient.toEncodedString(props);
+        urlConn.setDoOutput(true);
+        urlConn.setDoInput(true);
+        urlConn.setUseCaches(false);
+        DataOutputStream out = new DataOutputStream(urlConn.getOutputStream());
+        out.writeBytes(argString);
+        out.flush();
+        out.close();
+        // End POST
+        return urlConn;
+    }
 }

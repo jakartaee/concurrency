@@ -1,7 +1,5 @@
 package ee.jakarta.tck.concurrent.framework.junit.extensions;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.Iterator;
 
 /**

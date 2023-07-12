@@ -22,7 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
 
@@ -39,7 +39,7 @@ public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
     
     private static final Logger log = Logger.getLogger(TCKFrameworkAppender.class.getCanonicalName());
     
-    private static final Package utilPackage = TestUtil.class.getPackage();
+    private static final Package utilPackage = TestServlet.class.getPackage();
     private static final Package annoPackage = Common.class.getPackage();
     private static final Package extePackage = AssertionExtension.class.getPackage();
     
