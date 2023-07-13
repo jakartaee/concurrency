@@ -32,7 +32,7 @@ public class CallableTask<T> extends RunnableTask implements Callable<T> {
 
     /**
      * Construct the callable task with expected properties.
-     * 
+     *
      * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
      *                  null.
      * @param jndiValue the jndi value set for jndiName
@@ -48,7 +48,7 @@ public class CallableTask<T> extends RunnableTask implements Callable<T> {
 
     /**
      * Construct the callable task with expected properties.
-     * 
+     *
      * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
      *                  null.
      * @param jndiValue the jndi value set for jndiName

@@ -66,9 +66,9 @@ public class LastExecutionTests {
 
     /*
      * @testName: lastExecutionGetIdentityNameTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:15
-     * 
+     *
      * @test_Strategy: The name or ID of the identifiable object, as specified in
      * the ManagedTask#IDENTITY_NAME execution property of the task if it also
      * implements the ManagedTask interface.
@@ -91,9 +91,9 @@ public class LastExecutionTests {
 
     /*
      * @testName: lastExecutionGetResultTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:16
-     * 
+     *
      * @test_Strategy: Result of the last execution.
      */
     @Test
@@ -111,9 +111,9 @@ public class LastExecutionTests {
 
     /*
      * @testName: lastExecutionGetResultTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:16
-     * 
+     *
      * @test_Strategy: Result of the last execution.
      */
     @Test
@@ -131,10 +131,10 @@ public class LastExecutionTests {
 
     /*
      * @testName: lastExecutionGetRunningTimeTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:17; CONCURRENCY:JAVADOC:18;
      * CONCURRENCY:JAVADOC:19
-     * 
+     *
      * @test_Strategy: The last time in which the task was completed.
      */
     @Test

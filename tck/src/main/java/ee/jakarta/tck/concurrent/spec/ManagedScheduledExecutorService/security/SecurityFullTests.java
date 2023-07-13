@@ -68,9 +68,9 @@ public class SecurityFullTests extends TestClient {
 
     /*
      * @testName: managedScheduledExecutorServiceAPISecurityTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
-     * 
+     *
      * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
      * then submit a task by ManagedScheduledExecutorService in which call a ejb
      * that requires role manager.

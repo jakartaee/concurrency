@@ -24,7 +24,7 @@ public class Counter {
     /**
      * Get count of rows in test table to verify if a transaction was committed or
      * rolled back.
-     * 
+     *
      * @return number of rows, or -1 if error occurred while attempting to access
      *         table.
      */

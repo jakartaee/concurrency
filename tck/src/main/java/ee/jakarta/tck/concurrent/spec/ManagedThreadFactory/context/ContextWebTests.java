@@ -57,10 +57,10 @@ public class ContextWebTests extends TestClient {
 
     /*
      * @testName: jndiClassloaderPropagationTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
      * CONCURRENCY:SPEC:106;
-     * 
+     *
      * @test_Strategy:
      */
     @Test

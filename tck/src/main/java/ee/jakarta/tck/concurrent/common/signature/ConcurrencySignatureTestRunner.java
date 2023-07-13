@@ -56,7 +56,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
     /**
      * Returns a list of strings where each string represents a package name. Each
      * package name will have it's signature tested by the signature test framework.
-     * 
+     *
      * @return String[] The names of the packages whose signatures should be
      *         verified.
      */
@@ -180,7 +180,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     /*****
      * Boilerplate Code
-     * 
+     *
      * /* The following comments are specified in the base class that defines the
      * signature tests. This is done so the test finders will find the right class
      * to run. The implementation of these methods is inherited from the super class

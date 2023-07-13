@@ -66,9 +66,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiSubmit
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.1
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -88,9 +88,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiExecute
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.2
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -105,9 +105,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiInvokeAll
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.3
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -152,9 +152,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiInvokeAny
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.4
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -180,9 +180,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiSchedule
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.5
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -200,9 +200,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiScheduleAtFixedRate
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.6
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -226,9 +226,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiScheduleWithFixedDelay
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.7
-     * 
+     *
      * @test_Strategy:
      */
     @Test

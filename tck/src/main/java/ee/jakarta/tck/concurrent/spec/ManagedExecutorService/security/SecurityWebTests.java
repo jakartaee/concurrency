@@ -59,11 +59,11 @@ public class SecurityWebTests extends TestClient {
 
     /*
      * @testName: managedExecutorServiceAPISecurityTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
      * CONCURRENCY:SPEC:85; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:106;
      * CONCURRENCY:SPEC:22;
-     * 
+     *
      * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
      * then submit a task by ManagedExecutorService in which call a ejb that
      * requires role manager.

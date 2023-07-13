@@ -40,9 +40,9 @@ public class ForbiddenAPIEJBTests {
 
     /*
      * @testName: testAwaitTermination
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.1
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -52,9 +52,9 @@ public class ForbiddenAPIEJBTests {
 
     /*
      * @testName: testIsShutdown
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.2
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -64,9 +64,9 @@ public class ForbiddenAPIEJBTests {
 
     /*
      * @testName: testIsTerminated
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.3
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -76,9 +76,9 @@ public class ForbiddenAPIEJBTests {
 
     /*
      * @testName: testShutdown
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.4
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -88,9 +88,9 @@ public class ForbiddenAPIEJBTests {
 
     /*
      * @testName: testShutdownNow
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.5
-     * 
+     *
      * @test_Strategy:
      */
     @Test

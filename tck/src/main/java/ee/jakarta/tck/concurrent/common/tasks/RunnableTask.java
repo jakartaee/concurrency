@@ -61,7 +61,7 @@ public class RunnableTask implements Runnable {
 
     /**
      * Construct the runnable task with expected properties.
-     * 
+     *
      * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
      *                  null.
      * @param jndiValue the jndi value set for jndiName
@@ -78,7 +78,7 @@ public class RunnableTask implements Runnable {
 
     /**
      * Construct the runnable task with expected properties.
-     * 
+     *
      * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
      *                  null.
      * @param jndiValue the jndi value set for jndiName

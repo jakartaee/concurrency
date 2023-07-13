@@ -35,7 +35,7 @@ import java.util.Properties;
  * TestServlets are deployed to the application server and has custom
  * doGet/doPost methods that will return a successful or failure message
  * depending on the test outcome.
- * 
+ *
  * The TestClient class has runTest methods that will create an HTTP connection
  * to the TestServlet and provide the TestServlet with the method name it needs
  * to test. The TestClient class will then confirm that it recieved a successful
@@ -182,7 +182,7 @@ public abstract class TestClient {
     /**
      * Asserts that the response from a runTestWithResponse method contains a
      * specific string.
-     * 
+     *
      * @param message  - message to display if test fails
      * @param expected - the expected string to find in the response
      * @param resp     - the response you received from the servlet

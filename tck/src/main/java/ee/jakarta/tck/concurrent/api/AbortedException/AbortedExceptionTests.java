@@ -39,9 +39,9 @@ public class AbortedExceptionTests {
 
     /*
      * @testName: AbortedExceptionNoArgTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:1
-     * 
+     *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
@@ -55,9 +55,9 @@ public class AbortedExceptionTests {
 
     /*
      * @testName: AbortedExceptionStringTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:3
-     * 
+     *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
@@ -74,9 +74,9 @@ public class AbortedExceptionTests {
 
     /*
      * @testName: AbortedExceptionThrowableTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:4
-     * 
+     *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
@@ -103,9 +103,9 @@ public class AbortedExceptionTests {
 
     /*
      * @testName: AbortedExceptionStringThrowableTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:2
-     * 
+     *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test

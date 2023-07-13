@@ -43,10 +43,10 @@ public class ForbiddenAPIServletTests {
 
     /*
      * @testName: testAwaitTermination
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -62,10 +62,10 @@ public class ForbiddenAPIServletTests {
 
     /*
      * @testName: testIsShutdown
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -81,10 +81,10 @@ public class ForbiddenAPIServletTests {
 
     /*
      * @testName: testIsTerminated
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -100,10 +100,10 @@ public class ForbiddenAPIServletTests {
 
     /*
      * @testName: testShutdown
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -119,10 +119,10 @@ public class ForbiddenAPIServletTests {
 
     /*
      * @testName: testShutdownNow
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
-     * 
+     *
      * @test_Strategy:
      */
     @Test

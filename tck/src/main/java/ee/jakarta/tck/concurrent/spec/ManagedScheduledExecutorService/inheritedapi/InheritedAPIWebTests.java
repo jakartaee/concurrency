@@ -44,9 +44,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiSubmit
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.1
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -56,9 +56,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiExecute
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.2
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -68,9 +68,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiInvokeAll
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.3
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -80,9 +80,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiInvokeAny
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.4
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -92,9 +92,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiSchedule
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.5
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -104,9 +104,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiScheduleAtFixedRate
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.6
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -116,9 +116,9 @@ public class InheritedAPIWebTests {
 
     /*
      * @testName: testApiScheduleWithFixedDelay
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.7
-     * 
+     *
      * @test_Strategy:
      */
     @Test

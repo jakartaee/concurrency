@@ -50,9 +50,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiSubmit
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.1
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -62,9 +62,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiExecute
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.2
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -74,9 +74,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiInvokeAll
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.3
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -86,9 +86,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiInvokeAny
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.4
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -98,9 +98,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiSchedule
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.5
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -110,9 +110,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiScheduleAtFixedRate
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.6
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -122,9 +122,9 @@ public class InheritedAPIFullTests {
 
     /*
      * @testName: testApiScheduleWithFixedDelay
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.7
-     * 
+     *
      * @test_Strategy:
      */
     @Test

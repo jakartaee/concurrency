@@ -55,9 +55,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntf
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:5
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface.
      */
@@ -71,9 +71,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface. if the instance does not implement the
      * specified interface, IllegalArgumentException will be thrown
@@ -87,9 +87,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndInstanceIsNull
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface. if the instance is null,
      * IllegalArgumentException will be thrown
@@ -103,9 +103,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfs
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:7
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and multiple interfaces.
      */
@@ -122,9 +122,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and multi interfaces. if the instance does not implement the
      * specified interface, IllegalArgumentException will be thrown
@@ -139,9 +139,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndInstanceIsNull
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using object and multi interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
@@ -155,9 +155,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:9
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interface.
      */
@@ -176,9 +176,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:11
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces.
      */
@@ -199,9 +199,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndPropertiesAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:10
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interface. if the instance does not implement
      * the specified interface, IllegalArgumentException will be thrown
@@ -220,9 +220,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfsAndPropertiesAndInstanceIsNull
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:10
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
@@ -240,9 +240,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:12
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. if the instance does not
      * implement the specified interface, IllegalArgumentException will be thrown
@@ -261,9 +261,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:12
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
@@ -281,9 +281,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: GetExecutionProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:13
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. Retrieve
      * ExecutionProperties from proxy object and verify property value.
@@ -305,9 +305,9 @@ public class ContextServiceTests {
 
     /*
      * @testName: GetExecutionPropertiesNoProxy
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:14
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object. Retrieve
      * ExecutionProperties from plain object.
      */

@@ -32,7 +32,7 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
  * tests to run they must deploy an application to a Jakarta EE server using the
  * Arquillian {@code @Deployment} annotation.
  * </p>
- * 
+ *
  * <p>
  * At runtime the Arquillian Servlet protocol must be used for communication
  * with the Jakarta EE server.

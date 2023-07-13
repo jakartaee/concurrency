@@ -40,9 +40,9 @@ public class SkippedExceptionTests {
 
     /*
      * @testName: SkippedExceptionNoArgTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:42
-     * 
+     *
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
@@ -56,9 +56,9 @@ public class SkippedExceptionTests {
 
     /*
      * @testName: SkippedExceptionStringTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:43
-     * 
+     *
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
@@ -75,9 +75,9 @@ public class SkippedExceptionTests {
 
     /*
      * @testName: SkippedExceptionThrowableTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:45
-     * 
+     *
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
@@ -104,9 +104,9 @@ public class SkippedExceptionTests {
 
     /*
      * @testName: SkippedExceptionStringThrowableTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:44
-     * 
+     *
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test

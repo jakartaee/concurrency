@@ -98,7 +98,7 @@ public abstract class SignatureTestDriver {
     /**
      * Returns true if the passed in version matches the current Java version being
      * used.
-     * 
+     *
      */
     public Boolean isJavaSEVersion(String ver) {
 

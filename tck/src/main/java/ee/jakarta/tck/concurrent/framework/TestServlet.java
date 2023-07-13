@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Standard superclass for test servlets that accepts a `testMethod` parameter
  * to the doGet / doPost methods that will attempt to run that method on the
  * subclass.
- * 
+ *
  * The doGet / doPost methods will append `SUCCESS` to the response if the test
  * is successfully. Otherwise, SUCCESS will not be appended to the response.
  */
@@ -155,7 +155,7 @@ public class TestServlet extends HttpServlet {
      * HTTP convenience method for servlets to get a response from another servlet.
      * Test clients should extend the {@link TestClient} class that has its own HTTP
      * methods.
-     * 
+     *
      * @param con - the URLConnection
      * @return String - response body
      * @throws IOException
@@ -177,13 +177,13 @@ public class TestServlet extends HttpServlet {
     /**
      * HTTP convenience method for servlets to create a URLConnection and post
      * properties to that connection.
-     * 
+     *
      * Test clients should extend the {@link TestClient} class that has its own HTTP
      * methods.
-     * 
+     *
      * @param url   - the URL to open a connection to
      * @param props - the properties to put into the connection input stream
-     * 
+     *
      * @return the connection for further testing
      * @throws IOException
      */

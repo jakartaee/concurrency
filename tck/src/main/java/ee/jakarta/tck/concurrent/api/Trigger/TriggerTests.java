@@ -63,9 +63,9 @@ public class TriggerTests {
 
     /*
      * @testName: triggerGetNextRunTimeTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:46
-     * 
+     *
      * @test_Strategy: Retrieve the next time that the task should run after. fix:
      * https://github.com/jakartaee/concurrency/pull/222 Accepted TCK challenge:
      * https://github.com/jakartaee/concurrency/issues/228 Can be reenabled in next
@@ -89,9 +89,9 @@ public class TriggerTests {
 
     /*
      * @testName: triggerSkipRunTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:47
-     * 
+     *
      * @test_Strategy: Return true if this run instance should be skipped. This is
      * useful if the task shouldn't run because it is late or if the task is paused
      * or suspended. Once this task is skipped, the state of it's Future's result

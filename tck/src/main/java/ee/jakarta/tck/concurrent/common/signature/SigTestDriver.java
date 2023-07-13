@@ -162,7 +162,7 @@ public class SigTestDriver extends SignatureTestDriver {
     } // END runSignatureTest
 
     /*
-     * 
+     *
      * @return This returns true if the packageOrClassName is found in the impl.
      */
     @Override

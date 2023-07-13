@@ -64,11 +64,11 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: normalScheduleProcess1Test
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:30;CONCURRENCY:SPEC:42;
      * CONCURRENCY:SPEC:42.2;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.1;
      * CONCURRENCY:SPEC:49;CONCURRENCY:SPEC:51; CONCURRENCY:SPEC:54;
-     * 
+     *
      * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
      * determines when the task should run and how often.
      */
@@ -83,9 +83,9 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: nullCommandScheduleProcessTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:32
-     * 
+     *
      * @test_Strategy: if command is null.
      */
     @Test
@@ -99,12 +99,11 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: normalScheduleProcess2Test
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:33;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.2;
      * CONCURRENCY:SPEC:54;CONCURRENCY:SPEC:52;
      *
-     * 
      * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
      * determines when the task should run and how often.
      */
@@ -123,9 +122,9 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: nullCallableScheduleProcessTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:35
-     * 
+     *
      * @test_Strategy: if callable is null.
      */
     @Test

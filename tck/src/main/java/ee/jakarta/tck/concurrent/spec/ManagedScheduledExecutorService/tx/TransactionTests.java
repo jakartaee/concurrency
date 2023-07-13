@@ -48,12 +48,12 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testRollbackTransactionWithManagedScheduledExecutorService
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
      * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;
      * CONCURRENCY:SPEC:67;CONCURRENCY:SPEC:69;
      * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     * 
+     *
      * @test_Strategy: get UserTransaction inside one task submitted by
      * ManagedScheduledExecutorService. test roll back function in the submitted
      * task.
@@ -67,12 +67,12 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testCommitTransactionWithManagedScheduledExecutorService
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
      * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;CONCURRENCY:SPEC:67;
      * CONCURRENCY:SPEC:69;CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
      * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     * 
+     *
      * @test_Strategy: get UserTransaction inside one task submitted by
      * ManagedScheduledExecutorService.it support user-managed global transaction
      * demarcation using the jakarta.transaction.UserTransaction interface.
@@ -86,13 +86,13 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testCancelTransactionWithManagedScheduledExecutorService
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:42.1;CONCURRENCY:SPEC:42.3;
      * CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
      * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;
      * CONCURRENCY:SPEC:67;CONCURRENCY:SPEC:69;
      * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     * 
+     *
      * @test_Strategy: get UserTransaction inside one task submitted by
      * ManagedScheduledExecutorService.cancel the task after submit one task.
      */

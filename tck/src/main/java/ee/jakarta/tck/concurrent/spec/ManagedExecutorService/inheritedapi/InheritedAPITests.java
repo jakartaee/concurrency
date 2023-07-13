@@ -59,7 +59,7 @@ public class InheritedAPITests {
 
     /*
      * @testName: testBasicManagedExecutorService
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:10.2;CONCURRENCY:SPEC:13;CONCURRENCY:SPEC:13.1;CONCURRENCY
      * :SPEC:13.2;
@@ -69,7 +69,7 @@ public class InheritedAPITests {
      * :SPEC:8;
      * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:10;CONCURRENCY:
      * SPEC:10.2; CONCURRENCY:SPEC:12;CONCURRENCY:SPEC:19;CONCURRENCY:SPEC:27;
-     * 
+     *
      * @test_Strategy: test basic function for ManagedExecutorService include
      * execute, submit, invokeAny, invokeAll, atMostOnce
      */

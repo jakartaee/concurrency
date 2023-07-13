@@ -48,14 +48,14 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testRollbackTransactionWithManagedThreadFactory
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
      * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
      * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:107;
      * CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:109;
      *
-     * 
+     *
      * @test_Strategy: get UserTransaction inside one task submitted by
      * ManagedThreadFactory. test roll back function in the submitted task.
      */
@@ -68,7 +68,7 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testCommitTransactionWithManagedThreadFactory
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
      * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
@@ -89,12 +89,12 @@ public class TransactionTests extends TestClient {
 
     /*
      * @testName: testCancelTransactionWithManagedThreadFactory
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
      * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
      * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
-     * 
+     *
      * @test_Strategy: get UserTransaction inside one task submitted by
      * ManagedThreadFactory.cancel the task after submit one task.
      */

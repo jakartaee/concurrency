@@ -67,11 +67,11 @@ public class ManagedTaskListenerTests {
 
     /*
      * @testName: TaskAborted
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:38;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.1;CONCURRENCY:
      * SPEC:45.3;
-     * 
+     *
      * @test_Strategy: taskAborted of ManagedTaskListener is Called when a task's
      * Future has been cancelled anytime during the life of a task.
      */
@@ -93,10 +93,10 @@ public class ManagedTaskListenerTests {
 
     /*
      * @testName: TaskDone
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:39;CONCURRENCY:SPEC:13.3;CONCURRENCY:SPEC:45.3;
-     * 
+     *
      * @test_Strategy: TaskDone is called when a submitted task has completed
      * running, either successfully or failed .
      */
@@ -137,11 +137,11 @@ public class ManagedTaskListenerTests {
 
     /*
      * @testName: TaskStarting
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:40;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.3;CONCURRENCY:
      * SPEC:45.3;
-     * 
+     *
      * @test_Strategy: TaskStarting is called before the task is about to start. The
      * task will not enter the starting state until the taskSubmitted listener has
      * completed.
@@ -163,11 +163,11 @@ public class ManagedTaskListenerTests {
 
     /*
      * @testName: TaskSubmitted
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:41;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.2;CONCURRENCY:
      * SPEC:45.3;
-     * 
+     *
      * @test_Strategy: TaskSubmitted is called after the task has been submitted to
      * the Executor. The task will not enter the starting state until the
      * taskSubmitted listener has completed.

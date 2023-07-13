@@ -51,9 +51,9 @@ public class ManagedThreadFactoryTests extends TestClient {
 
     /*
      * @testName: isShutdown
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:20;CONCURRENCY:SPEC:99.1;
-     * 
+     *
      * @test_Strategy: Lookup default ManagedThreadFactory object and create new
      * thread. Check return value of method isShutdown of new thread.
      */
@@ -65,12 +65,12 @@ public class ManagedThreadFactoryTests extends TestClient {
 
     /*
      * @testName: interruptThreadApiTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:83; CONCURRENCY:SPEC:83.1;
      * CONCURRENCY:SPEC:83.2; CONCURRENCY:SPEC:83.3; CONCURRENCY:SPEC:103;
      * CONCURRENCY:SPEC:96.5; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:105;
      * CONCURRENCY:SPEC:96; CONCURRENCY:SPEC:93; CONCURRENCY:SPEC:96.3;
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -85,9 +85,9 @@ public class ManagedThreadFactoryTests extends TestClient {
 
     /*
      * @testName: implementsManageableThreadInterfaceTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:97;
-     * 
+     *
      * @test_Strategy:
      */
     @Test

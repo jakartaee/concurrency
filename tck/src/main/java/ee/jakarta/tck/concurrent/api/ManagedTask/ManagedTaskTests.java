@@ -54,9 +54,9 @@ public class ManagedTaskTests {
 
     /*
      * @testName: GetExecutionProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:36
-     * 
+     *
      * @test_Strategy: Get ManagedTask to provides additional information to the
      * ManagedExecutorService or ManagedScheduledExecutorService when executing this
      * task.
@@ -77,9 +77,9 @@ public class ManagedTaskTests {
 
     /*
      * @testName: GetManagedTaskListener
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:37
-     * 
+     *
      * @test_Strategy: Get ManagedTask with ManagedTaskListener to receive
      * notification of life cycle events of this task.
      */
