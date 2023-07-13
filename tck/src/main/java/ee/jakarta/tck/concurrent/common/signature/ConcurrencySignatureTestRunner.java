@@ -45,7 +45,9 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
     public static final String SIG_MAP_NAME = "sig-test.map";
     public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
 
-    public static final String[] SIG_RESOURCES = { SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME };
+    public static final String[] SIG_RESOURCES = {
+            SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME
+            };
 
     private static final TestLogger log = TestLogger.get(ConcurrencySignatureTestRunner.class);
 
@@ -62,7 +64,9 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
      */
     @Override
     protected String[] getPackages(final String vehicleName) {
-        return new String[] { "jakarta.enterprise.concurrent", "jakarta.enterprise.concurrent.spi" };
+        return new String[] {
+                "jakarta.enterprise.concurrent", "jakarta.enterprise.concurrent.spi"
+                };
 
     }
 
@@ -75,14 +79,16 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
             return defined;
         }
         // The Jakarta artifacts we want added to our classpath
-        String[] classes = new String[] { "jakarta.enterprise.concurrent.AbortedException", // For
-                                                                                            // jakarta.enterprise.concurrent-api-3.0.0.jar
+        String[] classes = new String[] {
+                "jakarta.enterprise.concurrent.AbortedException", // For jakarta.enterprise.concurrent-api-3.0.0.jar
                 "jakarta.enterprise.util.Nonbinding", // For jakarta.enterprise.cdi-api-4.0.0.jar
                 "jakarta.interceptor.InterceptorBinding" // For jakarta.interceptor-api-2.1.0.jar
         };
 
         // The JDK modules we want added to our classpath
-        String[] jdkModules = new String[] { "java.base", "java.rmi", "java.sql", "java.naming" };
+        String[] jdkModules = new String[] {
+                "java.base", "java.rmi", "java.sql", "java.naming"
+                };
 
         // Get Jakarta artifacts from application server
         Set<String> classPaths = new HashSet<String>();
@@ -122,8 +128,8 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     }
 
-    protected File writeStreamToTempFile(final InputStream inputStream, final String tempFilePrefix, final String tempFileSuffix)
-            throws IOException {
+    protected File writeStreamToTempFile(final InputStream inputStream, final String tempFilePrefix,
+            final String tempFileSuffix) throws IOException {
         FileOutputStream outputStream = null;
 
         try {
@@ -273,7 +279,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         String classpath = getClasspath();
 
         try {
-            results = getSigTestDriver().executeSigTest( //
+            results = getSigTestDriver().executeSigTest(
                     packageListFile, // file containing the packages/classes that are to be verified
                     mapFile, // sig-test.map file
                     signatureRepositoryDir, // directory containing the recorded signatures

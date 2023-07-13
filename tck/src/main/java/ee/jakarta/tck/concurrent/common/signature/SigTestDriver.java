@@ -47,22 +47,24 @@ public class SigTestDriver extends SignatureTestDriver {
     private static final String CHECKVALUE_FLAG = "-CheckValue"; // only valid w/
                                                                  // -static
 
-//	private static final String NO_CHECKVALUE_FLAG = "-NoCheckValue";
+//  private static final String NO_CHECKVALUE_FLAG = "-NoCheckValue";
 
     private static final String SMODE_FLAG = "-mode"; // requires arg of bin or
                                                       // src
 
-//	private static final String DEBUG_FLAG = "-Debug";
+//  private static final String DEBUG_FLAG = "-Debug";
 
-//	private static final String FORMATPLAIN_FLAG = "-FormatPlain";
+//  private static final String FORMATPLAIN_FLAG = "-FormatPlain";
 
     private static final String EXCLUDE_JDK_CLASS_FLAG = "-IgnoreJDKClass";
 
-    private static String[] excludeJdkClasses = { "java.util.Map", "java.lang.Object", "java.io.ByteArrayInputStream",
+    private static String[] excludeJdkClasses = {
+            "java.util.Map", "java.lang.Object", "java.io.ByteArrayInputStream",
             "java.io.InputStream", "java.lang.Deprecated", "java.io.Writer", "java.io.OutputStream", "java.util.List",
             "java.util.Collection", "java.lang.instrument.IllegalClassFormatException",
             "javax.transaction.xa.XAException", "java.lang.annotation.Repeatable", "java.lang.InterruptedException",
-            "java.lang.CloneNotSupportedException", "java.lang.Throwable", "java.lang.Thread", "java.lang.Enum" };
+            "java.lang.CloneNotSupportedException", "java.lang.Throwable", "java.lang.Thread", "java.lang.Enum" 
+            };
 
     // ---------------------------------------- Methods from SignatureTestDriver
 
@@ -78,8 +80,9 @@ public class SigTestDriver extends SignatureTestDriver {
     }
 
     @Override
-    protected String[] createTestArguments(final String packageListFile, final String mapFile, final String signatureRepositoryDir,
-            final String packageOrClassUnderTest, final String classpath, final boolean bStaticMode) throws Exception {
+    protected String[] createTestArguments(final String packageListFile, final String mapFile,
+            final String signatureRepositoryDir, final String packageOrClassUnderTest, final String classpath,
+            final boolean bStaticMode) throws Exception {
 
         SignatureFileInfo info = getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir);
 
@@ -148,8 +151,12 @@ public class SigTestDriver extends SignatureTestDriver {
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
-        runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
+                new Class[] {
+                        String[].class, PrintWriter.class, PrintWriter.class 
+                        });
+        runMethod.invoke(sigTestInstance, new Object[] {
+                testArguments, new PrintWriter(output, true), null
+                });
 
         String rawMessages = output.toString();
 
@@ -183,12 +190,16 @@ public class SigTestDriver extends SignatureTestDriver {
         // dump args for debugging aid
         System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
         for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("	  testArguments[" + ii + "] = " + testArguments[ii]);
+            System.out.println("\t  testArguments[" + ii + "] = " + testArguments[ii]);
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
-        runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
+                new Class[] {
+                        String[].class, PrintWriter.class, PrintWriter.class 
+                        });
+        runMethod.invoke(sigTestInstance, new Object[] {
+                testArguments, new PrintWriter(output, true), null
+                });
 
         String rawMessages = output.toString();
 
@@ -231,8 +242,12 @@ public class SigTestDriver extends SignatureTestDriver {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
-        runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
+                new Class[] {
+                        String[].class, PrintWriter.class, PrintWriter.class
+                        });
+        runMethod.invoke(sigTestInstance, new Object[] {
+                testArguments, new PrintWriter(output, true), null
+                });
         String rawMessages = output.toString();
 
         // currently, there is no way to determine if there are error msgs in

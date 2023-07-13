@@ -198,12 +198,12 @@ public abstract class SigTestEE {
             System.out.println("Unexpected exception " + e.getMessage());
         }
     }
-    
+
     protected SigTestData getTestInfo() {
         if (testInfo == null) {
             setup();
         }
-        
+
         return testInfo;
     }
 

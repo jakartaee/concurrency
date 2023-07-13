@@ -166,9 +166,10 @@ public abstract class SignatureTestDriver {
      *
      * @return a {@link SigTestResult} containing the result of the test execution
      */
-    public SigTestResult executeSigTest(final String packageListFile, final String mapFile, final String signatureRepositoryDir,
-            final String[] packagesUnderTest, final String[] classesUnderTest, final String classpath,
-            final  ArrayList<String> unaccountedTechPkgs, final String optionalPkgToIgnore) throws Exception {
+    public SigTestResult executeSigTest(final String packageListFile, final String mapFile,
+            final String signatureRepositoryDir, final String[] packagesUnderTest, final String[] classesUnderTest,
+            final String classpath, final ArrayList<String> unaccountedTechPkgs, final String optionalPkgToIgnore)
+            throws Exception {
 
         SigTestResult result = new SigTestResult();
 
@@ -369,8 +370,8 @@ public abstract class SignatureTestDriver {
      *                                have to specified using this parameter.
      */
     protected abstract String[] createTestArguments(final String packageListFile, final String mapFile,
-            final String signatureRepositoryDir, final String packageOrClassUnderTest, final String classpath, final boolean bStaticMode)
-            throws Exception;
+            final String signatureRepositoryDir, final String packageOrClassUnderTest, final String classpath,
+            final boolean bStaticMode) throws Exception;
 
     /**
      * Invoke the underlying signature test framework for the specified package or
@@ -382,7 +383,8 @@ public abstract class SignatureTestDriver {
      *
      * @return <code>true</code> if the test passed, otherwise <code>false</code>
      */
-    protected abstract boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception;
+    protected abstract boolean runSignatureTest(final String packageOrClassName, final String[] testArguments)
+            throws Exception;
 
     /**
      * This checks if a class exists or not within the impl.
@@ -392,7 +394,8 @@ public abstract class SignatureTestDriver {
      * @return <code>true</code> if the package was found to exist, otherwise
      *         <code>false</code>
      */
-    protected abstract boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception;
+    protected abstract boolean runPackageSearch(final String packageOrClassName, final String[] testArguments)
+            throws Exception;
 
     /**
      * This method checks whether JTA API jar contains classes from
@@ -500,8 +503,8 @@ public abstract class SignatureTestDriver {
      * @throws Exception if the determined signature file is not a regular file or
      *                   does not exist
      */
-    protected SignatureFileInfo getSigFileInfo(final String originalPackage, final String mapFile, final String repositoryDir)
-            throws Exception {
+    protected SignatureFileInfo getSigFileInfo(final String originalPackage, final String mapFile,
+            final String repositoryDir) throws Exception {
 
         String packageName = originalPackage;
         String name = null;
@@ -554,7 +557,8 @@ public abstract class SignatureTestDriver {
      * arrayOptionalPkgsToIgnore matches the packageName then that means we return
      * TRUE to indicate we should ignore and NOT TEST that particular package.
      */
-    private static boolean isIgnorePackageUnderTest(final String packageName, final String[] arrayOptionalPkgsToIgnore) {
+    private static boolean isIgnorePackageUnderTest(final String packageName,
+            final String[] arrayOptionalPkgsToIgnore) {
 
         // if anything is null - consider no match
         if ((packageName == null) || (arrayOptionalPkgsToIgnore == null)) {

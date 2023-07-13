@@ -131,7 +131,8 @@ class PackageList {
      * @throws Exception when an error occurs reading the packageFileName or the
      *                   sigFileName does not exist.
      */
-    public PackageList(final String packageName, final String sigFileName, final String packageFileName) throws Exception {
+    public PackageList(final String packageName, final String sigFileName, final String packageFileName)
+            throws Exception {
         this.additionalPackageName = packageName;
         sigFile = new File(sigFileName);
         if (!sigFile.exists() || !sigFile.isFile()) {

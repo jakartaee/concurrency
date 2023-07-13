@@ -55,16 +55,25 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     }
 
     @Override
-    protected String[] createTestArguments(final String packageListFile, final String mapFile, final String signatureRepositoryDir,
-            final String packageOrClassUnderTest, final String classpath, final boolean bStaticMode) throws Exception {
+    protected String[] createTestArguments(final String packageListFile, final String mapFile,
+            final String signatureRepositoryDir, final String packageOrClassUnderTest, final String classpath,
+            final boolean bStaticMode) throws Exception {
 
         Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
-        Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] { String.class });
-        Object pkgInstance = pkgCtor.newInstance(new Object[] { packageListFile });
+        Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] {
+                String.class
+                });
+        Object pkgInstance = pkgCtor.newInstance(new Object[] {
+                packageListFile
+                });
 
-        Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] { String.class });
+        Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] {
+                String.class
+                });
 
-        String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] { packageOrClassUnderTest });
+        String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] {
+                packageOrClassUnderTest
+                });
 
         List<String> sigArgsList = new LinkedList<>();
 
@@ -94,8 +103,12 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     protected boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
-        Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] { String[].class });
-        mainMethod.invoke(null, new Object[] { testArguments });
+        Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] {
+                String[].class
+                });
+        mainMethod.invoke(null, new Object[] {
+                testArguments
+                });
 
         Method diffMethod = diffClass.getDeclaredMethod("diffsFound", new Class[] {});
         return (!((Boolean) diffMethod.invoke(null, new Object[] {})).booleanValue());
@@ -119,12 +132,16 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
         // dump args for debugging aid
         System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
         for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("	  testArguments[" + ii + "] = " + testArguments[ii]);
+            System.out.println("\t  testArguments[" + ii + "] = " + testArguments[ii]);
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
-        runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
+                new Class[] {
+                        String[].class, PrintWriter.class, PrintWriter.class
+                        });
+        runMethod.invoke(sigTestInstance, new Object[] {
+                testArguments, new PrintWriter(output, true), null
+                });
 
         String rawMessages = output.toString();
 
