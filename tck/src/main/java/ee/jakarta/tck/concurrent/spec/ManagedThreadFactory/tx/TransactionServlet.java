@@ -44,8 +44,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 @WebServlet(Constants.CONTEXT_PATH)
-@DataSourceDefinition(name = "java:comp/env/jdbc/ManagedThreadFactoryDB", className = "org.apache.derby.jdbc.EmbeddedDataSource", databaseName = "memory:ManagedThreadFactoryDB", properties = {
-        "createDatabase=create" })
+@DataSourceDefinition(
+        name = "java:comp/env/jdbc/ManagedThreadFactoryDB",
+        className = "org.apache.derby.jdbc.EmbeddedDataSource",
+        databaseName = "memory:ManagedThreadFactoryDB",
+        properties = {
+            "createDatabase=create"
+        })
 public class TransactionServlet extends TestServlet {
 
     private static final TestLogger log = TestLogger.get(TransactionServlet.class);
