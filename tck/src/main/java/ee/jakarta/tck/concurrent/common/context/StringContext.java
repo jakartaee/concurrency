@@ -31,9 +31,10 @@ public final class StringContext {
     }
 
     public static void set(final String value) {
-        if (value == null)
+        if (value == null) {
             local.remove();
-        else
+        } else {
             local.set(value);
+        }
     }
 }

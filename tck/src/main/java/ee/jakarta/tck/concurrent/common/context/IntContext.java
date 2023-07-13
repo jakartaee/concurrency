@@ -31,9 +31,10 @@ public final class IntContext {
     }
 
     public static void set(final int value) {
-        if (value == 0)
+        if (value == 0) {
             local.remove();
-        else
+        } else {
             local.set(value);
+        }
     }
 }

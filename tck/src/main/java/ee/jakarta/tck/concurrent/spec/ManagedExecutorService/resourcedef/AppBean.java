@@ -60,9 +60,10 @@ public class AppBean {
         started.release(1);
         CompletableFuture<Integer> future = Asynchronous.Result.getFuture();
         try {
-            while (!future.isDone() && !blocker.await(300, TimeUnit.MILLISECONDS))
+            while (!future.isDone() && !blocker.await(300, TimeUnit.MILLISECONDS)) {
                 System.out.println(
                         Thread.currentThread().getName() + ": waitAndGetIntContext awaiting signal from caller");
+            }
             future.complete(IntContext.get());
         } catch (Exception x) {
             future.completeExceptionally(x);

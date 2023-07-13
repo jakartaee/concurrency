@@ -236,13 +236,14 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                 // CompletionException with chained NamingException is expected due to
                 // Application context
                 // remaining unchanged (absent) on the async completion stage action
-                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException)
+                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException) {
                     return "StringContext " + ("testCompletedFutureMSE-3".equals(s) ? "propagated" : "incorrect:" + s)
                             + ";IntContext " + (i == 43 ? "unchanged" : "incorrect:" + i);
-                else if (failure == null)
+                } else if (failure == null) {
                     throw new AssertionError("Missing Throwable argument to exceptionally");
-                else
+                } else {
                     throw new CompletionException(failure);
+                }
             });
 
             StringContext.set("testCompletedFutureMSE-4");
@@ -550,10 +551,11 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
 
             @Override
             public ZonedDateTime getNextRunTime(final LastExecution lastExecution, final ZonedDateTime scheduledAt) {
-                if (lastExecution == null)
+                if (lastExecution == null) {
                     initSchedule();
-                else
+                } else {
                     startAndEndTimes.put(lastExecution.getRunStart(usCentral), lastExecution.getRunEnd(usCentral));
+                }
 
                 long key = lastExecution == null ? 0L : lastExecution.getScheduledStart(usCentral).toEpochSecond();
                 return schedule.get(key);

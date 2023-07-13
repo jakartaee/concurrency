@@ -199,11 +199,12 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                     "Two asynchronous method invocations should not run at same time per maxAsync=1.");
 
             stage1.thenAcceptBoth(stage2, (result1, result2) -> {
-                if (result1.equals(result2))
+                if (result1.equals(result2)) {
                     queue.add(StringContext.get());
-                else
+                } else {
                     queue.add("Both asynchronous method invocations must have same result. Instead: " + result1
                             + " and " + result2);
+                }
             });
         } finally {
             StringContext.set(null);
@@ -265,13 +266,14 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                 // CompletionException with chained NamingException is expected due to
                 // Application context
                 // remaining unchanged (absent) on the async completion stage action
-                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException)
+                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException) {
                     return "StringContext " + ("testCompletedFuture-3".equals(s) ? "propagated" : "incorrect:" + s)
                             + ";IntContext " + (i == 0 ? "unchanged" : "incorrect:" + i);
-                else if (failure == null)
+                } else if (failure == null) {
                     throw new AssertionError("Missing Throwable argument to handleAsync");
-                else
+                } else {
                     throw new CompletionException(failure);
+                }
             });
 
             StringContext.set("testCompletedFuture-4");

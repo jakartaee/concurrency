@@ -144,9 +144,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
                 outputStream.write(buffer, 0, bytesRead);
             }
             return file;
-        }
-
-        finally {
+        } finally {
             if (outputStream != null) {
                 outputStream.close();
             }
@@ -175,9 +173,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
                 outputStream.write(buffer, 0, bytesRead);
             }
             return sigfile;
-        }
-
-        finally {
+        } finally {
             if (outputStream != null) {
                 outputStream.close();
             }
