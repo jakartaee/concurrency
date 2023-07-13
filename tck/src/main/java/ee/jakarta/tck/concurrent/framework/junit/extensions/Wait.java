@@ -54,7 +54,7 @@ public class Wait {
      *
      * @param managedTaskListener - the listener to be polled
      */
-    public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener) {
+    public static void waitForListenerComplete(final ManagedTaskListenerImpl managedTaskListener) {
         waitForListenerComplete(managedTaskListener, TestConstants.waitTimeout, TestConstants.pollInterval);
     }
 
@@ -66,8 +66,8 @@ public class Wait {
      * @param maxWaitTimeMillis   - timeout
      * @param pollIntervalMillis  - poll interval
      */
-    public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener, Duration timeout,
-            Duration pollInterval) {
+    public static void waitForListenerComplete(final ManagedTaskListenerImpl managedTaskListener, final Duration timeout,
+            final Duration pollInterval) {
         assertTimeoutPreemptively(timeout, () -> {
             for (; !managedTaskListener.eventCalled(ListenerEvent.DONE); sleep(TestConstants.pollInterval))
                 ;
@@ -131,14 +131,14 @@ public class Wait {
         });
     }
 
-    public static void waitForTransactionBegan(CancelledTransactedTask task) {
+    public static void waitForTransactionBegan(final CancelledTransactedTask task) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
             for (; !task.beginTransaction.get(); sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
-    public static void sleep(Duration time) {
+    public static void sleep(final Duration time) {
         try {
             Thread.sleep(time.toMillis());
         } catch (InterruptedException e) {

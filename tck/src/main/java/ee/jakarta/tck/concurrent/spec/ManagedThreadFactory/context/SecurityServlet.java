@@ -43,7 +43,7 @@ public class SecurityServlet extends TestServlet {
 
     private static final String TEST_CLASSLOADER_CLASS_NAME = SecurityServlet.class.getCanonicalName();
 
-    public void jndiClassloaderPropagationTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void jndiClassloaderPropagationTest(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
 
         ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.defaultManagedThreadFactory);
 
@@ -54,7 +54,7 @@ public class SecurityServlet extends TestServlet {
         assertEquals(task.getCount(), 1);
     }
 
-    public void jndiClassloaderPropagationWithSecurityTest(HttpServletRequest req, HttpServletResponse res)
+    public void jndiClassloaderPropagationWithSecurityTest(final HttpServletRequest req, final HttpServletResponse res)
             throws Exception {
 
         req.login("javajoe", "javajoe");
@@ -90,7 +90,7 @@ public class SecurityServlet extends TestServlet {
 
         private SecurityTestInterface str;
 
-        CounterRunnableWithSecurityCheck(SecurityTestInterface str) {
+        CounterRunnableWithSecurityCheck(final SecurityTestInterface str) {
             this.str = str;
         }
 

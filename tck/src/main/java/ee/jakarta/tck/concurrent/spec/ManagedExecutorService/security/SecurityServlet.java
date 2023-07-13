@@ -36,7 +36,7 @@ public class SecurityServlet extends TestServlet {
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
     public ManagedExecutorService executor;
 
-    public void managedExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res)
+    public void managedExecutorServiceAPISecurityTest(final HttpServletRequest req, final HttpServletResponse res)
             throws Exception {
         req.login("javajoe", "javajoe");
         Future<?> future = executor.submit(new SecurityTestTask());

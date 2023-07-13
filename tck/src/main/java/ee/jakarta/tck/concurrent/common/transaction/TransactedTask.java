@@ -36,13 +36,13 @@ public class TransactedTask implements WorkInterface {
 
     private final String sqlTemplate;
 
-    public TransactedTask(boolean commitOrRollback, boolean beginTransaction, String sqlTemplate) {
+    public TransactedTask(final boolean commitOrRollback, final boolean beginTransaction, final String sqlTemplate) {
         this.sqlTemplate = sqlTemplate;
         this.beginTransaction = beginTransaction;
         this.isCommit = commitOrRollback;
     }
 
-    public TransactedTask(boolean commitOrRollback, String sqlTemplate) {
+    public TransactedTask(final boolean commitOrRollback, final String sqlTemplate) {
         this.sqlTemplate = sqlTemplate;
         this.beginTransaction = true;
         this.isCommit = commitOrRollback;

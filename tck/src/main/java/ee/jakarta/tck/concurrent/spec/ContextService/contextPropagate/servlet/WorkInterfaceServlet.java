@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class WorkInterfaceServlet extends HttpServlet {
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         byte[] proxyAsBytes = Base64.getDecoder().decode(req.getParameter("proxy"));
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(proxyAsBytes));
         try {

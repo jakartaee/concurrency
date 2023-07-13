@@ -38,7 +38,7 @@ public class TCKSignatureProcessor implements ApplicationArchiveProcessor {
     private static final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
 
     @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
+    public void process(final Archive<?> applicationArchive, final TestClass testClass) {
         String applicationName = applicationArchive.getName() == null ? applicationArchive.getId()
                 : applicationArchive.getName();
 

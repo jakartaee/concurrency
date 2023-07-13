@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 
-    public void managedScheduledExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res)
+    public void managedScheduledExecutorServiceAPISecurityTest(final HttpServletRequest req, final HttpServletResponse res)
             throws Exception {
         req.login("javajoe", "javajoe");
 

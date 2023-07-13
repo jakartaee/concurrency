@@ -35,7 +35,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 public class ManagedExecutorDefinitionBean implements ManagedExecutorDefinitionInterface {
 
     @Override
-    public Object doLookup(String name) throws NamingException {
+    public Object doLookup(final String name) throws NamingException {
         return InitialContext.doLookup(name);
     }
 }

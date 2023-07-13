@@ -154,7 +154,7 @@ public abstract class SigTestEE {
      *         the specified vehicle has no package signatures to be verified within
      *         it.
      */
-    protected abstract String[] getPackages(String vehicleName);
+    protected abstract String[] getPackages(final String vehicleName);
 
     /**
      * <p>
@@ -178,7 +178,7 @@ public abstract class SigTestEE {
      *         of this method returns a zero-length array no matter the vehicle
      *         specified.
      */
-    protected String[] getClasses(String vehicleName) {
+    protected String[] getClasses(final String vehicleName) {
 
         return new String[] {};
 
@@ -306,7 +306,7 @@ public abstract class SigTestEE {
         /**
          * creates a Fault with a message
          */
-        public Fault(String msg) {
+        public Fault(final String msg) {
             super(msg);
             System.out.println(msg);
         }
@@ -317,7 +317,7 @@ public abstract class SigTestEE {
          * @param msg the message
          * @param t   prints this exception's stacktrace
          */
-        public Fault(String msg, Throwable t) {
+        public Fault(final String msg, final Throwable t) {
             super(msg);
             this.t = t;
             System.out.println(msg);
@@ -329,7 +329,7 @@ public abstract class SigTestEE {
          *
          * @param t the Throwable
          */
-        public Fault(Throwable t) {
+        public Fault(final Throwable t) {
             super(t);
             this.t = t;
         }
@@ -351,7 +351,7 @@ public abstract class SigTestEE {
          *
          * @param s <code>PrintStream</code> to use for output
          */
-        public void printStackTrace(PrintStream s) {
+        public void printStackTrace(final PrintStream s) {
             if (this.t != null) {
                 this.t.printStackTrace(s);
             } else {
@@ -364,7 +364,7 @@ public abstract class SigTestEE {
          *
          * @param s <code>PrintWriter</code> to use for output
          */
-        public void printStackTrace(PrintWriter s) {
+        public void printStackTrace(final PrintWriter s) {
             if (this.t != null) {
                 this.t.printStackTrace(s);
             } else {
@@ -378,7 +378,7 @@ public abstract class SigTestEE {
         }
 
         @Override
-        public synchronized Throwable initCause(Throwable cause) {
+        public synchronized Throwable initCause(final Throwable cause) {
             if (t != null)
                 throw new IllegalStateException("Can't overwrite cause");
             if (!Exception.class.isInstance(cause))

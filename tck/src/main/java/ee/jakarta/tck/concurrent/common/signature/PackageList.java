@@ -98,7 +98,7 @@ class PackageList {
      *
      * @throws Exception when the packageFileName does not exist.
      */
-    public PackageList(String packageFileName) throws Exception {
+    public PackageList(final String packageFileName) throws Exception {
         packageFile = new File(packageFileName);
         if (packageFile.exists() && packageFile.isFile()) {
             extractExistingPackageNames();
@@ -131,7 +131,7 @@ class PackageList {
      * @throws Exception when an error occurs reading the packageFileName or the
      *                   sigFileName does not exist.
      */
-    public PackageList(String packageName, String sigFileName, String packageFileName) throws Exception {
+    public PackageList(final String packageName, final String sigFileName, final String packageFileName) throws Exception {
         this.additionalPackageName = packageName;
         sigFile = new File(sigFileName);
         if (!sigFile.exists() || !sigFile.isFile()) {
@@ -179,7 +179,7 @@ class PackageList {
      *
      * @return boolean True if the specified line is a comment line else false.
      */
-    private boolean isComment(String line) {
+    private boolean isComment(final String line) {
         if (line == null) {
             return false;
         }
@@ -244,7 +244,7 @@ class PackageList {
      * @throws Exception if the specified string does not conform to the expected
      *                   format.
      */
-    private String parsePackageName(String packageLine) throws Exception {
+    private String parsePackageName(final String packageLine) throws Exception {
 
         // sig test framework doesn't have the concept of package entries
         // as the ApiCheck signature format does.
@@ -305,7 +305,7 @@ class PackageList {
      * @throws Exception if there is any errors writing the header to the specified
      *                   BufferedWriter.
      */
-    private void writeHeader(BufferedWriter out) throws Exception {
+    private void writeHeader(final BufferedWriter out) throws Exception {
         out.write(COMMENT_CHAR);
         out.write(COMMENT_CHAR);
         out.newLine();
@@ -357,7 +357,7 @@ class PackageList {
      * @return String[] The sub-packages that live under the specified parent
      *         package.
      */
-    public String[] getSubPackages(String pkgName) {
+    public String[] getSubPackages(final String pkgName) {
         List<String> result = new ArrayList<>();
         String subPackageName = pkgName + ".";
         for (Iterator<String> i = packageNames.iterator(); i.hasNext();) {
@@ -379,7 +379,7 @@ class PackageList {
      *
      * @return String The sub-packages that live under the specified parent package.
      */
-    public String getSubPackagesFormatted(String pkgName) {
+    public String getSubPackagesFormatted(final String pkgName) {
         StringBuffer formattedResult = new StringBuffer();
         String[] result = getSubPackages(pkgName);
         for (int i = 0; i < result.length; i++) {
@@ -394,7 +394,7 @@ class PackageList {
     /*
      * Test Driver
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         System.out.println("\n\n*** Creating package list file ***\n\n");
         PackageList list = new PackageList("jakarta.ejb",
                 "/home/ryano/cts-tools-master/tools/api-check/test/jakarta.ejb.sig_2.1",

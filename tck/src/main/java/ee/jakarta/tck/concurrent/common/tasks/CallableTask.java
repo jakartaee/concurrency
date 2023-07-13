@@ -41,7 +41,7 @@ public class CallableTask<T> extends RunnableTask implements Callable<T> {
      * @param returned  expected returned object.
      * @param blockTime block time(in millisecond) for this task.
      */
-    public CallableTask(String jndiName, String jndiValue, String className, T returned, long blockTime) {
+    public CallableTask(final String jndiName, final String jndiValue, final String className, final T returned, final long blockTime) {
         super(jndiName, jndiValue, className, blockTime);
         this.expectedReturnValue = returned;
     }
@@ -56,7 +56,7 @@ public class CallableTask<T> extends RunnableTask implements Callable<T> {
      *                  loading test if it is null.
      * @param returned  expected returned object.
      */
-    public CallableTask(String jndiName, String jndiValue, String className, T returned) {
+    public CallableTask(final String jndiName, final String jndiValue, final String className, final T returned) {
         super(jndiName, jndiValue, className);
         this.expectedReturnValue = returned;
     }

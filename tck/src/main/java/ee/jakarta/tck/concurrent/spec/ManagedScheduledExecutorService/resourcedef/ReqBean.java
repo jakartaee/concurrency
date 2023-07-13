@@ -36,8 +36,8 @@ public class ReqBean {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Asynchronous(executor = "java:app/concurrent/ScheduledExecutorA")
-    public CompletableFuture<String> awaitAndGetThirdPartyContext(Semaphore invocationsStarted,
-            CountDownLatch blocker) {
+    public CompletableFuture<String> awaitAndGetThirdPartyContext(final Semaphore invocationsStarted,
+            final CountDownLatch blocker) {
         invocationsStarted.release(1);
         CompletableFuture<String> future = Asynchronous.Result.getFuture();
         try {

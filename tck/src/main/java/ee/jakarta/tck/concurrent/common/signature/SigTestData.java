@@ -60,7 +60,7 @@ public class SigTestData {
         return props.getProperty("current.keywords", "");
     }
 
-    public String getProperty(String prop) {
+    public String getProperty(final String prop) {
         return props.getProperty(prop);
     }
 

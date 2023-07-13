@@ -32,7 +32,7 @@ public class CommonTasks {
         public SimpleCallable() {
         }
 
-        public SimpleCallable(Duration waitTime) {
+        public SimpleCallable(final Duration waitTime) {
             this.waitTime = waitTime;
         }
 
@@ -63,7 +63,7 @@ public class CommonTasks {
     public static class SimpleArgCallable implements Callable<Integer> {
         private int value = -1;
 
-        public SimpleArgCallable(int arg) {
+        public SimpleArgCallable(final int arg) {
             value = arg;
         }
 

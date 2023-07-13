@@ -543,19 +543,19 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                 ZonedDateTime sept15 = ZonedDateTime.of(2021, 9, 15, 8, 0, 0, 0, usCentral);
                 ZonedDateTime oct15 = ZonedDateTime.of(2021, 10, 15, 8, 0, 0, 0, usCentral);
                 ZonedDateTime nov15 = ZonedDateTime.of(2021, 11, 15, 8, 0, 0, 0, usCentral);
-                schedule.put(0l, sept15);
+                schedule.put(0L, sept15);
                 schedule.put(sept15.toEpochSecond(), oct15);
                 schedule.put(oct15.toEpochSecond(), nov15);
             }
 
             @Override
-            public ZonedDateTime getNextRunTime(LastExecution lastExecution, ZonedDateTime scheduledAt) {
+            public ZonedDateTime getNextRunTime(final LastExecution lastExecution, final ZonedDateTime scheduledAt) {
                 if (lastExecution == null)
                     initSchedule();
                 else
                     startAndEndTimes.put(lastExecution.getRunStart(usCentral), lastExecution.getRunEnd(usCentral));
 
-                long key = lastExecution == null ? 0l : lastExecution.getScheduledStart(usCentral).toEpochSecond();
+                long key = lastExecution == null ? 0L : lastExecution.getScheduledStart(usCentral).toEpochSecond();
                 return schedule.get(key);
             }
 

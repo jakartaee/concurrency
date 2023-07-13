@@ -32,30 +32,30 @@ public class ManagedTaskListenerImpl implements ManagedTaskListener {
     private final List<ListenerEvent> events = Collections.synchronizedList(new ArrayList<ListenerEvent>());
 
     @Override
-    public void taskAborted(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+    public void taskAborted(final Future<?> future, final ManagedExecutorService mes, final Object arg2, final Throwable arg3) {
         events.add(ListenerEvent.ABORTED);
         log.info("task aborted");
     }
 
     @Override
-    public void taskDone(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+    public void taskDone(final Future<?> future, final ManagedExecutorService mes, final Object arg2, final Throwable arg3) {
         events.add(ListenerEvent.DONE);
         log.info("task done");
     }
 
     @Override
-    public void taskStarting(Future<?> future, ManagedExecutorService mes, Object arg2) {
+    public void taskStarting(final Future<?> future, final ManagedExecutorService mes, final Object arg2) {
         events.add(ListenerEvent.STARTING);
         log.info("task starting");
     }
 
     @Override
-    public void taskSubmitted(Future<?> future, ManagedExecutorService mes, Object arg2) {
+    public void taskSubmitted(final Future<?> future, final ManagedExecutorService mes, final Object arg2) {
         events.add(ListenerEvent.SUBMITTED);
         log.info("task submitted");
     }
 
-    public boolean eventCalled(ListenerEvent event) {
+    public boolean eventCalled(final ListenerEvent event) {
         return events.contains(event);
     }
 
@@ -63,7 +63,7 @@ public class ManagedTaskListenerImpl implements ManagedTaskListener {
         events.clear();
     }
 
-    public void update(ListenerEvent event) {
+    public void update(final ListenerEvent event) {
         events.add(event);
     }
 

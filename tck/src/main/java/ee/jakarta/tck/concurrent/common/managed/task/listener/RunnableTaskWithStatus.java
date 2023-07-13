@@ -26,12 +26,12 @@ public class RunnableTaskWithStatus implements Runnable {
 
     private final Duration blockTime;
 
-    public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
+    public RunnableTaskWithStatus(final ManagedTaskListenerImpl listener) {
         this.listener = listener;
         blockTime = Duration.ZERO;
     }
 
-    public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, Duration blockTime) {
+    public RunnableTaskWithStatus(final ManagedTaskListenerImpl listener, final Duration blockTime) {
         this.listener = listener;
         this.blockTime = blockTime;
     }

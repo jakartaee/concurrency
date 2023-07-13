@@ -27,11 +27,11 @@ public class CounterRunnableTask implements Runnable {
     private String countSingletionJndi = "";
     private Duration sleepTime = Duration.ZERO;
 
-    public CounterRunnableTask(String countSingletionJndi) {
+    public CounterRunnableTask(final String countSingletionJndi) {
         this.countSingletionJndi = countSingletionJndi;
     }
 
-    public CounterRunnableTask(String countSingletionJndi, Duration sleepTime) {
+    public CounterRunnableTask(final String countSingletionJndi, final Duration sleepTime) {
         this.countSingletionJndi = countSingletionJndi;
         this.sleepTime = sleepTime;
     }

@@ -33,20 +33,20 @@ public class AssertionExtension implements BeforeTestExecutionCallback, AfterTes
     private static final Logger log = Logger.getLogger(AssertionExtension.class.getCanonicalName());
 
     @Override
-    public void beforeTestExecution(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(final ExtensionContext context) throws Exception {
         log.info(">>> Begin test: " + context.getDisplayName());
         injectTestName(context, context.getRequiredTestMethod().getName());
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) throws Exception {
+    public void afterTestExecution(final ExtensionContext context) throws Exception {
         log.info("<<< End test: " + context.getDisplayName());
         injectTestName(context, null);
     }
 
     // TODO could consider using getFields to allow for injection into superclass,
     // but will affect performance.
-    private void injectTestName(ExtensionContext context, String testname) {
+    private void injectTestName(final ExtensionContext context, final String testname) {
         Class<?> testClass = context.getRequiredTestClass();
 
         Stream.of(testClass.getDeclaredFields()).filter(field -> field.isAnnotationPresent(TestName.class))

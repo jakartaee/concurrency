@@ -58,7 +58,7 @@ public abstract class TestClient {
      * Runs test against servlet at baseURL, and will run against a specified
      * testName.
      */
-    public void runTest(URL baseURL, String testName) {
+    public void runTest(final URL baseURL, final String testName) {
         try {
             assertSuccessfulURLResponse(
                     URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(),
@@ -72,7 +72,7 @@ public abstract class TestClient {
      * Runs test against servlet using a URLBuilder. This is useful for complicated
      * testing situations.
      */
-    public void runTest(URLBuilder builder) {
+    public void runTest(final URLBuilder builder) {
         assertSuccessfulURLResponse(builder.build(), null);
     }
 
@@ -83,7 +83,7 @@ public abstract class TestClient {
      * testName. Provide properties if you want them included in a POST request,
      * otherwise pass in null.
      */
-    public String runTestWithResponse(URL baseURL, String testName, Properties props) {
+    public String runTestWithResponse(final URL baseURL, final String testName, final Properties props) {
         try {
             return assertSuccessfulURLResponse(
                     URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(),
@@ -98,12 +98,12 @@ public abstract class TestClient {
      * testing situations. Provide properties if you want them included in a POST
      * request, otherwise pass in null.
      */
-    public String runTestWithResponse(URLBuilder builder, Properties props) {
+    public String runTestWithResponse(final URLBuilder builder, final Properties props) {
         return assertSuccessfulURLResponse(builder.build(), props);
     }
 
     // ##### test runner ######
-    private String assertSuccessfulURLResponse(URL url, Properties props) {
+    private String assertSuccessfulURLResponse(final URL url, final Properties props) {
         log.enter("assertSuccessfulURLResponse", "Calling application with URL=" + url.toString());
 
         boolean withProps = props != null;
@@ -155,7 +155,7 @@ public abstract class TestClient {
         }
     }
 
-    static String toEncodedString(Properties args) throws UnsupportedEncodingException {
+    static String toEncodedString(final Properties args) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
         Enumeration<?> names = args.propertyNames();
         while (names.hasMoreElements()) {
@@ -187,7 +187,7 @@ public abstract class TestClient {
      * @param expected - the expected string to find in the response
      * @param resp     - the response you received from the servlet
      */
-    protected void assertStringInResponse(String message, String expected, String resp) {
+    protected void assertStringInResponse(final String message, final String expected, final String resp) {
         assertTrue(resp.toLowerCase().contains(expected.toLowerCase()), message);
     }
 }

@@ -50,7 +50,7 @@ public class URLBuilder {
     /**
      * Base URL obtained from <code>ArquillianResource</code>
      */
-    public URLBuilder withBaseURL(URL baseURL) {
+    public URLBuilder withBaseURL(final URL baseURL) {
         this.baseURL = baseURL;
         return this;
     }
@@ -60,7 +60,7 @@ public class URLBuilder {
      * http://localhost:80/servlet/ query = count=5 result =
      * http://localhost:80/servlet/?count=5
      */
-    public URLBuilder withQueries(String... queries) {
+    public URLBuilder withQueries(final String... queries) {
         if (this.queries == null) {
             this.queries = new ArrayList<>(Arrays.asList(queries));
         } else {
@@ -74,7 +74,7 @@ public class URLBuilder {
      * http://localhost:80/servlet/ path = app, inventory result =
      * http://localhost:80/servlet/app/inventory
      */
-    public URLBuilder withPaths(String... paths) {
+    public URLBuilder withPaths(final String... paths) {
         if (this.paths == null) {
             this.paths = new ArrayList<>(Arrays.asList(paths));
         } else {
@@ -88,7 +88,7 @@ public class URLBuilder {
      * http://localhost:80/servlet/ testName = transactionTest result =
      * http://localhost:80/servlet/?testMethod=transactionTest
      */
-    public URLBuilder withTestName(String testName) {
+    public URLBuilder withTestName(final String testName) {
         if (testNameSet) {
             throw new UnsupportedOperationException("Cannot call withTestName more than once.");
         }
@@ -126,7 +126,7 @@ public class URLBuilder {
         return extendedURL;
     }
 
-    public static URL extendQuery(URL baseURL, List<String> queries) {
+    public static URL extendQuery(final URL baseURL, final List<String> queries) {
         if (queries == null)
             return baseURL;
 
@@ -151,7 +151,7 @@ public class URLBuilder {
         }
     }
 
-    public static URL extendPath(URL baseURL, List<String> paths) {
+    public static URL extendPath(final URL baseURL, final List<String> paths) {
         if (paths == null)
             return baseURL;
 

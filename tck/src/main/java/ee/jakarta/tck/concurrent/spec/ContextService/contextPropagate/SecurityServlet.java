@@ -37,7 +37,7 @@ public class SecurityServlet extends TestServlet {
     @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
-    public void testSecurityAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testSecurityAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         req.login("javajoe", "javajoe");
 
         String result = intf

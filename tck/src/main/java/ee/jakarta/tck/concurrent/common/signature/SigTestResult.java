@@ -45,25 +45,25 @@ public class SigTestResult implements Serializable {
 
     } // end passed
 
-    public synchronized void addFailedPkg(String pkg) {
+    public synchronized void addFailedPkg(final String pkg) {
 
         failedPkgs.add(pkg);
 
     } // END addFailedPkg
 
-    public synchronized void addPassedPkg(String pkg) {
+    public synchronized void addPassedPkg(final String pkg) {
 
         passedPkgs.add(pkg);
 
     } // END addPassedPkg
 
-    public synchronized void addFailedClass(String className) {
+    public synchronized void addFailedClass(final String className) {
 
         failedClasses.add(className);
 
     } // END addFailedClass
 
-    public synchronized void addPassedClass(String className) {
+    public synchronized void addPassedClass(final String className) {
 
         passedClasses.add(className);
 
@@ -108,7 +108,7 @@ public class SigTestResult implements Serializable {
 
     // --------------------------------------------------------- Private Methods
 
-    private synchronized void formatList(List<String> list, StringBuffer buf) {
+    private synchronized void formatList(final List<String> list, final StringBuffer buf) {
 
         synchronized (this) {
             for (int i = 0; i < list.size(); i++) {

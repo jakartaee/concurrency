@@ -24,7 +24,7 @@ public class CounterCallableTask implements Callable<Integer> {
 
     private String countSingletionJndi = "";
 
-    public CounterCallableTask(String countSingletionJndi) {
+    public CounterCallableTask(final String countSingletionJndi) {
         this.countSingletionJndi = countSingletionJndi;
     }
 

@@ -38,7 +38,7 @@ public class CancelledTransactedTask implements Runnable {
 
     private final String sqlTemplate;
 
-    public CancelledTransactedTask(String sqlTemplate) {
+    public CancelledTransactedTask(final String sqlTemplate) {
         this.sqlTemplate = sqlTemplate;
     }
 

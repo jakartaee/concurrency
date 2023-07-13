@@ -35,7 +35,7 @@ public class AppBean {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Asynchronous(executor = "java:module/concurrent/ExecutorB")
-    public CompletionStage<String> addStringContextAndWait(BlockingQueue<String> queue, CountDownLatch blocker) {
+    public CompletionStage<String> addStringContextAndWait(final BlockingQueue<String> queue, final CountDownLatch blocker) {
         String s = StringContext.get();
         try {
             queue.add(s);
@@ -47,7 +47,7 @@ public class AppBean {
     }
 
     @Asynchronous
-    public void exchange(Exchanger<String> exchanger, String value) {
+    public void exchange(final Exchanger<String> exchanger, final String value) {
         try {
             exchanger.exchange(value, MAX_WAIT_SECONDS, TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException x) {
@@ -56,7 +56,7 @@ public class AppBean {
     }
 
     @Asynchronous(executor = "java:app/concurrent/ExecutorA")
-    public CompletableFuture<Integer> waitAndGetIntContext(Semaphore started, CountDownLatch blocker) {
+    public CompletableFuture<Integer> waitAndGetIntContext(final Semaphore started, final CountDownLatch blocker) {
         started.release(1);
         CompletableFuture<Integer> future = Asynchronous.Result.getFuture();
         try {

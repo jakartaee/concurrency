@@ -29,111 +29,111 @@ import java.util.logging.Logger;
 public final class TestLogger {
     private static final String nl = System.lineSeparator();
 
-    private Logger log;
+    private final Logger log;
 
     /*
      * Private constructor since there should only be one TestLogger per class
      */
-    private TestLogger(Class<?> clazz) {
+    private TestLogger(final Class<?> clazz) {
         log = Logger.getLogger(clazz.getCanonicalName());
     }
 
-    private TestLogger(String clazz) {
+    private TestLogger(final String clazz) {
         log = Logger.getLogger(clazz);
     }
 
-    public static TestLogger get(Class<?> clazz) {
+    public static TestLogger get(final Class<?> clazz) {
         return new TestLogger(clazz);
     }
 
-    public static TestLogger get(String clazz) {
+    public static TestLogger get(final String clazz) {
         return new TestLogger(clazz);
     }
 
-    public void severe(String s) {
+    public void severe(final String s) {
         log.severe(s);
     }
 
-    public void severe(String s, Throwable t) {
+    public void severe(final String s, final Throwable t) {
         log.severe(messageWithThrowable(s, t));
     }
 
-    public void warning(String s) {
+    public void warning(final String s) {
         log.warning(s);
     }
 
-    public void warning(String s, Throwable t) {
+    public void warning(final String s, final Throwable t) {
         log.warning(messageWithThrowable(s, t));
     }
 
-    public void info(String s) {
+    public void info(final String s) {
         log.info(s);
     }
 
-    public void info(String s, Throwable t) {
+    public void info(final String s, final Throwable t) {
         log.info(messageWithThrowable(s, t));
     }
 
-    public void info(String s, Object... objs) {
+    public void info(final String s, final Object... objs) {
         log.log(Level.INFO, s + getObjectSuffix(objs), removeNewLines(objs));
     }
 
-    public void config(String s) {
+    public void config(final String s) {
         log.config(s);
     }
 
-    public void config(String s, Throwable t) {
+    public void config(final String s, final Throwable t) {
         log.config(messageWithThrowable(s, t));
     }
 
-    public void fine(String s) {
+    public void fine(final String s) {
         log.fine(s);
     }
 
-    public void fine(String s, Throwable t) {
+    public void fine(final String s, final Throwable t) {
         log.fine(messageWithThrowable(s, t));
     }
 
-    public void finer(String s) {
+    public void finer(final String s) {
         log.fine(s);
     }
 
-    public void finer(String s, Throwable t) {
+    public void finer(final String s, final Throwable t) {
         log.finer(messageWithThrowable(s, t));
     }
 
-    public void finest(String s) {
+    public void finest(final String s) {
         log.fine(s);
     }
 
-    public void finest(String s, Throwable t) {
+    public void finest(final String s, final Throwable t) {
         log.finest(messageWithThrowable(s, t));
     }
 
-    public void enter(Method method, Object... objs) {
+    public void enter(final Method method, final Object... objs) {
         log.log(Level.INFO, "--> " + method.getName() + getObjectSuffix(objs), removeNewLines(objs));
     }
 
-    public void enter(String method, Object... objs) {
+    public void enter(final String method, final Object... objs) {
         log.log(Level.INFO, "--> " + method + getObjectSuffix(objs), removeNewLines(objs));
     }
 
-    public void exit(Method method, Object... objs) {
+    public void exit(final Method method, final Object... objs) {
         log.log(Level.INFO, "<-- " + method.getName() + getObjectSuffix(objs), removeNewLines(objs));
     }
 
-    public void exit(String method, Object... objs) {
+    public void exit(final String method, final Object... objs) {
         log.log(Level.INFO, "<-- " + method + getObjectSuffix(objs), removeNewLines(objs));
     }
 
-    private String messageWithThrowable(String s, Throwable t) {
+    private String messageWithThrowable(final String s, final Throwable t) {
         Writer buffer = new StringWriter();
         PrintWriter pw = new PrintWriter(buffer);
         t.printStackTrace(pw);
         return s + nl + buffer.toString();
     }
 
-    private String getObjectSuffix(Object[] objs) {
+    private String getObjectSuffix(final Object[] objs) {
         if (objs == null || objs.length == 0)
             return "";
 
@@ -144,7 +144,7 @@ public final class TestLogger {
         return suffix.substring(0, suffix.length() - 2) + " ]";
     }
 
-    private String[] removeNewLines(Object[] objs) {
+    private String[] removeNewLines(final Object[] objs) {
         if (objs == null || objs.length == 0)
             return new String[] {};
 

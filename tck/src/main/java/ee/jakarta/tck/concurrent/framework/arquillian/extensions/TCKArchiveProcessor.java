@@ -38,7 +38,7 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
     private static final Logger log = Logger.getLogger(TCKArchiveProcessor.class.getCanonicalName());
 
     @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
+    public void process(final Archive<?> applicationArchive, final TestClass testClass) {
         String applicationName = applicationArchive.getName() == null ? applicationArchive.getId()
                 : applicationArchive.getName();
 

@@ -37,7 +37,7 @@ public class JNDIServlet extends TestServlet {
     @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
-    public void testJNDIContextAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp)
+    public void testJNDIContextAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp)
             throws Exception {
         String result = intf.executeWorker((TestWorkInterface) context.createContextualProxy(new TestJNDIRunnableWork(),
                 Runnable.class, TestWorkInterface.class, Serializable.class));
@@ -45,7 +45,7 @@ public class JNDIServlet extends TestServlet {
 
     }
 
-    public void testJNDIContextAndCreateProxyInEJB(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testJNDIContextAndCreateProxyInEJB(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         String result = intf.createWorker(TestJNDIRunnableWork.class.getCanonicalName()).doSomeWork();
         resp.getWriter().println(result);
     }

@@ -22,7 +22,7 @@ import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithSt
 
 public class RunnableTaskWithException extends RunnableTaskWithStatus implements Runnable {
 
-    public RunnableTaskWithException(ManagedTaskListenerImpl listener) {
+    public RunnableTaskWithException(final ManagedTaskListenerImpl listener) {
         super(listener);
     }
 

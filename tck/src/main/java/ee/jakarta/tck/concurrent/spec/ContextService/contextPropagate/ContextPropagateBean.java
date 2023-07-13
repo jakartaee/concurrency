@@ -34,7 +34,7 @@ public class ContextPropagateBean implements ContextPropagateInterface {
     public ContextService context;
 
     @Override
-    public TestWorkInterface createWorker(String classname) {
+    public TestWorkInterface createWorker(final String classname) {
         try {
             return (TestWorkInterface) context.createContextualProxy(
                     Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
@@ -44,7 +44,7 @@ public class ContextPropagateBean implements ContextPropagateInterface {
     }
 
     @Override
-    public String executeWorker(TestWorkInterface worker) {
+    public String executeWorker(final TestWorkInterface worker) {
         Thread workThread = threadFactory.newThread(worker);
         workThread.start();
         try {

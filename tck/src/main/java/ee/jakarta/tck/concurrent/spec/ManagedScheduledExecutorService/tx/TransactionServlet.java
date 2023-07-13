@@ -76,7 +76,7 @@ public class TransactionServlet extends TestServlet {
         }
     }
 
-    public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void transactionTest(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
         boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
         Future<?> taskResult = managedScheduledExecutorService
                 .schedule(new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT), new OnceTrigger());

@@ -61,7 +61,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
      *         verified.
      */
     @Override
-    protected String[] getPackages(String vehicleName) {
+    protected String[] getPackages(final String vehicleName) {
         return new String[] { "jakarta.enterprise.concurrent", "jakarta.enterprise.concurrent.spi" };
 
     }
@@ -122,7 +122,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     }
 
-    protected File writeStreamToTempFile(InputStream inputStream, String tempFilePrefix, String tempFileSuffix)
+    protected File writeStreamToTempFile(final InputStream inputStream, final String tempFilePrefix, final String tempFileSuffix)
             throws IOException {
         FileOutputStream outputStream = null;
 
@@ -147,7 +147,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         }
     }
 
-    protected File writeStreamToSigFile(InputStream inputStream) throws IOException {
+    protected File writeStreamToSigFile(final InputStream inputStream) throws IOException {
         FileOutputStream outputStream = null;
         String tmpdir = System.getProperty("java.io.tmpdir");
         try {

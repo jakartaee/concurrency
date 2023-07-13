@@ -59,7 +59,7 @@ public class SignatureTestDriverFactory {
      * @param type the driver type to create
      * @return a {@link SignatureTestDriver} implementation
      */
-    public static SignatureTestDriver getInstance(String type) {
+    public static SignatureTestDriver getInstance(final String type) {
 
         if (type == null || type.length() == 0) {
             throw new IllegalArgumentException("Type was null or empty");

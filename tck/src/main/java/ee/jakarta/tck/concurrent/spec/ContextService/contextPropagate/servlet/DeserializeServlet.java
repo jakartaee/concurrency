@@ -40,7 +40,7 @@ public class DeserializeServlet extends HttpServlet {
     public ContextService context;
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         try {
             Object proxy = context.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class,
                     TestWorkInterface.class, Serializable.class);

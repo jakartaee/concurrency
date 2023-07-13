@@ -34,7 +34,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 public class ManagedThreadFactoryDefinitionBean implements ManagedThreadFactoryDefinitionInterface {
 
     @Override
-    public Object doLookup(String name) throws NamingException {
+    public Object doLookup(final String name) throws NamingException {
         return InitialContext.doLookup(name);
     }
 }

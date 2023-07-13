@@ -28,7 +28,7 @@ public class Connections {
 
     private static DataSource ds;
 
-    public static void setDataSource(DataSource ds) {
+    public static void setDataSource(final DataSource ds) {
         Connections.ds = ds;
     }
 
@@ -36,7 +36,7 @@ public class Connections {
         Connections.ds = null;
     }
 
-    public static Connection getConnection(boolean autoCommit) {
+    public static Connection getConnection(final boolean autoCommit) {
         Connection conn = null;
         try {
             conn = ds.getConnection(); // Try without user password for EE case

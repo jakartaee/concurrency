@@ -85,24 +85,24 @@ public class ManagedExecutorsTests {
         return new RunnableTask(ENV_ENTRY_JNDI_NAME, ENV_ENTRY_VALUE, this.getClass().getName());
     }
 
-    private CallableTask<String> createCallableTask(String expectedReturnValue) {
+    private CallableTask<String> createCallableTask(final String expectedReturnValue) {
         return new CallableTask<String>(ENV_ENTRY_JNDI_NAME, ENV_ENTRY_VALUE, this.getClass().getName(),
                 expectedReturnValue);
     }
 
-    private void assertTaskAndListenerComplete(Future<?> future, RunnableTask runnableTask) {
+    private void assertTaskAndListenerComplete(final Future<?> future, final RunnableTask runnableTask) {
         Wait.waitForTaskComplete(future);
         assertListenerComplete(runnableTask);
     }
 
-    private void assertTaskAndListenerComplete(String expectedResult, Future<String> future,
-            CallableTask<?> callableTask) {
+    private void assertTaskAndListenerComplete(final String expectedResult, final Future<String> future,
+            final CallableTask<?> callableTask) {
         String result = Wait.waitForTaskComplete(future);
         assertTrue(expectedResult.endsWith(result));
         assertListenerComplete(callableTask);
     }
 
-    private void assertListenerComplete(RunnableTask task) {
+    private void assertListenerComplete(final RunnableTask task) {
         // wait for the listener run done.
         Wait.waitForListenerComplete(managedTaskListener);
 

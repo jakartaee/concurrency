@@ -67,7 +67,7 @@ public class SigTestDriver extends SignatureTestDriver {
     // ---------------------------------------- Methods from SignatureTestDriver
 
     @Override
-    protected String normalizeFileName(File f) {
+    protected String normalizeFileName(final File f) {
         String sURL = null;
         try {
             sURL = f.toURI().toURL().toExternalForm();
@@ -78,8 +78,8 @@ public class SigTestDriver extends SignatureTestDriver {
     }
 
     @Override
-    protected String[] createTestArguments(String packageListFile, String mapFile, String signatureRepositoryDir,
-            String packageOrClassUnderTest, String classpath, boolean bStaticMode) throws Exception {
+    protected String[] createTestArguments(final String packageListFile, final String mapFile, final String signatureRepositoryDir,
+            final String packageOrClassUnderTest, final String classpath, final boolean bStaticMode) throws Exception {
 
         SignatureFileInfo info = getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir);
 
@@ -134,7 +134,7 @@ public class SigTestDriver extends SignatureTestDriver {
     } // END createTestArguments
 
     @Override
-    protected boolean runSignatureTest(String packageOrClassName, String[] testArguments) throws Exception {
+    protected boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
         Object sigTestInstance = sigTestClass.getConstructor().newInstance();
@@ -166,7 +166,7 @@ public class SigTestDriver extends SignatureTestDriver {
      * @return This returns true if the packageOrClassName is found in the impl.
      */
     @Override
-    protected boolean runPackageSearch(String packageOrClassName, String[] testArguments) throws Exception {
+    protected boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
         Object sigTestInstance = sigTestClass.getConstructor().newInstance();
@@ -204,7 +204,7 @@ public class SigTestDriver extends SignatureTestDriver {
      * @return This returns true if javax.transaction.xa is not found in the JTA API
      * jar
      */
-    protected boolean verifyJTAJarForNoXA(String classpath, String repositoryDir) throws Exception {
+    protected boolean verifyJTAJarForNoXA(final String classpath, final String repositoryDir) throws Exception {
 
         System.out.println("SigTestDriver#verifyJTAJarForNoXA - Starting:");
         List<String> command = new ArrayList<>();
@@ -218,7 +218,7 @@ public class SigTestDriver extends SignatureTestDriver {
         command.add(CLASSPATH_FLAG);
         command.add(classpath);
 
-        String testArguments[] = (String[]) command.toArray(new String[command.size()]);
+        String[] testArguments = (String[]) command.toArray(new String[command.size()]);
 
         // do some logging to help with troubleshooting
         System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");

@@ -44,20 +44,20 @@ public class LogicDrivenTrigger implements Trigger {
     public static final int RIGHT_COUNT = 2;
     public static final int WRONG_COUNT = 1;
 
-    public LogicDrivenTrigger(long delta, String testName) {
+    public LogicDrivenTrigger(final long delta, final String testName) {
         this.delta = delta;
         this.testName = testName;
         this.startTime = new Date();
     }
 
-    private String getErrStr4NotEqual(String testName, Object expected, Object real) {
+    private String getErrStr4NotEqual(final String testName, final Object expected, final Object real) {
         String result = testName + "failed, ";
         result += "expected " + expected + ",";
         result += "but got " + real;
         return result;
     }
 
-    private boolean validateDateTimeEquals(Date time1, Date time2) {
+    private boolean validateDateTimeEquals(final Date time1, final Date time2) {
         long diff = time1.getTime() - time2.getTime();
 
         if (Math.abs(diff) < TIME_COMPARE_INACCURACY) {
@@ -67,7 +67,7 @@ public class LogicDrivenTrigger implements Trigger {
         }
     }
 
-    public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (lastExecutionInfo == null) {
             return new Date();
         }
@@ -86,7 +86,7 @@ public class LogicDrivenTrigger implements Trigger {
 
     }
 
-    public Date lastExecutionGetIdentityNameTest(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date lastExecutionGetIdentityNameTest(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (!LastExecutionTests.IDENTITY_NAME_TEST_ID.equals(lastExecutionInfo.getIdentityName())) {
             log.warning(getErrStr4NotEqual(testName, LastExecutionTests.IDENTITY_NAME_TEST_ID,
                     lastExecutionInfo.getIdentityName()));
@@ -97,7 +97,7 @@ public class LogicDrivenTrigger implements Trigger {
         return new Date(new Date().getTime() + delta);
     }
 
-    public Date lastExecutionGetResultRunnableTest(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date lastExecutionGetResultRunnableTest(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (lastExecutionInfo.getResult() != null) {
             log.warning(getErrStr4NotEqual(testName, null, lastExecutionInfo.getResult()));
             return null;
@@ -107,7 +107,7 @@ public class LogicDrivenTrigger implements Trigger {
         return new Date(new Date().getTime() + delta);
     }
 
-    public Date lastExecutionGetResultCallableTest(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date lastExecutionGetResultCallableTest(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (!Integer.valueOf(1).equals(lastExecutionInfo.getResult())) {
             log.warning(getErrStr4NotEqual(testName, 1, lastExecutionInfo.getResult()));
             return null;
@@ -116,7 +116,7 @@ public class LogicDrivenTrigger implements Trigger {
         return new Date(new Date().getTime() + delta);
     }
 
-    public Date lastExecutionGetRunningTimeTest(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date lastExecutionGetRunningTimeTest(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (!validateDateTimeEquals(this.startTime, lastExecutionInfo.getScheduledStart())) {
             log.warning(getErrStr4NotEqual(testName, this.startTime, lastExecutionInfo.getScheduledStart()));
             return null;
@@ -138,7 +138,7 @@ public class LogicDrivenTrigger implements Trigger {
         return new Date(new Date().getTime() + delta);
     }
 
-    public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+    public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
         return false;
     }
 }

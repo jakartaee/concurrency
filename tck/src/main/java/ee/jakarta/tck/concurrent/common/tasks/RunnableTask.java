@@ -69,7 +69,7 @@ public class RunnableTask implements Runnable {
      *                  loading test if it is null.
      * @param blockTime block time(in millisecond) for this task.
      */
-    public RunnableTask(String jndiName, String jndiValue, String className, long blockTime) {
+    public RunnableTask(final String jndiName, final String jndiValue, final String className, final long blockTime) {
         this.contexualClassName = className;
         this.jndiName = jndiName;
         this.expectedJndiValue = jndiValue;
@@ -85,7 +85,7 @@ public class RunnableTask implements Runnable {
      * @param className class name to be loaded inside the task, ignore class
      *                  loading test if it is null.
      */
-    public RunnableTask(String jndiName, String jndiValue, String className) {
+    public RunnableTask(final String jndiName, final String jndiValue, final String className) {
         this.contexualClassName = className;
         this.jndiName = jndiName;
         this.expectedJndiValue = jndiValue;

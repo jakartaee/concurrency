@@ -22,14 +22,14 @@ import jakarta.enterprise.concurrent.LastExecution;
 import jakarta.enterprise.concurrent.Trigger;
 
 public class OnceTrigger implements Trigger {
-    public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         if (lastExecutionInfo != null) {
             return null;
         }
         return new Date();
     }
 
-    public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+    public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
         return false;
     }
 }

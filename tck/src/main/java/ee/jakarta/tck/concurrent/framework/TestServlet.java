@@ -53,13 +53,13 @@ public class TestServlet extends HttpServlet {
     public static final String TEST_METHOD = "testMethod";
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         String method = request.getParameter(TEST_METHOD);
 
@@ -144,7 +144,7 @@ public class TestServlet extends HttpServlet {
      * Implement this method for custom test invocation, such as specific test
      * method signatures
      */
-    protected void invokeTest(String method, HttpServletRequest request, HttpServletResponse response)
+    protected void invokeTest(final String method, final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         throw new NoSuchMethodException("No such method '" + method + "' found on class " + getClass()
                 + " with any of the following signatures:   " + method + "(HttpServletRequest, HttpServletResponse)   "
@@ -160,7 +160,7 @@ public class TestServlet extends HttpServlet {
      * @return String - response body
      * @throws IOException
      */
-    public static String getResponse(URLConnection con) throws IOException {
+    public static String getResponse(final URLConnection con) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
 
             StringBuffer response = new StringBuffer();
@@ -187,7 +187,7 @@ public class TestServlet extends HttpServlet {
      * @return the connection for further testing
      * @throws IOException
      */
-    public static URLConnection sendPostData(URL url, Properties props) throws IOException {
+    public static URLConnection sendPostData(final URL url, final Properties props) throws IOException {
         log.info("Opening url connection to: " + url.toString());
         URLConnection urlConn = url.openConnection();
         // Begin POST of properties to SERVLET

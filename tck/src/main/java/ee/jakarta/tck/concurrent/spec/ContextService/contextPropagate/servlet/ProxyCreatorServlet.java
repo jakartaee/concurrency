@@ -42,7 +42,7 @@ public class ProxyCreatorServlet extends TestServlet {
     @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
-    public void testJNDIContextInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testJNDIContextInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         Object proxy = true;
         String result = null;
         String proxyURLString = req.getParameter("proxyURL");
@@ -61,7 +61,7 @@ public class ProxyCreatorServlet extends TestServlet {
         resp.getWriter().println(result);
     }
 
-    public void testClassloaderInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testClassloaderInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         Object proxy = true;
         String result = null;
         String proxyURLString = req.getParameter("proxyURL");
@@ -80,7 +80,7 @@ public class ProxyCreatorServlet extends TestServlet {
         resp.getWriter().println(result);
     }
 
-    private String proxyToString(Object proxy) throws IOException {
+    private String proxyToString(final Object proxy) throws IOException {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bout);
         out.writeObject(proxy);

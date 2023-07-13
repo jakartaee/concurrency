@@ -50,13 +50,13 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     // ---------------------------------------- Methods from SignatureTestDriver
 
     @Override
-    protected String normalizeFileName(File f) {
+    protected String normalizeFileName(final File f) {
         return f.getPath();
     }
 
     @Override
-    protected String[] createTestArguments(String packageListFile, String mapFile, String signatureRepositoryDir,
-            String packageOrClassUnderTest, String classpath, boolean bStaticMode) throws Exception {
+    protected String[] createTestArguments(final String packageListFile, final String mapFile, final String signatureRepositoryDir,
+            final String packageOrClassUnderTest, final String classpath, final boolean bStaticMode) throws Exception {
 
         Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
         Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] { String.class });
@@ -91,7 +91,7 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     } // END createTestArguments
 
     @Override
-    protected boolean runSignatureTest(String packageOrClassName, String[] testArguments) throws Exception {
+    protected boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
         Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] { String[].class });
@@ -103,7 +103,7 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     } // END runSignatureTest
 
     @Override
-    protected boolean runPackageSearch(String packageOrClassName, String[] testArguments) throws Exception {
+    protected boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception {
         Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
         Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 
@@ -136,7 +136,7 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     }
 
     @Override
-    protected boolean verifyJTAJarForNoXA(String classpath, String repositoryDir) throws Exception {
+    protected boolean verifyJTAJarForNoXA(final String classpath, final String repositoryDir) throws Exception {
         // Need to find out whether implementing this method is really required now.
         // By default, signature test framework will use sigtest
         return true;

@@ -39,14 +39,14 @@ public class StaticCounter {
         count.set(0);
     }
 
-    public static void waitTill(int expected) {
+    public static void waitTill(final int expected) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
             for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
-    public static void waitTillSurpassed(int expected) {
+    public static void waitTillSurpassed(final int expected) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
             for (; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval))
                 ;

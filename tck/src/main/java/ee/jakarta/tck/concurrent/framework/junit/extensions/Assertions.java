@@ -15,7 +15,7 @@ public class Assertions {
      * Asserts expected integer is within the range ( lowerBound, upperBound )
      * (exclusive).
      */
-    public static void assertWithin(int expected, int lowerBound, int upperBound) {
+    public static void assertWithin(final int expected, final int lowerBound, final int upperBound) {
         if (lowerBound < expected && upperBound > expected) {
             return; // pass
         }
@@ -28,7 +28,7 @@ public class Assertions {
      * Asserts expected integer is within the range [ lowerBound, upperBound ]
      * [inclusive].
      */
-    public static void assertBetween(int expected, int lowerBound, int upperBound) {
+    public static void assertBetween(final int expected, final int lowerBound, final int upperBound) {
         if (lowerBound <= expected && upperBound >= expected) {
             return; // pass
         }
@@ -40,7 +40,7 @@ public class Assertions {
     /**
      * Asserts expected object is within a range represented by an Iterable
      */
-    public static void assertRangeContains(Object expected, Iterable<Object> range) {
+    public static void assertRangeContains(final Object expected, final Iterable<Object> range) {
         Iterator<?> it = range.iterator();
         while (it.hasNext()) {
             if (it.equals(expected)) {

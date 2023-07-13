@@ -201,7 +201,7 @@ public abstract class SigTest {
         /**
          * creates a Fault with a message
          */
-        public Fault(String msg) {
+        public Fault(final String msg) {
             super(msg);
             System.out.println(msg);
         }
@@ -212,7 +212,7 @@ public abstract class SigTest {
          * @param msg the message
          * @param t   prints this exception's stacktrace
          */
-        public Fault(String msg, Throwable t) {
+        public Fault(final String msg, final Throwable t) {
             super(msg);
             this.t = t;
             // System.out.println(msg, t);
@@ -223,7 +223,7 @@ public abstract class SigTest {
          *
          * @param t the Throwable
          */
-        public Fault(Throwable t) {
+        public Fault(final Throwable t) {
             super(t);
             this.t = t;
         }
@@ -245,7 +245,7 @@ public abstract class SigTest {
          *
          * @param s <code>PrintStream</code> to use for output
          */
-        public void printStackTrace(PrintStream s) {
+        public void printStackTrace(final PrintStream s) {
             if (this.t != null) {
                 this.t.printStackTrace(s);
             } else {
@@ -258,7 +258,7 @@ public abstract class SigTest {
          *
          * @param s <code>PrintWriter</code> to use for output
          */
-        public void printStackTrace(PrintWriter s) {
+        public void printStackTrace(final PrintWriter s) {
             if (this.t != null) {
                 this.t.printStackTrace(s);
             } else {
@@ -272,7 +272,7 @@ public abstract class SigTest {
         }
 
         @Override
-        public synchronized Throwable initCause(Throwable cause) {
+        public synchronized Throwable initCause(final Throwable cause) {
             if (t != null)
                 throw new IllegalStateException("Can't overwrite cause");
             if (!Exception.class.isInstance(cause))
@@ -297,7 +297,7 @@ public abstract class SigTest {
         /**
          * creates a Fault with a message
          */
-        public SetupException(String msg) {
+        public SetupException(final String msg) {
             super(msg);
         }
 
@@ -307,7 +307,7 @@ public abstract class SigTest {
          * @param msg the message
          * @param e   prints this exception's stacktrace
          */
-        public SetupException(String msg, Exception e) {
+        public SetupException(final String msg, final Exception e) {
             super(msg);
             this.e = e;
         }
@@ -329,7 +329,7 @@ public abstract class SigTest {
          *
          * @param s <code>PrintStream</code> to use for output
          */
-        public void printStackTrace(PrintStream s) {
+        public void printStackTrace(final PrintStream s) {
             if (this.e != null) {
                 this.e.printStackTrace(s);
             } else {
@@ -342,7 +342,7 @@ public abstract class SigTest {
          *
          * @param s <code>PrintWriter</code> to use for output
          */
-        public void printStackTrace(PrintWriter s) {
+        public void printStackTrace(final PrintWriter s) {
             if (this.e != null) {
                 this.e.printStackTrace(s);
             } else {
@@ -356,7 +356,7 @@ public abstract class SigTest {
         }
 
         @Override
-        public synchronized Throwable initCause(Throwable cause) {
+        public synchronized Throwable initCause(final Throwable cause) {
             if (e != null)
                 throw new IllegalStateException("Can't overwrite cause");
             if (!Exception.class.isInstance(cause))

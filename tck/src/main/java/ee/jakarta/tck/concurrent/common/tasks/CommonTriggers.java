@@ -29,14 +29,14 @@ public class CommonTriggers {
      * A trigger that only run once.
      */
     public static class OnceTrigger implements Trigger {
-        public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
             if (lastExecutionInfo != null) {
                 return null;
             }
             return new Date();
         }
 
-        public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
             return false;
         }
     }
@@ -48,18 +48,18 @@ public class CommonTriggers {
 
         private Duration delay;
 
-        public OnceTriggerDelaySkip(Duration delay) {
+        public OnceTriggerDelaySkip(final Duration delay) {
             this.delay = delay;
         }
 
-        public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
             if (lastExecutionInfo != null) {
                 return null;
             }
             return new Date(new Date().getTime() + delay.toMillis());
         }
 
-        public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
             return true;
         }
     }
@@ -76,12 +76,12 @@ public class CommonTriggers {
 
         private static final int executionCountLimit = TestConstants.pollsPerTimeout * 2;
 
-        public TriggerFixedRate(Date startTime, long delta) {
+        public TriggerFixedRate(final Date startTime, final long delta) {
             this.startTime = startTime;
             this.delta = delta;
         }
 
-        public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
             executionCount++;
             if (executionCount > executionCountLimit) {
                 return null;
@@ -93,7 +93,7 @@ public class CommonTriggers {
             return new Date(lastExecutionInfo.getScheduledStart().getTime() + delta);
         }
 
-        public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
             return false;
         }
     }

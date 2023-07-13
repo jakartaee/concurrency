@@ -37,7 +37,7 @@ public class Counter {
         return -1;
     }
 
-    private static int getCount(Connection conn) {
+    private static int getCount(final Connection conn) {
         final String queryStr = "select count(*) from " + Constants.TABLE_P;
 
         try (Statement stmt = conn.createStatement()) {

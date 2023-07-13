@@ -37,7 +37,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 public class ManagedScheduledExecutorDefinitionBean implements ManagedScheduleExecutorDefinitionInterface {
 
     @Override
-    public Object doLookup(String name) throws NamingException {
+    public Object doLookup(final String name) throws NamingException {
         return InitialContext.doLookup(name);
     }
 }
