@@ -45,15 +45,17 @@ public final class StaticCounter {
 
     public static void waitTill(final int expected) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval))
-                ;
+            for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
     public static void waitTillSurpassed(final int expected) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval))
-                ;
+            for (; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 

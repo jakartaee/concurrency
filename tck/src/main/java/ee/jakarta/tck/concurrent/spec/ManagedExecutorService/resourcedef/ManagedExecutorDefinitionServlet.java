@@ -101,7 +101,6 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                             + "per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
     }
@@ -283,7 +282,6 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                             + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
     }
@@ -331,7 +329,6 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                             + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
     }
@@ -443,13 +440,13 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
 
         Callable<Integer> txCallable = () -> {
             allTasksRunning.countDown();
-            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
-            int initialStatus = tx.getStatus();
-            tx.begin();
+            UserTransaction trans = InitialContext.doLookup("java:comp/UserTransaction");
+            int initialStatus = trans.getStatus();
+            trans.begin();
             try {
                 blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
             } finally {
-                tx.rollback();
+                trans.rollback();
             }
             return initialStatus;
         };

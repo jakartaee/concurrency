@@ -52,7 +52,6 @@ public class SecurityFullTests extends TestClient {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
                 .addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
                 .addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);
-        ;
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear").addAsModules(war, jar);
 

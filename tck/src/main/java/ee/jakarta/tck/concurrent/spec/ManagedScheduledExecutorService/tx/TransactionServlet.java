@@ -97,7 +97,6 @@ public class TransactionServlet extends TestServlet {
 
         // continue to run if possible.
         cancelledTask.getRunQuery().set(true);
-        ;
 
         int afterTransacted = Counter.getCount();
 

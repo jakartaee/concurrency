@@ -66,8 +66,9 @@ public final class Wait {
     public static void waitForListenerComplete(final ManagedTaskListenerImpl managedTaskListener, final Duration timeout,
             final Duration pollInterval) {
         assertTimeoutPreemptively(timeout, () -> {
-            for (; !managedTaskListener.eventCalled(ListenerEvent.DONE); sleep(TestConstants.pollInterval))
-                ;
+            for (; !managedTaskListener.eventCalled(ListenerEvent.DONE); sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
@@ -84,8 +85,9 @@ public final class Wait {
      */
     public static void waitTillFutureIsDone(final Future<?> future) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; !future.isDone(); sleep(TestConstants.pollInterval))
-                ;
+            for (; !future.isDone(); sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
@@ -109,8 +111,9 @@ public final class Wait {
 
     public static void waitCancelFuture(final Future<?> future) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (future.cancel(true); !future.isDone(); sleep(TestConstants.pollInterval))
-                ;
+            for (future.cancel(true); !future.isDone(); sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
@@ -123,15 +126,17 @@ public final class Wait {
      */
     public static void waitTillThreadFinish(final Thread thread) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; thread.isAlive(); sleep(TestConstants.pollInterval))
-                ;
+            for (; thread.isAlive(); sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
     public static void waitForTransactionBegan(final CancelledTransactedTask task) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; !task.getBeginTransaction().get(); sleep(TestConstants.pollInterval))
-                ;
+            for (; !task.getBeginTransaction().get(); sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 

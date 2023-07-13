@@ -28,8 +28,8 @@ public final class Connections {
 
     private static DataSource ds;
 
-    public static void setDataSource(final DataSource ds) {
-        Connections.ds = ds;
+    public static void setDataSource(final DataSource dsIn) {
+        Connections.ds = dsIn;
     }
 
     public static void unsetDataSource() {

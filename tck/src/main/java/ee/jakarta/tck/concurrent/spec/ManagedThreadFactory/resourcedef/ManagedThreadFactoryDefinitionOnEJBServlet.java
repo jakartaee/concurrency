@@ -153,13 +153,13 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
         Runnable txTask = () -> {
             try {
                 allThreadsRunning.countDown();
-                UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
-                int initialStatus = tx.getStatus();
-                tx.begin();
+                UserTransaction trans = InitialContext.doLookup("java:comp/UserTransaction");
+                int initialStatus = trans.getStatus();
+                trans.begin();
                 try {
                     blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
                 } finally {
-                    tx.rollback();
+                    trans.rollback();
                 }
                 txTaskResult.complete(initialStatus);
             } catch (Throwable x) {
@@ -177,13 +177,16 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
             blocker.countDown();
 
             Object result;
-            if ((result = txTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS)) instanceof Throwable)
+            
+            result = txTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            if (result instanceof Throwable)
                 throw new AssertionError().initCause((Throwable) result);
             assertEquals(result, Integer.valueOf(Status.STATUS_NO_TRANSACTION),
                     "Transaction context must be cleared from async Callable task "
                             + "per java:comp/concurrent/EJBThreadFactoryB configuration.");
 
-            if ((result = lookupTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS)) instanceof Throwable)
+            result = lookupTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            if (result instanceof Throwable)
                 throw new AssertionError().initCause((Throwable) result);
             assertTrue(result instanceof ManagedThreadFactory, "Application context must be propagated to first thread "
                     + "per java:comp/concurrent/EJBThreadFactoryB configuration.");

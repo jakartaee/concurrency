@@ -227,13 +227,14 @@ public class ContextServiceDefinitionServlet extends TestServlet {
         }
 
         Object result;
-        assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                "Contextual runnable did not start on thread.");
+        
+        result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        assertNotNull(result, "Contextual runnable did not start on thread.");
         assertEquals(result, Integer.valueOf(13),
                 "Third-party context type IntContext must be propagated to contextual Runnable.");
 
-        assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                "Contextual runnable did not complete on thread.");
+        result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        assertNotNull(result, "Contextual runnable did not complete on thread.");
         if (result instanceof Throwable)
             throw new AssertionError("Unable to look up java:comp name from contextual Runnable.")
                     .initCause((Throwable) result);
@@ -341,17 +342,20 @@ public class ContextServiceDefinitionServlet extends TestServlet {
         }
 
         Object result;
-        assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                "Contextual Consumer did not start running.");
+        
+        result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        assertNotNull(result, "Contextual Consumer did not start running.");
         assertEquals(result, Integer.valueOf(121),
                 "Third-party context type IntContext must be propagated to contextual Consumer "
                         + "per java:app/concurrent/ContextA configuration.");
-        assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                "Contextual Consumer did not continue running.");
+        
+        result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        assertNotNull(result, "Contextual Consumer did not continue running.");
         assertEquals(result, "", "Third-party context type StringContext must be cleared on contextual Consumer "
                 + "per java:app/concurrent/ContextA configuration.");
-        assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                "Contextual Consumer did not complete.");
+        
+        result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        assertNotNull(result, "Contextual Consumer did not complete.");
         if (result instanceof Throwable)
             throw new AssertionError("Application context must be propagated to contextual Consumer")
                     .initCause((Throwable) result);

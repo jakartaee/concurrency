@@ -44,8 +44,9 @@ public class CancelledTransactedTask implements Runnable {
 
     private void waitForRun() {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; !runQuery.get(); Wait.sleep(TestConstants.pollInterval))
-                ;
+            for (; !runQuery.get(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 

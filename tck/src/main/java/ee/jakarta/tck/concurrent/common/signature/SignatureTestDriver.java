@@ -101,13 +101,8 @@ public abstract class SignatureTestDriver {
      *
      */
     public Boolean isJavaSEVersion(final String ver) {
-
         String strOSVersion = System.getProperty("java.version");
-        if (strOSVersion.startsWith(ver)) {
-            return true;
-        } else {
-            return false;
-        }
+        return strOSVersion.startsWith(ver);
     }
 
     /**

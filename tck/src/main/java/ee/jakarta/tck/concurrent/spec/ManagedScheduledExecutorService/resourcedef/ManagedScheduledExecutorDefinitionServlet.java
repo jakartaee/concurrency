@@ -111,7 +111,6 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                             + "per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
 
@@ -220,10 +219,11 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                         + "ManagedExecutorDefinition and ContextServiceDefinition config. "
                         + "Instead, was able to look up " + result);
             } catch (CompletionException x) {
-                if (x.getCause() instanceof NamingException)
-                    ; // expected
-                else
+                if (x.getCause() instanceof NamingException) {
+                    //expected
+                } else {
                     throw x;
+                }
             }
 
             IntContext.set(43);
@@ -253,7 +253,6 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                             + "unchanged per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
 
@@ -374,13 +373,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
 
         Callable<Integer> txCallable = () -> {
             allTasksRunning.countDown();
-            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
-            int initialStatus = tx.getStatus();
-            tx.begin();
+            UserTransaction trans = InitialContext.doLookup("java:comp/UserTransaction");
+            int initialStatus = trans.getStatus();
+            trans.begin();
             try {
                 blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
             } finally {
-                tx.rollback();
+                trans.rollback();
             }
             return initialStatus;
         };
@@ -496,20 +495,21 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
             assertTrue(distantFuture.cancel(true), "Must be able to cancel a repeating task before it runs: " + future);
 
             Object result;
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + everyOtherSecond + " did not run: " + future);
+            
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + everyOtherSecond + " did not run: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to first execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + everyOtherSecond + " did not repeat: " + future);
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + everyOtherSecond + " did not repeat: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to second execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + everyOtherSecond + " did not run 3 times: " + future);
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + everyOtherSecond + " did not run 3 times: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to third execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");
@@ -571,20 +571,21 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
         }, monthlyOnThe15th);
         try {
             Object result;
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + monthlyOnThe15th + " did not run: " + future);
+            
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + monthlyOnThe15th + " did not run: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to first execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + monthlyOnThe15th + " did not repeat: " + future);
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + monthlyOnThe15th + " did not repeat: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to second execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");
 
-            assertNotNull(result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "Task scheduled with " + monthlyOnThe15th + " did not run 3 times: " + future);
+            result = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertNotNull(result, "Task scheduled with " + monthlyOnThe15th + " did not run 3 times: " + future);
             assertTrue(result instanceof ManagedScheduledExecutorService,
                     "Application context must be propagated to third execution "
                             + "per java:comp/concurrent/ScheduledExecutorC configuration.");

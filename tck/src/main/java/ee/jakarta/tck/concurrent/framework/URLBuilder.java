@@ -50,8 +50,8 @@ public final class URLBuilder {
     /**
      * Base URL obtained from <code>ArquillianResource</code>
      */
-    public URLBuilder withBaseURL(final URL baseURL) {
-        this.baseURL = baseURL;
+    public URLBuilder withBaseURL(final URL baseURLIn) {
+        this.baseURL = baseURLIn;
         return this;
     }
 
@@ -60,11 +60,11 @@ public final class URLBuilder {
      * http://localhost:80/servlet/ query = count=5 result =
      * http://localhost:80/servlet/?count=5
      */
-    public URLBuilder withQueries(final String... queries) {
+    public URLBuilder withQueries(final String... queriesIn) {
         if (this.queries == null) {
-            this.queries = new ArrayList<>(Arrays.asList(queries));
+            this.queries = new ArrayList<>(Arrays.asList(queriesIn));
         } else {
-            this.queries.addAll(Arrays.asList(queries));
+            this.queries.addAll(Arrays.asList(queriesIn));
         }
         return this;
     }
@@ -74,11 +74,11 @@ public final class URLBuilder {
      * http://localhost:80/servlet/ path = app, inventory result =
      * http://localhost:80/servlet/app/inventory
      */
-    public URLBuilder withPaths(final String... paths) {
+    public URLBuilder withPaths(final String... pathsIn) {
         if (this.paths == null) {
-            this.paths = new ArrayList<>(Arrays.asList(paths));
+            this.paths = new ArrayList<>(Arrays.asList(pathsIn));
         } else {
-            this.paths.addAll(Arrays.asList(paths));
+            this.paths.addAll(Arrays.asList(pathsIn));
         }
         return this;
     }

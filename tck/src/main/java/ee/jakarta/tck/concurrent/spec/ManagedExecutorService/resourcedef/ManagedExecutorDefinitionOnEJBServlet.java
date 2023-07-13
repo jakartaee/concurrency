@@ -150,7 +150,6 @@ public class ManagedExecutorDefinitionOnEJBServlet extends TestServlet {
                             + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
-            ;
             StringContext.set(null);
         }
     }

@@ -33,7 +33,6 @@ public class SigTestData {
 
     public SigTestData() {
         this.props = System.getProperties();
-        ;
     }
 
     public String getVehicle() {
