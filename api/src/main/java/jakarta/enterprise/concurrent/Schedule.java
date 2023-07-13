@@ -23,7 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.time.DayOfWeek;
 import java.time.Month;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Defines schedules for

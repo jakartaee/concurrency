@@ -237,26 +237,6 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             </plugin>
             
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <source>17</source>
-                    <outputDirectory>${project.build.directory}/checkstyle</outputDirectory>
-                    <outputFile>${project.build.directory}/checkstyle/checkstyle-result.xml</outputFile>
-                    <configLocation>etc/config/checkstyle.xml</configLocation>
-                    <excludes>**/module-info.java</excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
-            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
             </plugin>
