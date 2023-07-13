@@ -143,7 +143,11 @@
                     </execution>
                 </executions>
             </plugin>
-
+            
+            <!-- 
+                FIXME currently suppressing javadoc checking
+                Lots of work to be done to fix our javadoc to meet standards.
+             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

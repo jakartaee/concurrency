@@ -42,7 +42,7 @@ public class ContextFullTests extends TestClient {
     @Deployment(name = "ContextTests")
     public static EnterpriseArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class).addPackages(true, ContextFullTests.class.getPackage())
-                .addPackages(false, PACKAGE.TASKS.getPackageName()).deleteClass(SecurityTestEjb.class) 
+                .addPackages(false, PACKAGE.TASKS.getPackageName()).deleteClass(SecurityTestEjb.class)
                 .deleteClass(SecurityTestInterface.class)
                 .addAsWebInfResource(ContextFullTests.class.getPackage(), "web.xml", "web.xml");
 

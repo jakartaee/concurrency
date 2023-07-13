@@ -63,7 +63,7 @@ public class SigTestDriver extends SignatureTestDriver {
             "java.io.InputStream", "java.lang.Deprecated", "java.io.Writer", "java.io.OutputStream", "java.util.List",
             "java.util.Collection", "java.lang.instrument.IllegalClassFormatException",
             "javax.transaction.xa.XAException", "java.lang.annotation.Repeatable", "java.lang.InterruptedException",
-            "java.lang.CloneNotSupportedException", "java.lang.Throwable", "java.lang.Thread", "java.lang.Enum" 
+            "java.lang.CloneNotSupportedException", "java.lang.Throwable", "java.lang.Thread", "java.lang.Enum"
             };
 
     // ---------------------------------------- Methods from SignatureTestDriver
@@ -152,7 +152,7 @@ public class SigTestDriver extends SignatureTestDriver {
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
                 new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class 
+                        String[].class, PrintWriter.class, PrintWriter.class
                         });
         runMethod.invoke(sigTestInstance, new Object[] {
                 testArguments, new PrintWriter(output, true), null
@@ -195,7 +195,7 @@ public class SigTestDriver extends SignatureTestDriver {
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
                 new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class 
+                        String[].class, PrintWriter.class, PrintWriter.class
                         });
         runMethod.invoke(sigTestInstance, new Object[] {
                 testArguments, new PrintWriter(output, true), null
