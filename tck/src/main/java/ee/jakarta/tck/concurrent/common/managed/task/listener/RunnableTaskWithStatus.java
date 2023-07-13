@@ -22,7 +22,7 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class RunnableTaskWithStatus implements Runnable {
 
-    protected final ManagedTaskListenerImpl listener;
+    private final ManagedTaskListenerImpl listener;
 
     private final Duration blockTime;
 
@@ -41,6 +41,10 @@ public class RunnableTaskWithStatus implements Runnable {
         if (!blockTime.isZero()) {
             Wait.sleep(blockTime);
         }
+    }
+    
+    public ManagedTaskListenerImpl getListener() {
+        return listener;
     }
 
 }

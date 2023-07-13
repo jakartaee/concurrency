@@ -66,15 +66,15 @@ public class ContextPropagationServletTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @ArquillianResource
     @OperateOnDeployment(APP_NAME_PROXY)
-    URL baseURL;
+    private URL baseURL;
 
     @ArquillianResource
     @OperateOnDeployment(APP_NAME_WORK)
-    URL workInterfaceURL;
+    private URL workInterfaceURL;
 
     @Override
     protected String getServletPath() {

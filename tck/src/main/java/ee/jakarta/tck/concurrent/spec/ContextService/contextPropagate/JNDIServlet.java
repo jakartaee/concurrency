@@ -35,7 +35,7 @@ public class JNDIServlet extends TestServlet {
     private ContextPropagateInterface intf;
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     public void testJNDIContextAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp)
             throws Exception {

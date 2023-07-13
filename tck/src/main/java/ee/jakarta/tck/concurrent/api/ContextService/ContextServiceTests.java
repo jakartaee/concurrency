@@ -51,7 +51,7 @@ public class ContextServiceTests {
     }
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     /*
      * @testName: contextServiceWithIntf

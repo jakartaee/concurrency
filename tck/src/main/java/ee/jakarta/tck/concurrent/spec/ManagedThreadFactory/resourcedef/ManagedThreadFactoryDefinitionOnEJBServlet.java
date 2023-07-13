@@ -52,7 +52,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     @EJB
     private ManagedThreadFactoryDefinitionInterface managedThreadFactoryDefinitionBean;

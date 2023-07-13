@@ -58,7 +58,7 @@ public class ManagedTaskListenerTests {
     private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService executor;
+    private ManagedExecutorService executor;
 
     @AfterEach
     public void cleanup() {

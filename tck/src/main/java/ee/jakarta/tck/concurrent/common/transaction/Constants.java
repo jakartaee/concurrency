@@ -16,7 +16,11 @@
 
 package ee.jakarta.tck.concurrent.common.transaction;
 
-public class Constants {
+public final class Constants {
+    
+    private Constants() {
+        //utility class
+    }
 
     public static final String CONTEXT_PATH = "/TransactionServlet";
 

@@ -55,7 +55,7 @@ public class InheritedAPITests {
     }
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService executor;
+    private ManagedExecutorService executor;
 
     /*
      * @testName: testBasicManagedExecutorService
@@ -88,15 +88,15 @@ public class InheritedAPITests {
     public void testSubmit() throws Exception {
         Future<?> result = executor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
         result = executor.submit(new CommonTasks.SimpleRunnable());
         Wait.waitTillFutureIsDone(result);
         result.get();
 
-        result = executor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+        result = executor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
     @Test

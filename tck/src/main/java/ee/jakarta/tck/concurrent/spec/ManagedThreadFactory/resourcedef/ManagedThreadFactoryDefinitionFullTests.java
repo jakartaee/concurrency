@@ -44,10 +44,10 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 public class ManagedThreadFactoryDefinitionFullTests extends TestClient {
 
     @ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
-    URL baseURL;
+    private URL baseURL;
 
     @ArquillianResource(ManagedThreadFactoryDefinitionOnEJBServlet.class)
-    URL ejbContextURL;
+    private URL ejbContextURL;
 
     @Deployment(name = "ManagedThreadFactoryDefinitionTests")
     public static EnterpriseArchive createDeployment() {
@@ -75,7 +75,7 @@ public class ManagedThreadFactoryDefinitionFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

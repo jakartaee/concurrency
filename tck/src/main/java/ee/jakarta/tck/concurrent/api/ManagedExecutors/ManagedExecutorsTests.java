@@ -38,7 +38,6 @@ import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListene
 import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -52,8 +51,6 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 @Web
 @Common({ PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS })
 public class ManagedExecutorsTests {
-
-    private static final TestLogger log = TestLogger.get(ManagedExecutorsTests.class);
 
     // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedExecutorsTests")
@@ -71,10 +68,10 @@ public class ManagedExecutorsTests {
     private boolean shutdown = true;
 
     @Resource(lookup = TestConstants.defaultManagedThreadFactory)
-    public ManagedThreadFactory threadFactory;
+    private ManagedThreadFactory threadFactory;
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService executor;
+    private ManagedExecutorService executor;
 
     @AfterEach
     public void after() {

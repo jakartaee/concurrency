@@ -47,7 +47,7 @@ public class ManagedThreadFactoryTests extends TestClient {
     }
 
     @Resource(lookup = TestConstants.defaultManagedThreadFactory)
-    public ManagedThreadFactory threadFactory;
+    private ManagedThreadFactory threadFactory;
 
     /*
      * @testName: isShutdown

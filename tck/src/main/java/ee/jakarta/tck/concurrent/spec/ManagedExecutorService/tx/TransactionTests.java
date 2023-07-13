@@ -39,7 +39,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 public class TransactionTests extends TestClient {
 
     @ArquillianResource
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "TransactionTests")
     public static WebArchive createDeployment() {

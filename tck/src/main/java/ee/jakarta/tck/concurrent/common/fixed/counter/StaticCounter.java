@@ -23,9 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
-public class StaticCounter {
+public final class StaticCounter {
 
     private static AtomicInteger count = new AtomicInteger(0);
+    
+    private StaticCounter() {
+        //utility class
+    }
 
     public static int getCount() {
         return count.get();

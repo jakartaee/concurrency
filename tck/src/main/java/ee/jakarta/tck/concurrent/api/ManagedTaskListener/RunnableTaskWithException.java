@@ -28,7 +28,7 @@ public class RunnableTaskWithException extends RunnableTaskWithStatus implements
 
     @Override
     public void run() {
-        listener.update(ListenerEvent.TASK_RUN);
+        getListener().update(ListenerEvent.TASK_RUN);
         throw new RuntimeException("wrong happend");
     }
 }

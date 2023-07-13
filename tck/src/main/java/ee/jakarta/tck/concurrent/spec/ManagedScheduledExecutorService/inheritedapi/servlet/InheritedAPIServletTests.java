@@ -57,7 +57,7 @@ public class InheritedAPIServletTests {
     }
 
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
     public void before() {
@@ -75,15 +75,15 @@ public class InheritedAPIServletTests {
     public void testApiSubmit() throws Exception {
         Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
         result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
         Wait.waitTillFutureIsDone(result);
         result.get();
 
-        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
     /*
@@ -190,7 +190,7 @@ public class InheritedAPIServletTests {
         Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
         result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.pollInterval.getSeconds(),
                 TimeUnit.SECONDS);

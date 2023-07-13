@@ -69,10 +69,10 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
-    ReqBean reqBean;
+    private ReqBean reqBean;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     /**
      * ManagedScheduledExecutorService submits an action to run asynchronously as a
@@ -536,7 +536,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
         Map<ZonedDateTime, ZonedDateTime> startAndEndTimes = new ConcurrentHashMap<ZonedDateTime, ZonedDateTime>();
 
         Trigger monthlyOnThe15th = new ZonedTrigger() {
-            final Map<Long, ZonedDateTime> schedule = new ConcurrentHashMap<Long, ZonedDateTime>();
+            private final Map<Long, ZonedDateTime> schedule = new ConcurrentHashMap<Long, ZonedDateTime>();
 
             private void initSchedule() {
                 // Use times from the past to make the test predictable

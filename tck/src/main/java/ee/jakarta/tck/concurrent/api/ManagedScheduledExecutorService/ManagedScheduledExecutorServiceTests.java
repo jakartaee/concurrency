@@ -60,7 +60,7 @@ public class ManagedScheduledExecutorServiceTests {
             .getCanonicalName();
 
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     /*
      * @testName: normalScheduleProcess1Test

@@ -22,6 +22,10 @@ import java.time.Duration;
  * infrastructure.
  */
 public final class TestConstants {
+    
+    private TestConstants() {
+        //utility class
+    }
 
     // JNDI Names
     public static final String defaultContextService = "java:comp/DefaultContextService";

@@ -20,7 +20,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-public class Connections {
+public final class Connections {
 
     private Connections() {
         // ignore

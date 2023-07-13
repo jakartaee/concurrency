@@ -26,7 +26,7 @@ import java.util.List;
  * baseURL will be provided by Arquillian using the
  * <code>ArquillianResource</code> annotation to get the URL of the servlet.
  */
-public class URLBuilder {
+public final class URLBuilder {
     private static final TestLogger log = TestLogger.get(URLBuilder.class);
 
     public static final String TEST_METHOD = "testMethod";

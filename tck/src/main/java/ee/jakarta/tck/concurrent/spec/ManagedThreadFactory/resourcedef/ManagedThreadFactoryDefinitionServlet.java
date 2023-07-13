@@ -57,7 +57,7 @@ public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     /**
      * A ManagedThreadFactoryDefinition with all attributes configured enforces

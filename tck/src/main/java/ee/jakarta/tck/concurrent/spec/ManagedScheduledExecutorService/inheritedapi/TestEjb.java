@@ -49,21 +49,21 @@ public class TestEjb implements TestEjbInterface {
     private CounterInterface counter;
 
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     public void testApiSubmit() {
         try {
             Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
             Wait.waitTillFutureIsDone(result);
-            assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+            assertEquals(result.get(), TestConstants.simpleReturnValue);
 
             result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
             Wait.waitTillFutureIsDone(result);
             result.get();
 
-            result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+            result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
             Wait.waitTillFutureIsDone(result);
-            assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+            assertEquals(result.get(), TestConstants.simpleReturnValue);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -152,7 +152,7 @@ public class TestEjb implements TestEjbInterface {
             Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                     TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
             Wait.waitTillFutureIsDone(result);
-            assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+            assertEquals(TestConstants.simpleReturnValue, result.get());
 
             result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(),
                     TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);

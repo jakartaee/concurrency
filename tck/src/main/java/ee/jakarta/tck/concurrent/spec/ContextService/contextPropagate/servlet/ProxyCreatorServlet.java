@@ -40,7 +40,7 @@ public class ProxyCreatorServlet extends TestServlet {
     private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     public void testJNDIContextInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
         Object proxy = true;

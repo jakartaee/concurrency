@@ -44,10 +44,10 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
 
     @ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
-    URL baseURL;
+    private URL baseURL;
 
     @ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
-    URL ejbContextURL;
+    private URL ejbContextURL;
 
     @Deployment(name = "ManagedScheduledExecutorDefinitionTests")
     public static EnterpriseArchive createDeployment() {
@@ -75,7 +75,7 @@ public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

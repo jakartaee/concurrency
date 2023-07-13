@@ -19,7 +19,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Counter {
+public final class Counter {
+    
+    private Counter() {
+        //utility class
+    }
 
     /**
      * Get count of rows in test table to verify if a transaction was committed or

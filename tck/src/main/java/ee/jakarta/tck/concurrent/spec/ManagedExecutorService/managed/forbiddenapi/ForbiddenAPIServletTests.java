@@ -39,7 +39,7 @@ public class ForbiddenAPIServletTests {
     }
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService mes;
+    private ManagedExecutorService mes;
 
     /*
      * @testName: testAwaitTermination

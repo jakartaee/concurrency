@@ -71,7 +71,7 @@ public class ContextServiceDefinitionServlet extends TestServlet {
     private ExecutorService unmanagedThreads;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     @Override
     public void destroy() {

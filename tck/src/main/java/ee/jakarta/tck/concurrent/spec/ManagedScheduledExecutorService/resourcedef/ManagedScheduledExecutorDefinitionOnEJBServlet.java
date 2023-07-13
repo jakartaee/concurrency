@@ -49,10 +49,10 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
-    ReqBean reqBean;
+    private ReqBean reqBean;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     @EJB
     private ManagedScheduleExecutorDefinitionInterface managedScheduleExecutorDefinitionBean;

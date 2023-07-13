@@ -28,10 +28,10 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 public class ContextPropagateBean implements ContextPropagateInterface {
 
     @Resource(lookup = TestConstants.defaultManagedThreadFactory)
-    public ManagedThreadFactory threadFactory;
+    private ManagedThreadFactory threadFactory;
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     @Override
     public TestWorkInterface createWorker(final String classname) {

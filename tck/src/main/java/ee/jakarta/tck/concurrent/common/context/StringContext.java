@@ -18,9 +18,13 @@ package ee.jakarta.tck.concurrent.common.context;
 /**
  * A mock context type that consists of String value.
  */
-public class StringContext {
+public final class StringContext {
     private static final ThreadLocal<String> local = new ThreadLocal<String>();
     public static final String NAME = "StringContext";
+    
+    private StringContext() {
+        //utility class
+    }
 
     public static String get() {
         return local.get();

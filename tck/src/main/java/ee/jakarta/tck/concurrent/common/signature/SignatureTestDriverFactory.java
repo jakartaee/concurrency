@@ -25,7 +25,7 @@ package ee.jakarta.tck.concurrent.common.signature;
  * Factory to obtain SignatureTestDriver implementations.
  * </p>
  */
-public class SignatureTestDriverFactory {
+public final class SignatureTestDriverFactory {
 
     /**
      * <p>

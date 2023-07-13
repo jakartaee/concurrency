@@ -56,7 +56,7 @@ public class ContextServiceDefinitionFromEJBServlet extends TestServlet {
     private ExecutorService unmanagedThreads;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     @EJB
     private ContextServiceDefinitionInterface contextServiceDefinitionBean;

@@ -107,7 +107,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
         // Get JDK modules from jimage
         // Add JDK classes to classpath
-        File jimageOutput = new File(testInfo.getJImageDir());
+        File jimageOutput = new File(getTestInfo().getJImageDir());
         for (String module : jdkModules) {
             Path modulePath = Paths.get(jimageOutput.getAbsolutePath(), module);
             if (Files.isDirectory(modulePath)) {
@@ -225,9 +225,9 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
             log.info("Exception while creating temp files :" + ex);
         }
 
-        String[] packagesUnderTest = getPackages(testInfo.getVehicle());
-        String[] classesUnderTest = getClasses(testInfo.getVehicle());
-        String optionalPkgToIgnore = testInfo.getOptionalTechPackagesToIgnore();
+        String[] packagesUnderTest = getPackages(getTestInfo().getVehicle());
+        String[] classesUnderTest = getClasses(getTestInfo().getVehicle());
+        String optionalPkgToIgnore = getTestInfo().getOptionalTechPackagesToIgnore();
 
         // unlisted optional packages are technology packages for those optional
         // technologies (e.g. jsr-88) that might not have been specified by the
@@ -241,7 +241,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         Properties sysProps = System.getProperties();
         String version = (String) sysProps.get("java.version");
         if (!version.startsWith("1.")) {
-            String jimageDir = testInfo.getJImageDir();
+            String jimageDir = getTestInfo().getJImageDir();
             File f = new File(jimageDir);
             f.mkdirs();
 

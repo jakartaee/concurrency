@@ -59,10 +59,10 @@ public class LastExecutionTests {
     }
 
     @TestName
-    public String testname;
+    private String testname;
 
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     /*
      * @testName: lastExecutionGetIdentityNameTest

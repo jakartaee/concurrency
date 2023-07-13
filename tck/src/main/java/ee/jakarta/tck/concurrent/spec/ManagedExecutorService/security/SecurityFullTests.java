@@ -38,7 +38,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 public class SecurityFullTests extends TestClient {
 
     @ArquillianResource
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "SecurityTests")
     public static EnterpriseArchive createDeployment() {
@@ -60,7 +60,7 @@ public class SecurityFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

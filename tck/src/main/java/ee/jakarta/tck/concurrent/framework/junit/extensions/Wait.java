@@ -10,16 +10,13 @@ import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.transaction.CancelledTransactedTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 
 /**
  * Utility class for waiting for results.
  *
  * Prioritize polling for results, and discourages sleeping
  */
-public class Wait {
-
-    static TestLogger log = TestLogger.get(Wait.class);
+public final class Wait {
 
     private Wait() {
         // Utility class no constructor
@@ -133,7 +130,7 @@ public class Wait {
 
     public static void waitForTransactionBegan(final CancelledTransactedTask task) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; !task.beginTransaction.get(); sleep(TestConstants.pollInterval))
+            for (; !task.getBeginTransaction().get(); sleep(TestConstants.pollInterval))
                 ;
         });
     }

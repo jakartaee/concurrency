@@ -35,7 +35,7 @@ public class ClassloaderServlet extends TestServlet {
     private ContextPropagateInterface intf;
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     public void testClassloaderAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp)
             throws Exception {

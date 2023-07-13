@@ -44,7 +44,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 public class DeploymentDescriptorFullTests extends TestClient {
 
     @ArquillianResource(DeploymentDescriptorServlet.class)
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "DeploymentDescriptorTests")
     public static EnterpriseArchive createDeployment() {
@@ -67,7 +67,7 @@ public class DeploymentDescriptorFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

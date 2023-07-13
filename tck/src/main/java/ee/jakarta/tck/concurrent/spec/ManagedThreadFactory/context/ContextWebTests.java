@@ -37,7 +37,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 public class ContextWebTests extends TestClient {
 
     @ArquillianResource
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "ContextTests")
     public static WebArchive createDeployment() {
@@ -48,7 +48,7 @@ public class ContextWebTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

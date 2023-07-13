@@ -18,9 +18,13 @@ package ee.jakarta.tck.concurrent.common.context;
 /**
  * A mock context type that consists of an int value.
  */
-public class IntContext {
+public final class IntContext {
     private static final ThreadLocal<Integer> local = ThreadLocal.withInitial(() -> 0);
     public static final String NAME = "IntContext";
+    
+    private IntContext() {
+       //utility class
+    }
 
     public static int get() {
         return (int) local.get();

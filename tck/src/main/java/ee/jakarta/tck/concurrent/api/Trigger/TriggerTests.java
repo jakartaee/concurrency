@@ -54,7 +54,7 @@ public class TriggerTests {
     }
 
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
     public void reset() {

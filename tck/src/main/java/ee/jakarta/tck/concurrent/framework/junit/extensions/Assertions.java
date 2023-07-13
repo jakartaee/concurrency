@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * Helper class for custom assertions not supported by JUnit 5
  */
-public class Assertions {
+public final class Assertions {
 
     private Assertions() {
         // helper method

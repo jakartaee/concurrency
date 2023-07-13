@@ -30,11 +30,11 @@ import jakarta.transaction.UserTransaction;
 
 public class CancelledTransactedTask implements Runnable {
 
-    public AtomicBoolean runQuery = new AtomicBoolean(false);
+    private AtomicBoolean runQuery = new AtomicBoolean(false);
 
-    public AtomicBoolean beginTransaction = new AtomicBoolean(false);
+    private AtomicBoolean beginTransaction = new AtomicBoolean(false);
 
-    public AtomicBoolean cancelTransaction = new AtomicBoolean(false);
+    private AtomicBoolean cancelTransaction = new AtomicBoolean(false);
 
     private final String sqlTemplate;
 
@@ -81,5 +81,21 @@ public class CancelledTransactedTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public AtomicBoolean getRunQuery() {
+        return runQuery;
+    }
+
+    public AtomicBoolean getBeginTransaction() {
+        return beginTransaction;
+    }
+
+    public AtomicBoolean getCancelTransaction() {
+        return cancelTransaction;
+    }
+
+    public String getSqlTemplate() {
+        return sqlTemplate;
     }
 }

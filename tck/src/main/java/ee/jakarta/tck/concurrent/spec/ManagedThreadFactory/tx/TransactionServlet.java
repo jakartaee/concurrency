@@ -54,7 +54,7 @@ public class TransactionServlet extends TestServlet {
     private DataSource ds;
 
     @Resource(lookup = TestConstants.defaultManagedThreadFactory)
-    public ManagedThreadFactory threadFactory;
+    private ManagedThreadFactory threadFactory;
 
     @Override
     protected void beforeClass() throws RemoteException {
@@ -93,10 +93,10 @@ public class TransactionServlet extends TestServlet {
         Wait.waitForTransactionBegan(cancelledTask);
 
         // before it commit.
-        cancelledTask.cancelTransaction.set(true);
+        cancelledTask.getCancelTransaction().set(true);
 
         // continue to run if possible.
-        cancelledTask.runQuery.set(true);
+        cancelledTask.getRunQuery().set(true);
         ;
 
         int afterTransacted = Counter.getCount();

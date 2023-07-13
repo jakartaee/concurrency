@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityServlet extends TestServlet {
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService executor;
+    private ManagedExecutorService executor;
 
     public void managedExecutorServiceAPISecurityTest(final HttpServletRequest req, final HttpServletResponse res)
             throws Exception {

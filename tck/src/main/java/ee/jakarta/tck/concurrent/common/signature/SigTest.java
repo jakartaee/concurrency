@@ -33,7 +33,7 @@ import java.util.ArrayList;
  */
 public abstract class SigTest {
 
-    protected SignatureTestDriver driver;
+    private SignatureTestDriver driver;
 
     /**
      * <p>
@@ -155,7 +155,7 @@ public abstract class SigTest {
 
     } // END getClasses
 
-    protected SigTestData testInfo; // holds the bin.dir property
+    private SigTestData testInfo; // holds the bin.dir property
 
     /**
      * Called by the test framework to initialize this test. The method simply
@@ -196,7 +196,7 @@ public abstract class SigTest {
     public static class Fault extends Exception {
         private static final long serialVersionUID = -1574745208867827913L;
 
-        public Throwable t;
+        private Throwable t;
 
         /**
          * creates a Fault with a message
@@ -292,7 +292,7 @@ public abstract class SigTest {
     public static class SetupException extends Exception {
         private static final long serialVersionUID = -7616313680616499158L;
 
-        public Exception e;
+        private Exception e;
 
         /**
          * creates a Fault with a message

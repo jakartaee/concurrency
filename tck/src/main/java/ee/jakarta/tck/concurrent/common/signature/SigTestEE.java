@@ -32,9 +32,7 @@ import java.util.Properties;
  */
 public abstract class SigTestEE {
 
-    String[] sVehicles;
-
-    protected SignatureTestDriver driver;
+    private SignatureTestDriver driver;
 
     /**
      * <p>
@@ -184,7 +182,7 @@ public abstract class SigTestEE {
 
     } // END getClasses
 
-    protected SigTestData testInfo; // holds the bin.dir and vehicle properties
+    private SigTestData testInfo; // holds the bin.dir and vehicle properties
 
     /**
      * Called by the test framework to initialize this test. The method simply
@@ -199,6 +197,14 @@ public abstract class SigTestEE {
         } catch (Exception e) {
             System.out.println("Unexpected exception " + e.getMessage());
         }
+    }
+    
+    protected SigTestData getTestInfo() {
+        if (testInfo == null) {
+            setup();
+        }
+        
+        return testInfo;
     }
 
     /**
@@ -301,7 +307,7 @@ public abstract class SigTestEE {
     public static class Fault extends Exception {
         private static final long serialVersionUID = -1574745208867827913L;
 
-        public Throwable t;
+        private Throwable t;
 
         /**
          * creates a Fault with a message

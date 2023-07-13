@@ -47,10 +47,10 @@ public class DeploymentDescriptorServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @EJB
-    DeploymentDescriptorTestBeanInterface enterpriseBean;
+    private DeploymentDescriptorTestBeanInterface enterpriseBean;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     /**
      * Tests context-service defined in a deployment descriptor.

@@ -37,15 +37,12 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 public class ContextFullTests extends TestClient {
 
     @ArquillianResource
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "ContextTests")
     public static EnterpriseArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class).addPackages(true, ContextFullTests.class.getPackage())
-                .addPackages(false, PACKAGE.TASKS.getPackageName()).deleteClass(SecurityTestEjb.class) // SecurityTestEjb
-                                                                                                       // and
-                                                                                                       // SecurityTestInterface
-                                                                                                       // are in the jar
+                .addPackages(false, PACKAGE.TASKS.getPackageName()).deleteClass(SecurityTestEjb.class) 
                 .deleteClass(SecurityTestInterface.class)
                 .addAsWebInfResource(ContextFullTests.class.getPackage(), "web.xml", "web.xml");
 
@@ -58,7 +55,7 @@ public class ContextFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @Override
     protected String getServletPath() {

@@ -59,10 +59,10 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
-    AppBean appBean;
+    private AppBean appBean;
 
     @Resource
-    UserTransaction tx;
+    private UserTransaction tx;
 
     /**
      * ManagedExecutorService submits an action to run asynchronously as a

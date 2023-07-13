@@ -70,25 +70,25 @@ public class ContextPropagationFullTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     @ArquillianResource(JNDIServlet.class)
-    URL jndiURL;
+    private URL jndiURL;
 
     @ArquillianResource(JSPSecurityServlet.class)
-    URL jspURL;
+    private URL jspURL;
 
     @ArquillianResource(ClassloaderServlet.class)
-    URL classloaderURL;
+    private URL classloaderURL;
 
     @ArquillianResource(SecurityServlet.class)
-    URL securityURL;
+    private URL securityURL;
 
     @ArquillianResource(ContextServiceDefinitionServlet.class)
-    URL contextURL;
+    private URL contextURL;
 
     @ArquillianResource(ContextServiceDefinitionFromEJBServlet.class)
-    URL ejbContextURL;
+    private URL ejbContextURL;
 
     // HttpServletRequest.getUserPrincipal behavior is unclear when accessed from
     // another thread or the current user is changed

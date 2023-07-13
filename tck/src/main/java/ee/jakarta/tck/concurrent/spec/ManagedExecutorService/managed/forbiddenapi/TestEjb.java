@@ -31,7 +31,7 @@ public class TestEjb implements TestEjbInterface {
     private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
-    public ManagedExecutorService executor;
+    private ManagedExecutorService executor;
 
     public void testAwaitTermination() {
         try {

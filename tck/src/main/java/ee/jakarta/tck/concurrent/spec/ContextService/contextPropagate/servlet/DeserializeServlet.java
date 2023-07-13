@@ -37,7 +37,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DeserializeServlet extends HttpServlet {
 
     @Resource(lookup = TestConstants.defaultContextService)
-    public ContextService context;
+    private ContextService context;
 
     @Override
     protected void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {

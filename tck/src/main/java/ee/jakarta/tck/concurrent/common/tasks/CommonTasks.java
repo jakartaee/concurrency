@@ -22,9 +22,11 @@ import java.util.concurrent.Callable;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
-public class CommonTasks {
-
-    public static final String SIMPLE_RETURN_STRING = "ok";
+public final class CommonTasks {
+    
+    private CommonTasks() {
+        //utility class
+    }
 
     public static class SimpleCallable implements Callable<String> {
         private Duration waitTime = Duration.ZERO;
@@ -46,7 +48,7 @@ public class CommonTasks {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            return SIMPLE_RETURN_STRING;
+            return TestConstants.simpleReturnValue;
         }
     }
 
