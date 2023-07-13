@@ -33,35 +33,36 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to annotation configuration
+@Web
+@RunAsClient // Requires client testing due to annotation configuration
 @Common({ PACKAGE.TRANSACTION })
 public class TransactionTests extends TestClient {
 
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="TransactionTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true,  TransactionTests.class.getPackage());
-	}
+    @ArquillianResource
+    URL baseURL;
 
-	/*
-	 * @testName: testRollbackTransactionWithManagedExecutorService
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:31.3;CONCURRENCY:SPEC:39.3;
-	 * CONCURRENCY:SPEC:92.2;CONCURRENCY:SPEC:92.3;
-	 * 
-	 * @test_Strategy: get UserTransaction inside one task submitted by
-	 * ManagedExecutorService. test roll back function in the submitted task.
-	 */
-	@Test
-	@Order(1)
-	public void testRollbackTransactionWithManagedExecutorService() {
-		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
-	}
-	
-	 /*
+    @Deployment(name = "TransactionTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, TransactionTests.class.getPackage());
+    }
+
+    /*
+     * @testName: testRollbackTransactionWithManagedExecutorService
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:31.3;CONCURRENCY:SPEC:39.3;
+     * CONCURRENCY:SPEC:92.2;CONCURRENCY:SPEC:92.3;
+     * 
+     * @test_Strategy: get UserTransaction inside one task submitted by
+     * ManagedExecutorService. test roll back function in the submitted task.
+     */
+    @Test
+    @Order(1)
+    public void testRollbackTransactionWithManagedExecutorService() {
+        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
+                .withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
+    }
+
+    /*
      * @testName: testCommitTransactionWithManagedExecutorService
      * 
      * @assertion_ids:
@@ -77,25 +78,27 @@ public class TransactionTests extends TestClient {
      * ManagedExecutorService.it support user-managed global transaction demarcation
      * using the jakarta.transaction.UserTransaction interface.
      */
-    @Test //TODO rewrite test logic to avoid duplicate key violation
+    @Test // TODO rewrite test logic to avoid duplicate key violation
     @Order(2)
     public void testCommitTransactionWithManagedExecutorService() {
-        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
+        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
+                .withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
     }
 
-	/*
-	 * @testName: testCancelTransactionWithManagedExecutorService
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:112;CONCURRENCY:SPEC:35;CONCURRENCY:SPEC:68;CONCURRENCY:
-	 * SPEC:91.4;
-	 * 
-	 * @test_Strategy: get UserTransaction inside one task submitted by
-	 * ManagedExecutorService.cancel the task after submit one task.
-	 */
-	@Test
-	@Order(3)
-	public void testCancelTransactionWithManagedExecutorService() {
-		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
-	}
+    /*
+     * @testName: testCancelTransactionWithManagedExecutorService
+     * 
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:112;CONCURRENCY:SPEC:35;CONCURRENCY:SPEC:68;CONCURRENCY:
+     * SPEC:91.4;
+     * 
+     * @test_Strategy: get UserTransaction inside one task submitted by
+     * ManagedExecutorService.cancel the task after submit one task.
+     */
+    @Test
+    @Order(3)
+    public void testCancelTransactionWithManagedExecutorService() {
+        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
+                .withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
+    }
 }

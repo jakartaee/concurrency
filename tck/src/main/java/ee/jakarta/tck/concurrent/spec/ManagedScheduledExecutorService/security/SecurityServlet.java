@@ -35,13 +35,15 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 
-	public void managedScheduledExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
-			req.login("javajoe", "javajoe");
-			
-			ManagedScheduledExecutorService executorService = InitialContext.doLookup(TestConstants.DefaultManagedScheduledExecutorService);
-			ScheduledFuture<?> future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
+    public void managedScheduledExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res)
+            throws Exception {
+        req.login("javajoe", "javajoe");
 
-			Object result = Wait.waitForTaskComplete(future);
-			assertEquals(result, TestConstants.SimpleReturnValue);
-	}
+        ManagedScheduledExecutorService executorService = InitialContext
+                .doLookup(TestConstants.DefaultManagedScheduledExecutorService);
+        ScheduledFuture<?> future = executorService.schedule(new SecurityTestTask(), new CommonTriggers.OnceTrigger());
+
+        Object result = Wait.waitForTaskComplete(future);
+        assertEquals(result, TestConstants.SimpleReturnValue);
+    }
 }

@@ -27,75 +27,74 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
 @Web
-@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
+@Common({ PACKAGE.TASKS, PACKAGE.FIXED_COUNTER })
 public class ForbiddenAPIEJBTests {
-		
-	@Deployment(name="ForbiddenAPITests")
-	public static JavaArchive createDeployment() {
-		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true, ForbiddenAPIEJBTests.class.getPackage());
-	}
 
-	@EJB
-	private TestEjbInterface testEjb;
+    @Deployment(name = "ForbiddenAPITests")
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class).addPackages(true, ForbiddenAPIEJBTests.class.getPackage());
+    }
 
-	/*
-	 * @testName: testAwaitTermination
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.1
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testAwaitTermination() {
-		testEjb.testAwaitTermination();
-	}
+    @EJB
+    private TestEjbInterface testEjb;
 
-	/*
-	 * @testName: testIsShutdown
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.2
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsShutdown() {
-		testEjb.testIsShutdown();
-	}
+    /*
+     * @testName: testAwaitTermination
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.1
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testAwaitTermination() {
+        testEjb.testAwaitTermination();
+    }
 
-	/*
-	 * @testName: testIsTerminated
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.3
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsTerminated() {
-		testEjb.testIsTerminated();
-	}
+    /*
+     * @testName: testIsShutdown
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.2
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsShutdown() {
+        testEjb.testIsShutdown();
+    }
 
-	/*
-	 * @testName: testShutdown
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.4
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdown() {
-		testEjb.testShutdown();
-	}
+    /*
+     * @testName: testIsTerminated
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.3
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsTerminated() {
+        testEjb.testIsTerminated();
+    }
 
-	/*
-	 * @testName: testShutdownNow
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.5
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdownNow() {
-		testEjb.testShutdownNow();
-	}
+    /*
+     * @testName: testShutdown
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.4
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdown() {
+        testEjb.testShutdown();
+    }
+
+    /*
+     * @testName: testShutdownNow
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:56;CONCURRENCY:SPEC:57.5
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdownNow() {
+        testEjb.testShutdownNow();
+    }
 }

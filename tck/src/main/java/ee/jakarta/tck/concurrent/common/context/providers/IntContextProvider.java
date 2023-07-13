@@ -22,7 +22,8 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 
 /**
- * Thread context provider for a mock context type that consists of an int value.
+ * Thread context provider for a mock context type that consists of an int
+ * value.
  */
 public class IntContextProvider implements ThreadContextProvider {
     public ThreadContextSnapshot currentContext(final Map<String, String> props) {

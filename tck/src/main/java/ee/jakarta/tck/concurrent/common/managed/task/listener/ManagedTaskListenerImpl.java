@@ -27,47 +27,47 @@ import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 public class ManagedTaskListenerImpl implements ManagedTaskListener {
 
-	private static final TestLogger log = TestLogger.get(ManagedTaskListenerImpl.class);
+    private static final TestLogger log = TestLogger.get(ManagedTaskListenerImpl.class);
 
-	private final List<ListenerEvent> events = Collections.synchronizedList(new ArrayList<ListenerEvent>());
+    private final List<ListenerEvent> events = Collections.synchronizedList(new ArrayList<ListenerEvent>());
 
-	@Override
-	public void taskAborted(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
-		events.add(ListenerEvent.ABORTED);
-		log.info("task aborted");
-	}
+    @Override
+    public void taskAborted(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+        events.add(ListenerEvent.ABORTED);
+        log.info("task aborted");
+    }
 
-	@Override
-	public void taskDone(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
-		events.add(ListenerEvent.DONE);
-		log.info("task done");
-	}
+    @Override
+    public void taskDone(Future<?> future, ManagedExecutorService mes, Object arg2, Throwable arg3) {
+        events.add(ListenerEvent.DONE);
+        log.info("task done");
+    }
 
-	@Override
-	public void taskStarting(Future<?> future, ManagedExecutorService mes, Object arg2) {
-		events.add(ListenerEvent.STARTING);
-		log.info("task starting");
-	}
+    @Override
+    public void taskStarting(Future<?> future, ManagedExecutorService mes, Object arg2) {
+        events.add(ListenerEvent.STARTING);
+        log.info("task starting");
+    }
 
-	@Override
-	public void taskSubmitted(Future<?> future, ManagedExecutorService mes, Object arg2) {
-		events.add(ListenerEvent.SUBMITTED);
-		log.info("task submitted");
-	}
+    @Override
+    public void taskSubmitted(Future<?> future, ManagedExecutorService mes, Object arg2) {
+        events.add(ListenerEvent.SUBMITTED);
+        log.info("task submitted");
+    }
 
-	public boolean eventCalled(ListenerEvent event) {
-		return events.contains(event);
-	}
+    public boolean eventCalled(ListenerEvent event) {
+        return events.contains(event);
+    }
 
-	public void clearEvents() {
-		events.clear();
-	}
+    public void clearEvents() {
+        events.clear();
+    }
 
-	public void update(ListenerEvent event) {
-		events.add(event);
-	}
+    public void update(ListenerEvent event) {
+        events.add(event);
+    }
 
-	public List<ListenerEvent> events() {
-		return events;
-	}
+    public List<ListenerEvent> events() {
+        return events;
+    }
 }

@@ -27,34 +27,34 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
 
 /**
- * This extension will intercept all archives before they are deployed to the container and append 
- * a library with the following:
+ * This extension will intercept all archives before they are deployed to the
+ * container and append a library with the following:
  * 
- * Package - ee.jakarta.tck.concurrent.framework
- * Package - ee.jakarta.tck.concurrent.framework.arquillian.extensions
- * Package - ee.jakarta.tck.concurrent.framework.junit.extensions
+ * Package - ee.jakarta.tck.concurrent.framework Package -
+ * ee.jakarta.tck.concurrent.framework.arquillian.extensions Package -
+ * ee.jakarta.tck.concurrent.framework.junit.extensions
  * 
  */
 public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
-    
+
     private static final Logger log = Logger.getLogger(TCKFrameworkAppender.class.getCanonicalName());
-    
+
     private static final Package utilPackage = TestServlet.class.getPackage();
     private static final Package annoPackage = Common.class.getPackage();
     private static final Package extePackage = AssertionExtension.class.getPackage();
-    
+
     private static final String archiveName = "jakarta-concurrent-framework.jar";
-    
+
     private static JavaArchive framework = null;
 
     @Override
     public Archive<?> createAuxiliaryArchive() {
-        if(framework != null) {
+        if (framework != null) {
             return framework;
         }
-        
+
         log.info("Creating auxiliary archive: " + archiveName);
-        
+
         framework = ShrinkWrap.create(JavaArchive.class, archiveName);
         framework.addPackages(false, utilPackage, annoPackage, extePackage);
         return framework;

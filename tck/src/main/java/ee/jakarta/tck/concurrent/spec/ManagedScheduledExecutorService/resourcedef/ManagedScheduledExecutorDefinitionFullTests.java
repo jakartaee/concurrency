@@ -39,119 +39,118 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient //Requires client testing due to annotation configuration
+@Full
+@RunAsClient // Requires client testing due to annotation configuration
 public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
-	
-	@ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
-	URL baseURL;
-	
-	@ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
-	URL ejbContextURL;
-	
-	@Deployment(name="ManagedScheduledExecutorDefinitionTests")
-	public static EnterpriseArchive createDeployment() {
-		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
-		        .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
-				.addClasses(
-						ReqBean.class,
-						ManagedScheduledExecutorDefinitionServlet.class,
-						ManagedScheduledExecutorDefinitionOnEJBServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
-		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedScheduledExecutorDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedScheduledExecutorDefinitionFullTests.class.getPackage())
-				.deleteClasses(
-						ReqBean.class,
-						ManagedScheduledExecutorDefinitionWebBean.class,
-						ManagedScheduledExecutorDefinitionServlet.class,
-						ManagedScheduledExecutorDefinitionOnEJBServlet.class)
-				.addClasses(
-						ContextServiceDefinitionInterface.class,
-						ContextServiceDefinitionBean.class)
-				.addAsManifestResource(ManagedScheduledExecutorDefinitionFullTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedScheduledExecutorDefinitionTests.ear").addAsModules(war, jar);
-		
-		return ear;
-	}
-	
+
+    @ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
+    URL baseURL;
+
+    @ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
+    URL ejbContextURL;
+
+    @Deployment(name = "ManagedScheduledExecutorDefinitionTests")
+    public static EnterpriseArchive createDeployment() {
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
+                .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
+                .addClasses(ReqBean.class, ManagedScheduledExecutorDefinitionServlet.class,
+                        ManagedScheduledExecutorDefinitionOnEJBServlet.class, ContextServiceDefinitionServlet.class)
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
+                        StringContextProvider.class.getName());
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedScheduledExecutorDefinitionTests_ejb.jar")
+                .addPackages(false, ManagedScheduledExecutorDefinitionFullTests.class.getPackage())
+                .deleteClasses(ReqBean.class, ManagedScheduledExecutorDefinitionWebBean.class,
+                        ManagedScheduledExecutorDefinitionServlet.class,
+                        ManagedScheduledExecutorDefinitionOnEJBServlet.class)
+                .addClasses(ContextServiceDefinitionInterface.class, ContextServiceDefinitionBean.class)
+                .addAsManifestResource(ManagedScheduledExecutorDefinitionFullTests.class.getPackage(), "ejb-jar.xml",
+                        "ejb-jar.xml");
+
+        EnterpriseArchive ear = ShrinkWrap
+                .create(EnterpriseArchive.class, "ManagedScheduledExecutorDefinitionTests.ear").addAsModules(war, jar);
+
+        return ear;
+    }
+
     @TestName
     String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ManagedScheduledExecutorDefinitionServlet";
-	}
-	
 
-	@Test
+    @Override
+    protected String getServletPath() {
+        return "ManagedScheduledExecutorDefinitionServlet";
+    }
+
+    @Test
     public void testAsyncCompletionStageMSE() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodRunsWithContext() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodWithMaxAsync3() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-    
-	// Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
-	@Disabled
+
+    // Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
+    @Disabled
     public void testCompletedFutureMSE() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testIncompleteFutureMSE() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
-	@Test
+
+    @Test
     public void testIncompleteFutureMSE_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testManagedScheduledExecutorDefinitionAllAttributes() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
-	@Test
+
+    @Test
     public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testManagedScheduledExecutorDefinitionDefaults() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
-	@Test
+
+    @Test
     public void testManagedScheduledExecutorDefinitionDefaults_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testNotAnAsynchronousMethod() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testScheduleWithCronTrigger() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testScheduleWithZonedTrigger() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 }

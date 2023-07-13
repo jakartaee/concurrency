@@ -21,13 +21,13 @@ import jakarta.enterprise.concurrent.ContextService;
 
 public interface ContextServiceDefinitionInterface {
 
-	/**
-	 * Get java:comp/concurrent/EJBContextC from the bean.
-	 */
-	public ContextService getContextC() throws NamingException;
+    /**
+     * Get java:comp/concurrent/EJBContextC from the bean.
+     */
+    public ContextService getContextC() throws NamingException;
 
-	/**
-	 * Get java:comp/concurrent/ContextB from the bean.
-	 */
-	ContextService getContextB() throws NamingException;
+    /**
+     * Get java:comp/concurrent/ContextB from the bean.
+     */
+    ContextService getContextB() throws NamingException;
 }

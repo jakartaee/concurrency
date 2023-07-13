@@ -27,62 +27,62 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 
 @Stateless
 public class TestEjb implements TestEjbInterface {
-	
-	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-	
+
+    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
+
     @Resource(lookup = TestConstants.DefaultManagedExecutorService)
     public ManagedExecutorService executor;
 
-	public void testAwaitTermination() {
-		try {
-		    executor.awaitTermination(10, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			fail(e.toString());
-		} catch (IllegalStateException e) {
-			return;
-		}
-		
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testAwaitTermination() {
+        try {
+            executor.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            fail(e.toString());
+        } catch (IllegalStateException e) {
+            return;
+        }
 
-	public void testIsShutdown() {
-		try {
-		    executor.isShutdown();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	public void testIsTerminated() {
-		try {
-		    executor.isTerminated();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testIsShutdown() {
+        try {
+            executor.isShutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
 
-	public void testShutdown() {
-		try {
-		    executor.shutdown();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	public void testShutdownNow() {
-		try {
-		    executor.shutdownNow();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testIsTerminated() {
+        try {
+            executor.isTerminated();
+        } catch (IllegalStateException e) {
+            return;
+        }
+
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    public void testShutdown() {
+        try {
+            executor.shutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
+
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    public void testShutdownNow() {
+        try {
+            executor.shutdownNow();
+        } catch (IllegalStateException e) {
+            return;
+        }
+
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
 }

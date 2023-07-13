@@ -21,26 +21,26 @@ import java.time.Duration;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class RunnableTaskWithStatus implements Runnable {
-    
-	protected final ManagedTaskListenerImpl listener;
-	
-	private final Duration blockTime;
 
-	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
-		this.listener = listener;
-		blockTime = Duration.ZERO;
-	}
+    protected final ManagedTaskListenerImpl listener;
 
-	public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, Duration blockTime) {
-		this.listener = listener;
-		this.blockTime = blockTime;
-	}
+    private final Duration blockTime;
 
-	public void run() {
-		listener.update(ListenerEvent.TASK_RUN);
-		if (! blockTime.isZero()) {
-		    Wait.sleep(blockTime);
-		}
-	}
+    public RunnableTaskWithStatus(ManagedTaskListenerImpl listener) {
+        this.listener = listener;
+        blockTime = Duration.ZERO;
+    }
+
+    public RunnableTaskWithStatus(ManagedTaskListenerImpl listener, Duration blockTime) {
+        this.listener = listener;
+        this.blockTime = blockTime;
+    }
+
+    public void run() {
+        listener.update(ListenerEvent.TASK_RUN);
+        if (!blockTime.isZero()) {
+            Wait.sleep(blockTime);
+        }
+    }
 
 }

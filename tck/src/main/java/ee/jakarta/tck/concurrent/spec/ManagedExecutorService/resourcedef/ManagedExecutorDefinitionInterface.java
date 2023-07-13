@@ -19,6 +19,6 @@ import javax.naming.NamingException;
 
 public interface ManagedExecutorDefinitionInterface {
 
-	Object doLookup(String name) throws NamingException;
+    Object doLookup(String name) throws NamingException;
 
 }

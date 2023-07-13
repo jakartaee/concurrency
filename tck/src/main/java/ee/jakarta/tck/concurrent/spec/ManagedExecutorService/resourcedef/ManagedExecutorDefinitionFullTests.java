@@ -39,109 +39,107 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
-public class ManagedExecutorDefinitionFullTests extends TestClient{
-	
-	@ArquillianResource(ManagedExecutorDefinitionServlet.class)
-	URL baseURL;
-	
-	@ArquillianResource(ManagedExecutorDefinitionOnEJBServlet.class)
-	URL ejbContextURL;
-	
-	@Deployment(name="ManagedExecutorDefinitionTests")
-	public static EnterpriseArchive createDeployment() {
-		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedExecutorDefinitionTests_web.war")
-		        .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
-				.addClasses(
-						AppBean.class,
-						ManagedExecutorDefinitionServlet.class,
-						ManagedExecutorDefinitionOnEJBServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
-		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedExecutorDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedExecutorDefinitionFullTests.class.getPackage())
-				.deleteClasses(
-						AppBean.class,
-						ManagedExecutorDefinitionWebBean.class,
-						ManagedExecutorDefinitionServlet.class,
-						ManagedExecutorDefinitionOnEJBServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addClasses(
-						ContextServiceDefinitionInterface.class,
-						ContextServiceDefinitionBean.class);
-				//TODO document how users can dynamically inject vendor specific deployment descriptors into this archive
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedExecutorDefinitionTests.ear").addAsModules(war, jar);
-		
-		return ear;
-	}
-	
+@Full
+@RunAsClient // Requires client testing due to multiple servlets and annotation configuration
+public class ManagedExecutorDefinitionFullTests extends TestClient {
+
+    @ArquillianResource(ManagedExecutorDefinitionServlet.class)
+    URL baseURL;
+
+    @ArquillianResource(ManagedExecutorDefinitionOnEJBServlet.class)
+    URL ejbContextURL;
+
+    @Deployment(name = "ManagedExecutorDefinitionTests")
+    public static EnterpriseArchive createDeployment() {
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedExecutorDefinitionTests_web.war")
+                .addPackages(true, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
+                .addClasses(AppBean.class, ManagedExecutorDefinitionServlet.class,
+                        ManagedExecutorDefinitionOnEJBServlet.class, ContextServiceDefinitionServlet.class)
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
+                        StringContextProvider.class.getName());
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedExecutorDefinitionTests_ejb.jar")
+                .addPackages(false, ManagedExecutorDefinitionFullTests.class.getPackage())
+                .deleteClasses(AppBean.class, ManagedExecutorDefinitionWebBean.class,
+                        ManagedExecutorDefinitionServlet.class, ManagedExecutorDefinitionOnEJBServlet.class,
+                        ContextServiceDefinitionServlet.class)
+                .addClasses(ContextServiceDefinitionInterface.class, ContextServiceDefinitionBean.class);
+        // TODO document how users can dynamically inject vendor specific deployment
+        // descriptors into this archive
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedExecutorDefinitionTests.ear")
+                .addAsModules(war, jar);
+
+        return ear;
+    }
+
     @TestName
     String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ManagedExecutorDefinitionServlet";
-	}
-	
-	@Test
+
+    @Override
+    protected String getServletPath() {
+        return "ManagedExecutorDefinitionServlet";
+    }
+
+    @Test
     public void testAsyncCompletionStage() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodReturnsCompletableFuture() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodReturnsCompletionStage() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodVoidReturnType() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
     // TCK Accepted Challenge: https://github.com/jakartaee/concurrency/issues/224
-	@Disabled
+    @Disabled
     public void testCompletedFuture() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testCopyCompletableFuture() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
-	@Test
+
+    @Test
     public void testCopyCompletableFutureEJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testIncompleteFuture() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
-	@Test
+
+    @Test
     public void testIncompleteFutureEJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testManagedExecutorDefinitionAllAttributes() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testManagedExecutorDefinitionDefaults() {
-    	runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
 }

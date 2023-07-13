@@ -23,8 +23,8 @@ import jakarta.ejb.Stateless;
 @Stateless
 public class SecurityTestEjb implements SecurityTestInterface {
 
-	@RolesAllowed("Manager")
-	public String managerMethod1() {
-		return TestConstants.SimpleReturnValue;
-	}
+    @RolesAllowed("Manager")
+    public String managerMethod1() {
+        return TestConstants.SimpleReturnValue;
+    }
 }

@@ -55,7 +55,8 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
                 return StringContext.get();
             };
 
-            ManagedScheduledExecutorService executor = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
+            ManagedScheduledExecutorService executor = InitialContext
+                    .doLookup("java:global/concurrent/ScheduledExecutorD");
 
             IntContext.set(3000);
 
@@ -77,9 +78,12 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
 
             taskCanEnd.countDown();
 
-            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedScheduledExecutor-1");
-            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedScheduledExecutor-2");
-            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedScheduledExecutor-3");
+            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedScheduledExecutor-1");
+            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedScheduledExecutor-2");
+            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedScheduledExecutor-3");
 
             assertEquals(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0));
         } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
@@ -96,8 +100,8 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
             IntContext.set(4000);
             StringContext.set("testDeploymentDescriptorDefinesManagedThreadFactory-1");
 
-            ManagedThreadFactory threadFactory =
-                    (ManagedThreadFactory) InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
+            ManagedThreadFactory threadFactory = (ManagedThreadFactory) InitialContext
+                    .doLookup("java:app/concurrent/ThreadFactoryD");
 
             StringContext.set("testDeploymentDescriptorDefinesManagedThreadFactory-2");
 
@@ -118,9 +122,11 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
 
             thread.start();
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(6)); // priority from managed-thread-factory
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(6)); // priority from
+                                                                                                // managed-thread-factory
             assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0)); // IntContext cleared
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedThreadFactory-1"); // propagated
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedThreadFactory-1"); // propagated
             Object lookupResult = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
             if (lookupResult instanceof Exception)
                 throw new EJBException((Exception) lookupResult);

@@ -29,97 +29,97 @@ import ee.jakarta.tck.concurrent.framework.TestLogger;
  */
 public class RunnableTask implements Runnable {
 
-	private static final TestLogger log = TestLogger.get(RunnableTask.class);
+    private static final TestLogger log = TestLogger.get(RunnableTask.class);
 
-	private final String jndiName;
+    private final String jndiName;
 
-	private final String expectedJndiValue;
+    private final String expectedJndiValue;
 
-	private final String contexualClassName;
+    private final String contexualClassName;
 
-	private final long blockTime;
-	
-	private volatile int count = 0;
+    private final long blockTime;
 
-	@Override
-	public void run() {
-		if (blockTime > 0) {
-			try {
-				TimeUnit.MILLISECONDS.sleep(blockTime);
-			} catch (InterruptedException e) {
-				log.severe("", e);
-			}
-		}
-		boolean jndiPassed = lookupEnvRef();
-		boolean loadClassPassed = loadClass();
-		if (!(jndiPassed && loadClassPassed)) {
-			throw new RuntimeException(
-					"jndi test passed: " + jndiPassed + ", class loading test passed: " + loadClassPassed);
-		}
-		count++;
-	}
+    private volatile int count = 0;
 
-	/**
-	 * Construct the runnable task with expected properties.
-	 * 
-	 * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
-	 *                  null.
-	 * @param jndiValue the jndi value set for jndiName
-	 * @param className class name to be loaded inside the task, ignore class
-	 *                  loading test if it is null.
-	 * @param blockTime block time(in millisecond) for this task.
-	 */
-	public RunnableTask(String jndiName, String jndiValue, String className, long blockTime) {
-		this.contexualClassName = className;
-		this.jndiName = jndiName;
-		this.expectedJndiValue = jndiValue;
-		this.blockTime = blockTime;
-	}
+    @Override
+    public void run() {
+        if (blockTime > 0) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(blockTime);
+            } catch (InterruptedException e) {
+                log.severe("", e);
+            }
+        }
+        boolean jndiPassed = lookupEnvRef();
+        boolean loadClassPassed = loadClass();
+        if (!(jndiPassed && loadClassPassed)) {
+            throw new RuntimeException(
+                    "jndi test passed: " + jndiPassed + ", class loading test passed: " + loadClassPassed);
+        }
+        count++;
+    }
 
-	/**
-	 * Construct the runnable task with expected properties.
-	 * 
-	 * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
-	 *                  null.
-	 * @param jndiValue the jndi value set for jndiName
-	 * @param className class name to be loaded inside the task, ignore class
-	 *                  loading test if it is null.
-	 */
-	public RunnableTask(String jndiName, String jndiValue, String className) {
-		this.contexualClassName = className;
-		this.jndiName = jndiName;
-		this.expectedJndiValue = jndiValue;
-		this.blockTime = 0;
-	}
+    /**
+     * Construct the runnable task with expected properties.
+     * 
+     * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
+     *                  null.
+     * @param jndiValue the jndi value set for jndiName
+     * @param className class name to be loaded inside the task, ignore class
+     *                  loading test if it is null.
+     * @param blockTime block time(in millisecond) for this task.
+     */
+    public RunnableTask(String jndiName, String jndiValue, String className, long blockTime) {
+        this.contexualClassName = className;
+        this.jndiName = jndiName;
+        this.expectedJndiValue = jndiValue;
+        this.blockTime = blockTime;
+    }
 
-	protected boolean lookupEnvRef() {
-		boolean passed = false;
-		String value = null;
-		try {
-			value = InitialContext.doLookup(jndiName);
-			if (expectedJndiValue.equals(value)) {
-				passed = true;
-			}
-		} catch (NamingException e) {
-		}
+    /**
+     * Construct the runnable task with expected properties.
+     * 
+     * @param jndiName  the jndi name set for env-entry, ignore jndi test if it is
+     *                  null.
+     * @param jndiValue the jndi value set for jndiName
+     * @param className class name to be loaded inside the task, ignore class
+     *                  loading test if it is null.
+     */
+    public RunnableTask(String jndiName, String jndiValue, String className) {
+        this.contexualClassName = className;
+        this.jndiName = jndiName;
+        this.expectedJndiValue = jndiValue;
+        this.blockTime = 0;
+    }
 
-		return passed;
-	}
-	
+    protected boolean lookupEnvRef() {
+        boolean passed = false;
+        String value = null;
+        try {
+            value = InitialContext.doLookup(jndiName);
+            if (expectedJndiValue.equals(value)) {
+                passed = true;
+            }
+        } catch (NamingException e) {
+        }
+
+        return passed;
+    }
+
     public int getCount() {
         return count;
     }
 
-	protected boolean loadClass() {
-		boolean passed = false;
-		try {
-			Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass(contexualClassName);
-			if (contexualClassName == loadedClass.getName()) {
-				passed = true;
-			}
-		} catch (ClassNotFoundException e) {
-		}
-		return passed;
-	}
+    protected boolean loadClass() {
+        boolean passed = false;
+        try {
+            Class<?> loadedClass = Thread.currentThread().getContextClassLoader().loadClass(contexualClassName);
+            if (contexualClassName == loadedClass.getName()) {
+                passed = true;
+            }
+        } catch (ClassNotFoundException e) {
+        }
+        return passed;
+    }
 
 }

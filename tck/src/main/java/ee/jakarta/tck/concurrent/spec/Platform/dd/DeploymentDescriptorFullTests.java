@@ -36,46 +36,44 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 /**
- * Covers context-service, managed-executor, managed-scheduled-executor,
- * and managed-thread-factory defined in a deployment descriptor.
+ * Covers context-service, managed-executor, managed-scheduled-executor, and
+ * managed-thread-factory defined in a deployment descriptor.
  */
-@Full @RunAsClient //Requires client testing due to annotation configuration
+@Full
+@RunAsClient // Requires client testing due to annotation configuration
 public class DeploymentDescriptorFullTests extends TestClient {
-    
+
     @ArquillianResource(DeploymentDescriptorServlet.class)
     URL baseURL;
-    
-    @Deployment(name="DeploymentDescriptorTests")
+
+    @Deployment(name = "DeploymentDescriptorTests")
     public static EnterpriseArchive createDeployment() {
-        
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
-                .addClasses(
-                        DeploymentDescriptorServlet.class);
+                .addClasses(DeploymentDescriptorServlet.class);
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "DeploymentDescriptorTests_ejb.jar")
-                .addClasses(
-                        DeploymentDescriptorTestBean.class,
-                        DeploymentDescriptorTestBeanInterface.class)
+                .addClasses(DeploymentDescriptorTestBean.class, DeploymentDescriptorTestBeanInterface.class)
                 .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
-                .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                        IntContextProvider.class.getName(),
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
                         StringContextProvider.class.getName());
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "DeploymentDescriptorTests.ear")
-                .addAsManifestResource(DeploymentDescriptorFullTests.class.getPackage(), "application.xml", "application.xml")
+                .addAsManifestResource(DeploymentDescriptorFullTests.class.getPackage(), "application.xml",
+                        "application.xml")
                 .addAsModules(war, jar);
 
         return ear;
     }
-    
+
     @TestName
     String testname;
-    
+
     @Override
     protected String getServletPath() {
         return "DeploymentDescriptorServlet";
     }
-    
+
     @Test
     public void testDeploymentDescriptorDefinesContextService() {
         runTest(baseURL, testname);

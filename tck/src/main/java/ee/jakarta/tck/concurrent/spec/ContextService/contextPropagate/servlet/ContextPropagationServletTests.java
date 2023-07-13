@@ -35,100 +35,104 @@ import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to POST requests
+@Web
+@RunAsClient // Requires client testing due to POST requests
 public class ContextPropagationServletTests extends TestClient {
-	
-	private static final String APP_NAME_PROXY = "ContextPropagationServletTests.Proxy";
-	private static final String APP_NAME_WORK = "ContextPropagationServletTests.Work";
-	private static final String APP_NAME_DESERIALIZE = "ContextPropagationServletTests.Deserialize";
-	
-	@Deployment(name = APP_NAME_PROXY)
-	public static WebArchive createDeployment1() {
-		return ShrinkWrap.create(WebArchive.class, APP_NAME_PROXY + ".war")
-				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
-				.deleteClass(WorkInterfaceServlet.class)
-				.addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
-	}
-	
-	@Deployment(name = APP_NAME_WORK)
-	public static WebArchive createDeployment2() {
-		return ShrinkWrap.create(WebArchive.class, APP_NAME_WORK + ".war")
-				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
-				.deleteClass(ProxyCreatorServlet.class);
-	}
-	
-	@Deployment(name = APP_NAME_DESERIALIZE)
-	public static WebArchive createDeployment3() {
-		return ShrinkWrap.create(WebArchive.class, APP_NAME_DESERIALIZE + ".war")
-				.addPackages(true,  ContextPropagationServletTests.class.getPackage())
-				.deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
-	}
-	
-	@TestName
-	String testname;
-	
-	@ArquillianResource
-	@OperateOnDeployment(APP_NAME_PROXY)
-	URL baseURL;
-	
-	@ArquillianResource
-	@OperateOnDeployment(APP_NAME_WORK)
-	URL workInterfaceURL;
-	
-	@Override
-	protected String getServletPath() {
-		return "ProxyCreatorServlet";
-	}
 
-	/*
-	 * @testName: testJNDIContextInServlet
-	 *
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
-	 * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
-	 * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
-	 *
-	 * @test_Strategy: create proxy in servlet and pass it to other servlet in other
-	 * web module, then verify JNDI Context.
-	 *
-	 */
-	@Test
-	public void testJNDIContextInServlet() {
-		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testname);
-		
-		Properties props = new Properties();
-		props.put("proxyURL", proxyURL.toString());
-		props.put(TEST_METHOD, testname);
-		
-		String resp = runTestWithResponse(requestURL, props);
-		assertNotNull("Response should not be null", resp);
-		assertStringInResponse(testname + " failed to get correct result.", "JNDIContextWeb", resp.trim());
-	}
+    private static final String APP_NAME_PROXY = "ContextPropagationServletTests.Proxy";
+    private static final String APP_NAME_WORK = "ContextPropagationServletTests.Work";
+    private static final String APP_NAME_DESERIALIZE = "ContextPropagationServletTests.Deserialize";
 
-	/*
-	 * @testName: testClassloaderInServlet
-	 *
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
-	 * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
-	 * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
-	 *
-	 * @test_Strategy: create proxy in servlet and pass it into other servlet in
-	 * other web module, then verify classloader.
-	 *
-	 */
-	@Test
-	public void testClassloaderInServlet() {
-		URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testname);
-		
-		Properties props = new Properties();
-		props.put("proxyURL", proxyURL.toString());
-		props.put(TEST_METHOD, testname);
-		
-		String resp = runTestWithResponse(requestURL, props);
-		assertNotNull("Response should not be null", resp);
-		assertStringInResponse(testname + " failed to get correct result.", TestConstants.ComplexReturnValue, resp.trim());
-	}
+    @Deployment(name = APP_NAME_PROXY)
+    public static WebArchive createDeployment1() {
+        return ShrinkWrap.create(WebArchive.class, APP_NAME_PROXY + ".war")
+                .addPackages(true, ContextPropagationServletTests.class.getPackage())
+                .deleteClass(WorkInterfaceServlet.class)
+                .addAsWebInfResource(ContextPropagationServletTests.class.getPackage(), "web.xml", "web.xml");
+    }
+
+    @Deployment(name = APP_NAME_WORK)
+    public static WebArchive createDeployment2() {
+        return ShrinkWrap.create(WebArchive.class, APP_NAME_WORK + ".war")
+                .addPackages(true, ContextPropagationServletTests.class.getPackage())
+                .deleteClass(ProxyCreatorServlet.class);
+    }
+
+    @Deployment(name = APP_NAME_DESERIALIZE)
+    public static WebArchive createDeployment3() {
+        return ShrinkWrap.create(WebArchive.class, APP_NAME_DESERIALIZE + ".war")
+                .addPackages(true, ContextPropagationServletTests.class.getPackage())
+                .deleteClasses(ProxyCreatorServlet.class, WorkInterfaceServlet.class);
+    }
+
+    @TestName
+    String testname;
+
+    @ArquillianResource
+    @OperateOnDeployment(APP_NAME_PROXY)
+    URL baseURL;
+
+    @ArquillianResource
+    @OperateOnDeployment(APP_NAME_WORK)
+    URL workInterfaceURL;
+
+    @Override
+    protected String getServletPath() {
+        return "ProxyCreatorServlet";
+    }
+
+    /*
+     * @testName: testJNDIContextInServlet
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
+     * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
+     * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
+     *
+     * @test_Strategy: create proxy in servlet and pass it to other servlet in other
+     * web module, then verify JNDI Context.
+     *
+     */
+    @Test
+    public void testJNDIContextInServlet() {
+        URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath())
+                .withTestName(testname);
+
+        Properties props = new Properties();
+        props.put("proxyURL", proxyURL.toString());
+        props.put(TEST_METHOD, testname);
+
+        String resp = runTestWithResponse(requestURL, props);
+        assertNotNull("Response should not be null", resp);
+        assertStringInResponse(testname + " failed to get correct result.", "JNDIContextWeb", resp.trim());
+    }
+
+    /*
+     * @testName: testClassloaderInServlet
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
+     * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
+     * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
+     *
+     * @test_Strategy: create proxy in servlet and pass it into other servlet in
+     * other web module, then verify classloader.
+     *
+     */
+    @Test
+    public void testClassloaderInServlet() {
+        URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath())
+                .withTestName(testname);
+
+        Properties props = new Properties();
+        props.put("proxyURL", proxyURL.toString());
+        props.put(TEST_METHOD, testname);
+
+        String resp = runTestWithResponse(requestURL, props);
+        assertNotNull("Response should not be null", resp);
+        assertStringInResponse(testname + " failed to get correct result.", TestConstants.ComplexReturnValue,
+                resp.trim());
+    }
 }

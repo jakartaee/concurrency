@@ -21,21 +21,21 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 public class Connections {
-    
+
     private Connections() {
-        //ignore
+        // ignore
     }
-    
+
     private static DataSource ds;
-    
+
     public static void setDataSource(DataSource ds) {
         Connections.ds = ds;
     }
-    
+
     public static void unsetDataSource() {
         Connections.ds = null;
     }
-    
+
     public static Connection getConnection(boolean autoCommit) {
         Connection conn = null;
         try {

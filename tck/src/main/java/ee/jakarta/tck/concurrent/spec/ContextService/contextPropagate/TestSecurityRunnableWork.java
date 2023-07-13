@@ -26,15 +26,15 @@ import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 @SuppressWarnings("serial")
 public class TestSecurityRunnableWork extends BaseTestRunnableWork {
 
-	@Override
-	protected String work() {
-		EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-		LimitedInterface limited;
+    @Override
+    protected String work() {
+        EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+        LimitedInterface limited;
         try {
             limited = InitialContext.doLookup(nameProvider.getEJBJNDIName());
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
-		return limited.doSomething();
-	}
+        return limited.doSomething();
+    }
 }

@@ -36,65 +36,64 @@ import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedTask;
 
 @Web
-@Common({PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS})
+@Common({ PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS })
 public class ManagedTaskTests {
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="ManagedTaskTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ManagedTaskTests.class.getPackage());
-	}
 
-	private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
-	
-	private RunnableTask createRunnableTask() {
-		//Task never actually run
-		return new RunnableTask("java:comp/env/StringValue", "FakeValue", this.getClass().getName());
-	}
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "ManagedTaskTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, ManagedTaskTests.class.getPackage());
+    }
 
-	/*
-	 * @testName: GetExecutionProperties
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:36
-	 * 
-	 * @test_Strategy: Get ManagedTask to provides additional information to the
-	 * ManagedExecutorService or ManagedScheduledExecutorService when executing this
-	 * task.
-	 */
-	@Test
-	public void GetExecutionProperties() {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("key", "value");
-		Runnable runnableTask = createRunnableTask();
-		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-		
-		assertTrue(task instanceof ManagedTask);
-		
+    private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
+
+    private RunnableTask createRunnableTask() {
+        // Task never actually run
+        return new RunnableTask("java:comp/env/StringValue", "FakeValue", this.getClass().getName());
+    }
+
+    /*
+     * @testName: GetExecutionProperties
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:36
+     * 
+     * @test_Strategy: Get ManagedTask to provides additional information to the
+     * ManagedExecutorService or ManagedScheduledExecutorService when executing this
+     * task.
+     */
+    @Test
+    public void GetExecutionProperties() {
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("key", "value");
+        Runnable runnableTask = createRunnableTask();
+        Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
+
+        assertTrue(task instanceof ManagedTask);
+
         ManagedTask managedTask = (ManagedTask) task;
-        
-        assertEquals("value", managedTask.getExecutionProperties().get("key"));
-	}
 
-	/*
-	 * @testName: GetManagedTaskListener
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:37
-	 * 
-	 * @test_Strategy: Get ManagedTask with ManagedTaskListener to receive
-	 * notification of life cycle events of this task.
-	 */
-	@Test
-	public void GetManagedTaskListener() {
-		Map<String, String> properties = new HashMap<String, String>();
-		properties.put("key", "value");
-		RunnableTask runnableTask = createRunnableTask();
-		Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-		
-		assertTrue(task instanceof ManagedTask);
-		
+        assertEquals("value", managedTask.getExecutionProperties().get("key"));
+    }
+
+    /*
+     * @testName: GetManagedTaskListener
+     * 
+     * @assertion_ids: CONCURRENCY:JAVADOC:37
+     * 
+     * @test_Strategy: Get ManagedTask with ManagedTaskListener to receive
+     * notification of life cycle events of this task.
+     */
+    @Test
+    public void GetManagedTaskListener() {
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put("key", "value");
+        RunnableTask runnableTask = createRunnableTask();
+        Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
+
+        assertTrue(task instanceof ManagedTask);
+
         ManagedTask managedTask = (ManagedTask) task;
         assertEquals(managedTaskListener, managedTask.getManagedTaskListener());
 
-	}
+    }
 }

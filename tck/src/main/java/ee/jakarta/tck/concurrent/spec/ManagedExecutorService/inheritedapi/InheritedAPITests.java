@@ -53,7 +53,7 @@ public class InheritedAPITests {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class);
     }
-    
+
     @Resource(lookup = TestConstants.DefaultManagedExecutorService)
     public ManagedExecutorService executor;
 
@@ -78,7 +78,7 @@ public class InheritedAPITests {
     public void testExecute() {
         try {
             executor.execute(new CounterRunnableTask());
-            StaticCounter.waitTill(1); 
+            StaticCounter.waitTill(1);
         } finally {
             StaticCounter.reset();
         }
@@ -114,7 +114,7 @@ public class InheritedAPITests {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         assertThrows(TimeoutException.class, () -> {
             List<Callable<String>> taskList = new ArrayList<>();
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
@@ -153,7 +153,8 @@ public class InheritedAPITests {
             List<Callable<String>> taskList = new ArrayList<>();
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
             taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
+            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),
+                    TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureThrowsException(each, CancellationException.class);
             }

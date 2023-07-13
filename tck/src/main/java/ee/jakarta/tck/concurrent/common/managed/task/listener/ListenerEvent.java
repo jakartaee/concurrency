@@ -17,5 +17,5 @@
 package ee.jakarta.tck.concurrent.common.managed.task.listener;
 
 public enum ListenerEvent {
-	SUBMITTED, STARTING, TASK_RUN, DONE, ABORTED;
+    SUBMITTED, STARTING, TASK_RUN, DONE, ABORTED;
 }

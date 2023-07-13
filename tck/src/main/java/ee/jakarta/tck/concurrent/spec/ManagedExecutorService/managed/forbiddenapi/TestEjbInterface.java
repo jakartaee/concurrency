@@ -18,13 +18,13 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddena
 
 public interface TestEjbInterface {
 
-	public void testAwaitTermination();
+    public void testAwaitTermination();
 
-	public void testIsShutdown();
+    public void testIsShutdown();
 
-	public void testIsTerminated();
+    public void testIsTerminated();
 
-	public void testShutdown();
+    public void testShutdown();
 
-	public void testShutdownNow();
+    public void testShutdownNow();
 }

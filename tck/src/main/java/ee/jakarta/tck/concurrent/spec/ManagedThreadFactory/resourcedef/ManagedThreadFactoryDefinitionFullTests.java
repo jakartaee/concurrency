@@ -39,84 +39,86 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full @RunAsClient //Requires client testing due to multiple servlets and annotation configuration
+@Full
+@RunAsClient // Requires client testing due to multiple servlets and annotation configuration
 public class ManagedThreadFactoryDefinitionFullTests extends TestClient {
-	
-	@ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
-	URL baseURL;
-	
-	@ArquillianResource(ManagedThreadFactoryDefinitionOnEJBServlet.class)
-	URL ejbContextURL;
-	
-	@Deployment(name="ManagedThreadFactoryDefinitionTests")
-	public static EnterpriseArchive createDeployment() {
-		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
-		        .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
-				.addClasses(
-						ManagedThreadFactoryDefinitionOnEJBServlet.class,
-						ManagedThreadFactoryDefinitionServlet.class,
-						ContextServiceDefinitionServlet.class)
-				.addAsWebInfResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "web.xml", "web.xml")
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
-		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
-				.addPackages(false,  ManagedThreadFactoryDefinitionFullTests.class.getPackage())
-				.deleteClasses(
-						ManagedThreadFactoryDefinitionOnEJBServlet.class,
-						ManagedThreadFactoryDefinitionServlet.class)
-				.addClasses(
-						ContextServiceDefinitionInterface.class,
-						ContextServiceDefinitionBean.class)
-				.addAsManifestResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "ejb-jar.xml", "ejb-jar.xml");
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear").addAsModules(war, jar);
-		
-		return ear;
-	}
-	
+
+    @ArquillianResource(ManagedThreadFactoryDefinitionServlet.class)
+    URL baseURL;
+
+    @ArquillianResource(ManagedThreadFactoryDefinitionOnEJBServlet.class)
+    URL ejbContextURL;
+
+    @Deployment(name = "ManagedThreadFactoryDefinitionTests")
+    public static EnterpriseArchive createDeployment() {
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedThreadFactoryDefinitionTests_web.war")
+                .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
+                .addClasses(ManagedThreadFactoryDefinitionOnEJBServlet.class,
+                        ManagedThreadFactoryDefinitionServlet.class, ContextServiceDefinitionServlet.class)
+                .addAsWebInfResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "web.xml", "web.xml")
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
+                        StringContextProvider.class.getName());
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
+                .addPackages(false, ManagedThreadFactoryDefinitionFullTests.class.getPackage())
+                .deleteClasses(ManagedThreadFactoryDefinitionOnEJBServlet.class,
+                        ManagedThreadFactoryDefinitionServlet.class)
+                .addClasses(ContextServiceDefinitionInterface.class, ContextServiceDefinitionBean.class)
+                .addAsManifestResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "ejb-jar.xml",
+                        "ejb-jar.xml");
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear")
+                .addAsModules(war, jar);
+
+        return ear;
+    }
+
     @TestName
     String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ManagedThreadFactoryDefinitionServlet";
-	}
-	
+
+    @Override
+    protected String getServletPath() {
+        return "ManagedThreadFactoryDefinitionServlet";
+    }
+
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Disabled
+    @Disabled
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-	
+
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Disabled
+    @Disabled
     public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
 
-	@Test
+    @Test
     public void testManagedThreadFactoryDefinitionDefaults() throws Throwable {
-		runTest(baseURL, testname);
-    }
-	
-	@Test
-    public void testManagedThreadFactoryDefinitionDefaultsEJB() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        runTest(baseURL, testname);
     }
 
-        // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Disabled
-    public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
-		runTest(baseURL, testname);
+    @Test
+    public void testManagedThreadFactoryDefinitionDefaultsEJB() throws Throwable {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
     }
-	
+
     // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-	@Disabled
+    @Disabled
+    public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
+        runTest(baseURL, testname);
+    }
+
+    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
+    @Disabled
     public void testParallelStreamBackedByManagedThreadFactoryEJB() throws Throwable {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
-	}
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
+    }
 }

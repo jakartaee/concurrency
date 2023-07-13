@@ -22,21 +22,21 @@ import javax.naming.InitialContext;
 
 public class CounterCallableTask implements Callable<Integer> {
 
-	private String countSingletionJndi = "";
+    private String countSingletionJndi = "";
 
-	public CounterCallableTask(String countSingletionJndi) {
-		this.countSingletionJndi = countSingletionJndi;
-	}
+    public CounterCallableTask(String countSingletionJndi) {
+        this.countSingletionJndi = countSingletionJndi;
+    }
 
-	public Integer call() {
-		try {
-			CounterInterface counter = InitialContext.doLookup(countSingletionJndi);
-			counter.inc();
-			return counter.getCount();
+    public Integer call() {
+        try {
+            CounterInterface counter = InitialContext.doLookup(countSingletionJndi);
+            counter.inc();
+            return counter.getCount();
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
 }

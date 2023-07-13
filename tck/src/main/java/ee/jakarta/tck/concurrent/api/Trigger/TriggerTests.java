@@ -75,13 +75,14 @@ public class TriggerTests {
     public void triggerGetNextRunTimeTest() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
                 new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
-        
+
         assertFalse(StaticCounter.getCount() == 0, "The first trigger is too fast.");
 
         try {
             Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
-        } finally {      
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2,
+                    TestConstants.PollsPerTimeout + 2);
+        } finally {
             Wait.waitTillFutureIsDone(result);
         }
     }
@@ -99,10 +100,9 @@ public class TriggerTests {
      */
     @Test
     public void triggerSkipRunTest() {
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
-                new CommonTasks.SimpleCallable(),
+        ScheduledFuture<?> sf = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval));
-        
+
         try {
             Wait.waitTillFutureThrowsException(sf, SkippedException.class);
         } finally {

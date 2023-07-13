@@ -31,35 +31,34 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 
 /**
- * This extension will intercept archives before they are deployed to the container and append 
- * the packages from the @Common annotation.
+ * This extension will intercept archives before they are deployed to the
+ * container and append the packages from the @Common annotation.
  */
 public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
     private static final Logger log = Logger.getLogger(TCKArchiveProcessor.class.getCanonicalName());
-    
+
     @Override
     public void process(Archive<?> applicationArchive, TestClass testClass) {
-        String applicationName = applicationArchive.getName() == null ? applicationArchive.getId() : applicationArchive.getName();
-        
-        if( ! testClass.isAnnotationPresent(Common.class) ) {
+        String applicationName = applicationArchive.getName() == null ? applicationArchive.getId()
+                : applicationArchive.getName();
+
+        if (!testClass.isAnnotationPresent(Common.class)) {
             return;
         }
-        
+
         List<String> packages = Stream.of(testClass.getAnnotation(Common.class).value())
-                .map(pkg -> pkg.getPackageName())
-                .collect(Collectors.toList());
-        
-        //TODO research to see if there is a way around this
-        if(applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
+                .map(pkg -> pkg.getPackageName()).collect(Collectors.toList());
+
+        // TODO research to see if there is a way around this
+        if (applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
             throw new RuntimeException("Cannot append packages to Enterprise Archives since modules are immutable");
         }
-        
+
         if (applicationArchive instanceof WebArchive || applicationArchive instanceof JavaArchive) {
             log.info("Application Archive [" + applicationName + "] is being appended with packages " + packages);
-            packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg) );
-            
+            packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg));
+
         }
-        
-        
+
     }
 }

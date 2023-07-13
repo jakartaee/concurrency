@@ -16,21 +16,20 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
-
 public interface TestEjbInterface {
 
-	public void testApiSubmit();
+    public void testApiSubmit();
 
-	public void testApiExecute();
+    public void testApiExecute();
 
-	public void testApiInvokeAll();
+    public void testApiInvokeAll();
 
-	public void testApiInvokeAny();
+    public void testApiInvokeAny();
 
-	public void testApiSchedule();
+    public void testApiSchedule();
 
-	public void testApiScheduleAtFixedRate();
+    public void testApiScheduleAtFixedRate();
 
-	public void testApiScheduleWithFixedDelay();
+    public void testApiScheduleWithFixedDelay();
 
 }

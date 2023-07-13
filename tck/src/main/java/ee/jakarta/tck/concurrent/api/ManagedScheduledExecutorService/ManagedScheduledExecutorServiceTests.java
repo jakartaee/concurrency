@@ -58,7 +58,7 @@ public class ManagedScheduledExecutorServiceTests {
 
     private static final String TEST_CLASSLOADER_CLASS_NAME = ManagedScheduledExecutorServiceTests.class
             .getCanonicalName();
-    
+
     @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
@@ -91,7 +91,7 @@ public class ManagedScheduledExecutorServiceTests {
     @Test
     public void nullCommandScheduleProcessTest() {
         Runnable command = null;
-        
+
         assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(command, new CommonTriggers.OnceTrigger());
         });
@@ -110,12 +110,13 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess2Test() throws Exception {
-        ScheduledFuture<?> result = scheduledExecutor.schedule( (Callable<?>)
-                        new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+        ScheduledFuture<?> result = scheduledExecutor
+                .schedule(
+                        (Callable<?>) new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                                 TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
                         new CommonTriggers.OnceTrigger());
         Wait.waitForTaskComplete(result);
-        
+
         assertEquals(CALLABLETESTTASK1_RUN_RESULT, result.get());
 
     }
@@ -130,7 +131,7 @@ public class ManagedScheduledExecutorServiceTests {
     @Test
     public void nullCallableScheduleProcessTest() {
         Callable<?> callable = null;
-        
+
         assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());
         });

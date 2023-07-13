@@ -45,159 +45,163 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 @Stateless
 public class TestEjb implements TestEjbInterface {
 
-	@EJB
-	private CounterInterface counter;
-	
+    @EJB
+    private CounterInterface counter;
+
     @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
-	public void testApiSubmit() {
-		try {
-			Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
-			Wait.waitTillFutureIsDone(result);
-			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+    public void testApiSubmit() {
+        try {
+            Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
+            Wait.waitTillFutureIsDone(result);
+            assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
-			result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
-			Wait.waitTillFutureIsDone(result);
-			result.get();
+            result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
+            Wait.waitTillFutureIsDone(result);
+            result.get();
 
-			result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
-			Wait.waitTillFutureIsDone(result);
-			assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+            Wait.waitTillFutureIsDone(result);
+            assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public void testApiExecute() {
-		try {
-			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-			scheduledExecutor.execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
-			StaticCounter.waitTillSurpassed(1);
-		}finally {
-			counter.reset();
-		}
-	}
+    public void testApiExecute() {
+        try {
+            EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+            scheduledExecutor.execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
+            StaticCounter.waitTillSurpassed(1);
+        } finally {
+            counter.reset();
+        }
+    }
 
-	public void testApiInvokeAll() {
-		try {
-			List<Callable<Integer>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleArgCallable(1));
-			taskList.add(new CommonTasks.SimpleArgCallable(2));
-			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
-			for (Future<?> each : resultList) {
-				Wait.waitTillFutureIsDone(each);
-			}
-			assertEquals(resultList.get(0).get(), 1);
-			assertEquals(resultList.get(1).get(), 2);
-			assertEquals(resultList.get(2).get(), 3);
+    public void testApiInvokeAll() {
+        try {
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
 
-			resultList = scheduledExecutor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-			for (Future<?> each : resultList) {
-				Wait.waitTillFutureIsDone(each);
-			}
-			assertEquals(resultList.get(0).get(), 1);
-			assertEquals(resultList.get(1).get(), 2);
-			assertEquals(resultList.get(2).get(), 3);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
+            resultList = scheduledExecutor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(),
+                    TimeUnit.SECONDS);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureIsDone(each);
+            }
+            assertEquals(resultList.get(0).get(), 1);
+            assertEquals(resultList.get(1).get(), 2);
+            assertEquals(resultList.get(2).get(), 3);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
 
-		try {
-			List<Callable<String>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-			List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
-			for (Future<?> each : resultList) {
-				Wait.waitTillFutureThrowsException(each, CancellationException.class);
-			}
-		} catch (Exception ex) {
-			fail(ex.getMessage());
-		}
-	}
+        try {
+            List<Callable<String>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList,
+                    TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            for (Future<?> each : resultList) {
+                Wait.waitTillFutureThrowsException(each, CancellationException.class);
+            }
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+        }
+    }
 
-	public void testApiInvokeAny() {
-		try {
-			List<Callable<Integer>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleArgCallable(1));
-			taskList.add(new CommonTasks.SimpleArgCallable(2));
-			taskList.add(new CommonTasks.SimpleArgCallable(3));
-			Integer result = scheduledExecutor.invokeAny(taskList);
-			Assertions.assertBetween(result, 1, 3);
+    public void testApiInvokeAny() {
+        try {
+            List<Callable<Integer>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleArgCallable(1));
+            taskList.add(new CommonTasks.SimpleArgCallable(2));
+            taskList.add(new CommonTasks.SimpleArgCallable(3));
+            Integer result = scheduledExecutor.invokeAny(taskList);
+            Assertions.assertBetween(result, 1, 3);
 
-			result = scheduledExecutor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
-			Assertions.assertBetween(result, 1, 3);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+            result = scheduledExecutor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            Assertions.assertBetween(result, 1, 3);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-		try {
-			List<Callable<String>> taskList = new ArrayList<>();
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-			taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-			scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-		} catch (TimeoutException e) {
-			return; //expected
-		} catch (Exception ex) {
-			fail(ex.getMessage());
-		}
-		fail("Task should be cancelled because of timeout");
-	}
+        try {
+            List<Callable<String>> taskList = new ArrayList<>();
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            scheduledExecutor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            return; // expected
+        } catch (Exception ex) {
+            fail(ex.getMessage());
+        }
+        fail("Task should be cancelled because of timeout");
+    }
 
-	public void testApiSchedule() {
-		try {
-			Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
-					TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-			Wait.waitTillFutureIsDone(result);
-			assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
+    public void testApiSchedule() {
+        try {
+            Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
+                    TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            Wait.waitTillFutureIsDone(result);
+            assertEquals(CommonTasks.SIMPLE_RETURN_STRING, result.get());
 
-			result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.PollInterval.getSeconds(),
-					TimeUnit.SECONDS);
-			Wait.waitTillFutureIsDone(result);
-			assertEquals(result.get(), null);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
+            result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(),
+                    TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            Wait.waitTillFutureIsDone(result);
+            assertEquals(result.get(), null);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
-	public void testApiScheduleAtFixedRate() {
-		ScheduledFuture<?> result = null;
-		try {
-			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-			result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(nameProvider.getEJBJNDIName()),
-					TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-			Wait.sleep(TestConstants.WaitTimeout);
-			Assertions.assertBetween(counter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		} finally {
+    public void testApiScheduleAtFixedRate() {
+        ScheduledFuture<?> result = null;
+        try {
+            EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+            result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(nameProvider.getEJBJNDIName()),
+                    TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            Wait.sleep(TestConstants.WaitTimeout);
+            Assertions.assertBetween(counter.getCount(), TestConstants.PollsPerTimeout - 2,
+                    TestConstants.PollsPerTimeout + 2);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        } finally {
             if (result != null) {
                 Wait.waitCancelFuture(result);
             }
-			counter.reset();
-		}
-	}
+            counter.reset();
+        }
+    }
 
-	public void testApiScheduleWithFixedDelay() {
-		ScheduledFuture<?> result = null;
-		try {
-			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-			result = scheduledExecutor.scheduleWithFixedDelay(
-					new CounterRunnableTask(nameProvider.getEJBJNDIName(), TestConstants.PollInterval), //task
-					TestConstants.PollInterval.getSeconds(), //initial delay
-					TestConstants.PollInterval.getSeconds(), //delay
-					TimeUnit.SECONDS); //Time units
-			Wait.sleep(TestConstants.WaitTimeout);
-			Assertions.assertBetween(counter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2);
-		} catch (Exception e) {
-			fail(e.getMessage());
-		} finally {
-			if (result != null) {
-			    Wait.waitCancelFuture(result);
-			}
-			counter.reset();
-		}
-	}
-	
+    public void testApiScheduleWithFixedDelay() {
+        ScheduledFuture<?> result = null;
+        try {
+            EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+            result = scheduledExecutor.scheduleWithFixedDelay(
+                    new CounterRunnableTask(nameProvider.getEJBJNDIName(), TestConstants.PollInterval), // task
+                    TestConstants.PollInterval.getSeconds(), // initial delay
+                    TestConstants.PollInterval.getSeconds(), // delay
+                    TimeUnit.SECONDS); // Time units
+            Wait.sleep(TestConstants.WaitTimeout);
+            Assertions.assertBetween(counter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2,
+                    (TestConstants.PollsPerTimeout / 2) + 2);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        } finally {
+            if (result != null) {
+                Wait.waitCancelFuture(result);
+            }
+            counter.reset();
+        }
+    }
+
 }

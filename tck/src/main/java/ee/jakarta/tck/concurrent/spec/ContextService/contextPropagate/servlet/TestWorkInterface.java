@@ -19,7 +19,7 @@ package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet;
 import java.io.Serializable;
 
 public interface TestWorkInterface extends Runnable, Serializable {
-	public String doSomeWork();
+    public String doSomeWork();
 
-	public String getResult();
+    public String getResult();
 }

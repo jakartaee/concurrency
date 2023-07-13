@@ -16,9 +16,8 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.security;
 
-
 public interface SecurityTestInterface {
 
-	public String managerMethod1();
+    public String managerMethod1();
 
 }

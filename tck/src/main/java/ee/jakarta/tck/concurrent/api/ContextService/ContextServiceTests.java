@@ -41,7 +41,7 @@ import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Web
-@Common( { PACKAGE.FIXED_COUNTER } )
+@Common({ PACKAGE.FIXED_COUNTER })
 public class ContextServiceTests {
 
     // TODO deploy as EJB and JSP artifacts
@@ -213,7 +213,8 @@ public class ContextServiceTests {
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class, ManagedTaskListener.class);
+            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
+                    ManagedTaskListener.class);
         });
     }
 
@@ -296,7 +297,7 @@ public class ContextServiceTests {
             Object proxy = context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
                     WorkInterface.class);
             assertNotNull(proxy);
-            
+
             Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);
             assertEquals("true", returnedExecProps.get("USE_PARENT_TRANSACTION"));
         });

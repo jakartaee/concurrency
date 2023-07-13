@@ -20,11 +20,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Counter {
-    
+
     /**
-     * Get count of rows in test table to verify if a transaction was committed or rolled back.
+     * Get count of rows in test table to verify if a transaction was committed or
+     * rolled back.
      * 
-     * @return number of rows, or -1 if error occurred while attempting to access table. 
+     * @return number of rows, or -1 if error occurred while attempting to access
+     *         table.
      */
     public static int getCount() {
         try (Connection conn = Connections.getConnection(true);) {
@@ -37,7 +39,7 @@ public class Counter {
 
     private static int getCount(Connection conn) {
         final String queryStr = "select count(*) from " + Constants.TABLE_P;
-        
+
         try (Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(queryStr);
             if (rs.next()) {
@@ -46,7 +48,7 @@ public class Counter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return -1;
     }
 

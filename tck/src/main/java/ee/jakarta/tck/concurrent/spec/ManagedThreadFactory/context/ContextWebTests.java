@@ -31,46 +31,46 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to login request 
-@Common({PACKAGE.TASKS})
+@Web
+@RunAsClient // Requires client testing due to login request
+@Common({ PACKAGE.TASKS })
 public class ContextWebTests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="ContextTests")
-	public static WebArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ContextWebTests.class.getPackage())
-				.addAsWebInfResource(ContextWebTests.class.getPackage(), "web.xml", "web.xml");
-		
-		return war;
-	}
-	
+
+    @ArquillianResource
+    URL baseURL;
+
+    @Deployment(name = "ContextTests")
+    public static WebArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class).addPackages(true, ContextWebTests.class.getPackage())
+                .addAsWebInfResource(ContextWebTests.class.getPackage(), "web.xml", "web.xml");
+
+        return war;
+    }
+
     @TestName
     String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "SecurityServlet";
-	}
-	
-	/*
-	 * @testName: jndiClassloaderPropagationTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
-	 * CONCURRENCY:SPEC:106;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL, testname);
-	}
-	
-	@Test
-	public void jndiClassloaderPropagationWithSecurityTest() {
-		runTest(baseURL, testname);
-	}
+
+    @Override
+    protected String getServletPath() {
+        return "SecurityServlet";
+    }
+
+    /*
+     * @testName: jndiClassloaderPropagationTest
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
+     * CONCURRENCY:SPEC:106;
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void jndiClassloaderPropagationTest() {
+        runTest(baseURL, testname);
+    }
+
+    @Test
+    public void jndiClassloaderPropagationWithSecurityTest() {
+        runTest(baseURL, testname);
+    }
 
 }

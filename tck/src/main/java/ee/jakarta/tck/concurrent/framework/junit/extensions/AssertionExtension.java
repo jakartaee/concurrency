@@ -25,12 +25,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
 /**
- * Logs before and after test execution, and injects the name of the test into the @TestName field.
+ * Logs before and after test execution, and injects the name of the test into
+ * the @TestName field.
  */
-public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTestExecutionCallback {
-    
+public class AssertionExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+
     private static final Logger log = Logger.getLogger(AssertionExtension.class.getCanonicalName());
-    
+
     @Override
     public void beforeTestExecution(ExtensionContext context) throws Exception {
         log.info(">>> Begin test: " + context.getDisplayName());
@@ -42,21 +43,22 @@ public class AssertionExtension implements BeforeTestExecutionCallback,  AfterTe
         log.info("<<< End test: " + context.getDisplayName());
         injectTestName(context, null);
     }
-    
-    //TODO could consider using getFields to allow for injection into superclass, but will affect performance.
-    private void injectTestName(ExtensionContext context, String testname) {        
+
+    // TODO could consider using getFields to allow for injection into superclass,
+    // but will affect performance.
+    private void injectTestName(ExtensionContext context, String testname) {
         Class<?> testClass = context.getRequiredTestClass();
-        
-        Stream.of(testClass.getDeclaredFields())
-            .filter(field -> field.isAnnotationPresent(TestName.class))
-            .forEach(field -> {
-                field.setAccessible(true);
-                try {
-                    field.set(context.getRequiredTestInstance(), testname);
-                } catch (Exception e) {
-                    log.warning("Unable to set TestName field on test class: " + testClass.getCanonicalName() + " Error:" + e.getLocalizedMessage());
-                }
-            });
+
+        Stream.of(testClass.getDeclaredFields()).filter(field -> field.isAnnotationPresent(TestName.class))
+                .forEach(field -> {
+                    field.setAccessible(true);
+                    try {
+                        field.set(context.getRequiredTestInstance(), testname);
+                    } catch (Exception e) {
+                        log.warning("Unable to set TestName field on test class: " + testClass.getCanonicalName()
+                                + " Error:" + e.getLocalizedMessage());
+                    }
+                });
     }
 
 }

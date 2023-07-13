@@ -38,16 +38,18 @@ public class StaticCounter {
     public static void reset() {
         count.set(0);
     }
-    
+
     public static void waitTill(int expected) {
         assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for(; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+            for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval))
+                ;
         });
     }
-    
+
     public static void waitTillSurpassed(int expected) {
         assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for(; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+            for (; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval))
+                ;
         });
     }
 

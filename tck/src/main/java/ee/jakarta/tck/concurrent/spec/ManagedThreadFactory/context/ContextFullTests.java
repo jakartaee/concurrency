@@ -32,54 +32,55 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full @RunAsClient //Requires client testing due to login request 
+@Full
+@RunAsClient // Requires client testing due to login request
 public class ContextFullTests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="ContextTests")
-	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ContextFullTests.class.getPackage())
-				.addPackages(false, PACKAGE.TASKS.getPackageName())
-				.deleteClass(SecurityTestEjb.class) // SecurityTestEjb and SecurityTestInterface are in the jar
-				.deleteClass(SecurityTestInterface.class)
-				.addAsWebInfResource(ContextFullTests.class.getPackage(), "web.xml", "web.xml");
-		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
-				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class);
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class)
-				.addAsModules(war, jar);
-		
-		return ear;
-	}
-	
+
+    @ArquillianResource
+    URL baseURL;
+
+    @Deployment(name = "ContextTests")
+    public static EnterpriseArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class).addPackages(true, ContextFullTests.class.getPackage())
+                .addPackages(false, PACKAGE.TASKS.getPackageName()).deleteClass(SecurityTestEjb.class) // SecurityTestEjb
+                                                                                                       // and
+                                                                                                       // SecurityTestInterface
+                                                                                                       // are in the jar
+                .deleteClass(SecurityTestInterface.class)
+                .addAsWebInfResource(ContextFullTests.class.getPackage(), "web.xml", "web.xml");
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addClasses(SecurityTestInterface.class,
+                SecurityTestEjb.class);
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class).addAsModules(war, jar);
+
+        return ear;
+    }
+
     @TestName
     String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "SecurityServlet";
-	}
-	
-	/*
-	 * @testName: jndiClassloaderPropagationTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
-	 * CONCURRENCY:SPEC:106;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void jndiClassloaderPropagationTest() {
-		runTest(baseURL, testname);
-	}
-	
-	@Test
-	public void jndiClassloaderPropagationWithSecurityTest() {
-		runTest(baseURL, testname);
-	}
+
+    @Override
+    protected String getServletPath() {
+        return "SecurityServlet";
+    }
+
+    /*
+     * @testName: jndiClassloaderPropagationTest
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
+     * CONCURRENCY:SPEC:106;
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void jndiClassloaderPropagationTest() {
+        runTest(baseURL, testname);
+    }
+
+    @Test
+    public void jndiClassloaderPropagationWithSecurityTest() {
+        runTest(baseURL, testname);
+    }
 
 }

@@ -58,8 +58,8 @@ public class ManagedExecutorsTests {
     // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedExecutorsTests")
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addAsWebInfResource(ManagedExecutorsTests.class.getPackage(), "web.xml", "web.xml");
+        return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(ManagedExecutorsTests.class.getPackage(),
+                "web.xml", "web.xml");
     }
 
     private static final String ENV_ENTRY_JNDI_NAME = "java:comp/env/StringValue";
@@ -69,10 +69,10 @@ public class ManagedExecutorsTests {
     private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
     private boolean shutdown = true;
-    
+
     @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
-    
+
     @Resource(lookup = TestConstants.DefaultManagedExecutorService)
     public ManagedExecutorService executor;
 
@@ -105,12 +105,12 @@ public class ManagedExecutorsTests {
     private void assertListenerComplete(RunnableTask task) {
         // wait for the listener run done.
         Wait.waitForListenerComplete(managedTaskListener);
-        
+
         // check listener status.
         assertTrue(managedTaskListener.eventCalled(ListenerEvent.SUBMITTED));
         assertTrue(managedTaskListener.eventCalled(ListenerEvent.STARTING));
         assertTrue(managedTaskListener.eventCalled(ListenerEvent.DONE));
-        
+
     }
 
     /*
@@ -214,10 +214,10 @@ public class ManagedExecutorsTests {
         properties.put("key", "value");
         RunnableTask runnableTask = createRunnableTask();
         Runnable task = ManagedExecutors.managedTask(runnableTask, properties, managedTaskListener);
-        
+
         assertTrue(task instanceof ManagedTask);
         ManagedTask managedTask = (ManagedTask) task;
-        
+
         assertEquals("value", managedTask.getExecutionProperties().get("key"));
 
         assertTaskAndListenerComplete(executor.submit(task), runnableTask);
@@ -235,7 +235,7 @@ public class ManagedExecutorsTests {
     public void ManageRunnableTaskWithMapAndNullArg() {
         Runnable nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
-        
+
         assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
         });
@@ -298,15 +298,14 @@ public class ManagedExecutorsTests {
         CallableTask<String> callableTask = createCallableTask(expectedResultStr);
         Callable<String> task = ManagedExecutors.managedTask((Callable<String>) callableTask, properties,
                 managedTaskListener);
-        
+
         assertTrue(task instanceof ManagedTask);
-        
+
         ManagedTask managedTask = (ManagedTask) task;
-        
+
         assertEquals("value", managedTask.getExecutionProperties().get("key"));
 
-        assertTaskAndListenerComplete(expectedResultStr, executor.submit(task),
-                callableTask);
+        assertTaskAndListenerComplete(expectedResultStr, executor.submit(task), callableTask);
     }
 
     /*
@@ -321,7 +320,7 @@ public class ManagedExecutorsTests {
     public void ManageCallableTaskWithMapAndNullArg() {
         Callable<?> nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
-        
+
         assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, properties, managedTaskListener);
         });

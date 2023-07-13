@@ -24,56 +24,56 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CommonTasks {
 
-	public static final String SIMPLE_RETURN_STRING = "ok";
+    public static final String SIMPLE_RETURN_STRING = "ok";
 
-	public static class SimpleCallable implements Callable<String> {
-		private Duration waitTime = Duration.ZERO;
+    public static class SimpleCallable implements Callable<String> {
+        private Duration waitTime = Duration.ZERO;
 
-		public SimpleCallable() {
-		}
+        public SimpleCallable() {
+        }
 
-		public SimpleCallable(Duration waitTime) {
-			this.waitTime = waitTime;
-		}
+        public SimpleCallable(Duration waitTime) {
+            this.waitTime = waitTime;
+        }
 
-		public String call() {
-			try {
-				if (!waitTime.isZero()) {
-				    Wait.sleep(waitTime);
-				} else {
-				    Wait.sleep(TestConstants.PollInterval);
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			return SIMPLE_RETURN_STRING;
-		}
-	}
+        public String call() {
+            try {
+                if (!waitTime.isZero()) {
+                    Wait.sleep(waitTime);
+                } else {
+                    Wait.sleep(TestConstants.PollInterval);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return SIMPLE_RETURN_STRING;
+        }
+    }
 
-	public static class SimpleRunnable implements Runnable {
-		public void run() {
-			try {
-				Wait.sleep(TestConstants.PollInterval);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
+    public static class SimpleRunnable implements Runnable {
+        public void run() {
+            try {
+                Wait.sleep(TestConstants.PollInterval);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-	public static class SimpleArgCallable implements Callable<Integer> {
-		private int value = -1;
+    public static class SimpleArgCallable implements Callable<Integer> {
+        private int value = -1;
 
-		public SimpleArgCallable(int arg) {
-			value = arg;
-		}
+        public SimpleArgCallable(int arg) {
+            value = arg;
+        }
 
-		public Integer call() {
-			try {
-				Wait.sleep(TestConstants.PollInterval);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			return value;
-		}
-	}
+        public Integer call() {
+            try {
+                Wait.sleep(TestConstants.PollInterval);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return value;
+        }
+    }
 }

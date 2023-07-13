@@ -32,151 +32,162 @@ import java.util.Properties;
 
 /**
  * This class is intended to be used in conjunction with TestServlet.
- * TestServlets are deployed to the application server and has custom doGet/doPost methods
- * that will return a successful or failure message depending on the test outcome. 
+ * TestServlets are deployed to the application server and has custom
+ * doGet/doPost methods that will return a successful or failure message
+ * depending on the test outcome.
  * 
- * The TestClient class has runTest methods that will create an HTTP connection to 
- * the TestServlet and provide the TestServlet with the method name it needs to test.
- * The TestClient class will then confirm that it recieved a successful outcome from the test.
+ * The TestClient class has runTest methods that will create an HTTP connection
+ * to the TestServlet and provide the TestServlet with the method name it needs
+ * to test. The TestClient class will then confirm that it recieved a successful
+ * outcome from the test.
  *
  */
 public abstract class TestClient {
 
-	private static final TestLogger log = TestLogger.get(TestClient.class);
+    private static final TestLogger log = TestLogger.get(TestClient.class);
 
-	public static final String SUCCESS = TestServlet.SUCCESS;
-	public static final String FAILURE = TestServlet.FAILURE;
-	public static final String TEST_METHOD = TestServlet.TEST_METHOD;
-	
-	public static final String nl = System.lineSeparator();
+    public static final String SUCCESS = TestServlet.SUCCESS;
+    public static final String FAILURE = TestServlet.FAILURE;
+    public static final String TEST_METHOD = TestServlet.TEST_METHOD;
 
-	//###### run test without response #####
-	
-	/**
-	 * Runs test against servlet at baseURL, and will run against a specified testName.
-	 */
-	public void runTest(URL baseURL, String testName) {
-		try {
-			assertSuccessfulURLResponse(URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(), null);	
-		} catch (UnsupportedOperationException e) {
-			throw new RuntimeException("Tried to call runTest method without overwritting getServletPath() method.", e);
-		}
-	}
-	
-	/**
-	 * Runs test against servlet using a URLBuilder.  This is useful for complicated testing situations.
-	 */
-	public void runTest(URLBuilder builder) {
-		assertSuccessfulURLResponse(builder.build(), null);
-	}
-	
-	//###### run test with response	######
-	
-	/**
-	 * Runs test against servlet at baseURL, and will run against a specified testName.
-	 * Provide properties if you want them included in a POST request, otherwise pass in null.
-	 */
-	public String runTestWithResponse(URL baseURL, String testName, Properties props) {
-		try {
-			return assertSuccessfulURLResponse(URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(), props);	
-		} catch (UnsupportedOperationException e) {
-			throw new RuntimeException("Tried to call runTest method without overwritting getServletPath() method.", e);
-		}
-	}
-	
-	/**
-	 * Runs test against servlet using a URLBuilder.  This is useful for complicated testing situations.
-	 * Provide properties if you want them included in a POST request, otherwise pass in null.
-	 */
-	public String runTestWithResponse(URLBuilder builder, Properties props) {
-		return assertSuccessfulURLResponse(builder.build(), props); 
-	}
+    public static final String nl = System.lineSeparator();
 
-	//##### test runner ######
-	private String assertSuccessfulURLResponse(URL url, Properties props) {
-		log.enter("assertSuccessfulURLResponse", "Calling application with URL=" + url.toString());
-		
-		boolean withProps = props != null;
-		boolean pass = false;
+    // ###### run test without response #####
 
-		HttpURLConnection con = null;
-		try {
-			con = (HttpURLConnection) url.openConnection();
-			con.setDoInput(true);
-			con.setDoOutput(true);
-			con.setUseCaches(false);
-			con.setConnectTimeout((int) Duration.ofSeconds(30).toMillis());
-			
-			if(withProps) {
-				con.setRequestMethod("POST");
-				try( DataOutputStream wr = new DataOutputStream( con.getOutputStream())){
-					wr.writeBytes( toEncodedString(props) );
-				}
-					   
-			} else {
-				con.setRequestMethod("GET");
-			}
+    /**
+     * Runs test against servlet at baseURL, and will run against a specified
+     * testName.
+     */
+    public void runTest(URL baseURL, String testName) {
+        try {
+            assertSuccessfulURLResponse(
+                    URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(),
+                    null);
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Tried to call runTest method without overwritting getServletPath() method.", e);
+        }
+    }
 
-			final BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			final StringBuilder outputBuilder = new StringBuilder();
-			String line;
+    /**
+     * Runs test against servlet using a URLBuilder. This is useful for complicated
+     * testing situations.
+     */
+    public void runTest(URLBuilder builder) {
+        assertSuccessfulURLResponse(builder.build(), null);
+    }
 
-			while ((line = br.readLine()) != null) {
-				outputBuilder.append(line).append(nl);
+    // ###### run test with response ######
 
-				if (line.contains(SUCCESS)) {
-					pass = true;
-				}
-			}
-			
-			log.exit("assertSuccessfulURLResponse", "Response code: " + con.getResponseCode() ,"Response body: " + outputBuilder.toString());
+    /**
+     * Runs test against servlet at baseURL, and will run against a specified
+     * testName. Provide properties if you want them included in a POST request,
+     * otherwise pass in null.
+     */
+    public String runTestWithResponse(URL baseURL, String testName, Properties props) {
+        try {
+            return assertSuccessfulURLResponse(
+                    URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath()).withTestName(testName).build(),
+                    props);
+        } catch (UnsupportedOperationException e) {
+            throw new RuntimeException("Tried to call runTest method without overwritting getServletPath() method.", e);
+        }
+    }
 
-			assertTrue(con.getResponseCode() < 400, "Connection returned a response code that was greater than 400");
-			assertTrue(pass, "Output did not contain successful message: " + SUCCESS);
-		
-			return outputBuilder.toString();
-		} catch (IOException e) {
-			throw new RuntimeException("Exception: " + e.getClass().getName() + " requesting URL=" + url.toString(), e);
-		} finally {
-			if (con != null) {
-				con.disconnect();
-			}
-		}
-	}
-	
-   static String toEncodedString(Properties args) throws UnsupportedEncodingException {
+    /**
+     * Runs test against servlet using a URLBuilder. This is useful for complicated
+     * testing situations. Provide properties if you want them included in a POST
+     * request, otherwise pass in null.
+     */
+    public String runTestWithResponse(URLBuilder builder, Properties props) {
+        return assertSuccessfulURLResponse(builder.build(), props);
+    }
+
+    // ##### test runner ######
+    private String assertSuccessfulURLResponse(URL url, Properties props) {
+        log.enter("assertSuccessfulURLResponse", "Calling application with URL=" + url.toString());
+
+        boolean withProps = props != null;
+        boolean pass = false;
+
+        HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection) url.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setConnectTimeout((int) Duration.ofSeconds(30).toMillis());
+
+            if (withProps) {
+                con.setRequestMethod("POST");
+                try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+                    wr.writeBytes(toEncodedString(props));
+                }
+
+            } else {
+                con.setRequestMethod("GET");
+            }
+
+            final BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            final StringBuilder outputBuilder = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                outputBuilder.append(line).append(nl);
+
+                if (line.contains(SUCCESS)) {
+                    pass = true;
+                }
+            }
+
+            log.exit("assertSuccessfulURLResponse", "Response code: " + con.getResponseCode(),
+                    "Response body: " + outputBuilder.toString());
+
+            assertTrue(con.getResponseCode() < 400, "Connection returned a response code that was greater than 400");
+            assertTrue(pass, "Output did not contain successful message: " + SUCCESS);
+
+            return outputBuilder.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Exception: " + e.getClass().getName() + " requesting URL=" + url.toString(), e);
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
+        }
+    }
+
+    static String toEncodedString(Properties args) throws UnsupportedEncodingException {
         StringBuffer buf = new StringBuffer();
         Enumeration<?> names = args.propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             String value = args.getProperty(name);
-            
-            buf.append(URLEncoder.encode(name, StandardCharsets.UTF_8.name()))
-                .append("=")
-                .append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
-            
+
+            buf.append(URLEncoder.encode(name, StandardCharsets.UTF_8.name())).append("=")
+                    .append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
+
             if (names.hasMoreElements())
                 buf.append("&");
         }
         return buf.toString();
     }
-	
-	/**
-	 * Override this method to return the servlet path for the suite of tests.
-	 * Used for the runTest() methods. 
-	 */
-	protected String getServletPath() {
-		throw new UnsupportedOperationException("Subclass did not override the getServletPath method");
-	}
-	
-	/**
-	 * Asserts that the response from a runTestWithResponse method contains a specific string. 
-	 * 
-	 * @param message - message to display if test fails
-	 * @param expected - the expected string to find in the response
-	 * @param resp - the response you received from the servlet
-	 */
-	protected void assertStringInResponse(String message, String expected, String resp) {
-		assertTrue(resp.toLowerCase().contains(expected.toLowerCase()), message);
-	}
+
+    /**
+     * Override this method to return the servlet path for the suite of tests. Used
+     * for the runTest() methods.
+     */
+    protected String getServletPath() {
+        throw new UnsupportedOperationException("Subclass did not override the getServletPath method");
+    }
+
+    /**
+     * Asserts that the response from a runTestWithResponse method contains a
+     * specific string.
+     * 
+     * @param message  - message to display if test fails
+     * @param expected - the expected string to find in the response
+     * @param resp     - the response you received from the servlet
+     */
+    protected void assertStringInResponse(String message, String expected, String resp) {
+        assertTrue(resp.toLowerCase().contains(expected.toLowerCase()), message);
+    }
 }

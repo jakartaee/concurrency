@@ -37,7 +37,7 @@ public class ReqBean {
 
     @Asynchronous(executor = "java:app/concurrent/ScheduledExecutorA")
     public CompletableFuture<String> awaitAndGetThirdPartyContext(Semaphore invocationsStarted,
-                                                                  CountDownLatch blocker) {
+            CountDownLatch blocker) {
         invocationsStarted.release(1);
         CompletableFuture<String> future = Asynchronous.Result.getFuture();
         try {

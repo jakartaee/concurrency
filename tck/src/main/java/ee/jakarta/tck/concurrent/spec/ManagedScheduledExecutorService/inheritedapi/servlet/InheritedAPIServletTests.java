@@ -55,7 +55,7 @@ public class InheritedAPIServletTests {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class);
     }
-    
+
     @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
@@ -81,8 +81,7 @@ public class InheritedAPIServletTests {
         Wait.waitTillFutureIsDone(result);
         result.get();
 
-        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(),
-                CommonTasks.SIMPLE_RETURN_STRING);
+        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
         Wait.waitTillFutureIsDone(result);
         assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
     }
@@ -125,8 +124,8 @@ public class InheritedAPIServletTests {
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
             assertEquals(resultList.get(2).get(), 3);
-            resultList = scheduledExecutor.invokeAll(taskList,
-                    TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            resultList = scheduledExecutor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(),
+                    TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureIsDone(each);
             }
@@ -193,8 +192,8 @@ public class InheritedAPIServletTests {
         Wait.waitTillFutureIsDone(result);
         assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
 
-        result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(),
-                TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+        result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.PollInterval.getSeconds(),
+                TimeUnit.SECONDS);
         Wait.waitTillFutureIsDone(result);
         assertEquals(result.get(), null);
     }
@@ -214,7 +213,8 @@ public class InheritedAPIServletTests {
             result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(),
                     TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
             Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2,
+                    TestConstants.PollsPerTimeout + 2);
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {
@@ -235,11 +235,11 @@ public class InheritedAPIServletTests {
     public void testApiScheduleWithFixedDelay() {
         ScheduledFuture<?> result = null;
         try {
-            result = scheduledExecutor.scheduleWithFixedDelay(
-                    new CounterRunnableTask(TestConstants.PollInterval),
+            result = scheduledExecutor.scheduleWithFixedDelay(new CounterRunnableTask(TestConstants.PollInterval),
                     TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
             Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2);
+            Assertions.assertBetween(StaticCounter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2,
+                    (TestConstants.PollsPerTimeout / 2) + 2);
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {

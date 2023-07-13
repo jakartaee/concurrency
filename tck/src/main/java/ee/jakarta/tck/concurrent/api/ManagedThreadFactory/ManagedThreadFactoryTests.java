@@ -38,19 +38,17 @@ import jakarta.enterprise.concurrent.ManageableThread;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 
 @Web
-@Common({PACKAGE.TASKS, PACKAGE.FIXED_COUNTER})
+@Common({ PACKAGE.TASKS, PACKAGE.FIXED_COUNTER })
 public class ManagedThreadFactoryTests extends TestClient {
-	
-	@Deployment(name="APITests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true, ManagedThreadFactoryTests.class.getPackage());
-	}
-	
+
+    @Deployment(name = "APITests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, ManagedThreadFactoryTests.class.getPackage());
+    }
 
     @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
-    
+
     /*
      * @testName: isShutdown
      * 
@@ -64,40 +62,40 @@ public class ManagedThreadFactoryTests extends TestClient {
         ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
         assertFalse(m.isShutdown());
     }
-	
 
-	/*
-	 * @testName: interruptThreadApiTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:83; CONCURRENCY:SPEC:83.1;
-	 * CONCURRENCY:SPEC:83.2; CONCURRENCY:SPEC:83.3; CONCURRENCY:SPEC:103;
-	 * CONCURRENCY:SPEC:96.5; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:105;
-	 * CONCURRENCY:SPEC:96; CONCURRENCY:SPEC:93; CONCURRENCY:SPEC:96.3;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void interruptThreadApiTest() {
-	    CounterRunnableTask task = new CounterRunnableTask(TestConstants.PollInterval);
+    /*
+     * @testName: interruptThreadApiTest
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:83; CONCURRENCY:SPEC:83.1;
+     * CONCURRENCY:SPEC:83.2; CONCURRENCY:SPEC:83.3; CONCURRENCY:SPEC:103;
+     * CONCURRENCY:SPEC:96.5; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:105;
+     * CONCURRENCY:SPEC:96; CONCURRENCY:SPEC:93; CONCURRENCY:SPEC:96.3;
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void interruptThreadApiTest() {
+        CounterRunnableTask task = new CounterRunnableTask(TestConstants.PollInterval);
         Thread thread = threadFactory.newThread(task);
         thread.start();
         thread.interrupt();
         Wait.waitTillThreadFinish(thread);
         assertEquals(0, StaticCounter.getCount());
-	}
+    }
 
-	/*
-	 * @testName: implementsManageableThreadInterfaceTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:97;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void implementsManageableThreadInterfaceTest() {
-	    CounterRunnableTask task = new CounterRunnableTask();
+    /*
+     * @testName: implementsManageableThreadInterfaceTest
+     * 
+     * @assertion_ids: CONCURRENCY:SPEC:97;
+     * 
+     * @test_Strategy:
+     */
+    @Test
+    public void implementsManageableThreadInterfaceTest() {
+        CounterRunnableTask task = new CounterRunnableTask();
         Thread thread = threadFactory.newThread(task);
-        assertTrue(thread instanceof ManageableThread, "The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
-	}
+        assertTrue(thread instanceof ManageableThread,
+                "The thread returned by ManagedThreadFactory should be instance of ManageableThread.");
+    }
 
 }

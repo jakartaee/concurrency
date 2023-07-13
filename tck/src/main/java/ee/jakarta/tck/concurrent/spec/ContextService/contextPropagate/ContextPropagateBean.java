@@ -29,30 +29,30 @@ public class ContextPropagateBean implements ContextPropagateInterface {
 
     @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
-	
+
     @Resource(lookup = TestConstants.DefaultContextService)
     public ContextService context;
 
-	@Override
-	public TestWorkInterface createWorker(String classname) {
-		try {
-			return (TestWorkInterface) context.createContextualProxy(
-					Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
-		} catch (Exception en) {
-			throw new RuntimeException(en);
-		}
-	}
+    @Override
+    public TestWorkInterface createWorker(String classname) {
+        try {
+            return (TestWorkInterface) context.createContextualProxy(
+                    Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
+        } catch (Exception en) {
+            throw new RuntimeException(en);
+        }
+    }
 
-	@Override
-	public String executeWorker(TestWorkInterface worker) {
-		Thread workThread = threadFactory.newThread(worker);
-		workThread.start();
-		try {
-			workThread.join();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+    @Override
+    public String executeWorker(TestWorkInterface worker) {
+        Thread workThread = threadFactory.newThread(worker);
+        workThread.start();
+        try {
+            workThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-		return worker.getResult();
-	}
+        return worker.getResult();
+    }
 }

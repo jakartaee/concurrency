@@ -25,22 +25,19 @@ import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 
 /**
- * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet} and {@link ContextServiceDefinitionBean}
+ * @ContextServiceDefinitions are defined under
+ *                            {@link ContextServiceDefinitionServlet} and
+ *                            {@link ContextServiceDefinitionBean}
  */
-@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/EJBScheduledExecutorA",
-                           context = "java:app/concurrent/ContextA",
-                           maxAsync = 3,
-                           hungTaskThreshold = 360000)
-@ManagedScheduledExecutorDefinition(name = "java:module/concurrent/ScheduledExecutorB",
-                           context = "java:module/concurrent/ContextB",
-                           maxAsync = 4)
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/EJBScheduledExecutorA", context = "java:app/concurrent/ContextA", maxAsync = 3, hungTaskThreshold = 360000)
+@ManagedScheduledExecutorDefinition(name = "java:module/concurrent/ScheduledExecutorB", context = "java:module/concurrent/ContextB", maxAsync = 4)
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/EJBScheduledExecutorC")
 @Local(ManagedScheduleExecutorDefinitionInterface.class)
 @Stateless
 public class ManagedScheduledExecutorDefinitionBean implements ManagedScheduleExecutorDefinitionInterface {
-	
-	@Override
-	public Object doLookup(String name) throws NamingException {
-		return InitialContext.doLookup(name);
-	}
+
+    @Override
+    public Object doLookup(String name) throws NamingException {
+        return InitialContext.doLookup(name);
+    }
 }

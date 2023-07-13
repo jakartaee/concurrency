@@ -31,7 +31,8 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to annotation configuration
+@Web
+@RunAsClient // Requires client testing due to annotation configuration
 @Common({ PACKAGE.TRANSACTION })
 public class TransactionTests extends TestClient {
 
@@ -40,8 +41,7 @@ public class TransactionTests extends TestClient {
 
     @Deployment(name = "TransactionTests")
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addPackages(true, TransactionTests.class.getPackage());
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, TransactionTests.class.getPackage());
     }
 
     @Override

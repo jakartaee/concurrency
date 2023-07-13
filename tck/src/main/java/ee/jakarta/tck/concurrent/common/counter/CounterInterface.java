@@ -18,9 +18,9 @@ package ee.jakarta.tck.concurrent.common.counter;
 
 public interface CounterInterface {
 
-	public void inc();
+    public void inc();
 
-	public int getCount();
+    public int getCount();
 
-	public void reset();
+    public void reset();
 }

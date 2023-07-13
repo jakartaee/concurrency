@@ -17,7 +17,7 @@
 package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
 
 public interface ContextPropagateInterface {
-	public TestWorkInterface createWorker(String classname);
+    public TestWorkInterface createWorker(String classname);
 
-	public String executeWorker(TestWorkInterface worker);
+    public String executeWorker(TestWorkInterface worker);
 }

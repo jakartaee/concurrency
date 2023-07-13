@@ -24,18 +24,17 @@ import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 /**
- * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet}
+ * @ContextServiceDefinitions are defined under
+ *                            {@link ContextServiceDefinitionServlet}
  */
-@ManagedThreadFactoryDefinition(name = "java:app/concurrent/EJBThreadFactoryA",
-                                context = "java:app/concurrent/EJBContextA",
-                                priority = 4)
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/EJBThreadFactoryA", context = "java:app/concurrent/EJBContextA", priority = 4)
 @ManagedThreadFactoryDefinition(name = "java:comp/concurrent/EJBThreadFactoryB")
 @Local(ManagedThreadFactoryDefinitionInterface.class)
 @Stateless
 public class ManagedThreadFactoryDefinitionBean implements ManagedThreadFactoryDefinitionInterface {
 
-	@Override
-	public Object doLookup(String name) throws NamingException {
-		return InitialContext.doLookup(name);
-	}
+    @Override
+    public Object doLookup(String name) throws NamingException {
+        return InitialContext.doLookup(name);
+    }
 }

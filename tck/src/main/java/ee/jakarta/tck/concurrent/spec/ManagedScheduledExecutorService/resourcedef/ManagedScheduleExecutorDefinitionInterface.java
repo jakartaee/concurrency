@@ -19,6 +19,6 @@ import javax.naming.NamingException;
 
 public interface ManagedScheduleExecutorDefinitionInterface {
 
-	Object doLookup(String name) throws NamingException;
+    Object doLookup(String name) throws NamingException;
 
 }

@@ -31,15 +31,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/ClassloaderServlet")
 public class ClassloaderServlet extends TestServlet {
 
-	@EJB
-	private ContextPropagateInterface intf;
-	
+    @EJB
+    private ContextPropagateInterface intf;
+
     @Resource(lookup = TestConstants.DefaultContextService)
     public ContextService context;
 
-	public void testClassloaderAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		String result = intf.executeWorker((TestWorkInterface) context.createContextualProxy(
-				new TestClassloaderRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
-		resp.getWriter().println(result);
-	}
+    public void testClassloaderAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp)
+            throws Exception {
+        String result = intf
+                .executeWorker((TestWorkInterface) context.createContextualProxy(new TestClassloaderRunnableWork(),
+                        Runnable.class, TestWorkInterface.class, Serializable.class));
+        resp.getWriter().println(result);
+    }
 }
