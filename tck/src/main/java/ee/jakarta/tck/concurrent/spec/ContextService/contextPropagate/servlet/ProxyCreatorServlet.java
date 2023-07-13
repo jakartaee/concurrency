@@ -39,7 +39,7 @@ public class ProxyCreatorServlet extends TestServlet {
 
     private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
 
-    @Resource(lookup = TestConstants.DefaultContextService)
+    @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
     public void testJNDIContextInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {

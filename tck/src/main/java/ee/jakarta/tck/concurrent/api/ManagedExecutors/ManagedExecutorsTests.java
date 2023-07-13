@@ -70,10 +70,10 @@ public class ManagedExecutorsTests {
 
     private boolean shutdown = true;
 
-    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    @Resource(lookup = TestConstants.defaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
 
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
     public ManagedExecutorService executor;
 
     @AfterEach
@@ -114,7 +114,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: IsCurrentThreadShutdown
+     * @testName: isCurrentThreadShutdown
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:21
      *
@@ -123,7 +123,7 @@ public class ManagedExecutorsTests {
      *
      */
     @Test
-    public void IsCurrentThreadShutdown() {
+    public void isCurrentThreadShutdown() {
         Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
             public void run() {
@@ -139,7 +139,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: IsCurrentThreadShutdown_ManageableThread
+     * @testName: isCurrentThreadShutdown_ManageableThread
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:21
      *
@@ -147,7 +147,7 @@ public class ManagedExecutorsTests {
      * the shutdown status.
      */
     @Test
-    public void IsCurrentThreadShutdown_ManageableThread() {
+    public void isCurrentThreadShutdownManageableThread() {
         Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
             public void run() {
@@ -163,7 +163,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageRunnableTaskWithTaskListener
+     * @testName: manageRunnableTaskWithTaskListener
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:22;CONCURRENCY:SPEC:7;
      * CONCURRENCY:SPEC:7.1;CONCURRENCY:SPEC:7.2;
@@ -175,7 +175,7 @@ public class ManagedExecutorsTests {
      * ManagedExecutorService or a ManagedScheduledExecutorService.
      */
     @Test
-    public void ManageRunnableTaskWithTaskListener() {
+    public void manageRunnableTaskWithTaskListener() {
         RunnableTask runnableTask = createRunnableTask();
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
         Future<?> futureResult = executor.submit(taskWithListener);
@@ -183,7 +183,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageRunnableTaskWithNullArg
+     * @testName: manageRunnableTaskWithNullArg
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:23
      *
@@ -191,7 +191,7 @@ public class ManagedExecutorsTests {
      * null runnable task.
      */
     @Test
-    public void ManageRunnableTaskWithNullArg() {
+    public void manageRunnableTaskWithNullArg() {
         Runnable nullTask = null;
         assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, managedTaskListener);
@@ -199,7 +199,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageRunnableTaskWithTaskListenerAndMap
+     * @testName: manageRunnableTaskWithTaskListenerAndMap
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:24;CONCURRENCY:SPEC:13;
      *
@@ -209,7 +209,7 @@ public class ManagedExecutorsTests {
      * when the task is submitted to a ManagedExecutorService
      */
     @Test
-    public void ManageRunnableTaskWithTaskListenerAndMap() {
+    public void manageRunnableTaskWithTaskListenerAndMap() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         RunnableTask runnableTask = createRunnableTask();
@@ -224,7 +224,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageRunnableTaskWithMapAndNullArg
+     * @testName: manageRunnableTaskWithMapAndNullArg
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:25
      *
@@ -232,7 +232,7 @@ public class ManagedExecutorsTests {
      * null runnable task and additional execution properties.
      */
     @Test
-    public void ManageRunnableTaskWithMapAndNullArg() {
+    public void manageRunnableTaskWithMapAndNullArg() {
         Runnable nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
 
@@ -242,7 +242,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageCallableTaskWithTaskListener
+     * @testName: manageCallableTaskWithTaskListener
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:26
      *
@@ -252,7 +252,7 @@ public class ManagedExecutorsTests {
      * ManagedExecutorService
      */
     @Test
-    public void ManageCallableTaskWithTaskListener() {
+    public void manageCallableTaskWithTaskListener() {
         String expectedResultStr = "expected something";
         CallableTask<String> callableTask = createCallableTask(expectedResultStr);
         Callable<String> taskWithListener = ManagedExecutors.managedTask((Callable<String>) callableTask,
@@ -262,7 +262,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageCallableTaskWithNullArg
+     * @testName: manageCallableTaskWithNullArg
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:27
      *
@@ -270,7 +270,7 @@ public class ManagedExecutorsTests {
      * null Callable task.
      */
     @Test
-    public void ManageCallableTaskWithNullArg() {
+    public void manageCallableTaskWithNullArg() {
         Callable<?> nullTask = null;
         assertThrows(IllegalArgumentException.class, () -> {
             ManagedExecutors.managedTask(nullTask, managedTaskListener);
@@ -278,7 +278,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageCallableTaskWithTaskListenerAndMap
+     * @testName: manageCallableTaskWithTaskListenerAndMap
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:28;CONCURRENCY:SPEC:13.1;
      * CONCURRENCY:SPEC:45;CONCURRENCY:SPEC:45.1;
@@ -289,7 +289,7 @@ public class ManagedExecutorsTests {
      * when the task is submitted to a ManagedExecutorService
      */
     @Test
-    public void ManageCallableTaskWithTaskListenerAndMap() {
+    public void manageCallableTaskWithTaskListenerAndMap() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         properties.put(ManagedTask.IDENTITY_NAME, "id");
@@ -309,7 +309,7 @@ public class ManagedExecutorsTests {
     }
 
     /*
-     * @testName: ManageCallableTaskWithMapAndNullArg
+     * @testName: manageCallableTaskWithMapAndNullArg
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:29
      *
@@ -317,7 +317,7 @@ public class ManagedExecutorsTests {
      * null Callable task and additional execution properties.
      */
     @Test
-    public void ManageCallableTaskWithMapAndNullArg() {
+    public void manageCallableTaskWithMapAndNullArg() {
         Callable<?> nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
 

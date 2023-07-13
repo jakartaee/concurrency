@@ -38,7 +38,7 @@ public class ForbiddenAPIServletTests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
     public ManagedExecutorService mes;
 
     /*

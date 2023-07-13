@@ -53,7 +53,7 @@ public class TransactionServlet extends TestServlet {
     @Resource(lookup = "java:comp/env/jdbc/ManagedThreadFactoryDB")
     private DataSource ds;
 
-    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    @Resource(lookup = TestConstants.defaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
 
     @Override

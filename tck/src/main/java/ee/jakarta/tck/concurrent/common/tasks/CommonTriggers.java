@@ -74,7 +74,7 @@ public class CommonTriggers {
 
         private int executionCount = 0;
 
-        private static final int executionCountLimit = TestConstants.PollsPerTimeout * 2;
+        private static final int executionCountLimit = TestConstants.pollsPerTimeout * 2;
 
         public TriggerFixedRate(Date startTime, long delta) {
             this.startTime = startTime;

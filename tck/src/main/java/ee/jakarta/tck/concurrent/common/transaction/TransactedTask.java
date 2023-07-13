@@ -55,7 +55,7 @@ public class TransactedTask implements WorkInterface {
 
         try {
             if (beginTransaction) {
-                ut = InitialContext.doLookup(TestConstants.UserTransaction);
+                ut = InitialContext.doLookup(TestConstants.userTransaction);
                 ut.begin();
             }
             try (Connection conn = Connections.getConnection(false);
@@ -103,7 +103,7 @@ public class TransactedTask implements WorkInterface {
 
         try {
             if (beginTransaction) {
-                ut = InitialContext.doLookup(TestConstants.UserTransaction);
+                ut = InitialContext.doLookup(TestConstants.userTransaction);
                 ut.begin();
             }
 

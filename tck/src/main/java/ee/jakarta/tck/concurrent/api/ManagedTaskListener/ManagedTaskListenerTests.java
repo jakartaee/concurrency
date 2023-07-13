@@ -57,7 +57,7 @@ public class ManagedTaskListenerTests {
 
     private ManagedTaskListenerImpl managedTaskListener = new ManagedTaskListenerImpl();
 
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
     public ManagedExecutorService executor;
 
     @AfterEach
@@ -66,7 +66,7 @@ public class ManagedTaskListenerTests {
     }
 
     /*
-     * @testName: TaskAborted
+     * @testName: taskAborted
      *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:38;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.1;CONCURRENCY:
@@ -76,15 +76,15 @@ public class ManagedTaskListenerTests {
      * Future has been cancelled anytime during the life of a task.
      */
     @Test
-    public void TaskAborted() throws InterruptedException {
+    public void taskAborted() throws InterruptedException {
         final Duration blockTime = Duration.ofMillis(3000);
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener, blockTime);
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
         Future<?> futureResult = executor.submit(taskWithListener);
         Wait.sleep(Duration.ofMillis(1000));
         futureResult.cancel(true);
-        Wait.waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout.plus(blockTime),
-                TestConstants.PollInterval);
+        Wait.waitForListenerComplete(managedTaskListener, TestConstants.waitTimeout.plus(blockTime),
+                TestConstants.pollInterval);
         List<ListenerEvent> events = managedTaskListener.events();
 
         assertTrue(events.contains(ListenerEvent.ABORTED), "Listener taskAborted failed");
@@ -92,7 +92,7 @@ public class ManagedTaskListenerTests {
     }
 
     /*
-     * @testName: TaskDone
+     * @testName: taskDone
      *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:39;CONCURRENCY:SPEC:13.3;CONCURRENCY:SPEC:45.3;
@@ -101,7 +101,7 @@ public class ManagedTaskListenerTests {
      * running, either successfully or failed .
      */
     @Test
-    public void TaskDone() throws InterruptedException {
+    public void taskDone() throws InterruptedException {
         // in cancel case
         final Duration blockTime = Duration.ofMillis(3000);
         Runnable taskToCancelled = new RunnableTaskWithStatus(managedTaskListener, blockTime);
@@ -109,8 +109,8 @@ public class ManagedTaskListenerTests {
         Future<?> futureResult = executor.submit(taskToCancelledWithListener);
         Wait.sleep(Duration.ofMillis(1000));
         futureResult.cancel(true);
-        Wait.waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout.plus(blockTime),
-                TestConstants.PollInterval);
+        Wait.waitForListenerComplete(managedTaskListener, TestConstants.waitTimeout.plus(blockTime),
+                TestConstants.pollInterval);
         List<ListenerEvent> events = managedTaskListener.events();
         assertTrue(events.contains(ListenerEvent.DONE), "Listener taskDone failed in cancel case");
         managedTaskListener.clearEvents();
@@ -136,7 +136,7 @@ public class ManagedTaskListenerTests {
     }
 
     /*
-     * @testName: TaskStarting
+     * @testName: taskStarting
      *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:40;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.3;CONCURRENCY:
@@ -147,7 +147,7 @@ public class ManagedTaskListenerTests {
      * completed.
      */
     @Test
-    public void TaskStarting() {
+    public void taskStarting() {
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
         executor.submit(taskWithListener);
@@ -162,7 +162,7 @@ public class ManagedTaskListenerTests {
     }
 
     /*
-     * @testName: TaskSubmitted
+     * @testName: taskSubmitted
      *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:41;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.2;CONCURRENCY:
@@ -173,7 +173,7 @@ public class ManagedTaskListenerTests {
      * taskSubmitted listener has completed.
      */
     @Test
-    public void TaskSubmitted() {
+    public void taskSubmitted() {
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
         executor.submit(taskWithListener);

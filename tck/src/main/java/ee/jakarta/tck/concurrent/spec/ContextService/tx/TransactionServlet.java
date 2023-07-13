@@ -53,10 +53,10 @@ public class TransactionServlet extends TestServlet {
     @Resource(lookup = "java:comp/env/jdbc/ContextServiceDB")
     private DataSource ds;
 
-    @Resource(lookup = TestConstants.DefaultContextService)
+    @Resource(lookup = TestConstants.defaultContextService)
     private ContextService cx;
 
-    @Resource(lookup = TestConstants.UserTransaction)
+    @Resource(lookup = TestConstants.userTransaction)
     private UserTransaction ut;
 
     @Override

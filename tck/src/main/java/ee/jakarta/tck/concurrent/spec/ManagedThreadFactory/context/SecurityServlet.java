@@ -45,7 +45,7 @@ public class SecurityServlet extends TestServlet {
 
     public void jndiClassloaderPropagationTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
+        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.defaultManagedThreadFactory);
 
         CounterRunnableWithContext task = new CounterRunnableWithContext();
         Thread thread = factory.newThread(task);
@@ -59,7 +59,7 @@ public class SecurityServlet extends TestServlet {
 
         req.login("javajoe", "javajoe");
 
-        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
+        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.defaultManagedThreadFactory);
 
         CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
         Thread thread = factory.newThread(task);
@@ -100,7 +100,7 @@ public class SecurityServlet extends TestServlet {
 
         public void run() {
             try {
-                assertEquals(str.managerMethod1(), TestConstants.SimpleReturnValue);
+                assertEquals(str.managerMethod1(), TestConstants.simpleReturnValue);
             } catch (Exception e) {
                 return;
             }

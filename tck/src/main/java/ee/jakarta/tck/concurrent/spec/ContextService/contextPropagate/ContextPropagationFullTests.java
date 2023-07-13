@@ -169,7 +169,7 @@ public class ContextPropagationFullTests extends TestClient {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(securityURL).withPaths("ClassloaderServlet")
                 .withTestName(testname);
         String resp = runTestWithResponse(requestURL, null);
-        this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
+        this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.complexReturnValue, resp);
     }
 
     /*
@@ -190,7 +190,7 @@ public class ContextPropagationFullTests extends TestClient {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(classloaderURL).withPaths("SecurityServlet")
                 .withTestName(testname);
         String resp = runTestWithResponse(requestURL, null);
-        this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.ComplexReturnValue, resp);
+        this.assertStringInResponse(testname + "failed to get correct result.", TestConstants.complexReturnValue, resp);
     }
 
     /**

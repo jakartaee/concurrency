@@ -82,7 +82,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         };
 
         // The JDK modules we want added to our classpath
-        String[] JDKModules = new String[] { "java.base", "java.rmi", "java.sql", "java.naming" };
+        String[] jdkModules = new String[] { "java.base", "java.rmi", "java.sql", "java.naming" };
 
         // Get Jakarta artifacts from application server
         Set<String> classPaths = new HashSet<String>();
@@ -108,7 +108,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         // Get JDK modules from jimage
         // Add JDK classes to classpath
         File jimageOutput = new File(testInfo.getJImageDir());
-        for (String module : JDKModules) {
+        for (String module : jdkModules) {
             Path modulePath = Paths.get(jimageOutput.getAbsolutePath(), module);
             if (Files.isDirectory(modulePath)) {
                 classPaths.add(modulePath.toString());

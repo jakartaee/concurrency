@@ -29,6 +29,6 @@ public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
         } catch (ClassNotFoundException e) {
             return "can not load class in web module from ejb module.";
         }
-        return TestConstants.ComplexReturnValue;
+        return TestConstants.complexReturnValue;
     }
 }

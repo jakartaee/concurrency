@@ -46,7 +46,7 @@ public class SkippedExceptionTests {
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
-    public void SkippedExceptionNoArgTest() {
+    public void skippedExceptionNoArgTest() {
         SkippedException thrown = assertThrows(SkippedException.class, () -> {
             throw new SkippedException();
         });
@@ -62,7 +62,7 @@ public class SkippedExceptionTests {
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
-    public void SkippedExceptionStringTest() {
+    public void skippedExceptionStringTest() {
         final String expected = "thisisthedetailmessage";
 
         SkippedException thrown = assertThrows(SkippedException.class, () -> {
@@ -81,7 +81,7 @@ public class SkippedExceptionTests {
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
-    public void SkippedExceptionThrowableTest() {
+    public void skippedExceptionThrowableTest() {
         SkippedException thrown;
 
         final Throwable expected = new Throwable("thisisthethrowable");
@@ -110,7 +110,7 @@ public class SkippedExceptionTests {
      * @test_Strategy: Constructs an SkippedException.
      */
     @Test
-    public void SkippedExceptionStringThrowableTest() {
+    public void skippedExceptionStringThrowableTest() {
         SkippedException thrown;
 
         String sExpected = "thisisthedetailmessage";

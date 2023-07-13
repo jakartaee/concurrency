@@ -38,14 +38,14 @@ public class AbortedExceptionTests {
     }
 
     /*
-     * @testName: AbortedExceptionNoArgTest
+     * @testName: abortedExceptionNoArgTest
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:1
      *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
-    public void AbortedExceptionNoArgTest() {
+    public void abortedExceptionNoArgTest() {
         AbortedException thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException();
         });
@@ -54,14 +54,14 @@ public class AbortedExceptionTests {
     }
 
     /*
-     * @testName: AbortedExceptionStringTest
+     * @testName: abortedExceptionStringTest
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:3
      *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
-    public void AbortedExceptionStringTest() {
+    public void abortedExceptionStringTest() {
         final String expected = "thisisthedetailmessage";
 
         AbortedException thrown = assertThrows(AbortedException.class, () -> {
@@ -73,14 +73,14 @@ public class AbortedExceptionTests {
     }
 
     /*
-     * @testName: AbortedExceptionThrowableTest
+     * @testName: abortedExceptionThrowableTest
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:4
      *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
-    public void AbortedExceptionThrowableTest() {
+    public void abortedExceptionThrowableTest() {
         AbortedException thrown;
 
         final Throwable expected = new Throwable("thisisthethrowable");
@@ -102,14 +102,14 @@ public class AbortedExceptionTests {
     }
 
     /*
-     * @testName: AbortedExceptionStringThrowableTest
+     * @testName: abortedExceptionStringThrowableTest
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:2
      *
      * @test_Strategy: Constructs an AbortedException.
      */
     @Test
-    public void AbortedExceptionStringThrowableTest() {
+    public void abortedExceptionStringThrowableTest() {
         AbortedException thrown;
 
         String sExpected = "thisisthedetailmessage";

@@ -109,7 +109,7 @@ public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
     }
 
     @Test
-    public void testIncompleteFutureMSE_EJB() {
+    public void testIncompleteFutureMSEEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
@@ -121,7 +121,7 @@ public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
     }
 
     @Test
-    public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() {
+    public void testManagedScheduledExecutorDefinitionAllAttributesEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
@@ -133,7 +133,7 @@ public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
     }
 
     @Test
-    public void testManagedScheduledExecutorDefinitionDefaults_EJB() {
+    public void testManagedScheduledExecutorDefinitionDefaultsEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);

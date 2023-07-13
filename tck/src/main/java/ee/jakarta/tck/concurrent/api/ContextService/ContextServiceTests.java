@@ -50,11 +50,11 @@ public class ContextServiceTests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    @Resource(lookup = TestConstants.DefaultContextService)
+    @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
     /*
-     * @testName: ContextServiceWithIntf
+     * @testName: contextServiceWithIntf
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:5
      *
@@ -62,7 +62,7 @@ public class ContextServiceTests {
      * using instance and interface.
      */
     @Test
-    public void ContextServiceWithIntf() {
+    public void contextServiceWithIntf() {
         assertAll(() -> {
             Runnable proxy = (Runnable) context.createContextualProxy(new CounterRunnableTask(), Runnable.class);
             assertNotNull(proxy);
@@ -70,7 +70,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithIntfAndIntfNoImplemented
+     * @testName: contextServiceWithIntfAndIntfNoImplemented
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
      *
@@ -79,14 +79,14 @@ public class ContextServiceTests {
      * specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndIntfNoImplemented() {
+    public void contextServiceWithIntfAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(new Object(), Runnable.class);
         });
     }
 
     /*
-     * @testName: ContextServiceWithIntfAndInstanceIsNull
+     * @testName: contextServiceWithIntfAndInstanceIsNull
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
      *
@@ -95,14 +95,14 @@ public class ContextServiceTests {
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndInstanceIsNull() {
+    public void contextServiceWithIntfAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(null, Runnable.class);
         });
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfs
+     * @testName: contextServiceWithMultiIntfs
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:7
      *
@@ -110,7 +110,7 @@ public class ContextServiceTests {
      * using instance and multiple interfaces.
      */
     @Test
-    public void ContextServiceWithMultiIntfs() {
+    public void contextServiceWithMultiIntfs() {
         assertAll(() -> {
             Object proxy = context.createContextualProxy(new CounterRunnableTask(), Runnable.class,
                     WorkInterface.class);
@@ -121,7 +121,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndIntfNoImplemented
+     * @testName: contextServiceWithMultiIntfsAndIntfNoImplemented
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
      *
@@ -130,7 +130,7 @@ public class ContextServiceTests {
      * specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
+    public void contextServiceWithMultiIntfsAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(new CounterRunnableTask(), Runnable.class, WorkInterface.class,
                     ManagedTaskListener.class);
@@ -138,7 +138,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndInstanceIsNull
+     * @testName: contextServiceWithMultiIntfsAndInstanceIsNull
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
      *
@@ -147,7 +147,7 @@ public class ContextServiceTests {
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
+    public void contextServiceWithMultiIntfsAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(null, Runnable.class, WorkInterface.class);
         });
@@ -162,7 +162,7 @@ public class ContextServiceTests {
      * using ExecutionProperties and interface.
      */
     @Test
-    public void ContextServiceWithIntfAndProperties() {
+    public void contextServiceWithIntfAndProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -183,7 +183,7 @@ public class ContextServiceTests {
      * using ExecutionProperties and multiple interfaces.
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndProperties() {
+    public void contextServiceWithMultiIntfsAndProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -207,7 +207,7 @@ public class ContextServiceTests {
      * the specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
+    public void contextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -228,7 +228,7 @@ public class ContextServiceTests {
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
+    public void contextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -248,7 +248,7 @@ public class ContextServiceTests {
      * implement the specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
+    public void contextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -260,7 +260,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
+     * @testName: contextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:12
      *
@@ -269,7 +269,7 @@ public class ContextServiceTests {
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
+    public void contextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -280,7 +280,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: GetExecutionProperties
+     * @testName: getExecutionProperties
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:13
      *
@@ -289,7 +289,7 @@ public class ContextServiceTests {
      * ExecutionProperties from proxy object and verify property value.
      */
     @Test
-    public void GetExecutionProperties() {
+    public void getExecutionProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("USE_PARENT_TRANSACTION", "true");
@@ -304,7 +304,7 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: GetExecutionPropertiesNoProxy
+     * @testName: getExecutionPropertiesNoProxy
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:14
      *
@@ -312,7 +312,7 @@ public class ContextServiceTests {
      * ExecutionProperties from plain object.
      */
     @Test
-    public void GetExecutionPropertiesNoProxy() {
+    public void getExecutionPropertiesNoProxy() {
         assertAll(() -> {
             try {
                 context.getExecutionProperties(new Object());

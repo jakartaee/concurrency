@@ -41,7 +41,7 @@ public class CommonTasks {
                 if (!waitTime.isZero()) {
                     Wait.sleep(waitTime);
                 } else {
-                    Wait.sleep(TestConstants.PollInterval);
+                    Wait.sleep(TestConstants.pollInterval);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -53,7 +53,7 @@ public class CommonTasks {
     public static class SimpleRunnable implements Runnable {
         public void run() {
             try {
-                Wait.sleep(TestConstants.PollInterval);
+                Wait.sleep(TestConstants.pollInterval);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -69,7 +69,7 @@ public class CommonTasks {
 
         public Integer call() {
             try {
-                Wait.sleep(TestConstants.PollInterval);
+                Wait.sleep(TestConstants.pollInterval);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

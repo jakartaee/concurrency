@@ -468,19 +468,19 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
     public void testScheduleWithCronTrigger() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC");
 
-        ZoneId US_CENTRAL = ZoneId.of("America/Chicago");
-        ZoneId US_MOUNTAIN = ZoneId.of("America/Denver");
+        ZoneId usCentral = ZoneId.of("America/Chicago");
+        ZoneId usMountain = ZoneId.of("America/Denver");
 
-        Trigger everyOtherSecond = new CronTrigger("*/2 * * * JAN-DEC SUN-SAT", US_CENTRAL);
+        Trigger everyOtherSecond = new CronTrigger("*/2 * * * JAN-DEC SUN-SAT", usCentral);
         BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
 
         ScheduledFuture<?> future = executor.schedule(() -> {
             return results.add(InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC"));
         }, everyOtherSecond);
         try {
-            CronTrigger weekendsAtNoon6MonthsFromNow = new CronTrigger(US_MOUNTAIN)
+            CronTrigger weekendsAtNoon6MonthsFromNow = new CronTrigger(usMountain)
                     .daysOfWeek(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).hours(12)
-                    .months(ZonedDateTime.now(US_MOUNTAIN).plusMonths(6).getMonth());
+                    .months(ZonedDateTime.now(usMountain).plusMonths(6).getMonth());
             ScheduledFuture<?> distantFuture = executor.schedule(() -> {
                 return results.add(InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC"));
             }, weekendsAtNoon6MonthsFromNow);
@@ -531,7 +531,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
     public void testScheduleWithZonedTrigger() throws Exception {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ScheduledExecutorC");
 
-        ZoneId US_CENTRAL = ZoneId.of("America/Chicago");
+        ZoneId usCentral = ZoneId.of("America/Chicago");
 
         Map<ZonedDateTime, ZonedDateTime> startAndEndTimes = new ConcurrentHashMap<ZonedDateTime, ZonedDateTime>();
 
@@ -540,9 +540,9 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
 
             private void initSchedule() {
                 // Use times from the past to make the test predictable
-                ZonedDateTime sept15 = ZonedDateTime.of(2021, 9, 15, 8, 0, 0, 0, US_CENTRAL);
-                ZonedDateTime oct15 = ZonedDateTime.of(2021, 10, 15, 8, 0, 0, 0, US_CENTRAL);
-                ZonedDateTime nov15 = ZonedDateTime.of(2021, 11, 15, 8, 0, 0, 0, US_CENTRAL);
+                ZonedDateTime sept15 = ZonedDateTime.of(2021, 9, 15, 8, 0, 0, 0, usCentral);
+                ZonedDateTime oct15 = ZonedDateTime.of(2021, 10, 15, 8, 0, 0, 0, usCentral);
+                ZonedDateTime nov15 = ZonedDateTime.of(2021, 11, 15, 8, 0, 0, 0, usCentral);
                 schedule.put(0l, sept15);
                 schedule.put(sept15.toEpochSecond(), oct15);
                 schedule.put(oct15.toEpochSecond(), nov15);
@@ -553,15 +553,15 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
                 if (lastExecution == null)
                     initSchedule();
                 else
-                    startAndEndTimes.put(lastExecution.getRunStart(US_CENTRAL), lastExecution.getRunEnd(US_CENTRAL));
+                    startAndEndTimes.put(lastExecution.getRunStart(usCentral), lastExecution.getRunEnd(usCentral));
 
-                long key = lastExecution == null ? 0l : lastExecution.getScheduledStart(US_CENTRAL).toEpochSecond();
+                long key = lastExecution == null ? 0l : lastExecution.getScheduledStart(usCentral).toEpochSecond();
                 return schedule.get(key);
             }
 
             @Override
             public ZoneId getZoneId() {
-                return US_CENTRAL;
+                return usCentral;
             }
         };
         BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();

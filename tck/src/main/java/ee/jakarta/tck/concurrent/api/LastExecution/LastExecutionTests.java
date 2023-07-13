@@ -61,7 +61,7 @@ public class LastExecutionTests {
     @TestName
     public String testname;
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
     /*
@@ -81,7 +81,7 @@ public class LastExecutionTests {
 
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
-                new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
+                new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
         Wait.waitTillFutureIsDone(sf);
 
         assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -101,7 +101,7 @@ public class LastExecutionTests {
         // test with runnable, LastExecution should return null
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(), null, null),
-                new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
+                new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
         Wait.waitTillFutureIsDone(sf);
 
         assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -121,7 +121,7 @@ public class LastExecutionTests {
         // test with callable, LastExecution should return 1
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
-                new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
+                new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
         Wait.waitTillFutureIsDone(sf);
 
         assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -140,8 +140,8 @@ public class LastExecutionTests {
     @Test
     public void lastExecutionGetRunningTimeTest() {
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
-                ManagedExecutors.managedTask(new CounterRunnableTask(TestConstants.PollInterval), null, null),
-                new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
+                ManagedExecutors.managedTask(new CounterRunnableTask(TestConstants.pollInterval), null, null),
+                new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
         Wait.waitTillFutureIsDone(sf);
         assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
                 StaticCounter.getCount(), // actual

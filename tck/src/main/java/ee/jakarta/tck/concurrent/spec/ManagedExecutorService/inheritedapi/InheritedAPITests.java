@@ -54,7 +54,7 @@ public class InheritedAPITests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
     public ManagedExecutorService executor;
 
     /*
@@ -109,7 +109,7 @@ public class InheritedAPITests {
             Integer result = executor.invokeAny(taskList);
             Assertions.assertBetween(result, 1, 3);
 
-            result = executor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            result = executor.invokeAny(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
             Assertions.assertBetween(result, 1, 3);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -117,9 +117,9 @@ public class InheritedAPITests {
 
         assertThrows(TimeoutException.class, () -> {
             List<Callable<String>> taskList = new ArrayList<>();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            executor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            executor.invokeAny(taskList, TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
         });
     }
 
@@ -138,7 +138,7 @@ public class InheritedAPITests {
             assertEquals(resultList.get(1).get(), 2);
             assertEquals(resultList.get(2).get(), 3);
 
-            resultList = executor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            resultList = executor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureIsDone(each);
             }
@@ -151,9 +151,9 @@ public class InheritedAPITests {
 
         try {
             List<Callable<String>> taskList = new ArrayList<>();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.pollInterval.getSeconds(),
                     TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureThrowsException(each, CancellationException.class);

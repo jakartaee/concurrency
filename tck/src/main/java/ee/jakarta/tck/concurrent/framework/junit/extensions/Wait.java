@@ -27,13 +27,13 @@ public class Wait {
 
     /**
      * Waits for task to complete, but will timeout after
-     * {@link TestConstants#WaitTimeout}
+     * {@link TestConstants#waitTimeout}
      *
      * @param future to wait for
      * @return result
      */
     public static <T> T waitForTaskComplete(final Future<T> future) {
-        return waitForTaskComplete(future, TestConstants.WaitTimeout);
+        return waitForTaskComplete(future, TestConstants.waitTimeout);
     }
 
     /**
@@ -49,13 +49,13 @@ public class Wait {
 
     /**
      * Wait for listener to complete, but will timeout after
-     * {@link TestConstants#WaitTimeout}, and will be polled ever
-     * {@link TestConstants#PollInterval}
+     * {@link TestConstants#waitTimeout}, and will be polled ever
+     * {@link TestConstants#pollInterval}
      *
      * @param managedTaskListener - the listener to be polled
      */
     public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener) {
-        waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout, TestConstants.PollInterval);
+        waitForListenerComplete(managedTaskListener, TestConstants.waitTimeout, TestConstants.pollInterval);
     }
 
     /**
@@ -69,15 +69,15 @@ public class Wait {
     public static void waitForListenerComplete(ManagedTaskListenerImpl managedTaskListener, Duration timeout,
             Duration pollInterval) {
         assertTimeoutPreemptively(timeout, () -> {
-            for (; !managedTaskListener.eventCalled(ListenerEvent.DONE); sleep(TestConstants.PollInterval))
+            for (; !managedTaskListener.eventCalled(ListenerEvent.DONE); sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
     /**
      * Waits for future to complete, but will timeout after
-     * {@link TestConstants#WaitTimeout}, and will be polled every
-     * {@link TestConstants#PollInterval}
+     * {@link TestConstants#waitTimeout}, and will be polled every
+     * {@link TestConstants#pollInterval}
      *
      * The difference between this method and waitForTaskComplete is that some
      * scheduled task will return values for multiple times, in this situation
@@ -86,24 +86,24 @@ public class Wait {
      * @param future - the future to wait for
      */
     public static void waitTillFutureIsDone(final Future<?> future) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (; !future.isDone(); sleep(TestConstants.PollInterval))
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; !future.isDone(); sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
     /**
      * Waits for future to throw an error, but will timeout after
-     * {@link TestConstants#WaitTimeout}, and will be polled every
-     * {@link TestConstants#PollInterval}
+     * {@link TestConstants#waitTimeout}, and will be polled every
+     * {@link TestConstants#pollInterval}
      *
      * @param future - the future to wait for
      */
     public static <T extends Throwable> void waitTillFutureThrowsException(final Future<?> future,
             final Class<T> expected) {
         assertThrows(expected, () -> {
-            assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-                for (;; sleep(TestConstants.PollInterval)) {
+            assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+                for (;; sleep(TestConstants.pollInterval)) {
                     future.get();
                 }
             });
@@ -111,29 +111,29 @@ public class Wait {
     }
 
     public static void waitCancelFuture(final Future<?> future) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (future.cancel(true); !future.isDone(); sleep(TestConstants.PollInterval))
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (future.cancel(true); !future.isDone(); sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
     /**
      * Waits until thread is finished, but will timeout after
-     * {@link TestConstants#WaitTimeout}, and will be polled every
-     * {@link TestConstants#PollInterval}
+     * {@link TestConstants#waitTimeout}, and will be polled every
+     * {@link TestConstants#pollInterval}
      *
      * @param thread - the thread to wait for
      */
     public static void waitTillThreadFinish(final Thread thread) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (; thread.isAlive(); sleep(TestConstants.PollInterval))
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; thread.isAlive(); sleep(TestConstants.pollInterval))
                 ;
         });
     }
 
     public static void waitForTransactionBegan(CancelledTransactedTask task) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (; !task.beginTransaction.get(); sleep(TestConstants.PollInterval))
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; !task.beginTransaction.get(); sleep(TestConstants.pollInterval))
                 ;
         });
     }

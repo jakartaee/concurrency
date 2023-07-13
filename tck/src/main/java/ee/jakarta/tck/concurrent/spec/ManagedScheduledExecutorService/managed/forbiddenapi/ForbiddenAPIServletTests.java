@@ -45,7 +45,7 @@ public class ForbiddenAPIServletTests {
 
     private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach

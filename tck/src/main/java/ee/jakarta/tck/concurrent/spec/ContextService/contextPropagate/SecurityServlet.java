@@ -34,7 +34,7 @@ public class SecurityServlet extends TestServlet {
     @EJB
     private ContextPropagateInterface intf;
 
-    @Resource(lookup = TestConstants.DefaultContextService)
+    @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
     public void testSecurityAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {

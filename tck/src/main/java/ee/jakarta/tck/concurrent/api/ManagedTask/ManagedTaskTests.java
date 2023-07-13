@@ -53,7 +53,7 @@ public class ManagedTaskTests {
     }
 
     /*
-     * @testName: GetExecutionProperties
+     * @testName: getExecutionProperties
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:36
      *
@@ -62,7 +62,7 @@ public class ManagedTaskTests {
      * task.
      */
     @Test
-    public void GetExecutionProperties() {
+    public void getExecutionProperties() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         Runnable runnableTask = createRunnableTask();
@@ -76,7 +76,7 @@ public class ManagedTaskTests {
     }
 
     /*
-     * @testName: GetManagedTaskListener
+     * @testName: getManagedTaskListener
      *
      * @assertion_ids: CONCURRENCY:JAVADOC:37
      *
@@ -84,7 +84,7 @@ public class ManagedTaskTests {
      * notification of life cycle events of this task.
      */
     @Test
-    public void GetManagedTaskListener() {
+    public void getManagedTaskListener() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         RunnableTask runnableTask = createRunnableTask();

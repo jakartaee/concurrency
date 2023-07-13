@@ -29,6 +29,6 @@ public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return TestConstants.ComplexReturnValue;
+        return TestConstants.complexReturnValue;
     }
 }

@@ -54,7 +54,7 @@ public class TransactionServlet extends TestServlet {
     @Resource(lookup = "java:comp/env/jdbc/ManagedScheduledExecutorServiceDB")
     private DataSource ds;
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     private ManagedScheduledExecutorService managedScheduledExecutorService;
 
     @Override

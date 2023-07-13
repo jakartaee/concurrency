@@ -46,7 +46,7 @@ public class ManagedThreadFactoryTests extends TestClient {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, ManagedThreadFactoryTests.class.getPackage());
     }
 
-    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
+    @Resource(lookup = TestConstants.defaultManagedThreadFactory)
     public ManagedThreadFactory threadFactory;
 
     /*
@@ -75,7 +75,7 @@ public class ManagedThreadFactoryTests extends TestClient {
      */
     @Test
     public void interruptThreadApiTest() {
-        CounterRunnableTask task = new CounterRunnableTask(TestConstants.PollInterval);
+        CounterRunnableTask task = new CounterRunnableTask(TestConstants.pollInterval);
         Thread thread = threadFactory.newThread(task);
         thread.start();
         thread.interrupt();

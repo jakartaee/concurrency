@@ -59,7 +59,7 @@ public class ManagedScheduledExecutorServiceTests {
     private static final String TEST_CLASSLOADER_CLASS_NAME = ManagedScheduledExecutorServiceTests.class
             .getCanonicalName();
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
     /*

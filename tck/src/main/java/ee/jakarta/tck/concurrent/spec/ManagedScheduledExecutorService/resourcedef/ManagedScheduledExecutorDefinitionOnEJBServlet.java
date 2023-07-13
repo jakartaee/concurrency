@@ -65,7 +65,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
      * A ManagedScheduledExecutorDefinition defined on an EJB with all attributes
      * configured enforces maxAsync and propagates context.
      */
-    public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() throws Throwable {
+    public void testManagedScheduledExecutorDefinitionAllAttributesEJB() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBScheduledExecutorA");
 
         BlockingQueue<Integer> results = new LinkedBlockingQueue<Integer>();
@@ -115,7 +115,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
      * java:comp/DefaultContextService to determine context propagation and
      * clearing.
      */
-    public void testManagedScheduledExecutorDefinitionDefaults_EJB() throws Throwable {
+    public void testManagedScheduledExecutorDefinitionDefaultsEJB() throws Throwable {
         ManagedScheduledExecutorService executor = (ManagedScheduledExecutorService) managedScheduleExecutorDefinitionBean
                 .doLookup("java:comp/concurrent/EJBScheduledExecutorC");
 
@@ -203,7 +203,7 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
      * run with the thread context of the thread from which they were created, per
      * ManagedScheduledExecutorDefinition config.
      */
-    public void testIncompleteFutureMSE_EJB() throws Throwable {
+    public void testIncompleteFutureMSEEJB() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBScheduledExecutorA");
 
         StringBuilder results = new StringBuilder();

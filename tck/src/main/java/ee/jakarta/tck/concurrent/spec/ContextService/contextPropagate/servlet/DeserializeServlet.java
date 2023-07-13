@@ -36,7 +36,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/DeserializeServlet")
 public class DeserializeServlet extends HttpServlet {
 
-    @Resource(lookup = TestConstants.DefaultContextService)
+    @Resource(lookup = TestConstants.defaultContextService)
     public ContextService context;
 
     @Override

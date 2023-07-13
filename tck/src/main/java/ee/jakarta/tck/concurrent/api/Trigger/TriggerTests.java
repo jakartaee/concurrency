@@ -53,7 +53,7 @@ public class TriggerTests {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, TriggerTests.class.getPackage());
     }
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     public ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
@@ -74,14 +74,14 @@ public class TriggerTests {
     @Disabled
     public void triggerGetNextRunTimeTest() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
-                new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
+                new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.pollInterval.toMillis()));
 
         assertFalse(StaticCounter.getCount() == 0, "The first trigger is too fast.");
 
         try {
-            Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2,
-                    TestConstants.PollsPerTimeout + 2);
+            Wait.sleep(TestConstants.waitTimeout);
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.pollsPerTimeout - 2,
+                    TestConstants.pollsPerTimeout + 2);
         } finally {
             Wait.waitTillFutureIsDone(result);
         }
@@ -101,7 +101,7 @@ public class TriggerTests {
     @Test
     public void triggerSkipRunTest() {
         ScheduledFuture<?> sf = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
-                new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval));
+                new CommonTriggers.OnceTriggerDelaySkip(TestConstants.pollInterval));
 
         try {
             Wait.waitTillFutureThrowsException(sf, SkippedException.class);

@@ -43,8 +43,8 @@ public class CancelledTransactedTask implements Runnable {
     }
 
     private void waitForRun() {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (; !runQuery.get(); Wait.sleep(TestConstants.PollInterval))
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; !runQuery.get(); Wait.sleep(TestConstants.pollInterval))
                 ;
         });
     }
@@ -52,7 +52,7 @@ public class CancelledTransactedTask implements Runnable {
     @Override
     public void run() {
         try {
-            UserTransaction ut = InitialContext.doLookup(TestConstants.UserTransaction);
+            UserTransaction ut = InitialContext.doLookup(TestConstants.userTransaction);
             ut.begin();
             beginTransaction.set(true);
             waitForRun();

@@ -27,6 +27,6 @@ public class LimitedBean implements LimitedInterface {
 
     @RolesAllowed("Manager")
     public String doSomething() {
-        return TestConstants.ComplexReturnValue;
+        return TestConstants.complexReturnValue;
     }
 }

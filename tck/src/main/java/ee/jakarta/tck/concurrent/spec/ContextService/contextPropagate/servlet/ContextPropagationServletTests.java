@@ -132,7 +132,7 @@ public class ContextPropagationServletTests extends TestClient {
 
         String resp = runTestWithResponse(requestURL, props);
         assertNotNull("Response should not be null", resp);
-        assertStringInResponse(testname + " failed to get correct result.", TestConstants.ComplexReturnValue,
+        assertStringInResponse(testname + " failed to get correct result.", TestConstants.complexReturnValue,
                 resp.trim());
     }
 }
