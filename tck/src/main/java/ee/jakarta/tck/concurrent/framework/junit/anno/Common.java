@@ -16,6 +16,7 @@ public @interface Common {
         FIXED_COUNTER,
         MANAGED_TASK_LISTENER,
         TASKS,
+        TRANSACTION,
         SIGNATURE;
         
         private static final String prefix = "ee/jakarta/tck/concurrent/common/";

@@ -26,11 +26,15 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.common.transaction.Constants;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web @RunAsClient //Requires client testing due to annotation configuration
+@Common({ PACKAGE.TRANSACTION })
 public class TransactionTests extends TestClient {
 
 	@ArquillianResource
@@ -58,7 +62,7 @@ public class TransactionTests extends TestClient {
 	@Test
 	@Order(1)
 	public void testRollbackTransactionWithManagedThreadFactory() {
-		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
+		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
 	}
 	
 	   /*
@@ -78,7 +82,7 @@ public class TransactionTests extends TestClient {
     @Test //TODO rewrite test logic to avoid duplicate key violation
     @Order(2)
     public void testCommitTransactionWithManagedThreadFactory() throws InterruptedException {
-        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
+        runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
     }
 
 	/*
@@ -95,6 +99,6 @@ public class TransactionTests extends TestClient {
 	@Test
 	@Order(3)
 	public void testCancelTransactionWithManagedThreadFactory() {
-		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths("TransactionServlet").withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
+		runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH).withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));
 	}
 }

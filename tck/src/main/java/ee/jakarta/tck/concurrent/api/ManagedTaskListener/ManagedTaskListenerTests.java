@@ -32,12 +32,13 @@ import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithStatus;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedExecutors;
@@ -77,15 +78,16 @@ public class ManagedTaskListenerTests {
 	 */
 	@Test
 	public void TaskAborted() throws InterruptedException {
-		int blockTime = 3000;// (ms)
+		final Duration blockTime = Duration.ofMillis(3000);
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener, blockTime);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
 		Future<?> futureResult = executor.submit(taskWithListener);
-		TestUtil.sleep(Duration.ofMillis(1000));
+		Wait.sleep(Duration.ofMillis(1000));
 		futureResult.cancel(true);
-		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
-				TestConstants.PollInterval.toMillis());
+		Wait.waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout.plus(blockTime),
+				TestConstants.PollInterval);
 		List<ListenerEvent> events = managedTaskListener.events();
+		
 		assertTrue(events.contains(ListenerEvent.ABORTED), "Listener taskAborted failed");
 		assertTrue(futureResult.isCancelled(), "Listener taskAborted failed");
 	}
@@ -102,14 +104,14 @@ public class ManagedTaskListenerTests {
 	@Test
 	public void TaskDone() throws InterruptedException {
 		// in cancel case
-		final int blockTime = 3000;// (ms)
+		final Duration  blockTime = Duration.ofMillis(3000);
 		Runnable taskToCancelled = new RunnableTaskWithStatus(managedTaskListener, blockTime);
 		Runnable taskToCancelledWithListener = ManagedExecutors.managedTask(taskToCancelled, managedTaskListener);
 		Future<?> futureResult = executor.submit(taskToCancelledWithListener);
-		TestUtil.sleep(Duration.ofMillis(1000));
+		Wait.sleep(Duration.ofMillis(1000));
 		futureResult.cancel(true);
-		TestUtil.waitForListenerComplete(managedTaskListener, blockTime + TestConstants.WaitTimeout.toMillis(),
-				TestConstants.PollInterval.toMillis());
+		Wait.waitForListenerComplete(managedTaskListener, TestConstants.WaitTimeout.plus(blockTime),
+				TestConstants.PollInterval);
 		List<ListenerEvent> events = managedTaskListener.events();
 		assertTrue(events.contains(ListenerEvent.DONE), "Listener taskDone failed in cancel case");
 		managedTaskListener.clearEvents();
@@ -118,7 +120,7 @@ public class ManagedTaskListenerTests {
 		Runnable runTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable runtaskWithListener = ManagedExecutors.managedTask(runTask, managedTaskListener);
 		executor.submit(runtaskWithListener);
-		TestUtil.waitForListenerComplete(managedTaskListener);
+		Wait.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runevents = managedTaskListener.events();
 		assertTrue(runevents.contains(ListenerEvent.DONE), "Listener TaskDone failed");
 		managedTaskListener.clearEvents();
@@ -127,7 +129,7 @@ public class ManagedTaskListenerTests {
 		Runnable taskWithException = new RunnableTaskWithException(managedTaskListener);
 		Runnable taskWithExceptionListener = ManagedExecutors.managedTask(taskWithException, managedTaskListener);
 		executor.submit(taskWithExceptionListener);
-		TestUtil.waitForListenerComplete(managedTaskListener);
+		Wait.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> runeventsWithException = managedTaskListener.events();
 		log.fine("++ runeventsWithException : " + runeventsWithException);
 		assertTrue(runeventsWithException.contains(ListenerEvent.DONE),
@@ -150,7 +152,7 @@ public class ManagedTaskListenerTests {
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
 		executor.submit(taskWithListener);
-		TestUtil.waitForListenerComplete(managedTaskListener);
+		Wait.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> events = managedTaskListener.events();
 		int submitAt = events.indexOf(ListenerEvent.SUBMITTED);
 		int startAt = events.indexOf(ListenerEvent.STARTING);
@@ -176,7 +178,7 @@ public class ManagedTaskListenerTests {
 		Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
 		Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
 		executor.submit(taskWithListener);
-		TestUtil.waitForListenerComplete(managedTaskListener);
+		Wait.waitForListenerComplete(managedTaskListener);
 		List<ListenerEvent> events = managedTaskListener.events();
 		int submitAt = events.indexOf(ListenerEvent.SUBMITTED);
 		assertEquals(0, submitAt, "Listener TaskSubmitted failed to run in expected order");

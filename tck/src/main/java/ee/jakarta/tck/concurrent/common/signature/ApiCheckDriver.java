@@ -30,7 +30,9 @@ import java.util.List;
 
 public final class ApiCheckDriver extends SignatureTestDriver implements Serializable {
 
-	/* flags for the Diff utility argument list */
+    private static final long serialVersionUID = 1L;
+
+    /* flags for the Diff utility argument list */
 	private static final String BASE_FLAG = "-base";
 
 	private static final String TEST_FLAG = "-test";
@@ -56,15 +58,15 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
 	protected String[] createTestArguments(String packageListFile, String mapFile, String signatureRepositoryDir,
 			String packageOrClassUnderTest, String classpath, boolean bStaticMode) throws Exception {
 
-		Class pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
-		Constructor pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] { String.class });
+		Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
+		Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] { String.class });
 		Object pkgInstance = pkgCtor.newInstance(new Object[] { packageListFile });
 
 		Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] { String.class });
 
 		String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] { packageOrClassUnderTest });
 
-		List sigArgsList = new LinkedList();
+		List<String> sigArgsList = new LinkedList<>();
 
 		sigArgsList.add(BASE_FLAG);
 		sigArgsList.add(getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir).getFile());
@@ -91,7 +93,7 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
 	@Override
 	protected boolean runSignatureTest(String packageOrClassName, String[] testArguments) throws Exception {
 
-		Class diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
+		Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
 		Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] { String[].class });
 		mainMethod.invoke(null, new Object[] { testArguments });
 
@@ -102,8 +104,8 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
 
 	@Override
 	protected boolean runPackageSearch(String packageOrClassName, String[] testArguments) throws Exception {
-		Class sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-		Object sigTestInstance = sigTestClass.newInstance();
+		Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
+		Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -120,7 +122,6 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
 			System.out.println("	  testArguments[" + ii + "] = " + testArguments[ii]);
 		}
 
-		@SuppressWarnings("unchecked")
 		Method runMethod = sigTestClass.getDeclaredMethod("run",
 				new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
 		runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });

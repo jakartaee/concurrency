@@ -16,6 +16,10 @@
 
 package ee.jakarta.tck.concurrent.api.ManagedScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
 
@@ -28,10 +32,10 @@ import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 
@@ -70,15 +74,11 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess1Test() throws Exception {
-        ScheduledFuture result = scheduledExecutor.schedule(
+        ScheduledFuture<?> result = scheduledExecutor.schedule(
                 new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME),
                 new CommonTriggers.OnceTrigger());
-        TestUtil.waitForTaskComplete(result);
-
-        Object obj = result.get();
-        if (obj != null) {
-            throw new RuntimeException("expected null, instead got result: " + obj.toString());
-        }
+        Wait.waitForTaskComplete(result);
+        assertNull(result.get());
     }
 
     /*
@@ -91,14 +91,10 @@ public class ManagedScheduledExecutorServiceTests {
     @Test
     public void nullCommandScheduleProcessTest() {
         Runnable command = null;
-
-        try {
+        
+        assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(command, new CommonTriggers.OnceTrigger());
-        } catch (NullPointerException e) {
-            return; // expected
-        }
-
-        throw new RuntimeException("NullPointerException should be thrown when arg command is null");
+        });
     }
 
     /*
@@ -114,20 +110,14 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void normalScheduleProcess2Test() throws Exception {
-        ScheduledFuture result = scheduledExecutor
-                .schedule(
-                        (Callable) new CallableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+        ScheduledFuture<?> result = scheduledExecutor.schedule( (Callable<?>)
+                        new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                                 TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
                         new CommonTriggers.OnceTrigger());
-        TestUtil.waitForTaskComplete(result);
+        Wait.waitForTaskComplete(result);
+        
+        assertEquals(CALLABLETESTTASK1_RUN_RESULT, result.get());
 
-        Object obj = result.get();
-
-        if (CALLABLETESTTASK1_RUN_RESULT.equals(obj)) {
-            return;
-        } else {
-            throw new RuntimeException("get wrong result:" + obj);
-        }
     }
 
     /*
@@ -139,15 +129,11 @@ public class ManagedScheduledExecutorServiceTests {
      */
     @Test
     public void nullCallableScheduleProcessTest() {
-        Callable callable = null;
-
-        try {
+        Callable<?> callable = null;
+        
+        assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());
-        } catch (NullPointerException e) {
-            return; // expected
-        }
-
-        throw new RuntimeException("NullPointerException should be thrown when arg command is null");
+        });
     }
 
 }

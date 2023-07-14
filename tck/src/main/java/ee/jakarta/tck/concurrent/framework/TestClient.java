@@ -21,9 +21,13 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Enumeration;
 import java.util.Properties;
 
 /**
@@ -106,7 +110,7 @@ public abstract class TestClient {
 			if(withProps) {
 				con.setRequestMethod("POST");
 				try( DataOutputStream wr = new DataOutputStream( con.getOutputStream())){
-					wr.writeBytes( TestUtil.toEncodedString(props) );
+					wr.writeBytes( toEncodedString(props) );
 				}
 					   
 			} else {
@@ -139,6 +143,23 @@ public abstract class TestClient {
 			}
 		}
 	}
+	
+   static String toEncodedString(Properties args) throws UnsupportedEncodingException {
+        StringBuffer buf = new StringBuffer();
+        Enumeration<?> names = args.propertyNames();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
+            String value = args.getProperty(name);
+            
+            buf.append(URLEncoder.encode(name, StandardCharsets.UTF_8.name()))
+                .append("=")
+                .append(URLEncoder.encode(value, StandardCharsets.UTF_8.name()));
+            
+            if (names.hasMoreElements())
+                buf.append("&");
+        }
+        return buf.toString();
+    }
 	
 	/**
 	 * Override this method to return the servlet path for the suite of tests.

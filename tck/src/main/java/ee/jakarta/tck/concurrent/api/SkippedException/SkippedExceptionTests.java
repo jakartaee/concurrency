@@ -16,21 +16,21 @@
 
 package ee.jakarta.tck.concurrent.api.SkippedException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Test;
 
-import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.SkippedException;
 
-@Web
+@Web // TODO couldn't this be a unit test?
 public class SkippedExceptionTests {
-
-	private static final TestLogger log = TestLogger.get(SkippedExceptionTests.class);
 	
 	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="SkippedExceptionTests")
@@ -48,21 +48,11 @@ public class SkippedExceptionTests {
 	 */
 	@Test
 	public void SkippedExceptionNoArgTest() {
-		boolean pass = false;
-		try {
-			throw new SkippedException();
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			if (se.getMessage() == null) {
-				log.info("Received expected null message");
-				pass = true;
-			} else {
-				log.warning("SkippedException should have had null message, actual message=" + se.getMessage());
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
+	    SkippedException thrown = assertThrows(SkippedException.class, () -> {
+	        throw new SkippedException();
+	    });
+	    
+	    assertNull(thrown.getMessage());
 	}
 
 	/*
@@ -74,22 +64,14 @@ public class SkippedExceptionTests {
 	 */
 	@Test
 	public void SkippedExceptionStringTest() {
-		boolean pass = false;
-		String expected = "thisisthedetailmessage";
-		try {
-			throw new SkippedException(expected);
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			if (se.getMessage().equals(expected)) {
-				log.info("Received expected message");
-				pass = true;
-			} else {
-				log.info("Expected:" + expected + ", actual message=" + se.getMessage());
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass);
+        final String expected = "thisisthedetailmessage";
+
+        SkippedException thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(expected);
+        });
+
+        assertNotNull(thrown.getMessage());
+        assertEquals(expected, thrown.getMessage());
 	}
 
 	/*
@@ -101,41 +83,24 @@ public class SkippedExceptionTests {
 	 */
 	@Test
 	public void SkippedExceptionThrowableTest() {
-		boolean pass1 = false;
-		boolean pass2 = false;
-		Throwable expected = new Throwable("thisisthethrowable");
-		try {
-			throw new SkippedException(expected);
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			Throwable cause = se.getCause();
-			if (cause.equals(expected)) {
-				log.info("Received expected cause");
-				pass1 = true;
-			} else {
-				log.info("Expected:" + expected + ", actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
+	    SkippedException thrown;
 
-		expected = null;
-		try {
-			throw new SkippedException(expected);
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			Throwable cause = se.getCause();
-			if (cause == null) {
-				log.info("Received expected null cause");
-				pass2 = true;
-			} else {
-				log.info("Expected:null, actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass1);
-		assertTrue(pass2);
+        final Throwable expected = new Throwable("thisisthethrowable");
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(expected);
+        });
+
+        assertNotNull(thrown.getCause());
+        assertEquals(expected, thrown.getCause());
+
+        final Throwable expectedNull = null;
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(expectedNull);
+        });
+
+        assertNull(thrown.getCause());
 	}
 
 	/*
@@ -147,57 +112,43 @@ public class SkippedExceptionTests {
 	 */
 	@Test
 	public void SkippedExceptionStringThrowableTest() {
-		boolean pass1 = false;
-		boolean pass2 = false;
-		boolean pass3 = false;
-		boolean pass4 = false;
-		String sExpected = "thisisthedetailmessage";
-		Throwable tExpected = new Throwable("thisisthethrowable");
-		try {
-			throw new SkippedException(sExpected, tExpected);
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			if (se.getMessage().equals(sExpected)) {
-				log.info("Received expected message");
-				pass1 = true;
-			} else {
-				log.info("Expected:" + sExpected + ", actual message=" + se.getMessage());
-			}
-			Throwable cause = se.getCause();
-			if (cause.equals(tExpected)) {
-				log.info("Received expected cause");
-				pass2 = true;
-			} else {
-				log.info("Expected:" + tExpected + ", actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
+	    SkippedException thrown;
 
-		tExpected = null;
-		try {
-			throw new SkippedException(sExpected, tExpected);
-		} catch (SkippedException se) {
-			log.info("SkippedException Caught as Expected");
-			if (se.getMessage().equals(sExpected)) {
-				log.info("Received expected message");
-				pass3 = true;
-			} else {
-				log.info("Expected:" + sExpected + ", actual message=" + se.getMessage());
-			}
-			Throwable cause = se.getCause();
-			if (cause == null) {
-				log.info("Received expected null cause");
-				pass4 = true;
-			} else {
-				log.info("Expected:null, actual message=" + cause);
-			}
-		} catch (Exception e) {
-			log.warning("Unexpected Exception Caught", e);
-		}
-		assertTrue(pass1);
-		assertTrue(pass2);
-		assertTrue(pass3);
-		assertTrue(pass4);
+        String sExpected = "thisisthedetailmessage";
+        String sExpectedNull = null;
+        final Throwable tExpected = new Throwable("thisisthethrowable");
+        final Throwable tExpectedNull = null;
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(sExpected, tExpected);
+        });
+
+        assertNotNull(thrown.getMessage());
+        assertNotNull(thrown.getCause());
+        assertEquals(sExpected, thrown.getMessage());
+        assertEquals(tExpected, thrown.getCause());
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(sExpected, tExpectedNull);
+        });
+
+        assertNotNull(thrown.getMessage());
+        assertNull(thrown.getCause());
+        assertEquals(sExpected, thrown.getMessage());
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(sExpectedNull, tExpected);
+        });
+
+        assertNull(thrown.getMessage());
+        assertNotNull(thrown.getCause());
+        assertEquals(tExpected, thrown.getCause());
+
+        thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException(sExpectedNull, tExpectedNull);
+        });
+
+        assertNull(thrown.getMessage());
+        assertNull(thrown.getCause());
 	}
 }

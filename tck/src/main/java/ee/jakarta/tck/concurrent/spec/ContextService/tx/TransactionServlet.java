@@ -26,6 +26,12 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import ee.jakarta.tck.concurrent.common.transaction.Connections;
+import ee.jakarta.tck.concurrent.common.transaction.Constants;
+import ee.jakarta.tck.concurrent.common.transaction.Counter;
+import ee.jakarta.tck.concurrent.common.transaction.TransactedTask;
+import ee.jakarta.tck.concurrent.common.transaction.WorkInterface;
+import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.annotation.Resource;
@@ -37,11 +43,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 @SuppressWarnings({"serial", "unused"})
-@WebServlet("/TransactionServlet")
+@WebServlet(Constants.CONTEXT_PATH)
 @DataSourceDefinition(
-	name = Constants.DS_JNDI_NAME, 
+	name = "java:comp/env/jdbc/ContextServiceDB", 
 	className = "org.apache.derby.jdbc.EmbeddedDataSource", 
-	databaseName = Constants.DS_DB_NAME, 
+	databaseName = "memory:ContextServiceDB", 
 	properties = {
 			"createDatabase=create" 
 			}
@@ -50,20 +56,22 @@ public class TransactionServlet extends TestServlet {
 
 	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
 
-	@Resource(lookup = Constants.DS_JNDI_NAME)
+	@Resource(lookup = "java:comp/env/jdbc/ContextServiceDB")
 	private DataSource ds;
 
-	@Resource(lookup = Constants.CONTEXT_SVC_JNDI_NAME)
+	@Resource(lookup = TestConstants.DefaultContextService)
 	private ContextService cx;
 
-	@Resource(lookup = Constants.UT_JNDI_NAME)
+	@Resource(lookup = TestConstants.UserTransaction)
 	private UserTransaction ut;
 
 	@Override
 	protected void before() throws RemoteException {
 		log.enter("before");
 		
-		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {
+		Connections.setDataSource(ds);
+		
+		try (Connection conn = Connections.getConnection(true); Statement stmt = conn.createStatement()) {
 			try {
 				stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
 			} catch (SQLException e) {
@@ -77,224 +85,176 @@ public class TransactionServlet extends TestServlet {
 	}
 
 	public String testTransactionOfExecuteThreadAndCommit() throws ServletException {
-		PreparedStatement pStmt = null;
-		Connection conn = null;
-		Connection conn2 = null;
+	    
+        int originCount = Counter.getCount();
 
-		try {
-			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-			ut.begin();
-			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
-			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
-			pStmt.setInt(1, 99);
-			pStmt.setString(2, "Type-99");
-			pStmt.addBatch();
-			pStmt.setInt(1, 100);
-			pStmt.setString(2, "Type-100");
-			pStmt.addBatch();
-			pStmt.executeBatch();
-
-			TestWorkInterface work = new TestTransactionWork();
-			work.setUserName(Constants.USERNAME);
-			work.setPassword(Constants.PASSWORD);
-			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			Map<String, String> m = new HashMap();
-			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
-			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
-			proxy.doSomeWork();
-			ut.commit();
-			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-
-			return String.valueOf(afterTransacted - originCount);
+        try {
+            ut.begin();
+    		try (Connection conn = Connections.getConnection(false); PreparedStatement pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);) {
+    			pStmt.setInt(1, 99);
+    			pStmt.setString(2, "Type-99");
+    			pStmt.addBatch();
+    			pStmt.setInt(1, 100);
+    			pStmt.setString(2, "Type-100");
+    			pStmt.addBatch();
+    			pStmt.executeBatch();
+    
+    			WorkInterface work = new TransactedTask(false, false, Constants.SQL_TEMPLATE_INSERT);
+    
+    			Map<String, String> m = new HashMap<>();
+    			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
+    			
+    			WorkInterface proxy = cx.createContextualProxy(work, m, WorkInterface.class);
+    			proxy.doWork();
+    			
+    			ut.commit();
+    			
+    			int afterTransacted = Counter.getCount();
+    
+    			return String.valueOf(afterTransacted - originCount);
+    		}
 		} catch (Exception e) {
 			throw new ServletException(e);
-		} finally {
-			try {
-				if (pStmt != null)
-					pStmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
 	public String testTransactionOfExecuteThreadAndRollback() throws ServletException {
-		PreparedStatement pStmt = null;
-		Connection conn = null;
-		Connection conn2 = null;
-
+		
+		int originCount = Counter.getCount();
+		
 		try {
-			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-			ut.begin();
-			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
-			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
-			pStmt.setInt(1, 99);
-			pStmt.setString(2, "Type-99");
-			pStmt.addBatch();
-			pStmt.setInt(1, 100);
-			pStmt.setString(2, "Type-100");
-			pStmt.addBatch();
-			pStmt.executeBatch();
+		    ut.begin();
+		    try ( Connection conn = Connections.getConnection(false); PreparedStatement pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);) {
+		        pStmt.setInt(1, 99);
+	            pStmt.setString(2, "Type-99");
+	            pStmt.addBatch();
+	            pStmt.setInt(1, 100);
+	            pStmt.setString(2, "Type-100");
+	            pStmt.addBatch();
+	            pStmt.executeBatch();
+	            
+	            WorkInterface work = new TransactedTask(false, false, Constants.SQL_TEMPLATE_INSERT);
 
-			TestWorkInterface work = new TestTransactionWork();
-			work.setUserName(Constants.USERNAME);
-			work.setPassword(Constants.PASSWORD);
-			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			Map<String, String> m = new HashMap();
-			m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
-			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
-			proxy.doSomeWork();
-			ut.rollback();
-			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
+	            Map<String, String> m = new HashMap<>();
+	            m.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
+	            
+	            WorkInterface proxy = cx.createContextualProxy(work, m, WorkInterface.class);
+	            proxy.doWork();
+	            
+	            ut.rollback();
+	            
+	            int afterTransacted = Counter.getCount();
 
-			return String.valueOf(afterTransacted - originCount);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		} finally {
-			try {
-				if (pStmt != null)
-					pStmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+	            return String.valueOf(afterTransacted - originCount);
+		    }
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
 	}
 
 	public String testSuspendAndCommit() throws ServletException {
-		PreparedStatement pStmt = null;
-		Connection conn = null;
-		Connection conn2 = null;
-
+		
+		int originCount = Counter.getCount();
+		
 		try {
-			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-			ut.begin();
-			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
-			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
-			pStmt.setInt(1, 99);
-			pStmt.setString(2, "Type-99");
-			pStmt.addBatch();
-			pStmt.setInt(1, 100);
-			pStmt.setString(2, "Type-100");
-			pStmt.addBatch();
-			pStmt.executeBatch();
-			TestWorkInterface work = new TestTransactionWork();
-			work.setUserName(Constants.USERNAME);
-			work.setPassword(Constants.PASSWORD);
-			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			work.needBeginTx(true);
-			work.needCommit(true);
-			Map<String, String> m = new HashMap();
-			m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
-			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
-			proxy.doSomeWork();
-			ut.rollback();
-			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
+		    ut.begin();
+		    try (Connection conn = Connections.getConnection(false); PreparedStatement pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);) {
+		        
+		        pStmt.setInt(1, 99);
+	            pStmt.setString(2, "Type-99");
+	            pStmt.addBatch();
+	            pStmt.setInt(1, 100);
+	            pStmt.setString(2, "Type-100");
+	            pStmt.addBatch();
+	            pStmt.executeBatch();
+	            
+	            WorkInterface work = new TransactedTask(true, true, Constants.SQL_TEMPLATE_INSERT);
+	            
+	            Map<String, String> m = new HashMap<>();
+	            m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+	            
+	            WorkInterface proxy = cx.createContextualProxy(work, m, WorkInterface.class);
+	            proxy.doWork();
+	            
+	            ut.rollback();
+	            
+	            int afterTransacted = Counter.getCount();
 
-			return String.valueOf(afterTransacted - originCount);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		} finally {
-			try {
-				if (pStmt != null)
-					pStmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+	            return String.valueOf(afterTransacted - originCount);
+		    }
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+		
 	}
 
-	public String testSuspendAndRollback() throws ServletException {
-		PreparedStatement pStmt = null;
-		Connection conn = null;
-		Connection conn2 = null;
-
+	public String testSuspendAndRollback() throws ServletException {		
+		
+		int originCount = Counter.getCount();
+		
 		try {
-			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-			ut.begin();
-			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
-			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
-			pStmt.setInt(1, 99);
-			pStmt.setString(2, "Type-99");
-			pStmt.addBatch();
-			pStmt.setInt(1, 100);
-			pStmt.setString(2, "Type-100");
-			pStmt.addBatch();
-			pStmt.executeBatch();
-			TestWorkInterface work = new TestTransactionWork();
-			work.setUserName(Constants.USERNAME);
-			work.setPassword(Constants.PASSWORD);
-			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			work.needBeginTx(true);
-			work.needRollback(true);
-			Map<String, String> m = new HashMap();
-			m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
-			TestWorkInterface proxy = cx.createContextualProxy(work, m, TestWorkInterface.class);
-			proxy.doSomeWork();
-			ut.commit();
-			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
+		    ut.begin();
+		    
+		    try (Connection conn = Connections.getConnection(false); PreparedStatement pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);) {
+		            pStmt.setInt(1, 99);
+		            pStmt.setString(2, "Type-99");
+		            pStmt.addBatch();
+		            pStmt.setInt(1, 100);
+		            pStmt.setString(2, "Type-100");
+		            pStmt.addBatch();
+		            pStmt.executeBatch();
 
-			return String.valueOf(afterTransacted - originCount);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		} finally {
-			try {
-				if (pStmt != null)
-					pStmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		            WorkInterface work = new TransactedTask(false, true, Constants.SQL_TEMPLATE_INSERT);
+
+		            Map<String, String> m = new HashMap<>();
+		            m.put(ManagedTask.TRANSACTION, ManagedTask.SUSPEND);
+		            
+		            WorkInterface proxy = cx.createContextualProxy(work, m, WorkInterface.class);
+		            proxy.doWork();
+		            
+		            ut.commit();
+		            
+		            int afterTransacted = Counter.getCount();
+
+		            return String.valueOf(afterTransacted - originCount);
+		    }
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+		
 	}
 
 	public String testDefaultAndCommit() throws ServletException {
-		PreparedStatement pStmt = null;
-		Connection conn = null;
-		Connection conn2 = null;
+	    
+	       int originCount = Counter.getCount();
+	        
+	        try {
+	            ut.begin();
+	            
+	            try (Connection conn = Connections.getConnection(false); PreparedStatement pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);) {
+	                
+	                pStmt.setInt(1, 99);
+	                pStmt.setString(2, "Type-99");
+	                pStmt.addBatch();
+	                pStmt.setInt(1, 100);
+	                pStmt.setString(2, "Type-100");
+	                pStmt.addBatch();
+	                pStmt.executeBatch();
+	                
+	                WorkInterface work = new TransactedTask(true, true, Constants.SQL_TEMPLATE_INSERT);
+	                
+	                WorkInterface proxy = cx.createContextualProxy(work, WorkInterface.class);
+	                proxy.doWork();
+	                
+	                ut.rollback();
+	                
+	                int afterTransacted = Counter.getCount();
 
-		try {
-			int originCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-			ut.begin();
-			conn = Util.getConnection(false, Constants.USERNAME, Constants.PASSWORD);
-			pStmt = conn.prepareStatement(Constants.SQL_TEMPLATE_INSERT);
-			pStmt.setInt(1, 99);
-			pStmt.setString(2, "Type-99");
-			pStmt.addBatch();
-			pStmt.setInt(1, 100);
-			pStmt.setString(2, "Type-100");
-			pStmt.addBatch();
-			pStmt.executeBatch();
-			TestWorkInterface work = new TestTransactionWork();
-			work.setUserName(Constants.USERNAME);
-			work.setPassword(Constants.PASSWORD);
-			work.setSQLTemplate(Constants.SQL_TEMPLATE_INSERT);
-			work.needBeginTx(true);
-			work.needCommit(true);
-			TestWorkInterface proxy = cx.createContextualProxy(work, TestWorkInterface.class);
-			proxy.doSomeWork();
-			ut.rollback();
-			// int afterTransacted = Util.getCount(Constants.TABLE_P, conn);
-			int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-
-			return String.valueOf(afterTransacted - originCount);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		} finally {
-			try {
-				if (pStmt != null)
-					pStmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+	                return String.valueOf(afterTransacted - originCount);
+	            }
+	        } catch (Exception e) {
+	            throw new ServletException(e);
+	        }
+	   
 	}
 }

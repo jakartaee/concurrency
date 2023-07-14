@@ -20,28 +20,28 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CommonTasks {
 
 	public static final String SIMPLE_RETURN_STRING = "ok";
 
-	public static class SimpleCallable implements Callable {
-		private long waitTime = 0;
+	public static class SimpleCallable implements Callable<String> {
+		private Duration waitTime = Duration.ZERO;
 
 		public SimpleCallable() {
 		}
 
-		public SimpleCallable(long argWaitTime) {
-			this.waitTime = argWaitTime;
+		public SimpleCallable(Duration waitTime) {
+			this.waitTime = waitTime;
 		}
 
 		public String call() {
 			try {
-				if (waitTime != 0) {
-					TestUtil.sleep(Duration.ofMillis(waitTime));
+				if (!waitTime.isZero()) {
+				    Wait.sleep(waitTime);
 				} else {
-					TestUtil.sleep(TestConstants.PollInterval);
+				    Wait.sleep(TestConstants.PollInterval);
 				}
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -53,14 +53,14 @@ public class CommonTasks {
 	public static class SimpleRunnable implements Runnable {
 		public void run() {
 			try {
-				TestUtil.sleep(TestConstants.PollInterval);
+				Wait.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	public static class SimpleArgCallable implements Callable {
+	public static class SimpleArgCallable implements Callable<Integer> {
 		private int value = -1;
 
 		public SimpleArgCallable(int arg) {
@@ -69,7 +69,7 @@ public class CommonTasks {
 
 		public Integer call() {
 			try {
-				TestUtil.sleep(TestConstants.PollInterval);
+				Wait.sleep(TestConstants.PollInterval);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

@@ -16,20 +16,39 @@
 
 package ee.jakarta.tck.concurrent.common.fixed.counter;
 
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
+
 public class StaticCounter {
 
-	private static int count = 0;
+    private static AtomicInteger count = new AtomicInteger(0);
 
-	public static synchronized int getCount() {
-		return count;
-	}
+    public static int getCount() {
+        return count.get();
+    }
 
-	public static synchronized void inc() {
-		count++;
-	}
+    public static void inc() {
+        count.incrementAndGet();
+    }
 
-	public static synchronized void reset() {
-		count = 0;
-	}
+    public static void reset() {
+        count.set(0);
+    }
+    
+    public static void waitTill(int expected) {
+        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
+            for(; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+        });
+    }
+    
+    public static void waitTillSurpassed(int expected) {
+        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
+            for(; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+        });
+    }
 
 }

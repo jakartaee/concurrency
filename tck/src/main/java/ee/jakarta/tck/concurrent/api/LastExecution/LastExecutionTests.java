@@ -32,11 +32,11 @@ import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -48,7 +48,6 @@ public class LastExecutionTests {
 
 	public static final String IDENTITY_NAME_TEST_ID = "lastExecutionGetIdentityNameTest";
 	
-	//TODO deploy as EJB and JSP artifacts
 	@Deployment(name="LastExecutionTests")
 	public static WebArchive createDeployment() {
 		return ShrinkWrap.create(WebArchive.class)
@@ -81,10 +80,10 @@ public class LastExecutionTests {
 		Map<String, String> executionProperties = new HashMap<String, String>();
 		executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
-		ScheduledFuture sf = scheduledExecutor.schedule(
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(
 				ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
-		TestUtil.waitTillFutureIsDone(sf);
+		Wait.waitTillFutureIsDone(sf);
 
 		assertEquals( LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount(), // actual
@@ -101,10 +100,10 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultRunnableTest() {
 		// test with runnable, LastExecution should return null
-		ScheduledFuture sf = scheduledExecutor
+		ScheduledFuture<?> sf = scheduledExecutor
 				.schedule(ManagedExecutors.managedTask(new CounterRunnableTask(), null, null), new LogicDrivenTrigger(
 						TestConstants.PollInterval.toMillis(), testname));
-		TestUtil.waitTillFutureIsDone(sf);
+		Wait.waitTillFutureIsDone(sf);
 
 		assertEquals(
 				LogicDrivenTrigger.RIGHT_COUNT, // expected
@@ -122,9 +121,10 @@ public class LastExecutionTests {
 	@Test
 	public void lastExecutionGetResultCallableTest() {
 		// test with callable, LastExecution should return 1
-		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
+		        new CounterCallableTask(), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
-		TestUtil.waitTillFutureIsDone(sf);
+		Wait.waitTillFutureIsDone(sf);
 
 		assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount(), // actual
@@ -141,10 +141,10 @@ public class LastExecutionTests {
 	 */
 	@Test
 	public void lastExecutionGetRunningTimeTest() {
-		ScheduledFuture sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
+		ScheduledFuture<?> sf = scheduledExecutor.schedule(ManagedExecutors.managedTask(
 				new CounterRunnableTask(TestConstants.PollInterval), null, null),
 				new LogicDrivenTrigger(TestConstants.PollInterval.toMillis(), testname));
-		TestUtil.waitTillFutureIsDone(sf);
+		Wait.waitTillFutureIsDone(sf);
 		assertEquals(
 		        LogicDrivenTrigger.RIGHT_COUNT, // expected
 				StaticCounter.getCount(), // actual

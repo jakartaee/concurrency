@@ -47,14 +47,14 @@ public class SigTestDriver extends SignatureTestDriver {
 	private static final String CHECKVALUE_FLAG = "-CheckValue"; // only valid w/
 																	// -static
 
-	private static final String NO_CHECKVALUE_FLAG = "-NoCheckValue";
+//	private static final String NO_CHECKVALUE_FLAG = "-NoCheckValue";
 
 	private static final String SMODE_FLAG = "-mode"; // requires arg of bin or
 														// src
 
-	private static final String DEBUG_FLAG = "-Debug";
+//	private static final String DEBUG_FLAG = "-Debug";
 
-	private static final String FORMATPLAIN_FLAG = "-FormatPlain";
+//	private static final String FORMATPLAIN_FLAG = "-FormatPlain";
 
 	private static final String EXCLUDE_JDK_CLASS_FLAG = "-IgnoreJDKClass";
 
@@ -100,7 +100,7 @@ public class SigTestDriver extends SignatureTestDriver {
 		PackageList packageList = new PackageList(packageListFile);
 		String[] subPackages = packageList.getSubPackages(packageOrClassUnderTest);
 
-		List command = new ArrayList();
+		List<String> command = new ArrayList<>();
 
 		if (bStaticMode) {
 			// static mode allows finer level of constants checking
@@ -150,7 +150,7 @@ public class SigTestDriver extends SignatureTestDriver {
 	@Override
 	protected boolean runSignatureTest(String packageOrClassName, String[] testArguments) throws Exception {
 
-		Class sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
+		Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
 		Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -161,7 +161,6 @@ public class SigTestDriver extends SignatureTestDriver {
 			System.out.println("   testArguments[" + ii + "] = " + testArguments[ii]);
 		}
 
-		@SuppressWarnings("unchecked")
 		Method runMethod = sigTestClass.getDeclaredMethod("run",
 				new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
 		runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
@@ -183,8 +182,8 @@ public class SigTestDriver extends SignatureTestDriver {
 	@Override
 	protected boolean runPackageSearch(String packageOrClassName, String[] testArguments) throws Exception {
 
-		Class sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-		Object sigTestInstance = sigTestClass.newInstance();
+		Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
+		Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -201,7 +200,6 @@ public class SigTestDriver extends SignatureTestDriver {
 			System.out.println("	  testArguments[" + ii + "] = " + testArguments[ii]);
 		}
 
-		@SuppressWarnings("unchecked")
 		Method runMethod = sigTestClass.getDeclaredMethod("run",
 				new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
 		runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
@@ -223,8 +221,7 @@ public class SigTestDriver extends SignatureTestDriver {
 	protected boolean verifyJTAJarForNoXA(String classpath, String repositoryDir) throws Exception {
 
 		System.out.println("SigTestDriver#verifyJTAJarForNoXA - Starting:");
-		boolean result = false;
-		List command = new ArrayList();
+		List<String> command = new ArrayList<>();
 
 		// Build Commandline for com.sun.tdk.signaturetest.SignatureTest
 		command.add(STATIC_FLAG);
@@ -243,11 +240,10 @@ public class SigTestDriver extends SignatureTestDriver {
 			System.out.println("   testArguments[" + ii + "] = " + testArguments[ii]);
 		}
 
-		Class sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-		Object sigTestInstance = sigTestClass.newInstance();
+		Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
+		Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		@SuppressWarnings("unchecked")
 		Method runMethod = sigTestClass.getDeclaredMethod("run",
 				new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
 		runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });

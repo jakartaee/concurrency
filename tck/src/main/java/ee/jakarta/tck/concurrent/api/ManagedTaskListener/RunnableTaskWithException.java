@@ -18,12 +18,12 @@ package ee.jakarta.tck.concurrent.api.ManagedTaskListener;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
+import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithStatus;
 
-public class RunnableTaskWithException implements Runnable {
-	private final ManagedTaskListenerImpl listener;
+public class RunnableTaskWithException extends RunnableTaskWithStatus implements Runnable {
 
 	public RunnableTaskWithException(ManagedTaskListenerImpl listener) {
-		this.listener = listener;
+		super(listener);
 	}
 
 	@Override

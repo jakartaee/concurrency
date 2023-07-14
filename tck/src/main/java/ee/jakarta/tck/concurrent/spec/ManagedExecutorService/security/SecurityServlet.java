@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.servlet.annotation.WebServlet;
@@ -39,7 +39,7 @@ public class SecurityServlet extends TestServlet {
 	public void managedExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		req.login("javajoe", "javajoe");
 		Future<?> future = executor.submit(new SecurityTestTask());
-		Object result = TestUtil.waitForTaskComplete(future);
+		Object result = Wait.waitForTaskComplete(future);
 		assertEquals(result, TestConstants.SimpleReturnValue);
 	}
 

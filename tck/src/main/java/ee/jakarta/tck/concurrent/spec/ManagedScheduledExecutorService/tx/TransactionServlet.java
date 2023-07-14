@@ -27,10 +27,15 @@ import java.util.concurrent.Future;
 
 import javax.sql.DataSource;
 
+import ee.jakarta.tck.concurrent.common.transaction.CancelledTransactedTask;
+import ee.jakarta.tck.concurrent.common.transaction.Connections;
+import ee.jakarta.tck.concurrent.common.transaction.Constants;
+import ee.jakarta.tck.concurrent.common.transaction.Counter;
+import ee.jakarta.tck.concurrent.common.transaction.TransactedTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
-import ee.jakarta.tck.concurrent.framework.TestUtil;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -39,11 +44,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings({"serial", "unused"})
-@WebServlet("/TransactionServlet")
+@WebServlet(Constants.CONTEXT_PATH)
 @DataSourceDefinition(
-	name = Constants.DS_JNDI_NAME, 
+	name = "java:comp/env/jdbc/ManagedScheduledExecutorServiceDB", 
 	className = "org.apache.derby.jdbc.EmbeddedDataSource", 
-	databaseName = Constants.DS_DB_NAME, 
+	databaseName = "memory:ManagedScheduledExecutorServiceDB", 
 	properties = {
 			"createDatabase=create" 
 			}
@@ -52,7 +57,7 @@ public class TransactionServlet extends TestServlet {
 
 	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
 
-	@Resource(lookup = Constants.DS_JNDI_NAME)
+	@Resource(lookup = "java:comp/env/jdbc/ManagedScheduledExecutorServiceDB")
 	private DataSource ds;
 
 	@Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
@@ -62,7 +67,9 @@ public class TransactionServlet extends TestServlet {
 	protected void beforeClass() throws RemoteException {
 		log.enter("beforeClass");
 		
-		try (Connection conn = Util.getConnection(ds, Constants.USERNAME, Constants.PASSWORD, true); Statement stmt = conn.createStatement()) {
+		Connections.setDataSource(ds);
+		
+		try (Connection conn = Connections.getConnection(true); Statement stmt = conn.createStatement()) {
 			try {
 				stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
 			} catch (SQLException e) {
@@ -78,23 +85,29 @@ public class TransactionServlet extends TestServlet {
 	public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
 		Future<?> taskResult = managedScheduledExecutorService.schedule(
-				new TransactedTask(isCommit, Constants.USERNAME, Constants.PASSWORD, Constants.SQL_TEMPLATE_INSERT),
+				new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT),
 				new OnceTrigger());
-		TestUtil.waitForTaskComplete(taskResult);
+		Wait.waitForTaskComplete(taskResult);
 	}
 
 	public void cancelTest() {
-		int originTableCount = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
-				Constants.SQL_TEMPLATE_INSERT);
+		int originTableCount = Counter.getCount();
+		
+		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.SQL_TEMPLATE_INSERT);
 		Future<?> future = managedScheduledExecutorService.schedule(cancelledTask, new OnceTrigger());
-		// then cancel it after transaction begin and
-		Util.waitForTransactionBegan(cancelledTask);
-		// before it commit.
-		cancelledTask.cancelTask();
-		// continue to run if possible.
-		cancelledTask.resume();
-		int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
-		assertEquals(originTableCount, afterTransacted, "task was not properly cancelled");
+		
+        
+        // then cancel it after transaction begin and
+        Wait.waitForTransactionBegan(cancelledTask);
+        
+        // before it commit.
+        cancelledTask.cancelTransaction.set(true);
+        
+        // continue to run if possible.
+        cancelledTask.runQuery.set(true);;
+        
+        int afterTransacted = Counter.getCount();
+        
+        assertEquals(originTableCount, afterTransacted, "task was not properly cancelled");
 	}
 }

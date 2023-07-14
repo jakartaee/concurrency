@@ -29,10 +29,9 @@ import org.junit.jupiter.api.Test;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.AbortedException;
 
-@Web //TODO couldn't this be a unit test? 
+@Web // TODO couldn't this be a unit test?
 public class AbortedExceptionTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "AbortedExceptionTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, AbortedExceptionTests.class.getPackage());
@@ -112,41 +111,41 @@ public class AbortedExceptionTests {
     @Test
     public void AbortedExceptionStringThrowableTest() {
         AbortedException thrown;
-        
+
         String sExpected = "thisisthedetailmessage";
         String sExpectedNull = null;
         final Throwable tExpected = new Throwable("thisisthethrowable");
         final Throwable tExpectedNull = null;
-        
+
         thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException(sExpected, tExpected);
         });
-        
+
         assertNotNull(thrown.getMessage());
         assertNotNull(thrown.getCause());
         assertEquals(sExpected, thrown.getMessage());
         assertEquals(tExpected, thrown.getCause());
-        
+
         thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException(sExpected, tExpectedNull);
         });
-        
+
         assertNotNull(thrown.getMessage());
         assertNull(thrown.getCause());
         assertEquals(sExpected, thrown.getMessage());
-        
+
         thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException(sExpectedNull, tExpected);
         });
-        
+
         assertNull(thrown.getMessage());
         assertNotNull(thrown.getCause());
         assertEquals(tExpected, thrown.getCause());
-        
+
         thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException(sExpectedNull, tExpectedNull);
         });
-        
+
         assertNull(thrown.getMessage());
         assertNull(thrown.getCause());
     }
