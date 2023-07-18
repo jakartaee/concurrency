@@ -80,9 +80,6 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
 
             ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/EJBThreadFactoryA");
 
-            IntContext.set(162);
-            StringContext.set("testManagedThreadFactoryDefinitionAllAttributesEJB-2");
-
             Thread thread1 = threadFactory.newThread(() -> {});
             assertEquals(thread1.getPriority(), 4,
                          "New threads must be created with the priority that is specified on " +
@@ -90,7 +87,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
 
             BlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
 
-            threadFactory.newThread(() -> {
+            Thread thread2 = threadFactory.newThread(() -> {
                 results.add(Thread.currentThread().getPriority());
                 results.add(StringContext.get());
                 results.add(IntContext.get());
@@ -99,7 +96,12 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
                 } catch (Throwable x) {
                     results.add(x);
                 }
-            }).start();
+            });
+
+            IntContext.set(162);
+            StringContext.set("testManagedThreadFactoryDefinitionAllAttributesEJB-2");
+
+            thread2.start();
 
             assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(4),
                          "ManagedThreadFactory must start threads with the configured priority.");
@@ -203,13 +205,7 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
             
             ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/EJBThreadFactoryA");
 
-            IntContext.set(2000);
-            StringContext.set("testParallelStreamBackedByManagedThreadFactoryEJB-2");
-
             fj = new ForkJoinPool(4, threadFactory, null, false);
-
-            IntContext.set(3000);
-            StringContext.set("testParallelStreamBackedByManagedThreadFactoryEJB-3");
 
             ForkJoinTask<Optional<Integer>> task = fj.submit(() -> {
                 return Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)
@@ -228,6 +224,9 @@ public class ManagedThreadFactoryDefinitionOnEJBServlet extends TestServlet {
                                 })
                                 .reduce(Integer::sum);
             });
+
+            IntContext.set(3000);
+            StringContext.set("testParallelStreamBackedByManagedThreadFactoryEJB-3");
 
             Optional<Integer> result = task.join();
             assertEquals(result.get(), Integer.valueOf(9180),
