@@ -15,6 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,11 +25,14 @@ import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArch
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
+import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
 
 /**
  * This extension will intercept archives before they are deployed to the
@@ -39,9 +43,16 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
 
     @Override
     public void process(final Archive<?> applicationArchive, final TestClass testClass) {
-        String applicationName = applicationArchive.getName() == null ? applicationArchive.getId()
+        String applicationName = applicationArchive.getName() == null
+                ? applicationArchive.getId()
                 : applicationArchive.getName();
+        
+        appendCommonPackages(applicationArchive, testClass, applicationName);
+        appendSignaturePackages(applicationArchive, testClass, applicationName);
 
+    }
+    
+    private static void appendCommonPackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
         if (!testClass.isAnnotationPresent(Common.class)) {
             return;
         }
@@ -59,6 +70,33 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
             packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg));
 
         }
+    }
+    
+    private static void appendSignaturePackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
+        
+        if (!testClass.isAnnotationPresent(Signature.class)) {
+            return;
+        }
+        
+        final boolean isJava21orAbove = Integer.parseInt(System.getProperty("java.specification.version")) >= 21;
+        final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
 
+        if (applicationArchive instanceof ClassContainer) {
+            log.info("Application Archive [" + applicationName + "] is being appended with packages ["
+                    + signaturePackage + ", com.sun.tdk, org.netbeans.apitest]");
+            log.info("Application Archive [" + applicationName + "] is being appended with resources "
+                    + Arrays.asList(ConcurrencySignatureTestRunner.SIG_RESOURCES));
+            ((ClassContainer<?>) applicationArchive).addPackage(signaturePackage);
+            // These are the packages from the sig-test plugin that are needed to run the test.
+            ((ClassContainer<?>) applicationArchive).addPackages(true, "com.sun.tdk", "org.netbeans.apitest");
+            ((ResourceContainer<?>) applicationArchive).addAsResources(signaturePackage,
+                    ConcurrencySignatureTestRunner.SIG_MAP_NAME, ConcurrencySignatureTestRunner.SIG_PKG_NAME);
+            ((ResourceContainer<?>) applicationArchive).addAsResource(signaturePackage,
+                    // Get local resource based on JDK level
+                    isJava21orAbove ? ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_21"
+                            : ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_17",
+                    // Target same package as test
+                    signaturePackage.getName().replace(".", "/") + "/" + ConcurrencySignatureTestRunner.SIG_FILE_NAME);
+        }
     }
 }

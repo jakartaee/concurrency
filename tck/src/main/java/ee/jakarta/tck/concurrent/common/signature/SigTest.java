@@ -68,7 +68,7 @@ public abstract class SigTest {
      * @return String The path and name of the package list file.
      */
     protected String getPackageFile() {
-        return getSigTestDriver().getPackageFileImpl(testInfo.getBinDir());
+        return getSigTestDriver().getPackageFileImpl(SigTestData.getBinDir());
     }
 
     /**
@@ -85,7 +85,7 @@ public abstract class SigTest {
      * @return String The path and name of the signature map file.
      */
     protected String getMapFile() {
-        return getSigTestDriver().getMapFileImpl(testInfo.getBinDir());
+        return getSigTestDriver().getMapFileImpl(SigTestData.getBinDir());
     }
 
     /**
@@ -98,7 +98,7 @@ public abstract class SigTest {
      * @return String The signature repository directory.
      */
     protected String getRepositoryDir() {
-        return getSigTestDriver().getRepositoryDirImpl(testInfo.getTSHome());
+        return getSigTestDriver().getRepositoryDirImpl(SigTestData.getTSHome());
     }
 
     /**
@@ -155,8 +155,6 @@ public abstract class SigTest {
 
     } // END getClasses
 
-    private SigTestData testInfo; // holds the bin.dir property
-
     /**
      * Called by the test framework to initialize this test. The method simply
      * retrieves some state information that is necessary to run the test when when
@@ -168,7 +166,6 @@ public abstract class SigTest {
     public void setup() {
         try {
             System.out.println("$$$ SigTest.setup() called");
-            this.testInfo = new SigTestData();
             System.out.println("$$$ SigTest.setup() complete");
         } catch (Exception e) {
             System.out.println("Unexpected exception " + e.getMessage());

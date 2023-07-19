@@ -27,7 +27,6 @@ public class TCKLoadableExtension implements LoadableExtension {
     @Override
     public void register(final ExtensionBuilder builder) {
         builder.service(ApplicationArchiveProcessor.class, TCKArchiveProcessor.class);
-        builder.service(ApplicationArchiveProcessor.class, TCKSignatureProcessor.class);
         builder.service(AuxiliaryArchiveAppender.class, TCKFrameworkAppender.class);
     }
 }
