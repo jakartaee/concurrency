@@ -15,6 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -25,10 +26,12 @@ import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArch
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
+import org.jboss.shrinkwrap.api.container.LibraryContainer;
 import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
@@ -54,14 +57,18 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
     
     private static void appendCommonPackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
         if (!testClass.isAnnotationPresent(Common.class)) {
-            return;
+            return; //Nothing to append
         }
 
         List<String> packages = Stream.of(testClass.getAnnotation(Common.class).value())
                 .map(pkg -> pkg.getPackageName()).collect(Collectors.toList());
+        
+        if (packages.isEmpty()) {
+            return; //Nothing to append
+        }
 
         // TODO research to see if there is a way around this
-        if (applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
+        if (applicationArchive instanceof EnterpriseArchive) {
             throw new RuntimeException("Cannot append packages to Enterprise Archives since modules are immutable");
         }
 
@@ -73,22 +80,27 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
     }
     
     private static void appendSignaturePackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
-        
         if (!testClass.isAnnotationPresent(Signature.class)) {
-            return;
+            return; //Nothing to append
         }
         
         final boolean isJava21orAbove = Integer.parseInt(System.getProperty("java.specification.version")) >= 21;
         final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
 
         if (applicationArchive instanceof ClassContainer) {
-            log.info("Application Archive [" + applicationName + "] is being appended with packages ["
-                    + signaturePackage + ", com.sun.tdk, org.netbeans.apitest]");
+            
+            // Add the Concurrency runner
+            log.info("Application Archive [" + applicationName + "] is being appended with packages [" + signaturePackage + "]");
+            ((ClassContainer<?>) applicationArchive).addPackage(signaturePackage);
+
+            // Add the sigtest plugin library
+            File sigTestDep = Maven.resolver().resolve("org.netbeans.tools:sigtest-maven-plugin:1.6").withoutTransitivity().asSingleFile();
+            log.info("Application Archive [" + applicationName + "] is being appended with library " + sigTestDep.getName());
+            ((LibraryContainer<?>) applicationArchive).addAsLibrary(sigTestDep);
+            
+            // Add signature resources
             log.info("Application Archive [" + applicationName + "] is being appended with resources "
                     + Arrays.asList(ConcurrencySignatureTestRunner.SIG_RESOURCES));
-            ((ClassContainer<?>) applicationArchive).addPackage(signaturePackage);
-            // These are the packages from the sig-test plugin that are needed to run the test.
-            ((ClassContainer<?>) applicationArchive).addPackages(true, "com.sun.tdk", "org.netbeans.apitest");
             ((ResourceContainer<?>) applicationArchive).addAsResources(signaturePackage,
                     ConcurrencySignatureTestRunner.SIG_MAP_NAME, ConcurrencySignatureTestRunner.SIG_PKG_NAME);
             ((ResourceContainer<?>) applicationArchive).addAsResource(signaturePackage,

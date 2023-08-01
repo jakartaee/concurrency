@@ -490,7 +490,7 @@ public abstract class SignatureTestDriver {
      *
      * @param packageName   The package under test
      * @param mapFile       The name of the file that maps package names to versions
-     * @param repositoryDir The directory that conatisn all signature files
+     * @param repositoryDir The directory that contains all signature files
      *
      * @return String The path and name of the siganture file that contains the
      *         specified package's signatures
@@ -533,7 +533,7 @@ public abstract class SignatureTestDriver {
                 throw new Exception(
                         "Package \"" + originalPackage + "\" not specified in mapping file \"" + mapFile + "\".");
             }
-            packageName.substring(0, index);
+            packageName = packageName.substring(0, index);
         } // end while
 
         /* Return the expected name of the signature file */

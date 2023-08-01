@@ -30,9 +30,9 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
  * This extension will intercept all archives before they are deployed to the
  * container and append a library with the following:
  *
- * Package - ee.jakarta.tck.concurrent.framework Package -
- * ee.jakarta.tck.concurrent.framework.arquillian.extensions Package -
- * ee.jakarta.tck.concurrent.framework.junit.extensions
+ * Package - ee.jakarta.tck.concurrent.framework
+ * Package - ee.jakarta.tck.concurrent.framework.arquillian.extensions
+ * Package - ee.jakarta.tck.concurrent.framework.junit.extensions
  *
  */
 public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
