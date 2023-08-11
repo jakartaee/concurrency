@@ -33,113 +33,130 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     private static final long serialVersionUID = 1L;
 
     /* flags for the Diff utility argument list */
-	private static final String BASE_FLAG = "-base";
+    private static final String BASE_FLAG = "-base";
 
-	private static final String TEST_FLAG = "-test";
+    private static final String TEST_FLAG = "-test";
 
-	private static final String PACKAGE_NO_SUBS_FLAG = "-PackageWithoutSubpackages";
+    private static final String PACKAGE_NO_SUBS_FLAG = "-PackageWithoutSubpackages";
 
-	private static final String PACKAGE_FLAG = "-package";
+    private static final String PACKAGE_FLAG = "-package";
 
-	private static final String EXPACKAGE_FLAG = "-expackage";
+    private static final String EXPACKAGE_FLAG = "-expackage";
 
-	private static final String REFLECT_FLAG = "-reflect";
+    private static final String REFLECT_FLAG = "-reflect";
 
-	private static final String CONST_FLAG = "-constvalues";
+    private static final String CONST_FLAG = "-constvalues";
 
-	// ---------------------------------------- Methods from SignatureTestDriver
+    // ---------------------------------------- Methods from SignatureTestDriver
 
-	@Override
-	protected String normalizeFileName(File f) {
-		return f.getPath();
-	}
+    @Override
+    protected String normalizeFileName(final File f) {
+        return f.getPath();
+    }
 
-	@Override
-	protected String[] createTestArguments(String packageListFile, String mapFile, String signatureRepositoryDir,
-			String packageOrClassUnderTest, String classpath, boolean bStaticMode) throws Exception {
+    @Override
+    protected String[] createTestArguments(final String packageListFile, final String mapFile,
+            final String signatureRepositoryDir, final String packageOrClassUnderTest, final String classpath,
+            final boolean bStaticMode) throws Exception {
 
-		Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
-		Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] { String.class });
-		Object pkgInstance = pkgCtor.newInstance(new Object[] { packageListFile });
+        Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
+        Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] {
+                String.class
+                });
+        Object pkgInstance = pkgCtor.newInstance(new Object[] {
+                packageListFile
+                });
 
-		Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] { String.class });
+        Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] {
+                String.class
+                });
 
-		String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] { packageOrClassUnderTest });
+        String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] {
+                packageOrClassUnderTest
+                });
 
-		List<String> sigArgsList = new LinkedList<>();
+        List<String> sigArgsList = new LinkedList<>();
 
-		sigArgsList.add(BASE_FLAG);
-		sigArgsList.add(getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir).getFile());
+        sigArgsList.add(BASE_FLAG);
+        sigArgsList.add(getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir).getFile());
 
-		if (classpath != null && classpath.length() > 0) {
-			sigArgsList.add(TEST_FLAG);
-			sigArgsList.add(classpath);
-		}
+        if (classpath != null && classpath.length() > 0) {
+            sigArgsList.add(TEST_FLAG);
+            sigArgsList.add(classpath);
+        }
 
-		sigArgsList.add(REFLECT_FLAG);
-		sigArgsList.add(CONST_FLAG);
-		sigArgsList.add(PACKAGE_FLAG);
-		sigArgsList.add(packageOrClassUnderTest);
+        sigArgsList.add(REFLECT_FLAG);
+        sigArgsList.add(CONST_FLAG);
+        sigArgsList.add(PACKAGE_FLAG);
+        sigArgsList.add(packageOrClassUnderTest);
 
-		if (excludePkgs != null && excludePkgs.length() > 0) {
-			sigArgsList.add(EXPACKAGE_FLAG);
-			sigArgsList.add(excludePkgs);
-		}
+        if (excludePkgs != null && excludePkgs.length() > 0) {
+            sigArgsList.add(EXPACKAGE_FLAG);
+            sigArgsList.add(excludePkgs);
+        }
 
-		return (String[]) (sigArgsList.toArray(new String[sigArgsList.size()]));
+        return (String[]) (sigArgsList.toArray(new String[sigArgsList.size()]));
 
-	} // END createTestArguments
+    } // END createTestArguments
 
-	@Override
-	protected boolean runSignatureTest(String packageOrClassName, String[] testArguments) throws Exception {
+    @Override
+    protected boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception {
 
-		Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
-		Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] { String[].class });
-		mainMethod.invoke(null, new Object[] { testArguments });
+        Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
+        Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] {
+                String[].class
+                });
+        mainMethod.invoke(null, new Object[] {
+                testArguments
+                });
 
-		Method diffMethod = diffClass.getDeclaredMethod("diffsFound", new Class[] {});
-		return (!((Boolean) diffMethod.invoke(null, new Object[] {})).booleanValue());
+        Method diffMethod = diffClass.getDeclaredMethod("diffsFound", new Class[] {});
+        return (!((Boolean) diffMethod.invoke(null, new Object[] {})).booleanValue());
 
-	} // END runSignatureTest
+    } // END runSignatureTest
 
-	@Override
-	protected boolean runPackageSearch(String packageOrClassName, String[] testArguments) throws Exception {
-		Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-		Object sigTestInstance = sigTestClass.getConstructor().newInstance();
+    @Override
+    protected boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception {
+        Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
+        Object sigTestInstance = sigTestClass.getConstructor().newInstance();
 
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		// we want to replace the PACKAGE_FLAG with PACKAGE_NO_SUBS_FLAG
-		for (int ii = 0; ii < testArguments.length; ii++) {
-			if (testArguments[ii].equals(PACKAGE_FLAG)) {
-				testArguments[ii] = PACKAGE_NO_SUBS_FLAG;
-			}
-		}
+        // we want to replace the PACKAGE_FLAG with PACKAGE_NO_SUBS_FLAG
+        for (int ii = 0; ii < testArguments.length; ii++) {
+            if (testArguments[ii].equals(PACKAGE_FLAG)) {
+                testArguments[ii] = PACKAGE_NO_SUBS_FLAG;
+            }
+        }
 
-		// dump args for debugging aid
-		System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
-		for (int ii = 0; ii < testArguments.length; ii++) {
-			System.out.println("	  testArguments[" + ii + "] = " + testArguments[ii]);
-		}
+        // dump args for debugging aid
+        System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
+        for (int ii = 0; ii < testArguments.length; ii++) {
+            System.out.println("\t  testArguments[" + ii + "] = " + testArguments[ii]);
+        }
 
-		Method runMethod = sigTestClass.getDeclaredMethod("run",
-				new Class[] { String[].class, PrintWriter.class, PrintWriter.class });
-		runMethod.invoke(sigTestInstance, new Object[] { testArguments, new PrintWriter(output, true), null });
+        Method runMethod = sigTestClass.getDeclaredMethod("run",
+                new Class[] {
+                        String[].class, PrintWriter.class, PrintWriter.class
+                        });
+        runMethod.invoke(sigTestInstance, new Object[] {
+                testArguments, new PrintWriter(output, true), null
+                });
 
-		String rawMessages = output.toString();
+        String rawMessages = output.toString();
 
-		// currently, there is no way to determine if there are error msgs in
-		// the rawmessages, so we will always dump this and call it a status.
-		System.out.println("********** Status Report '" + packageOrClassName + "' **********\n");
-		System.out.println(rawMessages);
-		return sigTestInstance.toString().substring(7).startsWith("Passed.");
-	}
+        // currently, there is no way to determine if there are error msgs in
+        // the rawmessages, so we will always dump this and call it a status.
+        System.out.println("********** Status Report '" + packageOrClassName + "' **********\n");
+        System.out.println(rawMessages);
+        return sigTestInstance.toString().substring(7).startsWith("Passed.");
+    }
 
-	@Override
-	protected boolean verifyJTAJarForNoXA(String classpath, String repositoryDir) throws Exception {
-		// Need to find out whether implementing this method is really required now.
-		// By default, signature test framework will use sigtest
-		return true;
-	}
+    @Override
+    protected boolean verifyJTAJarForNoXA(final String classpath, final String repositoryDir) throws Exception {
+        // Need to find out whether implementing this method is really required now.
+        // By default, signature test framework will use sigtest
+        return true;
+    }
 
 } // END ApiCheckDriver

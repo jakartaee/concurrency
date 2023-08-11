@@ -15,6 +15,8 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,42 +26,89 @@ import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArch
 import org.jboss.arquillian.test.spi.TestClass;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.container.ClassContainer;
+import org.jboss.shrinkwrap.api.container.LibraryContainer;
+import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
+import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
 
 /**
- * This extension will intercept archives before they are deployed to the container and append 
- * the packages from the @Common annotation.
+ * This extension will intercept archives before they are deployed to the
+ * container and append the packages from the @Common annotation.
  */
 public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
     private static final Logger log = Logger.getLogger(TCKArchiveProcessor.class.getCanonicalName());
-    
+
     @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
-        String applicationName = applicationArchive.getName() == null ? applicationArchive.getId() : applicationArchive.getName();
+    public void process(final Archive<?> applicationArchive, final TestClass testClass) {
+        String applicationName = applicationArchive.getName() == null
+                ? applicationArchive.getId()
+                : applicationArchive.getName();
         
-        if( ! testClass.isAnnotationPresent(Common.class) ) {
-            return;
+        appendCommonPackages(applicationArchive, testClass, applicationName);
+        appendSignaturePackages(applicationArchive, testClass, applicationName);
+
+    }
+    
+    private static void appendCommonPackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
+        if (!testClass.isAnnotationPresent(Common.class)) {
+            return; //Nothing to append
         }
-        
+
         List<String> packages = Stream.of(testClass.getAnnotation(Common.class).value())
-                .map(pkg -> pkg.getPackageName())
-                .collect(Collectors.toList());
+                .map(pkg -> pkg.getPackageName()).collect(Collectors.toList());
         
-        //TODO research to see if there is a way around this
-        if(applicationArchive instanceof EnterpriseArchive && !packages.isEmpty()) {
+        if (packages.isEmpty()) {
+            return; //Nothing to append
+        }
+
+        // TODO research to see if there is a way around this
+        if (applicationArchive instanceof EnterpriseArchive) {
             throw new RuntimeException("Cannot append packages to Enterprise Archives since modules are immutable");
         }
-        
+
         if (applicationArchive instanceof WebArchive || applicationArchive instanceof JavaArchive) {
             log.info("Application Archive [" + applicationName + "] is being appended with packages " + packages);
-            packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg) );
-            
+            packages.stream().forEach(pkg -> ((ClassContainer<?>) applicationArchive).addPackage(pkg));
+
+        }
+    }
+    
+    private static void appendSignaturePackages(final Archive<?> applicationArchive, final TestClass testClass, final String applicationName) {
+        if (!testClass.isAnnotationPresent(Signature.class)) {
+            return; //Nothing to append
         }
         
-        
+        final boolean isJava21orAbove = Integer.parseInt(System.getProperty("java.specification.version")) >= 21;
+        final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
+
+        if (applicationArchive instanceof ClassContainer) {
+            
+            // Add the Concurrency runner
+            log.info("Application Archive [" + applicationName + "] is being appended with packages [" + signaturePackage + "]");
+            ((ClassContainer<?>) applicationArchive).addPackage(signaturePackage);
+
+            // Add the sigtest plugin library
+            File sigTestDep = Maven.resolver().resolve("org.netbeans.tools:sigtest-maven-plugin:1.6").withoutTransitivity().asSingleFile();
+            log.info("Application Archive [" + applicationName + "] is being appended with library " + sigTestDep.getName());
+            ((LibraryContainer<?>) applicationArchive).addAsLibrary(sigTestDep);
+            
+            // Add signature resources
+            log.info("Application Archive [" + applicationName + "] is being appended with resources "
+                    + Arrays.asList(ConcurrencySignatureTestRunner.SIG_RESOURCES));
+            ((ResourceContainer<?>) applicationArchive).addAsResources(signaturePackage,
+                    ConcurrencySignatureTestRunner.SIG_MAP_NAME, ConcurrencySignatureTestRunner.SIG_PKG_NAME);
+            ((ResourceContainer<?>) applicationArchive).addAsResource(signaturePackage,
+                    // Get local resource based on JDK level
+                    isJava21orAbove ? ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_21"
+                            : ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_17",
+                    // Target same package as test
+                    signaturePackage.getName().replace(".", "/") + "/" + ConcurrencySignatureTestRunner.SIG_FILE_NAME);
+        }
     }
 }

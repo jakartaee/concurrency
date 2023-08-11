@@ -406,6 +406,11 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Utility method for repeated logic in toString.
+     *
+     * @param s The string builder
+     * @param label The cron expression
+     * @param list Cron expression as list
+     * @param max Max value of cron expression
      */
     private void toStringBuilder(final StringBuilder s, final String label, final int[] list, final int max) {
         if (list.length == max) {
@@ -482,6 +487,13 @@ public class CronTrigger implements ZonedTrigger {
     
     /**
      * Advance to next day of month.
+     *
+     * @param d day
+     * @param l ??
+     * @param m month
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next month
      */
     private ZonedDateTime nextDayOfMonth(final int d, final int l, final int m,
                                          final int year, final ZonedDateTime time) {
@@ -498,6 +510,15 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Advance to next hour.
+     *
+     * @param h hour
+     * @param d day
+     * @param l ??
+     * @param dayOfMonth day of month
+     * @param m minute
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next hour
      */
     private ZonedDateTime nextHour(final int h, final int d, final int l, final int dayOfMonth,
                                    final int m, final int year, final ZonedDateTime time) {
@@ -521,6 +542,16 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Advance to next minute.
+     *
+     * @param min minute
+     * @param h hour
+     * @param d day
+     * @param l ??
+     * @param dayOfMonth day of month
+     * @param m minute
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next second
      */
     private ZonedDateTime nextMinute(final int min, final int h, final int d, final int l, final int dayOfMonth,
                                      final int m, final int year, final ZonedDateTime time) {
@@ -533,9 +564,17 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Advance to next month.
+     *
+     * @param month the month
+     * @param year  the year
+     * @return ZonedDateTime for next month
      */
     private ZonedDateTime nextMonth(final int month, final int year) {
-        int dayOfMonth, lastDayOfMonth, cycles = 0, m = month, y = year;
+        int dayOfMonth;
+        int lastDayOfMonth;
+        int cycles = 0;
+        int m = month;
+        int y = year;
         do {
             if (++m >= months.length) {
                 m = 0;
@@ -558,6 +597,17 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Advance to next second.
+     *
+     * @param s second
+     * @param min minute
+     * @param h hour
+     * @param d day
+     * @param l ??
+     * @param dayOfMonth day of month
+     * @param m month
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next second
      */
     private ZonedDateTime nextSecond(final int s, final int min, final int h,
                                      final int d, final int l, final int dayOfMonth,
@@ -602,7 +652,7 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Validate that the supplied list values are within the allowed range for the cron field type.
      *
-     * @param type   cron field type, such as months or hours.
+     * @param name   cron field type, such as months or hours.
      * @param min    minimum allowed normal value
      * @param max    maximum allowed normal value
      * @param maxExt maximum allowed special value (L or SUN#L), or max if no special values allowed for this field.
@@ -664,6 +714,9 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Convert dayOfMonth value to 1-31, or negative for days from the end of the month
      * For example, L is the last day (-1) and 2L is the second to last day (-2).
+     * @param day name of day of month
+     * @return integer representation of day of month
+     * @throws IllegalArgumentException
      */
     private static int parseDayOfMonth(final String day) throws IllegalArgumentException {
         try {
@@ -688,6 +741,10 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Convert dayOfWeek value to 1-49 where first 7 are standard week days,
      * next 35 are ordinal 1st-5th of each day, and final 7 are ordinal last for each day.
+     *
+     * @param dayName name of day of the week
+     * @return integer representation of day of week
+     * @throws IllegalArgumentException
      */
     private static int parseDayOfWeek(final String dayName) throws IllegalArgumentException {
         String day = dayName;
@@ -718,6 +775,10 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Convert month value to 1-12.
+     *
+     * @param monthName name of month (January)
+     * @return integer representation of month
+     * @throws IllegalArgumentException
      */
     private static int parseMonth(final String monthName) throws IllegalArgumentException {
         String month = monthName;

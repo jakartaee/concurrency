@@ -47,35 +47,31 @@ import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
 /**
- * @ContextServiceDefinitions are defined under {@link ContextServiceDefinitionServlet}
+ * @ContextServiceDefinitions are defined under
+ *                            {@link ContextServiceDefinitionServlet}
  */
-@ManagedExecutorDefinition(name = "java:app/concurrent/ExecutorA",
-                           context = "java:app/concurrent/ContextA",
-                           maxAsync = 2,
-                           hungTaskThreshold = 300000)
-@ManagedExecutorDefinition(name = "java:module/concurrent/ExecutorB",
-                           context = "java:module/concurrent/ContextB",
-                           maxAsync = 1)
+@ManagedExecutorDefinition(name = "java:app/concurrent/ExecutorA", context = "java:app/concurrent/ContextA", maxAsync = 2, hungTaskThreshold = 300000)
+@ManagedExecutorDefinition(name = "java:module/concurrent/ExecutorB", context = "java:module/concurrent/ContextB", maxAsync = 1)
 @ManagedExecutorDefinition(name = "java:comp/concurrent/ExecutorC")
 @WebServlet("/ManagedExecutorDefinitionServlet")
 public class ManagedExecutorDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
-    @Inject AppBean appBean;
+    @Inject
+    private AppBean appBean;
 
     @Resource
-    UserTransaction tx;
-    
+    private UserTransaction tx;
 
     /**
-     * ManagedExecutorService submits an action to run asynchronously as a CompletionStage.
-     * Dependent stages can be chained to the CompletionStage, and all stages run with the
-     * thread context of the thread from which they were created, per
-     * ManagedExecutorDefinition config.
+     * ManagedExecutorService submits an action to run asynchronously as a
+     * CompletionStage. Dependent stages can be chained to the CompletionStage, and
+     * all stages run with the thread context of the thread from which they were
+     * created, per ManagedExecutorDefinition config.
      */
     public void testAsyncCompletionStage() throws Throwable {
-    	
+
         ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/ExecutorA");
 
         try {
@@ -91,7 +87,7 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                 }
             }).thenApplyAsync(status -> {
                 int i = IntContext.get();
-                return status + ";IntContext " + (i == 10 ? "propagated" : "incorrect:" + i); 
+                return status + ";IntContext " + (i == 10 ? "propagated" : "incorrect:" + i);
             }).thenCombine(CompletableFuture.completedFuture(";"), (status, sep) -> {
                 String s = StringContext.get();
                 return status + sep + "StringContext " + ("".equals(s) ? "cleared" : "incorrect:" + s);
@@ -100,18 +96,19 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             IntContext.set(25);
 
             String result = future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(result, "Application context propagated;IntContext propagated;StringContext cleared", 
-                         "Application context and IntContext must be propagated and StringContext must be cleared " +
-                         "per ManagedExecutorDefinition and ContextServiceDefinition config.");
+            assertEquals(result, "Application context propagated;IntContext propagated;StringContext cleared",
+                    "Application context and IntContext must be propagated and StringContext must be cleared "
+                            + "per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
-            IntContext.set(0);;
+            IntContext.set(0);
             StringContext.set(null);
         }
     }
 
     /**
-     * Asynchronous method that returns CompletableFuture runs asynchronously and can run successfully to completion
-     * or be signaled to end prematurely (if so implemented) by completing its CompletableFuture.
+     * Asynchronous method that returns CompletableFuture runs asynchronously and
+     * can run successfully to completion or be signaled to end prematurely (if so
+     * implemented) by completing its CompletableFuture.
      */
     public void testAsynchronousMethodReturnsCompletableFuture() throws Exception {
         CountDownLatch blocker = new CountDownLatch(1);
@@ -128,55 +125,57 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             future3 = appBean.waitAndGetIntContext(invocationsStarted, blocker);
             future4 = appBean.waitAndGetIntContext(invocationsStarted, blocker);
 
-            assertEquals(invocationsStarted.tryAcquire(2, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
-                         "Must be able to run 2 asynchronous methods in parallel.");
+            assertEquals(invocationsStarted.tryAcquire(2, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true,
+                    "Must be able to run 2 asynchronous methods in parallel.");
 
-            assertEquals(future1.complete(1000), true, 
-                         "Must be able to complete the CompletableFuture of an asynchronous method.");
+            assertEquals(future1.complete(1000), true,
+                    "Must be able to complete the CompletableFuture of an asynchronous method.");
 
-            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
-                         "Must be able to run another asynchronous method in parallel after forcibly " +
-                         "completing the first.");
+            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true,
+                    "Must be able to run another asynchronous method in parallel after forcibly "
+                            + "completing the first.");
 
-            assertEquals(future2.completeExceptionally(new CloneNotSupportedException(
-                    	"Not a real error. This is only testing exceptional completion.")), true, 
-                         "Must be able to complete the CompletableFuture of an asynchronous method exceptionally.");
+            assertEquals(
+                    future2.completeExceptionally(new CloneNotSupportedException(
+                            "Not a real error. This is only testing exceptional completion.")),
+                    true, "Must be able to complete the CompletableFuture of an asynchronous method exceptionally.");
 
-            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true, 
-                         "Must be able to run another asynchronous method in parallel after forcibly " +
-                         "completing the second exceptionally.");
+            assertEquals(invocationsStarted.tryAcquire(1, MAX_WAIT_SECONDS, TimeUnit.SECONDS), true,
+                    "Must be able to run another asynchronous method in parallel after forcibly "
+                            + "completing the second exceptionally.");
 
-            assertEquals(invocationsStarted.tryAcquire(1, 1, TimeUnit.SECONDS), false, 
-                         "Must not be able to run another asynchronous method in parallel.");
+            assertEquals(invocationsStarted.tryAcquire(1, 1, TimeUnit.SECONDS), false,
+                    "Must not be able to run another asynchronous method in parallel.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
         }
 
-        assertEquals(future1.getNow(1234), Integer.valueOf(1000), 
-                     "Asynchronous method's CompletableFuture must report the value with which it was " +
-                     "forcibly completed.");
+        assertEquals(future1.getNow(1234), Integer.valueOf(1000),
+                "Asynchronous method's CompletableFuture must report the value with which it was "
+                        + "forcibly completed.");
 
         try {
             Integer result = future2.join();
-            throw new AssertionError("Asynchronous method's CompletableFuture must not return result " + result +
-                                     "after being forcibly completed with an exception.");
+            throw new AssertionError("Asynchronous method's CompletableFuture must not return result " + result
+                    + "after being forcibly completed with an exception.");
         } catch (CompletionException x) {
             if (!(x.getCause() instanceof CloneNotSupportedException)) // expected due to forced exceptional completion
                 throw x;
         }
 
-        assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(1215), 
-                     "Third-party context type IntContext must be propagated to asynchronous method " +
-                     "per ManagedExecutorDefinition and ContextServiceDefinition.");
+        assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(1215),
+                "Third-party context type IntContext must be propagated to asynchronous method "
+                        + "per ManagedExecutorDefinition and ContextServiceDefinition.");
 
-        assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(1215), 
-                     "Third-party context type IntContext must be propagated to asynchronous method " +
-                     "per ManagedExecutorDefinition and ContextServiceDefinition.");
+        assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(1215),
+                "Third-party context type IntContext must be propagated to asynchronous method "
+                        + "per ManagedExecutorDefinition and ContextServiceDefinition.");
     }
 
     /**
-     * Asynchronous method that returns a CompletionStage runs asynchronously on the specified executor.
+     * Asynchronous method that returns a CompletionStage runs asynchronously on the
+     * specified executor.
      */
     public void testAsynchronousMethodReturnsCompletionStage() throws Exception {
         CountDownLatch blocker = new CountDownLatch(1);
@@ -193,30 +192,31 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             StringContext.set("testAsynchronousMethodReturnsCompletionStage-2");
 
             assertEquals(queue.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-            			"testAsynchronousMethodReturnsCompletionStage-1",
-                         "One of the asynchronous method invocations should run per maxAsync=1.");
+                    "testAsynchronousMethodReturnsCompletionStage-1",
+                    "One of the asynchronous method invocations should run per maxAsync=1.");
 
-            assertEquals(queue.poll(1, TimeUnit.SECONDS), null, 
-                            "Two asynchronous method invocations should not run at same time per maxAsync=1.");
+            assertEquals(queue.poll(1, TimeUnit.SECONDS), null,
+                    "Two asynchronous method invocations should not run at same time per maxAsync=1.");
 
             stage1.thenAcceptBoth(stage2, (result1, result2) -> {
-                if (result1.equals(result2))
+                if (result1.equals(result2)) {
                     queue.add(StringContext.get());
-                else
-                    queue.add("Both asynchronous method invocations must have same result. Instead: " +
-                              result1 + " and " + result2);
+                } else {
+                    queue.add("Both asynchronous method invocations must have same result. Instead: " + result1
+                            + " and " + result2);
+                }
             });
         } finally {
             StringContext.set(null);
             blocker.countDown();
         }
 
-        assertEquals(queue.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testAsynchronousMethodReturnsCompletionStage-1", 
-                     "The other asynchronous method invocation should run after the first is no longer running.");
+        assertEquals(queue.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testAsynchronousMethodReturnsCompletionStage-1",
+                "The other asynchronous method invocation should run after the first is no longer running.");
 
-        assertEquals(queue.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testAsynchronousMethodReturnsCompletionStage-2", 
-                     "Completion stage that is created from an asynchronous method completion stage must run " +
-                     "with the same executor and therefore propagate the same third-party context type StringContext.");
+        assertEquals(queue.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testAsynchronousMethodReturnsCompletionStage-2",
+                "Completion stage that is created from an asynchronous method completion stage must run "
+                        + "with the same executor and therefore propagate the same third-party context type StringContext.");
     }
 
     /**
@@ -228,14 +228,14 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
 
         String status = exchanger.exchange("WAITING", MAX_WAIT_SECONDS, TimeUnit.SECONDS);
         assertEquals(status, "RUNNING",
-                     "Asynchronous method with void return type must be able to run asynchronously. " + status);
+                "Asynchronous method with void return type must be able to run asynchronously. " + status);
     }
 
     /**
-     * ManagedExecutorService creates a completed CompletableFuture
-     * to which async dependent stages can be chained.
-     * The dependent stages all run with the thread context of the thread
-     * from which they were created, per ManagedExecutorDefinition config.
+     * ManagedExecutorService creates a completed CompletableFuture to which async
+     * dependent stages can be chained. The dependent stages all run with the thread
+     * context of the thread from which they were created, per
+     * ManagedExecutorDefinition config.
      */
     public void testCompletedFuture() throws Throwable {
         ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/ExecutorB");
@@ -250,8 +250,8 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             CompletableFuture<Void> stage2 = stage1.thenAcceptAsync(jndiName -> {
                 try {
                     InitialContext.doLookup(jndiName);
-                    throw new AssertionError("Application context must be left unchanged per " +
-                                             "ManagedExecutorDefinition and ContextServiceDefinition config.");
+                    throw new AssertionError("Application context must be left unchanged per "
+                            + "ManagedExecutorDefinition and ContextServiceDefinition config.");
                 } catch (NamingException x) {
                     throw new CompletionException(x); // expected because Application context is unchanged
                 }
@@ -263,31 +263,34 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                 int i = IntContext.get();
                 String s = StringContext.get();
 
-                // CompletionException with chained NamingException is expected due to Application context
+                // CompletionException with chained NamingException is expected due to
+                // Application context
                 // remaining unchanged (absent) on the async completion stage action
-                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException)
-                    return "StringContext " + ("testCompletedFuture-3".equals(s) ? "propagated" : "incorrect:" + s) +
-                           ";IntContext " + (i == 0 ? "unchanged" : "incorrect:" + i);
-                else if (failure == null)
+                if (failure instanceof CompletionException && failure.getCause() instanceof NamingException) {
+                    return "StringContext " + ("testCompletedFuture-3".equals(s) ? "propagated" : "incorrect:" + s)
+                            + ";IntContext " + (i == 0 ? "unchanged" : "incorrect:" + i);
+                } else if (failure == null) {
                     throw new AssertionError("Missing Throwable argument to handleAsync");
-                else
+                } else {
                     throw new CompletionException(failure);
+                }
             });
 
             StringContext.set("testCompletedFuture-4");
 
             String result = stage3.join();
-            assertEquals(result, "StringContext propagated;IntContext unchanged", 
-                         "StringContext must be propagated and Application context and IntContext must be left " +
-                         "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
+            assertEquals(result, "StringContext propagated;IntContext unchanged",
+                    "StringContext must be propagated and Application context and IntContext must be left "
+                            + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
-            IntContext.set(0);;
+            IntContext.set(0);
             StringContext.set(null);
         }
     }
 
     /**
-     * ManagedExecutorService can create a contextualized copy of an unmanaged CompletableFuture.
+     * ManagedExecutorService can create a contextualized copy of an unmanaged
+     * CompletableFuture.
      */
     public void testCopyCompletableFuture() throws Throwable {
         ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/ExecutorB");
@@ -304,7 +307,7 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             CompletableFuture<String> stage2 = stage1copy.applyToEitherAsync(permanentlyIncompleteStage, sep -> {
                 String s = StringContext.get();
                 return "StringContext " + ("testCopyCompletableFuture-2".equals(s) ? "propagated" : "incorrect:" + s)
-                                + sep;
+                        + sep;
             });
 
             StringContext.set("testCopyCompletableFuture-3");
@@ -319,24 +322,25 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             });
 
             assertTrue(stage1unmanaged.complete(';'),
-                       "Completation stage that is supplied to copy must not be modified by the " +
-                       "ManagedExecutorService.");
+                    "Completation stage that is supplied to copy must not be modified by the "
+                            + "ManagedExecutorService.");
 
             String result = stage3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(result, "StringContext propagated;IntContext unchanged", 
-                         "StringContext must be propagated and Application context and IntContext must be left " +
-                         "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
+            assertEquals(result, "StringContext propagated;IntContext unchanged",
+                    "StringContext must be propagated and Application context and IntContext must be left "
+                            + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
-            IntContext.set(0);;
+            IntContext.set(0);
             StringContext.set(null);
         }
     }
 
     /**
-     * ManagedExecutorService creates an incomplete CompletableFuture to which dependent stages
-     * can be chained. The CompletableFuture can be completed from another thread lacking the
-     * same context, but the dependent stages all run with the thread context of the thread
-     * from which they were created, per ManagedExecutorDefinition config.
+     * ManagedExecutorService creates an incomplete CompletableFuture to which
+     * dependent stages can be chained. The CompletableFuture can be completed from
+     * another thread lacking the same context, but the dependent stages all run
+     * with the thread context of the thread from which they were created, per
+     * ManagedExecutorDefinition config.
      */
     public void testIncompleteFuture() throws Throwable {
         ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/ExecutorA");
@@ -367,15 +371,15 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
                     return status1 + status2 + "Application context " + (mes == null ? "incorrect" : "propagated");
                 } catch (NamingException x) {
                     throw new CompletionException(x);
-                }                
+                }
             });
 
             stage1.complete(";");
 
             String result = stage3.join();
-            assertEquals(result, "IntContext propagated;StringContext cleared;Application context propagated", 
-                         "Application context and IntContext must be propagated and StringContext must be cleared " +
-                         "per ManagedExecutorDefinition and ContextServiceDefinition config.");
+            assertEquals(result, "IntContext propagated;StringContext cleared;Application context propagated",
+                    "Application context and IntContext must be propagated and StringContext must be cleared "
+                            + "per ManagedExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
             StringContext.set(null);
@@ -383,7 +387,8 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
     }
 
     /**
-     * A ManagedExecutorDefinition with all attributes configured enforces maxAsync and propagates context.
+     * A ManagedExecutorDefinition with all attributes configured enforces maxAsync
+     * and propagates context.
      */
     public void testManagedExecutorDefinitionAllAttributes() throws Throwable {
         ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/ExecutorA");
@@ -407,26 +412,27 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             executor.submit(task);
             executor.execute(task);
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22), 
-                         "ManagedExecutorService with maxAsync=2 must be able to run an async task.");
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22),
+                    "ManagedExecutorService with maxAsync=2 must be able to run an async task.");
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22), 
-                         "ManagedExecutorService with maxAsync=2 must be able to run 2 async tasks concurrently.");
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22),
+                    "ManagedExecutorService with maxAsync=2 must be able to run 2 async tasks concurrently.");
 
-            assertEquals(results.poll(1, TimeUnit.SECONDS), null, 
-                         "ManagedExecutorService with maxAsync=2 must not run 3 async tasks concurrently.");
+            assertEquals(results.poll(1, TimeUnit.SECONDS), null,
+                    "ManagedExecutorService with maxAsync=2 must not run 3 async tasks concurrently.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
         }
 
-        assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22), 
-                     "ManagedExecutorService with maxAsync=2 must be able to run 3rd task after 1st completes.");
+        assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(22),
+                "ManagedExecutorService with maxAsync=2 must be able to run 3rd task after 1st completes.");
     }
 
     /**
-     * A ManagedExecutorDefinition with minimal attributes can run multiple async tasks concurrently
-     * and uses java:comp/DefaultContextService to determine context propagation and clearing.
+     * A ManagedExecutorDefinition with minimal attributes can run multiple async
+     * tasks concurrently and uses java:comp/DefaultContextService to determine
+     * context propagation and clearing.
      */
     public void testManagedExecutorDefinitionDefaults() throws Throwable {
         ManagedExecutorService executor = InitialContext.doLookup("java:comp/concurrent/ExecutorC");
@@ -436,13 +442,13 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
 
         Callable<Integer> txCallable = () -> {
             allTasksRunning.countDown();
-            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
-            int initialStatus = tx.getStatus();
-            tx.begin();
+            UserTransaction trans = InitialContext.doLookup("java:comp/UserTransaction");
+            int initialStatus = trans.getStatus();
+            trans.begin();
             try {
                 blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
             } finally {
-                tx.rollback();
+                trans.rollback();
             }
             return initialStatus;
         };
@@ -461,28 +467,28 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             Future<Integer> txFuture = executor.submit(txCallable);
 
             CompletableFuture<?> lookupFuture1 = executor.completedFuture("java:comp/concurrent/ExecutorC")
-                            .thenApplyAsync(lookupFunction);
+                    .thenApplyAsync(lookupFunction);
 
             CompletableFuture<?> lookupFuture2 = executor.completedFuture("java:module/concurrent/ExecutorB")
-                            .thenApplyAsync(lookupFunction);
+                    .thenApplyAsync(lookupFunction);
 
             assertTrue(allTasksRunning.await(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                       "ManagedExecutorService without maxAsync must be able to run async tasks concurrently.");
+                    "ManagedExecutorService without maxAsync must be able to run async tasks concurrently.");
 
             blocker.countDown();
 
             int status = txFuture.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            assertEquals(status, Status.STATUS_NO_TRANSACTION, 
-                         "Transaction context must be cleared from async Callable task " +
-                         "per java:comp/concurrent/ExecutorC configuration.");
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
+                    "Transaction context must be cleared from async Callable task "
+                            + "per java:comp/concurrent/ExecutorC configuration.");
 
             assertTrue(lookupFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedExecutorService,
-                       "Application context must be propagated to first async Function " +
-                       "per java:comp/concurrent/ExecutorC configuration.");
+                    "Application context must be propagated to first async Function "
+                            + "per java:comp/concurrent/ExecutorC configuration.");
 
             assertTrue(lookupFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedExecutorService,
-                       "Application context must be propagated to second async Function " +
-                       "per java:comp/concurrent/ExecutorC configuration.");
+                    "Application context must be propagated to second async Function "
+                            + "per java:comp/concurrent/ExecutorC configuration.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
@@ -492,9 +498,9 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
         try {
             // run inline to verify that transaction context is cleared
             int status = executor.getContextService().contextualCallable(txCallable).call();
-            assertEquals(status, Status.STATUS_NO_TRANSACTION, 
-                         "Transaction context must be cleared from inline contextual Callable " +
-                         "per java:comp/concurrent/ExecutorC configuration.");
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
+                    "Transaction context must be cleared from inline contextual Callable "
+                            + "per java:comp/concurrent/ExecutorC configuration.");
         } finally {
             tx.rollback();
         }

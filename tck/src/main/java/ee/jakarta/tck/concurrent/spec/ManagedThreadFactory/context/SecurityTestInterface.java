@@ -16,9 +16,8 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.context;
 
-
 public interface SecurityTestInterface {
 
-	public String managerMethod1();
+    public String managerMethod1();
 
 }

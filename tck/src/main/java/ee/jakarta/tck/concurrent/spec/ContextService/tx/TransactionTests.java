@@ -31,17 +31,17 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to annotation configuration
+@Web
+@RunAsClient // Requires client testing due to annotation configuration
 @Common({ PACKAGE.TRANSACTION })
 public class TransactionTests extends TestClient {
 
     @ArquillianResource
-    URL baseURL;
+    private URL baseURL;
 
     @Deployment(name = "TransactionTests")
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-                .addPackages(true, TransactionTests.class.getPackage());
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, TransactionTests.class.getPackage());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TransactionTests extends TestClient {
     }
 
     @TestName
-    String testname;
+    private String testname;
 
     /*
      * @testName: testTransactionOfExecuteThreadAndCommit

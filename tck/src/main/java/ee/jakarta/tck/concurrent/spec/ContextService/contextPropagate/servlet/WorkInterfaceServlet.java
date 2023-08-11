@@ -31,15 +31,15 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/WorkInterfaceServlet")
 public class WorkInterfaceServlet extends HttpServlet {
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		byte[] proxyAsBytes = Base64.getDecoder().decode(req.getParameter("proxy"));
-		ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(proxyAsBytes));
-		try {
-			Object proxy = in.readObject();
-			resp.getWriter().println(((TestWorkInterface) proxy).doSomeWork());
-		} catch (Exception e) {
-			throw new ServletException(e);
-		}
-	}
+    @Override
+    protected void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        byte[] proxyAsBytes = Base64.getDecoder().decode(req.getParameter("proxy"));
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(proxyAsBytes));
+        try {
+            Object proxy = in.readObject();
+            resp.getWriter().println(((TestWorkInterface) proxy).doSomeWork());
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
 }

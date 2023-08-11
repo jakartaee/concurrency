@@ -25,8 +25,8 @@ import jakarta.ejb.Stateless;
 @Stateless
 public class LimitedBean implements LimitedInterface {
 
-	@RolesAllowed("Manager")
-	public String doSomething() {
-		return TestConstants.ComplexReturnValue;
-	}
+    @RolesAllowed("Manager")
+    public String doSomething() {
+        return TestConstants.complexReturnValue;
+    }
 }

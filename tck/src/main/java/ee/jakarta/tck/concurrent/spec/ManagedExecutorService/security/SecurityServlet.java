@@ -32,15 +32,16 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
-	
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
-    public ManagedExecutorService executor;
 
-	public void managedExecutorServiceAPISecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		req.login("javajoe", "javajoe");
-		Future<?> future = executor.submit(new SecurityTestTask());
-		Object result = Wait.waitForTaskComplete(future);
-		assertEquals(result, TestConstants.SimpleReturnValue);
-	}
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
+    private ManagedExecutorService executor;
+
+    public void managedExecutorServiceAPISecurityTest(final HttpServletRequest req, final HttpServletResponse res)
+            throws Exception {
+        req.login("javajoe", "javajoe");
+        Future<?> future = executor.submit(new SecurityTestTask());
+        Object result = Wait.waitForTaskComplete(future);
+        assertEquals(result, TestConstants.simpleReturnValue);
+    }
 
 }

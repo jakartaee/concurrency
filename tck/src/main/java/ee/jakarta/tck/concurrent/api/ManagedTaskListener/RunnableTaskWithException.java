@@ -22,13 +22,13 @@ import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithSt
 
 public class RunnableTaskWithException extends RunnableTaskWithStatus implements Runnable {
 
-	public RunnableTaskWithException(ManagedTaskListenerImpl listener) {
-		super(listener);
-	}
+    public RunnableTaskWithException(final ManagedTaskListenerImpl listener) {
+        super(listener);
+    }
 
-	@Override
-	public void run() {
-		listener.update(ListenerEvent.TASK_RUN);
-		throw new RuntimeException("wrong happend");
-	}
+    @Override
+    public void run() {
+        getListener().update(ListenerEvent.TASK_RUN);
+        throw new RuntimeException("wrong happend");
+    }
 }

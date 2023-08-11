@@ -32,47 +32,48 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
-@Web @RunAsClient //Requires client testing due to login request 
-@Common({PACKAGE.TASKS})
+@Web
+@RunAsClient // Requires client testing due to login request
+@Common({ PACKAGE.TASKS })
 public class SecurityWebTests extends TestClient {
-	
-	@ArquillianResource
-	URL baseURL;
-	
-	@Deployment(name="SecurityTests")
-	public static WebArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, SecurityWebTests.class.getPackage())
-				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.WebProvider.class);	
-		
-		return war;
-	}
-	
-    @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "SecurityServlet";
-	}
 
-	/*
-	 * @testName: managedExecutorServiceAPISecurityTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
-	 * CONCURRENCY:SPEC:85; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:106;
-	 * CONCURRENCY:SPEC:22;
-	 * 
-	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
-	 * then submit a task by ManagedExecutorService in which call a ejb that
-	 * requires role manager.
+    @ArquillianResource
+    private URL baseURL;
+
+    @Deployment(name = "SecurityTests")
+    public static WebArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
+                .addPackages(true, SecurityWebTests.class.getPackage())
+                .addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.WebProvider.class);
+
+        return war;
+    }
+
+    @TestName
+    private String testname;
+
+    @Override
+    protected String getServletPath() {
+        return "SecurityServlet";
+    }
+
+    /*
+     * @testName: managedExecutorServiceAPISecurityTest
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
+     * CONCURRENCY:SPEC:85; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:106;
+     * CONCURRENCY:SPEC:22;
+     *
+     * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
+     * then submit a task by ManagedExecutorService in which call a ejb that
+     * requires role manager.
      *
      * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-     * fix: https://github.com/jakartaee/concurrency/pull/218  
-     * Can be reenabled in next release of Concurrency
-	 */
-	@Disabled
-	public void managedExecutorServiceAPISecurityTest() {
-		runTest(baseURL, testname);
-	}
+     * fix: https://github.com/jakartaee/concurrency/pull/218 Can be reenabled in
+     * next release of Concurrency
+     */
+    @Disabled
+    public void managedExecutorServiceAPISecurityTest() {
+        runTest(baseURL, testname);
+    }
 }

@@ -25,77 +25,77 @@ import jakarta.enterprise.concurrent.Trigger;
 
 public class CommonTriggers {
 
-	/**
-	 * A trigger that only run once.
-	 */
-	public static class OnceTrigger implements Trigger {
-		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
-			if (lastExecutionInfo != null) {
-				return null;
-			}
-			return new Date();
-		}
+    /**
+     * A trigger that only run once.
+     */
+    public static class OnceTrigger implements Trigger {
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
+            if (lastExecutionInfo != null) {
+                return null;
+            }
+            return new Date();
+        }
 
-		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
-			return false;
-		}
-	}
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
+            return false;
+        }
+    }
 
-	/**
-	 * A trigger that will skip.
-	 */
-	public static class OnceTriggerDelaySkip implements Trigger {
-	    
-	    private Duration delay;
+    /**
+     * A trigger that will skip.
+     */
+    public static class OnceTriggerDelaySkip implements Trigger {
 
-		public OnceTriggerDelaySkip(Duration delay) {
-			this.delay = delay;
-		}
+        private Duration delay;
 
-		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
-			if (lastExecutionInfo != null) {
-				return null;
-			}
-			return new Date(new Date().getTime() + delay.toMillis());
-		}
+        public OnceTriggerDelaySkip(final Duration delay) {
+            this.delay = delay;
+        }
 
-		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
-			return true;
-		}
-	}
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
+            if (lastExecutionInfo != null) {
+                return null;
+            }
+            return new Date(new Date().getTime() + delay.toMillis());
+        }
 
-	/**
-	 * A fixed-rate trigger
-	 */
-	public static class TriggerFixedRate implements Trigger {
-		private Date startTime;
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
+            return true;
+        }
+    }
 
-		private long delta;
+    /**
+     * A fixed-rate trigger
+     */
+    public static class TriggerFixedRate implements Trigger {
+        private Date startTime;
 
-		private int executionCount = 0;
+        private long delta;
 
-		private static final int executionCountLimit = TestConstants.PollsPerTimeout * 2;
+        private int executionCount = 0;
 
-		public TriggerFixedRate(Date startTime, long delta) {
-			this.startTime = startTime;
-			this.delta = delta;
-		}
+        private static final int executionCountLimit = TestConstants.pollsPerTimeout * 2;
 
-		public Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
-			executionCount++;
-			if (executionCount > executionCountLimit) {
-				return null;
-			}
+        public TriggerFixedRate(final Date startTime, final long delta) {
+            this.startTime = startTime;
+            this.delta = delta;
+        }
 
-			if (lastExecutionInfo == null) {
-				return new Date(startTime.getTime() + delta);
-			}
-			return new Date(lastExecutionInfo.getScheduledStart().getTime() + delta);
-		}
+        public Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
+            executionCount++;
+            if (executionCount > executionCountLimit) {
+                return null;
+            }
 
-		public boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
-			return false;
-		}
-	}
+            if (lastExecutionInfo == null) {
+                return new Date(startTime.getTime() + delta);
+            }
+            return new Date(lastExecutionInfo.getScheduledStart().getTime() + delta);
+        }
+
+        public boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
+            return false;
+        }
+    }
 
 }

@@ -38,106 +38,108 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionWebBean;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;;
 
-@Web @RunAsClient //Requires client testing due to annotation configuration
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
+@Web
+@RunAsClient // Requires client testing due to annotation configuration
+@Common({ PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS })
 public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
-	
-	@ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
-	URL baseURL;
-	
-	@ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
-	URL ejbContextURL;
-	
-	@Deployment(name="ManagedScheduledExecutorDefinitionTests")
-	public static WebArchive createDeployment() {
-		
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
-				.addPackages(false, ManagedScheduledExecutorDefinitionWebTests.class.getPackage())
-				.addClasses(
-						ContextServiceDefinitionServlet.class,
-						ContextServiceDefinitionInterface.class,
-						ContextServiceDefinitionWebBean.class)
-				.deleteClasses(ManagedScheduledExecutorDefinitionBean.class)
-				.addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(), StringContextProvider.class.getName());
-		
-		return war;
-	}
-	
+
+    @ArquillianResource(ManagedScheduledExecutorDefinitionServlet.class)
+    private URL baseURL;
+
+    @ArquillianResource(ManagedScheduledExecutorDefinitionOnEJBServlet.class)
+    private URL ejbContextURL;
+
+    @Deployment(name = "ManagedScheduledExecutorDefinitionTests")
+    public static WebArchive createDeployment() {
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "ManagedScheduledExecutorDefinitionTests_web.war")
+                .addPackages(false, ManagedScheduledExecutorDefinitionWebTests.class.getPackage())
+                .addClasses(ContextServiceDefinitionServlet.class, ContextServiceDefinitionInterface.class,
+                        ContextServiceDefinitionWebBean.class)
+                .deleteClasses(ManagedScheduledExecutorDefinitionBean.class)
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
+                        StringContextProvider.class.getName());
+
+        return war;
+    }
+
     @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "ManagedScheduledExecutorDefinitionServlet";
-	}
-	
+    private String testname;
 
-	@Test
+    @Override
+    protected String getServletPath() {
+        return "ManagedScheduledExecutorDefinitionServlet";
+    }
+
+    @Test
     public void testAsyncCompletionStageMSE() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodRunsWithContext() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testAsynchronousMethodWithMaxAsync3() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
-    
-	// Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
-	@Disabled
+
+    // Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
+    @Disabled
     public void testCompletedFutureMSE() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testIncompleteFutureMSE() {
-		runTest(baseURL, testname);
-    }
-	
-	@Test
-    public void testIncompleteFutureMSE_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
+    public void testIncompleteFutureMSEEJB() {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
+    }
+
+    @Test
     public void testManagedScheduledExecutorDefinitionAllAttributes() {
-		runTest(baseURL, testname);
-    }
-	
-	@Test
-    public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
+    public void testManagedScheduledExecutorDefinitionAllAttributesEJB() {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
+    }
+
+    @Test
     public void testManagedScheduledExecutorDefinitionDefaults() {
-		runTest(baseURL, testname);
-    }
-	
-	@Test
-    public void testManagedScheduledExecutorDefinitionDefaults_EJB() {
-		URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL).withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
-		runTest(requestURL);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
+    public void testManagedScheduledExecutorDefinitionDefaultsEJB() {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
+                .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
+        runTest(requestURL);
+    }
+
+    @Test
     public void testNotAnAsynchronousMethod() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testScheduleWithCronTrigger() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 
-	@Test
+    @Test
     public void testScheduleWithZonedTrigger() {
-		runTest(baseURL, testname);
+        runTest(baseURL, testname);
     }
 }

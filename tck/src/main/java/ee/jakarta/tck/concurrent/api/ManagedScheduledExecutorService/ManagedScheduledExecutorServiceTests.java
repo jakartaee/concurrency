@@ -58,17 +58,17 @@ public class ManagedScheduledExecutorServiceTests {
 
     private static final String TEST_CLASSLOADER_CLASS_NAME = ManagedScheduledExecutorServiceTests.class
             .getCanonicalName();
-    
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     /*
      * @testName: normalScheduleProcess1Test
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:30;CONCURRENCY:SPEC:42;
      * CONCURRENCY:SPEC:42.2;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.1;
      * CONCURRENCY:SPEC:49;CONCURRENCY:SPEC:51; CONCURRENCY:SPEC:54;
-     * 
+     *
      * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
      * determines when the task should run and how often.
      */
@@ -83,15 +83,15 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: nullCommandScheduleProcessTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:32
-     * 
+     *
      * @test_Strategy: if command is null.
      */
     @Test
     public void nullCommandScheduleProcessTest() {
         Runnable command = null;
-        
+
         assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(command, new CommonTriggers.OnceTrigger());
         });
@@ -99,38 +99,38 @@ public class ManagedScheduledExecutorServiceTests {
 
     /*
      * @testName: normalScheduleProcess2Test
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:JAVADOC:33;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.2;
      * CONCURRENCY:SPEC:54;CONCURRENCY:SPEC:52;
      *
-     * 
      * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
      * determines when the task should run and how often.
      */
     @Test
     public void normalScheduleProcess2Test() throws Exception {
-        ScheduledFuture<?> result = scheduledExecutor.schedule( (Callable<?>)
-                        new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
+        ScheduledFuture<?> result = scheduledExecutor
+                .schedule(
+                        (Callable<?>) new CallableTask<String>(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE,
                                 TEST_CLASSLOADER_CLASS_NAME, CALLABLETESTTASK1_RUN_RESULT),
                         new CommonTriggers.OnceTrigger());
         Wait.waitForTaskComplete(result);
-        
+
         assertEquals(CALLABLETESTTASK1_RUN_RESULT, result.get());
 
     }
 
     /*
      * @testName: nullCallableScheduleProcessTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:35
-     * 
+     *
      * @test_Strategy: if callable is null.
      */
     @Test
     public void nullCallableScheduleProcessTest() {
         Callable<?> callable = null;
-        
+
         assertThrows(NullPointerException.class, () -> {
             scheduledExecutor.schedule(callable, new CommonTriggers.OnceTrigger());
         });

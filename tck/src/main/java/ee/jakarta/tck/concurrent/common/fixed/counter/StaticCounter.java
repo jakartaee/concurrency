@@ -23,9 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
-public class StaticCounter {
+public final class StaticCounter {
 
     private static AtomicInteger count = new AtomicInteger(0);
+    
+    private StaticCounter() {
+        //utility class
+    }
 
     public static int getCount() {
         return count.get();
@@ -38,16 +42,20 @@ public class StaticCounter {
     public static void reset() {
         count.set(0);
     }
-    
-    public static void waitTill(int expected) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for(; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+
+    public static void waitTill(final int expected) {
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
-    
-    public static void waitTillSurpassed(int expected) {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for(; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.PollInterval));
+
+    public static void waitTillSurpassed(final int expected) {
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; expected <= StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 

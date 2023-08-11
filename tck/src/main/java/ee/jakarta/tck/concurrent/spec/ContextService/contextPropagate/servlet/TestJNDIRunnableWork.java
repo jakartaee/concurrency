@@ -22,12 +22,12 @@ import javax.naming.NamingException;
 @SuppressWarnings("serial")
 public class TestJNDIRunnableWork extends BaseTestRunnableWork {
 
-	@Override
-	protected String work() {
-		try {
+    @Override
+    protected String work() {
+        try {
             return InitialContext.doLookup("java:comp/env/myMessage");
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
-	}
+    }
 }

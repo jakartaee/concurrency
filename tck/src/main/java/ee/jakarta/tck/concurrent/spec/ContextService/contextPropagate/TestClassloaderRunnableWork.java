@@ -21,14 +21,14 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 @SuppressWarnings("serial")
 public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
 
-	@Override
-	protected String work() {
-		try {
-			Thread.currentThread().getContextClassLoader().loadClass(
-					"ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ClassloaderServlet");
-		} catch (ClassNotFoundException e) {
-			return "can not load class in web module from ejb module.";
-		}
-		return TestConstants.ComplexReturnValue;
-	}
+    @Override
+    protected String work() {
+        try {
+            Thread.currentThread().getContextClassLoader()
+                    .loadClass("ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ClassloaderServlet");
+        } catch (ClassNotFoundException e) {
+            return "can not load class in web module from ejb module.";
+        }
+        return TestConstants.complexReturnValue;
+    }
 }

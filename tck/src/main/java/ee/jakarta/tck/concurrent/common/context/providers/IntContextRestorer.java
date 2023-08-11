@@ -19,7 +19,8 @@ import ee.jakarta.tck.concurrent.common.context.IntContext;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 
 /**
- * Thread context restorer for a mock context type that consists of an int value.
+ * Thread context restorer for a mock context type that consists of an int
+ * value.
  */
 public class IntContextRestorer implements ThreadContextRestorer {
     private final int contextToRestore;
@@ -29,7 +30,7 @@ public class IntContextRestorer implements ThreadContextRestorer {
         contextToRestore = s;
     }
 
-    public void endContext() throws IllegalStateException  {
+    public void endContext() throws IllegalStateException {
         if (restored)
             throw new IllegalStateException("already restored");
         IntContext.set(contextToRestore);

@@ -25,13 +25,13 @@ import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 
 public class SecurityTestTask implements Callable<String> {
 
-	public String call() {
-		try {
-			EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
-			SecurityTestInterface str = InitialContext.doLookup(nameProvider.getEJBJNDIName());
-			return str.managerMethod1();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public String call() {
+        try {
+            EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
+            SecurityTestInterface str = InitialContext.doLookup(nameProvider.getEJBJNDIName());
+            return str.managerMethod1();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

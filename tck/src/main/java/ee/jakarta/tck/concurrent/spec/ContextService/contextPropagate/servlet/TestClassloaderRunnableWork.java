@@ -21,14 +21,14 @@ import ee.jakarta.tck.concurrent.framework.TestConstants;
 @SuppressWarnings("serial")
 public class TestClassloaderRunnableWork extends BaseTestRunnableWork {
 
-	@Override
-	protected String work() {
-		try {
-			Thread.currentThread().getContextClassLoader().loadClass(
-					"ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet.ProxyCreatorServlet");
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
-		}
-		return TestConstants.ComplexReturnValue;
-	}
+    @Override
+    protected String work() {
+        try {
+            Thread.currentThread().getContextClassLoader().loadClass(
+                    "ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.servlet.ProxyCreatorServlet");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return TestConstants.complexReturnValue;
+    }
 }

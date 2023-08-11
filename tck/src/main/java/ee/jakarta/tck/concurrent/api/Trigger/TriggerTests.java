@@ -53,8 +53,8 @@ public class TriggerTests {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, TriggerTests.class.getPackage());
     }
 
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
     public void reset() {
@@ -63,9 +63,9 @@ public class TriggerTests {
 
     /*
      * @testName: triggerGetNextRunTimeTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:46
-     * 
+     *
      * @test_Strategy: Retrieve the next time that the task should run after. fix:
      * https://github.com/jakartaee/concurrency/pull/222 Accepted TCK challenge:
      * https://github.com/jakartaee/concurrency/issues/228 Can be reenabled in next
@@ -74,23 +74,24 @@ public class TriggerTests {
     @Disabled
     public void triggerGetNextRunTimeTest() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
-                new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.PollInterval.toMillis()));
-        
+                new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.pollInterval.toMillis()));
+
         assertFalse(StaticCounter.getCount() == 0, "The first trigger is too fast.");
 
         try {
-            Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
-        } finally {      
+            Wait.sleep(TestConstants.waitTimeout);
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.pollsPerTimeout - 2,
+                    TestConstants.pollsPerTimeout + 2);
+        } finally {
             Wait.waitTillFutureIsDone(result);
         }
     }
 
     /*
      * @testName: triggerSkipRunTest
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:47
-     * 
+     *
      * @test_Strategy: Return true if this run instance should be skipped. This is
      * useful if the task shouldn't run because it is late or if the task is paused
      * or suspended. Once this task is skipped, the state of it's Future's result
@@ -99,10 +100,9 @@ public class TriggerTests {
      */
     @Test
     public void triggerSkipRunTest() {
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
-                new CommonTasks.SimpleCallable(),
-                new CommonTriggers.OnceTriggerDelaySkip(TestConstants.PollInterval));
-        
+        ScheduledFuture<?> sf = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
+                new CommonTriggers.OnceTriggerDelaySkip(TestConstants.pollInterval));
+
         try {
             Wait.waitTillFutureThrowsException(sf, SkippedException.class);
         } finally {

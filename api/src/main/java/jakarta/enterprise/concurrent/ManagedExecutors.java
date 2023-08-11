@@ -33,6 +33,9 @@ public final class ManagedExecutors {
     private ManagedExecutors() {
     };
 
+    /**
+     * Error message for null tasks.
+     */
     static final String NULL_TASK_ERROR_MSG = "Task cannot be null";
 
     /**

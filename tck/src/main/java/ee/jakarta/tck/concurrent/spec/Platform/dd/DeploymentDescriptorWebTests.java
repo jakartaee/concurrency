@@ -35,38 +35,37 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 /**
- * Covers context-service, managed-executor, managed-scheduled-executor,
- * and managed-thread-factory defined in a deployment descriptor.
+ * Covers context-service, managed-executor, managed-scheduled-executor, and
+ * managed-thread-factory defined in a deployment descriptor.
  */
-@Web @RunAsClient //Requires client testing due to annotation configuration
-@Common({PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS})
-public class DeploymentDescriptorWebTests extends TestClient{
-    
+@Web
+@RunAsClient // Requires client testing due to annotation configuration
+@Common({ PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS })
+public class DeploymentDescriptorWebTests extends TestClient {
+
     @ArquillianResource(DeploymentDescriptorServlet.class)
-    URL baseURL;
-    
-    @Deployment(name="DeploymentDescriptorTests")
+    private URL baseURL;
+
+    @Deployment(name = "DeploymentDescriptorTests")
     public static WebArchive createDeployment() {
-        
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
                 .addPackages(false, DeploymentDescriptorWebTests.class.getPackage())
-                .addAsServiceProvider(ThreadContextProvider.class.getName(),
-                        IntContextProvider.class.getName(),
+                .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
                         StringContextProvider.class.getName())
                 .addAsWebInfResource(DeploymentDescriptorWebTests.class.getPackage(), "web.xml", "web.xml");
 
-
         return war;
     }
-    
+
     @TestName
-    String testname;
-    
+    private String testname;
+
     @Override
     protected String getServletPath() {
         return "DeploymentDescriptorServlet";
     }
-    
+
     @Test
     public void testDeploymentDescriptorDefinesContextService() {
         runTest(baseURL, testname);

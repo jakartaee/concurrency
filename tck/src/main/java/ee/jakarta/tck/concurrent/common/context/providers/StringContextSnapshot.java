@@ -20,7 +20,8 @@ import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 
 /**
- * Thread context snapshot for a mock context type that consists of a String value.
+ * Thread context snapshot for a mock context type that consists of a String
+ * value.
  */
 public class StringContextSnapshot implements ThreadContextSnapshot {
     private final String contextSnapshot;

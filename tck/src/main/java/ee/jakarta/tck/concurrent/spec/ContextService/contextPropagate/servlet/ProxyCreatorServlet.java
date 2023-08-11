@@ -36,55 +36,55 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet("/ProxyCreatorServlet")
 public class ProxyCreatorServlet extends TestServlet {
-	
-	private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
-	
-    @Resource(lookup = TestConstants.DefaultContextService)
-    public ContextService context;
 
-	public void testJNDIContextInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		Object proxy = true;
-		String result = null;
-		String proxyURLString = req.getParameter("proxyURL");
-		
-		log.info("Proxy URL from parameter", proxyURLString);
+    private static final TestLogger log = TestLogger.get(ProxyCreatorServlet.class);
 
-		URL url = new URL(proxyURLString);
-		
-		proxy = context.createContextualProxy(new TestJNDIRunnableWork(),
-				Runnable.class, TestWorkInterface.class, Serializable.class);
+    @Resource(lookup = TestConstants.defaultContextService)
+    private ContextService context;
 
-		Properties p = new Properties();
-		p.setProperty("proxy", proxyToString(proxy));
-		
-		result = getResponse(sendPostData(url, p));
-		resp.getWriter().println(result);
-	}
-	
-	public void testClassloaderInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		Object proxy = true;
-		String result = null;
-		String proxyURLString = req.getParameter("proxyURL");
-		
-		log.info("Proxy URL from parameter", proxyURLString);
+    public void testJNDIContextInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
+        Object proxy = true;
+        String result = null;
+        String proxyURLString = req.getParameter("proxyURL");
 
-		URL url = new URL(proxyURLString);
+        log.info("Proxy URL from parameter", proxyURLString);
 
-		proxy = context.createContextualProxy(new TestClassloaderRunnableWork(),
-				Runnable.class, TestWorkInterface.class, Serializable.class);
+        URL url = new URL(proxyURLString);
 
-		Properties p = new Properties();
-		p.setProperty("proxy", proxyToString(proxy));
-		
-		result = getResponse(sendPostData(url, p));
-		resp.getWriter().println(result);
-	}
+        proxy = context.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
+                Serializable.class);
 
-	private String proxyToString(Object proxy) throws IOException {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(bout);
-		out.writeObject(proxy);
-		out.close();
-		return Base64.getEncoder().encodeToString(bout.toByteArray());
-	}
+        Properties p = new Properties();
+        p.setProperty("proxy", proxyToString(proxy));
+
+        result = getResponse(sendPostData(url, p));
+        resp.getWriter().println(result);
+    }
+
+    public void testClassloaderInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
+        Object proxy = true;
+        String result = null;
+        String proxyURLString = req.getParameter("proxyURL");
+
+        log.info("Proxy URL from parameter", proxyURLString);
+
+        URL url = new URL(proxyURLString);
+
+        proxy = context.createContextualProxy(new TestClassloaderRunnableWork(), Runnable.class,
+                TestWorkInterface.class, Serializable.class);
+
+        Properties p = new Properties();
+        p.setProperty("proxy", proxyToString(proxy));
+
+        result = getResponse(sendPostData(url, p));
+        resp.getWriter().println(result);
+    }
+
+    private String proxyToString(final Object proxy) throws IOException {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(bout);
+        out.writeObject(proxy);
+        out.close();
+        return Base64.getEncoder().encodeToString(bout.toByteArray());
+    }
 }

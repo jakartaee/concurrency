@@ -24,30 +24,30 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 
 public class CounterRunnableTask implements Runnable {
 
-	private String countSingletionJndi = "";
-	private Duration sleepTime = Duration.ZERO;
+    private String countSingletionJndi = "";
+    private Duration sleepTime = Duration.ZERO;
 
-	public CounterRunnableTask(String countSingletionJndi) {
-		this.countSingletionJndi = countSingletionJndi;
-	}
+    public CounterRunnableTask(final String countSingletionJndi) {
+        this.countSingletionJndi = countSingletionJndi;
+    }
 
-	public CounterRunnableTask(String countSingletionJndi, Duration sleepTime) {
-		this.countSingletionJndi = countSingletionJndi;
-		this.sleepTime = sleepTime;
-	}
+    public CounterRunnableTask(final String countSingletionJndi, final Duration sleepTime) {
+        this.countSingletionJndi = countSingletionJndi;
+        this.sleepTime = sleepTime;
+    }
 
-	public void run() {
-		try {
-			if (! sleepTime.isZero()) {
-				Wait.sleep(sleepTime);
-			}
+    public void run() {
+        try {
+            if (!sleepTime.isZero()) {
+                Wait.sleep(sleepTime);
+            }
 
-			CounterInterface counter = InitialContext.doLookup(countSingletionJndi);
-			counter.inc();
+            CounterInterface counter = InitialContext.doLookup(countSingletionJndi);
+            counter.inc();
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-	}
+    }
 }

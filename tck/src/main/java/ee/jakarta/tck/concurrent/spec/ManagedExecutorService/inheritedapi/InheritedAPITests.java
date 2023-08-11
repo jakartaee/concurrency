@@ -53,13 +53,13 @@ public class InheritedAPITests {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class);
     }
-    
-    @Resource(lookup = TestConstants.DefaultManagedExecutorService)
-    public ManagedExecutorService executor;
+
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
+    private ManagedExecutorService executor;
 
     /*
      * @testName: testBasicManagedExecutorService
-     * 
+     *
      * @assertion_ids:
      * CONCURRENCY:SPEC:10.2;CONCURRENCY:SPEC:13;CONCURRENCY:SPEC:13.1;CONCURRENCY
      * :SPEC:13.2;
@@ -69,7 +69,7 @@ public class InheritedAPITests {
      * :SPEC:8;
      * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:10;CONCURRENCY:
      * SPEC:10.2; CONCURRENCY:SPEC:12;CONCURRENCY:SPEC:19;CONCURRENCY:SPEC:27;
-     * 
+     *
      * @test_Strategy: test basic function for ManagedExecutorService include
      * execute, submit, invokeAny, invokeAll, atMostOnce
      */
@@ -78,7 +78,7 @@ public class InheritedAPITests {
     public void testExecute() {
         try {
             executor.execute(new CounterRunnableTask());
-            StaticCounter.waitTill(1); 
+            StaticCounter.waitTill(1);
         } finally {
             StaticCounter.reset();
         }
@@ -88,15 +88,15 @@ public class InheritedAPITests {
     public void testSubmit() throws Exception {
         Future<?> result = executor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
         result = executor.submit(new CommonTasks.SimpleRunnable());
         Wait.waitTillFutureIsDone(result);
         result.get();
 
-        result = executor.submit(new CommonTasks.SimpleRunnable(), CommonTasks.SIMPLE_RETURN_STRING);
+        result = executor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
     @Test
@@ -109,17 +109,17 @@ public class InheritedAPITests {
             Integer result = executor.invokeAny(taskList);
             Assertions.assertBetween(result, 1, 3);
 
-            result = executor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            result = executor.invokeAny(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
             Assertions.assertBetween(result, 1, 3);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         assertThrows(TimeoutException.class, () -> {
             List<Callable<String>> taskList = new ArrayList<>();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            executor.invokeAny(taskList, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            executor.invokeAny(taskList, TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
         });
     }
 
@@ -138,7 +138,7 @@ public class InheritedAPITests {
             assertEquals(resultList.get(1).get(), 2);
             assertEquals(resultList.get(2).get(), 3);
 
-            resultList = executor.invokeAll(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            resultList = executor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureIsDone(each);
             }
@@ -151,9 +151,10 @@ public class InheritedAPITests {
 
         try {
             List<Callable<String>> taskList = new ArrayList<>();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.PollInterval.getSeconds(),TimeUnit.SECONDS);
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            List<Future<String>> resultList = executor.invokeAll(taskList, TestConstants.pollInterval.getSeconds(),
+                    TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureThrowsException(each, CancellationException.class);
             }

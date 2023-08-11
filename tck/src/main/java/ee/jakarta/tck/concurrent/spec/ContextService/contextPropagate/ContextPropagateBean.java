@@ -27,32 +27,32 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 @Stateless
 public class ContextPropagateBean implements ContextPropagateInterface {
 
-    @Resource(lookup = TestConstants.DefaultManagedThreadFactory)
-    public ManagedThreadFactory threadFactory;
-	
-    @Resource(lookup = TestConstants.DefaultContextService)
-    public ContextService context;
+    @Resource(lookup = TestConstants.defaultManagedThreadFactory)
+    private ManagedThreadFactory threadFactory;
 
-	@Override
-	public TestWorkInterface createWorker(String classname) {
-		try {
-			return (TestWorkInterface) context.createContextualProxy(
-					Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
-		} catch (Exception en) {
-			throw new RuntimeException(en);
-		}
-	}
+    @Resource(lookup = TestConstants.defaultContextService)
+    private ContextService context;
 
-	@Override
-	public String executeWorker(TestWorkInterface worker) {
-		Thread workThread = threadFactory.newThread(worker);
-		workThread.start();
-		try {
-			workThread.join();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+    @Override
+    public TestWorkInterface createWorker(final String classname) {
+        try {
+            return (TestWorkInterface) context.createContextualProxy(
+                    Class.forName(classname).getConstructor().newInstance(), Runnable.class, TestWorkInterface.class);
+        } catch (Exception en) {
+            throw new RuntimeException(en);
+        }
+    }
 
-		return worker.getResult();
-	}
+    @Override
+    public String executeWorker(final TestWorkInterface worker) {
+        Thread workThread = threadFactory.newThread(worker);
+        workThread.start();
+        try {
+            workThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return worker.getResult();
+    }
 }

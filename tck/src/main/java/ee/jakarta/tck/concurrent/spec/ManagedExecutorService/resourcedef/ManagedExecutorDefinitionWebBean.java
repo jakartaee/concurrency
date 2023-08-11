@@ -26,17 +26,14 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
  * ContextServiceDefinitions are defined under
  * {@link ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean}
  */
-@ManagedExecutorDefinition(name = "java:app/concurrent/EJBExecutorA",
-                           context = "java:app/concurrent/EJBContextA",
-                           maxAsync = 2,
-                           hungTaskThreshold = 300000)
+@ManagedExecutorDefinition(name = "java:app/concurrent/EJBExecutorA", context = "java:app/concurrent/EJBContextA", maxAsync = 2, hungTaskThreshold = 300000)
 @ManagedExecutorDefinition(name = "java:comp/concurrent/EJBExecutorC")
 @Local(ManagedExecutorDefinitionInterface.class)
 @Stateless
 public class ManagedExecutorDefinitionWebBean implements ManagedExecutorDefinitionInterface {
-	
-	@Override
-	public Object doLookup(String name) throws NamingException {
-		return InitialContext.doLookup(name);
-	}
+
+    @Override
+    public Object doLookup(final String name) throws NamingException {
+        return InitialContext.doLookup(name);
+    }
 }

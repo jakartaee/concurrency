@@ -28,56 +28,56 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 @Stateless
 public class TestEjb implements TestEjbInterface {
 
-	private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-	
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
 
-	public void testAwaitTermination() {
-		try {
-			scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			fail(e.getMessage());
-		} catch (IllegalStateException e) {
-			return;
-		}
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
+    private ManagedScheduledExecutorService scheduledExecutor;
 
-	public void testIsShutdown() {
-		try {
-			scheduledExecutor.isShutdown();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testAwaitTermination() {
+        try {
+            scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            fail(e.getMessage());
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	public void testIsTerminated() {
-		try {
-			scheduledExecutor.isTerminated();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testIsShutdown() {
+        try {
+            scheduledExecutor.isShutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	public void testShutdown() {
-		try {
-			scheduledExecutor.shutdown();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testIsTerminated() {
+        try {
+            scheduledExecutor.isTerminated();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
-	public void testShutdownNow() {
-		try {
-			scheduledExecutor.shutdownNow();
-		} catch (IllegalStateException e) {
-			return;
-		}
-		fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
-	}
+    public void testShutdown() {
+        try {
+            scheduledExecutor.shutdown();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
+
+    public void testShutdownNow() {
+        try {
+            scheduledExecutor.shutdownNow();
+        } catch (IllegalStateException e) {
+            return;
+        }
+        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+    }
 
 }

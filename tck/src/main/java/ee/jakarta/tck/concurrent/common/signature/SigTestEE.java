@@ -32,360 +32,355 @@ import java.util.Properties;
  */
 public abstract class SigTestEE {
 
-	String[] sVehicles;
+    private SignatureTestDriver driver;
 
-	protected SignatureTestDriver driver;
+    /**
+     * <p>
+     * Returns a {@link SignatureTestDriver} appropriate for the particular TCK
+     * (using API check or the Signature Test Framework).
+     * </p>
+     *
+     * <p>
+     * The default implementation of this method will return a
+     * {@link SignatureTestDriver} that will use API Check. TCK developers can
+     * override this to return the desired {@link SignatureTestDriver} for their
+     * TCK.
+     */
+    protected SignatureTestDriver getSigTestDriver() {
 
-	/**
-	 * <p>
-	 * Returns a {@link SignatureTestDriver} appropriate for the particular TCK
-	 * (using API check or the Signature Test Framework).
-	 * </p>
-	 *
-	 * <p>
-	 * The default implementation of this method will return a
-	 * {@link SignatureTestDriver} that will use API Check. TCK developers can
-	 * override this to return the desired {@link SignatureTestDriver} for their
-	 * TCK.
-	 */
-	protected SignatureTestDriver getSigTestDriver() {
+        if (driver == null) {
+            driver = SignatureTestDriverFactory.getInstance(SignatureTestDriverFactory.SIG_TEST);
+        }
 
-		if (driver == null) {
-			driver = SignatureTestDriverFactory.getInstance(SignatureTestDriverFactory.SIG_TEST);
-		}
+        return driver;
 
-		return driver;
+    } // END getSigTestDriver
 
-	} // END getSigTestDriver
+    /**
+     * Returns the location of the package list file. This file denotes the valid
+     * sub-packages of any package being verified in the signature tests.
+     * <p/>
+     * Sub-classes are free to override this method if they use a different path or
+     * filename for their package list file. Most users should be able to use this
+     * default implementation.
+     *
+     * @return String The path and name of the package list file.
+     */
+    protected String getPackageFile() {
+        return getSigTestDriver().getPackageFileImpl(SigTestData.getBinDir());
+    }
 
-	/**
-	 * Returns the location of the package list file. This file denotes the valid
-	 * sub-packages of any package being verified in the signature tests.
-	 * <p/>
-	 * Sub-classes are free to override this method if they use a different path or
-	 * filename for their package list file. Most users should be able to use this
-	 * default implementation.
-	 *
-	 * @return String The path and name of the package list file.
-	 */
-	protected String getPackageFile() {
-		return getSigTestDriver().getPackageFileImpl(testInfo.getBinDir());
-	}
+    /**
+     * Returns the path and name of the signature map file that this TCK uses when
+     * conducting signature tests. The signature map file tells the signature test
+     * framework which API versions of tested packages to use. To keep this code
+     * platform independent, be sure to use the File.separator string (or the
+     * File.separatorChar) to denote path separators.
+     * <p/>
+     * Sub-classes are free to override this method if they use a different path or
+     * filename for their signature map file. Most users should be able to use this
+     * default implementation.
+     *
+     * @return String The path and name of the signature map file.
+     */
+    protected String getMapFile() {
+        return getSigTestDriver().getMapFileImpl(SigTestData.getBinDir());
+    }
 
-	/**
-	 * Returns the path and name of the signature map file that this TCK uses when
-	 * conducting signature tests. The signature map file tells the signature test
-	 * framework which API versions of tested packages to use. To keep this code
-	 * platform independent, be sure to use the File.separator string (or the
-	 * File.separatorChar) to denote path separators.
-	 * <p/>
-	 * Sub-classes are free to override this method if they use a different path or
-	 * filename for their signature map file. Most users should be able to use this
-	 * default implementation.
-	 *
-	 * @return String The path and name of the signature map file.
-	 */
-	protected String getMapFile() {
-		return getSigTestDriver().getMapFileImpl(testInfo.getBinDir());
-	}
+    /**
+     * Returns the directory that contains the signature files.
+     * <p/>
+     * Sub-classes are free to override this method if they use a different
+     * signature repository directory. Most users should be able to use this default
+     * implementation.
+     *
+     * @return String The signature repository directory.
+     */
+    protected String getRepositoryDir() {
+        return getSigTestDriver().getRepositoryDirImpl(SigTestData.getTSHome());
+    }
 
-	/**
-	 * Returns the directory that contains the signature files.
-	 * <p/>
-	 * Sub-classes are free to override this method if they use a different
-	 * signature repository directory. Most users should be able to use this default
-	 * implementation.
-	 *
-	 * @return String The signature repository directory.
-	 */
-	protected String getRepositoryDir() {
-		return getSigTestDriver().getRepositoryDirImpl(testInfo.getTSHome());
-	}
+    /**
+     * Returns the list of Optional Packages which are not accounted for. By
+     * 'unlisted optional' we mean the packages which are Optional to the technology
+     * under test that the user did NOT specifically list for testing. For example,
+     * with Java EE 7 implementation, a user could additionally opt to test a JSR-88
+     * technology along with the Java EE technology. But if the user chooses NOT to
+     * list this optional technology for testing (via ts.jte javaee.level prop) then
+     * this method will return the packages for JSR-88 technology with this method
+     * call.
+     * <p/>
+     * This is useful for checking for a scenarios when a user may have forgotten to
+     * identify a whole or partial technology implementation and in such cases, Java
+     * EE platform still requires testing it.
+     * <p/>
+     * Any partial or complete impl of an unlistedOptionalPackage sends up a red
+     * flag indicating that the user must also pass tests for this optional
+     * technology area.
+     * <p/>
+     * Sub-classes are free to override this method if they use a different
+     * signature repository directory. Most users should be able to use this default
+     * implementation - which means that there was NO optional technology packages
+     * that need to be tested.
+     *
+     * @return ArrayList<String>
+     */
+    protected ArrayList<String> getUnlistedOptionalPackages() {
+        return null;
+    }
 
-	/**
-	 * Returns the list of Optional Packages which are not accounted for. By
-	 * 'unlisted optional' we mean the packages which are Optional to the technology
-	 * under test that the user did NOT specifically list for testing. For example,
-	 * with Java EE 7 implementation, a user could additionally opt to test a JSR-88
-	 * technology along with the Java EE technology. But if the user chooses NOT to
-	 * list this optional technology for testing (via ts.jte javaee.level prop) then
-	 * this method will return the packages for JSR-88 technology with this method
-	 * call.
-	 * <p/>
-	 * This is useful for checking for a scenarios when a user may have forgotten to
-	 * identify a whole or partial technology implementation and in such cases, Java
-	 * EE platform still requires testing it.
-	 * <p/>
-	 * Any partial or complete impl of an unlistedOptionalPackage sends up a red
-	 * flag indicating that the user must also pass tests for this optional
-	 * technology area.
-	 * <p/>
-	 * Sub-classes are free to override this method if they use a different
-	 * signature repository directory. Most users should be able to use this default
-	 * implementation - which means that there was NO optional technology packages
-	 * that need to be tested.
-	 *
-	 * @return ArrayList<String>
-	 */
-	protected ArrayList<String> getUnlistedOptionalPackages() {
-		return null;
-	}
+    /**
+     * Returns the list of packages that must be tested by the signature test
+     * framework. TCK developers must implement this method in their signature test
+     * sub-class.
+     *
+     * @param vehicleName The name of the vehicle the signature tests should be
+     *                    conducted in. Valid values for this property are ejb,
+     *                    servlet, ejb and appclient.
+     *
+     * @return String[] A list of packages that the developer wishes to test using
+     *         the signature test framework. If the developer does not wish to test
+     *         any package signatures in the specified vehicle this method should
+     *         return null.
+     *         <p>
+     *         Note, The proper way to insure that this method is not called with a
+     *         vehicle name that has no package signatures to verify is to modify
+     *         the vehicle.properties in the $TS_HOME/src directory. This file
+     *         provides a mapping that maps test directories to a list of vehicles
+     *         where the tests in those directory should be run. As an extra
+     *         precaution users are encouraged to return null from this method if
+     *         the specified vehicle has no package signatures to be verified within
+     *         it.
+     */
+    protected abstract String[] getPackages(final String vehicleName);
 
-	/**
-	 * Returns the list of packages that must be tested by the signature test
-	 * framework. TCK developers must implement this method in their signature test
-	 * sub-class.
-	 *
-	 * @param vehicleName The name of the vehicle the signature tests should be
-	 *                    conducted in. Valid values for this property are ejb,
-	 *                    servlet, ejb and appclient.
-	 *
-	 * @return String[] A list of packages that the developer wishes to test using
-	 *         the signature test framework. If the developer does not wish to test
-	 *         any package signatures in the specified vehicle this method should
-	 *         return null.
-	 *         <p>
-	 *         Note, The proper way to insure that this method is not called with a
-	 *         vehicle name that has no package signatures to verify is to modify
-	 *         the vehicle.properties in the $TS_HOME/src directory. This file
-	 *         provides a mapping that maps test directories to a list of vehicles
-	 *         where the tests in those directory should be run. As an extra
-	 *         precaution users are encouraged to return null from this method if
-	 *         the specified vehicle has no package signatures to be verified within
-	 *         it.
-	 */
-	protected abstract String[] getPackages(String vehicleName);
+    /**
+     * <p>
+     * Returns an array of individual classes that must be tested by the signature
+     * test framework within the specified vehicle. TCK developers may override this
+     * method when this functionality is needed. Most will only need package level
+     * granularity.
+     * </p>
+     *
+     * <p>
+     * If the developer doesn't wish to test certain classes within a particular
+     * vehicle, the implementation of this method must return a zero-length array.
+     * </p>
+     *
+     * @param vehicleName The name of the vehicle the signature tests should be
+     *                    conducted in. Valid values for this property are ejb,
+     *                    servlet, ejb and appclient.
+     *
+     * @return an Array of Strings containing the individual classes the framework
+     *         should test based on the specifed vehicle. The default implementation
+     *         of this method returns a zero-length array no matter the vehicle
+     *         specified.
+     */
+    protected String[] getClasses(final String vehicleName) {
 
-	/**
-	 * <p>
-	 * Returns an array of individual classes that must be tested by the signature
-	 * test framework within the specified vehicle. TCK developers may override this
-	 * method when this functionality is needed. Most will only need package level
-	 * granularity.
-	 * </p>
-	 *
-	 * <p>
-	 * If the developer doesn't wish to test certain classes within a particular
-	 * vehicle, the implementation of this method must return a zero-length array.
-	 * </p>
-	 *
-	 * @param vehicleName The name of the vehicle the signature tests should be
-	 *                    conducted in. Valid values for this property are ejb,
-	 *                    servlet, ejb and appclient.
-	 *
-	 * @return an Array of Strings containing the individual classes the framework
-	 *         should test based on the specifed vehicle. The default implementation
-	 *         of this method returns a zero-length array no matter the vehicle
-	 *         specified.
-	 */
-	protected String[] getClasses(String vehicleName) {
+        return new String[] {};
 
-		return new String[] {};
+    } // END getClasses
 
-	} // END getClasses
+    /**
+     * Called by the test framework to initialize this test. The method simply
+     * retrieves some state information that is necessary to run the test when when
+     * the test framework invokes the run method (actually the test1 method).
+     */
+    public void setup() {
+        try {
+            System.out.println("$$$ SigTestEE.setup() called");
+            System.out.println("$$$ SigTestEE.setup() complete");
+        } catch (Exception e) {
+            System.out.println("Unexpected exception " + e.getMessage());
+        }
+    }
 
-	protected SigTestData testInfo; // holds the bin.dir and vehicle properties
+    /**
+     * Called by the test framework to run this test. This method utilizes the state
+     * information set in the setup method to run the signature tests. All signature
+     * test code resides in the utility class so it can be reused by the signature
+     * test framework base classes.
+     *
+     * @throws Fault When an error occurs executing the signature tests.
+     */
+    public void signatureTest() throws Fault {
+        System.out.println("$$$ SigTestEE.signatureTest() called");
+        SigTestResult results = null;
+        String mapFile = getMapFile();
+        String repositoryDir = getRepositoryDir();
+        String[] packages = getPackages(SigTestData.getVehicle());
+        String[] classes = getClasses(SigTestData.getVehicle());
+        String packageFile = getPackageFile();
+        String testClasspath = SigTestData.getTestClasspath();
+        String optionalPkgToIgnore = SigTestData.getOptionalTechPackagesToIgnore();
 
-	/**
-	 * Called by the test framework to initialize this test. The method simply
-	 * retrieves some state information that is necessary to run the test when when
-	 * the test framework invokes the run method (actually the test1 method).
-	 */
-	public void setup() {
-		try {
-			System.out.println("$$$ SigTestEE.setup() called");
-			this.testInfo = new SigTestData();
-			System.out.println("$$$ SigTestEE.setup() complete");
-		} catch (Exception e) {
-			System.out.println("Unexpected exception " + e.getMessage());
-		}
-	}
+        // unlisted optional packages are technology packages for those optional
+        // technologies (e.g. jsr-88) that might not have been specified by the
+        // user.
+        // We want to ensure there are no full or partial implementations of an
+        // optional technology which were not declared
+        ArrayList<String> unlistedTechnologyPkgs = getUnlistedOptionalPackages();
 
-	/**
-	 * Called by the test framework to run this test. This method utilizes the state
-	 * information set in the setup method to run the signature tests. All signature
-	 * test code resides in the utility class so it can be reused by the signature
-	 * test framework base classes.
-	 *
-	 * @throws Fault When an error occurs executing the signature tests.
-	 */
-	public void signatureTest() throws Fault {
-		System.out.println("$$$ SigTestEE.signatureTest() called");
-		SigTestResult results = null;
-		String mapFile = getMapFile();
-		String repositoryDir = getRepositoryDir();
-		String[] packages = getPackages(testInfo.getVehicle());
-		String[] classes = getClasses(testInfo.getVehicle());
-		String packageFile = getPackageFile();
-		String testClasspath = testInfo.getTestClasspath();
-		String optionalPkgToIgnore = testInfo.getOptionalTechPackagesToIgnore();
+        // If testing with Java 9+, extract the JDK's modules so they can be used
+        // on the testcase's classpath.
+        Properties sysProps = System.getProperties();
+        String version = (String) sysProps.get("java.version");
+        if (!version.startsWith("1.")) {
+            String jimageDir = SigTestData.getJImageDir();
+            File f = new File(jimageDir);
+            f.mkdirs();
 
-		// unlisted optional packages are technology packages for those optional
-		// technologies (e.g. jsr-88) that might not have been specified by the
-		// user.
-		// We want to ensure there are no full or partial implementations of an
-		// optional technology which were not declared
-		ArrayList<String> unlistedTechnologyPkgs = getUnlistedOptionalPackages();
+            String javaHome = (String) sysProps.get("java.home");
+            System.out.println("Executing JImage");
 
-		// If testing with Java 9+, extract the JDK's modules so they can be used
-		// on the testcase's classpath.
-		Properties sysProps = System.getProperties();
-		String version = (String) sysProps.get("java.version");
-		if (!version.startsWith("1.")) {
-			String jimageDir = testInfo.getJImageDir();
-			File f = new File(jimageDir);
-			f.mkdirs();
+            try {
+                ProcessBuilder pb = new ProcessBuilder(javaHome + "/bin/jimage", "extract", "--dir=" + jimageDir,
+                        javaHome + "/lib/modules");
+                System.out
+                        .println(javaHome + "/bin/jimage extract --dir=" + jimageDir + " " + javaHome + "/lib/modules");
+                pb.redirectErrorStream(true);
+                Process proc = pb.start();
+                BufferedReader out = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+                String line = null;
+                while ((line = out.readLine()) != null) {
+                    System.out.println(line);
+                }
 
-			String javaHome = (String) sysProps.get("java.home");
-			System.out.println("Executing JImage");
+                int rc = proc.waitFor();
+                System.out.println("JImage RC = " + rc);
+                out.close();
+            } catch (Exception e) {
+                System.out.println("Exception while executing JImage!  Some tests may fail.");
+                e.printStackTrace();
+            }
+        }
 
-			try {
-				ProcessBuilder pb = new ProcessBuilder(javaHome + "/bin/jimage", "extract", "--dir=" + jimageDir,
-						javaHome + "/lib/modules");
-				System.out
-						.println(javaHome + "/bin/jimage extract --dir=" + jimageDir + " " + javaHome + "/lib/modules");
-				pb.redirectErrorStream(true);
-				Process proc = pb.start();
-				BufferedReader out = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-				String line = null;
-				while ((line = out.readLine()) != null) {
-					System.out.println(line);
-				}
+        try {
+            results = getSigTestDriver().executeSigTest(packageFile, mapFile, repositoryDir, packages, classes,
+                    testClasspath, unlistedTechnologyPkgs, optionalPkgToIgnore);
+            System.out.println(results.toString());
+            if (!results.passed()) {
+                System.out.println("results.passed() returned false");
+                throw new Exception();
+            }
 
-				int rc = proc.waitFor();
-				System.out.println("JImage RC = " + rc);
-				out.close();
-			} catch (Exception e) {
-				System.out.println("Exception while executing JImage!  Some tests may fail.");
-				e.printStackTrace();
-			}
-		}
+            System.out.println("$$$ SigTestEE.signatureTest() returning");
+        } catch (Exception e) {
+            if (results != null && !results.passed()) {
+                throw new Fault("SigTestEE.signatureTest() failed!, diffs found");
+            } else {
+                System.out.println("Unexpected exception " + e.getMessage());
+                throw new Fault("signatureTest failed with an unexpected exception", e);
+            }
+        }
+    }
 
-		try {
-			results = getSigTestDriver().executeSigTest(packageFile, mapFile, repositoryDir, packages, classes,
-					testClasspath, unlistedTechnologyPkgs, optionalPkgToIgnore);
-			System.out.println(results.toString());
-			if (!results.passed()) {
-				System.out.println("results.passed() returned false");
-				throw new Exception();
-			}
+    /**
+     * Called by the test framework to cleanup any outstanding state. This method
+     * simply passes the message through to the utility class so the implementation
+     * can be used by both framework base classes.
+     *
+     * @throws Fault When an error occurs cleaning up the state of this test.
+     */
+    public void cleanup() throws Fault {
+        System.out.println("$$$ SigTestEE.cleanup() called");
+        try {
+            getSigTestDriver().cleanupImpl();
+            System.out.println("$$$ SigTestEE.cleanup() returning");
+        } catch (Exception e) {
+            throw new Fault("Cleanup failed!", e);
+        }
+    }
 
-			System.out.println("$$$ SigTestEE.signatureTest() returning");
-		} catch (Exception e) {
-			if (results != null && !results.passed()) {
-				throw new Fault("SigTestEE.signatureTest() failed!, diffs found");
-			} else {
-				System.out.println("Unexpected exception " + e.getMessage());
-				throw new Fault("signatureTest failed with an unexpected exception", e);
-			}
-		}
-	}
+    public static class Fault extends Exception {
+        private static final long serialVersionUID = -1574745208867827913L;
 
-	/**
-	 * Called by the test framework to cleanup any outstanding state. This method
-	 * simply passes the message through to the utility class so the implementation
-	 * can be used by both framework base classes.
-	 *
-	 * @throws Fault When an error occurs cleaning up the state of this test.
-	 */
-	public void cleanup() throws Fault {
-		System.out.println("$$$ SigTestEE.cleanup() called");
-		try {
-			getSigTestDriver().cleanupImpl();
-			System.out.println("$$$ SigTestEE.cleanup() returning");
-		} catch (Exception e) {
-			throw new Fault("Cleanup failed!", e);
-		}
-	}
+        private Throwable t;
 
-	public static class Fault extends Exception {
-		private static final long serialVersionUID = -1574745208867827913L;
+        /**
+         * creates a Fault with a message
+         */
+        public Fault(final String msg) {
+            super(msg);
+            System.out.println(msg);
+        }
 
-		public Throwable t;
+        /**
+         * creates a Fault with a message.
+         *
+         * @param msg the message
+         * @param t   prints this exception's stacktrace
+         */
+        public Fault(final String msg, final Throwable t) {
+            super(msg);
+            this.t = t;
+            System.out.println(msg);
+            t.printStackTrace();
+        }
 
-		/**
-		 * creates a Fault with a message
-		 */
-		public Fault(String msg) {
-			super(msg);
-			System.out.println(msg);
-		}
+        /**
+         * creates a Fault with a Throwable.
+         *
+         * @param t the Throwable
+         */
+        public Fault(final Throwable t) {
+            super(t);
+            this.t = t;
+        }
 
-		/**
-		 * creates a Fault with a message.
-		 *
-		 * @param msg the message
-		 * @param t   prints this exception's stacktrace
-		 */
-		public Fault(String msg, Throwable t) {
-			super(msg);
-			this.t = t;
-			System.out.println(msg);
-			t.printStackTrace();
-		}
+        /**
+         * Prints this Throwable and its backtrace to the standard error stream.
+         *
+         */
+        public void printStackTrace() {
+            if (this.t != null) {
+                this.t.printStackTrace();
+            } else {
+                super.printStackTrace();
+            }
+        }
 
-		/**
-		 * creates a Fault with a Throwable.
-		 *
-		 * @param t the Throwable
-		 */
-		public Fault(Throwable t) {
-			super(t);
-			this.t = t;
-		}
+        /**
+         * Prints this throwable and its backtrace to the specified print stream.
+         *
+         * @param s <code>PrintStream</code> to use for output
+         */
+        public void printStackTrace(final PrintStream s) {
+            if (this.t != null) {
+                this.t.printStackTrace(s);
+            } else {
+                super.printStackTrace(s);
+            }
+        }
 
-		/**
-		 * Prints this Throwable and its backtrace to the standard error stream.
-		 *
-		 */
-		public void printStackTrace() {
-			if (this.t != null) {
-				this.t.printStackTrace();
-			} else {
-				super.printStackTrace();
-			}
-		}
+        /**
+         * Prints this throwable and its backtrace to the specified print writer.
+         *
+         * @param s <code>PrintWriter</code> to use for output
+         */
+        public void printStackTrace(final PrintWriter s) {
+            if (this.t != null) {
+                this.t.printStackTrace(s);
+            } else {
+                super.printStackTrace(s);
+            }
+        }
 
-		/**
-		 * Prints this throwable and its backtrace to the specified print stream.
-		 *
-		 * @param s <code>PrintStream</code> to use for output
-		 */
-		public void printStackTrace(PrintStream s) {
-			if (this.t != null) {
-				this.t.printStackTrace(s);
-			} else {
-				super.printStackTrace(s);
-			}
-		}
+        @Override
+        public Throwable getCause() {
+            return t;
+        }
 
-		/**
-		 * Prints this throwable and its backtrace to the specified print writer.
-		 *
-		 * @param s <code>PrintWriter</code> to use for output
-		 */
-		public void printStackTrace(PrintWriter s) {
-			if (this.t != null) {
-				this.t.printStackTrace(s);
-			} else {
-				super.printStackTrace(s);
-			}
-		}
-
-		@Override
-		public Throwable getCause() {
-			return t;
-		}
-
-		@Override
-		public synchronized Throwable initCause(Throwable cause) {
-			if (t != null)
-				throw new IllegalStateException("Can't overwrite cause");
-			if (!Exception.class.isInstance(cause))
-				throw new IllegalArgumentException("Cause not permitted");
-			this.t = (Exception) cause;
-			return this;
-		}
-	}
+        @Override
+        public synchronized Throwable initCause(final Throwable cause) {
+            if (t != null)
+                throw new IllegalStateException("Can't overwrite cause");
+            if (!Exception.class.isInstance(cause))
+                throw new IllegalArgumentException("Cause not permitted");
+            this.t = (Exception) cause;
+            return this;
+        }
+    }
 
 } // end class SigTestEE

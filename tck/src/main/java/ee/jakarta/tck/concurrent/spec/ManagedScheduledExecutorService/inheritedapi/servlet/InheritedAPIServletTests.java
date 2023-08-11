@@ -55,9 +55,9 @@ public class InheritedAPIServletTests {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class);
     }
-    
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
+    private ManagedScheduledExecutorService scheduledExecutor;
 
     @BeforeEach
     public void before() {
@@ -66,32 +66,31 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiSubmit
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.1
-     * 
+     *
      * @test_Strategy:
      */
     @Test
     public void testApiSubmit() throws Exception {
         Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
         result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
         Wait.waitTillFutureIsDone(result);
         result.get();
 
-        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(),
-                CommonTasks.SIMPLE_RETURN_STRING);
+        result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
     /*
      * @testName: testApiExecute
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.2
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -106,9 +105,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiInvokeAll
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.3
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -125,8 +124,8 @@ public class InheritedAPIServletTests {
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
             assertEquals(resultList.get(2).get(), 3);
-            resultList = scheduledExecutor.invokeAll(taskList,
-                    TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+            resultList = scheduledExecutor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(),
+                    TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureIsDone(each);
             }
@@ -139,10 +138,10 @@ public class InheritedAPIServletTests {
 
         try {
             List<Callable<String>> taskList = new ArrayList<>();
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
             List<Future<String>> resultList = scheduledExecutor.invokeAll(taskList,
-                    TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+                    TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
                 Wait.waitTillFutureThrowsException(each, CancellationException.class);
             }
@@ -153,9 +152,9 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiInvokeAny
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.4
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -168,42 +167,42 @@ public class InheritedAPIServletTests {
         Integer result = scheduledExecutor.invokeAny(taskList);
         Assertions.assertBetween(result, 1, 3);
 
-        result = scheduledExecutor.invokeAny(taskList, TestConstants.WaitTimeout.getSeconds(), TimeUnit.SECONDS);
+        result = scheduledExecutor.invokeAny(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
         Assertions.assertBetween(result, 1, 3);
 
         assertThrows(TimeoutException.class, () -> {
             List<Callable<String>> taskList2 = new ArrayList<>();
-            taskList2.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            taskList2.add(new CommonTasks.SimpleCallable(TestConstants.WaitTimeout));
-            scheduledExecutor.invokeAny(taskList2, TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+            taskList2.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            taskList2.add(new CommonTasks.SimpleCallable(TestConstants.waitTimeout));
+            scheduledExecutor.invokeAny(taskList2, TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
         });
     }
 
     /*
      * @testName: testApiSchedule
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.5
-     * 
+     *
      * @test_Strategy:
      */
     @Test
     public void testApiSchedule() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
-                TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+                TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
         Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), CommonTasks.SIMPLE_RETURN_STRING);
+        assertEquals(result.get(), TestConstants.simpleReturnValue);
 
-        result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(),
-                TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
+        result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.pollInterval.getSeconds(),
+                TimeUnit.SECONDS);
         Wait.waitTillFutureIsDone(result);
         assertEquals(result.get(), null);
     }
 
     /*
      * @testName: testApiScheduleAtFixedRate
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.6
-     * 
+     *
      * @test_Strategy:
      */
     @Test
@@ -212,9 +211,10 @@ public class InheritedAPIServletTests {
 
         try {
             result = scheduledExecutor.scheduleAtFixedRate(new CounterRunnableTask(),
-                    TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-            Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.PollsPerTimeout - 2, TestConstants.PollsPerTimeout + 2);
+                    TestConstants.pollInterval.getSeconds(), TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
+            Wait.sleep(TestConstants.waitTimeout);
+            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.pollsPerTimeout - 2,
+                    TestConstants.pollsPerTimeout + 2);
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {
@@ -226,20 +226,20 @@ public class InheritedAPIServletTests {
 
     /*
      * @testName: testApiScheduleWithFixedDelay
-     * 
+     *
      * @assertion_ids: CONCURRENCY:SPEC:44.7
-     * 
+     *
      * @test_Strategy:
      */
     @Test
     public void testApiScheduleWithFixedDelay() {
         ScheduledFuture<?> result = null;
         try {
-            result = scheduledExecutor.scheduleWithFixedDelay(
-                    new CounterRunnableTask(TestConstants.PollInterval),
-                    TestConstants.PollInterval.getSeconds(), TestConstants.PollInterval.getSeconds(), TimeUnit.SECONDS);
-            Wait.sleep(TestConstants.WaitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), (TestConstants.PollsPerTimeout / 2) - 2, (TestConstants.PollsPerTimeout / 2) + 2);
+            result = scheduledExecutor.scheduleWithFixedDelay(new CounterRunnableTask(TestConstants.pollInterval),
+                    TestConstants.pollInterval.getSeconds(), TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
+            Wait.sleep(TestConstants.waitTimeout);
+            Assertions.assertBetween(StaticCounter.getCount(), (TestConstants.pollsPerTimeout / 2) - 2,
+                    (TestConstants.pollsPerTimeout / 2) + 2);
         } catch (Exception e) {
             fail(e.getMessage());
         } finally {

@@ -41,7 +41,7 @@ import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedTaskListener;
 
 @Web
-@Common( { PACKAGE.FIXED_COUNTER } )
+@Common({ PACKAGE.FIXED_COUNTER })
 public class ContextServiceTests {
 
     // TODO deploy as EJB and JSP artifacts
@@ -50,19 +50,19 @@ public class ContextServiceTests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    @Resource(lookup = TestConstants.DefaultContextService)
-    public ContextService context;
+    @Resource(lookup = TestConstants.defaultContextService)
+    private ContextService context;
 
     /*
-     * @testName: ContextServiceWithIntf
-     * 
+     * @testName: contextServiceWithIntf
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:5
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface.
      */
     @Test
-    public void ContextServiceWithIntf() {
+    public void contextServiceWithIntf() {
         assertAll(() -> {
             Runnable proxy = (Runnable) context.createContextualProxy(new CounterRunnableTask(), Runnable.class);
             assertNotNull(proxy);
@@ -70,47 +70,47 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithIntfAndIntfNoImplemented
-     * 
+     * @testName: contextServiceWithIntfAndIntfNoImplemented
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface. if the instance does not implement the
      * specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndIntfNoImplemented() {
+    public void contextServiceWithIntfAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(new Object(), Runnable.class);
         });
     }
 
     /*
-     * @testName: ContextServiceWithIntfAndInstanceIsNull
-     * 
+     * @testName: contextServiceWithIntfAndInstanceIsNull
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:6
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and interface. if the instance is null,
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndInstanceIsNull() {
+    public void contextServiceWithIntfAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(null, Runnable.class);
         });
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfs
-     * 
+     * @testName: contextServiceWithMultiIntfs
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:7
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and multiple interfaces.
      */
     @Test
-    public void ContextServiceWithMultiIntfs() {
+    public void contextServiceWithMultiIntfs() {
         assertAll(() -> {
             Object proxy = context.createContextualProxy(new CounterRunnableTask(), Runnable.class,
                     WorkInterface.class);
@@ -121,16 +121,16 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndIntfNoImplemented
-     * 
+     * @testName: contextServiceWithMultiIntfsAndIntfNoImplemented
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using instance and multi interfaces. if the instance does not implement the
      * specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndIntfNoImplemented() {
+    public void contextServiceWithMultiIntfsAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(new CounterRunnableTask(), Runnable.class, WorkInterface.class,
                     ManagedTaskListener.class);
@@ -138,16 +138,16 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndInstanceIsNull
-     * 
+     * @testName: contextServiceWithMultiIntfsAndInstanceIsNull
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:8
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using object and multi interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndInstanceIsNull() {
+    public void contextServiceWithMultiIntfsAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             context.createContextualProxy(null, Runnable.class, WorkInterface.class);
         });
@@ -155,14 +155,14 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:9
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interface.
      */
     @Test
-    public void ContextServiceWithIntfAndProperties() {
+    public void contextServiceWithIntfAndProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -176,14 +176,14 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndProperties
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:11
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces.
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndProperties() {
+    public void contextServiceWithMultiIntfsAndProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -199,35 +199,36 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithIntfAndPropertiesAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:10
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interface. if the instance does not implement
      * the specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
+    public void contextServiceWithIntfAndPropertiesAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
             execProps.put("USE_PARENT_TRANSACTION", "true");
 
-            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class, ManagedTaskListener.class);
+            context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
+                    ManagedTaskListener.class);
         });
     }
 
     /*
      * @testName: ContextServiceWithIntfsAndPropertiesAndInstanceIsNull
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:10
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
+    public void contextServiceWithIntfsAndPropertiesAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -239,15 +240,15 @@ public class ContextServiceTests {
 
     /*
      * @testName: ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented
-     * 
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:12
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. if the instance does not
      * implement the specified interface, IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
+    public void contextServiceWithMultiIntfsAndPropertiesAndIntfNoImplemented() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -259,16 +260,16 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
-     * 
+     * @testName: contextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:12
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. if the instance is null,
      * IllegalArgumentException will be thrown
      */
     @Test
-    public void ContextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
+    public void contextServiceWithMultiIntfsAndPropertiesAndInstanceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("vendor_a.security.tokenexpiration", "15000");
@@ -279,16 +280,16 @@ public class ContextServiceTests {
     }
 
     /*
-     * @testName: GetExecutionProperties
-     * 
+     * @testName: getExecutionProperties
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:13
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object and create proxy object
      * using ExecutionProperties and multiple interfaces. Retrieve
      * ExecutionProperties from proxy object and verify property value.
      */
     @Test
-    public void GetExecutionProperties() {
+    public void getExecutionProperties() {
         assertAll(() -> {
             Map<String, String> execProps = new HashMap<String, String>();
             execProps.put("USE_PARENT_TRANSACTION", "true");
@@ -296,22 +297,22 @@ public class ContextServiceTests {
             Object proxy = context.createContextualProxy(new CounterRunnableTask(), execProps, Runnable.class,
                     WorkInterface.class);
             assertNotNull(proxy);
-            
+
             Map<String, String> returnedExecProps = context.getExecutionProperties(proxy);
             assertEquals("true", returnedExecProps.get("USE_PARENT_TRANSACTION"));
         });
     }
 
     /*
-     * @testName: GetExecutionPropertiesNoProxy
-     * 
+     * @testName: getExecutionPropertiesNoProxy
+     *
      * @assertion_ids: CONCURRENCY:JAVADOC:14
-     * 
+     *
      * @test_Strategy: Lookup default ContextService object. Retrieve
      * ExecutionProperties from plain object.
      */
     @Test
-    public void GetExecutionPropertiesNoProxy() {
+    public void getExecutionPropertiesNoProxy() {
         assertAll(() -> {
             try {
                 context.getExecutionProperties(new Object());

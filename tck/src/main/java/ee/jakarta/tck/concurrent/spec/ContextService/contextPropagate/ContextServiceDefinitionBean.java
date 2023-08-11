@@ -28,33 +28,29 @@ import jakarta.ejb.Stateless;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
-@ContextServiceDefinition(name = "java:app/concurrent/EJBContextA",
-                          propagated = { APPLICATION, IntContext.NAME },
-                          cleared = StringContext.NAME,
-                          unchanged = TRANSACTION)
+@ContextServiceDefinition(name = "java:app/concurrent/EJBContextA", propagated = { APPLICATION,
+        IntContext.NAME }, cleared = StringContext.NAME, unchanged = TRANSACTION)
 // Reuse the same name as defined in ContextServiceDefinitionServlet.
-@ContextServiceDefinition(name = "java:module/concurrent/ContextB",
-                          propagated = { APPLICATION, StringContext.NAME },
-                          cleared = IntContext.NAME,
-                          unchanged = TRANSACTION)
+@ContextServiceDefinition(name = "java:module/concurrent/ContextB", propagated = { APPLICATION,
+        StringContext.NAME }, cleared = IntContext.NAME, unchanged = TRANSACTION)
 @ContextServiceDefinition(name = "java:comp/concurrent/EJBContextC")
 @Local(ContextServiceDefinitionInterface.class)
 @Stateless
 public class ContextServiceDefinitionBean implements ContextServiceDefinitionInterface {
 
-	/**
-	 * Get java:comp/concurrent/EJBContextC from the bean.
-	 */
-	@Override
-	public ContextService getContextC() throws NamingException {
-		return InitialContext.doLookup("java:comp/concurrent/EJBContextC");
-	}
-	
-	/**
-	 * Get java:comp/concurrent/ContextB from the bean.
-	 */
-	@Override
-	public ContextService getContextB() throws NamingException {
-		return InitialContext.doLookup("java:module/concurrent/ContextB");
-	}
+    /**
+     * Get java:comp/concurrent/EJBContextC from the bean.
+     */
+    @Override
+    public ContextService getContextC() throws NamingException {
+        return InitialContext.doLookup("java:comp/concurrent/EJBContextC");
+    }
+
+    /**
+     * Get java:comp/concurrent/ContextB from the bean.
+     */
+    @Override
+    public ContextService getContextB() throws NamingException {
+        return InitialContext.doLookup("java:module/concurrent/ContextB");
+    }
 }

@@ -28,15 +28,15 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 @Signature
 public class SignatureTests {
 
-	@Deployment(name = "SignatureTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class, "signatureTest.war");
-	}
+    @Deployment(name = "SignatureTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "signatureTest.war");
+    }
 
-	@Test
-	public void testSignatures() throws Exception {
-	    ConcurrencySignatureTestRunner.assertProjectSetup();
+    @Test
+    public void testSignatures() throws Exception {
+        ConcurrencySignatureTestRunner.assertProjectSetup();
         ConcurrencySignatureTestRunner sigTest = new ConcurrencySignatureTestRunner();
         sigTest.signatureTest();
-	}
+    }
 }

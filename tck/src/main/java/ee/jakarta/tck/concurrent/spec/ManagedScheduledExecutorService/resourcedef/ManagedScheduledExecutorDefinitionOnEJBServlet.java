@@ -49,22 +49,23 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
-    ReqBean reqBean;
+    private ReqBean reqBean;
 
     @Resource
-    UserTransaction tx;
-    
+    private UserTransaction tx;
+
     @EJB
     private ManagedScheduleExecutorDefinitionInterface managedScheduleExecutorDefinitionBean;
-    
-    //Needed to initialize the ContextServiceDefinitions
-  	@EJB
-  	private ContextServiceDefinitionInterface contextServiceDefinitionBean;
-    
+
+    // Needed to initialize the ContextServiceDefinitions
+    @EJB
+    private ContextServiceDefinitionInterface contextServiceDefinitionBean;
+
     /**
-     * A ManagedScheduledExecutorDefinition defined on an EJB with all attributes configured enforces maxAsync and propagates context.
+     * A ManagedScheduledExecutorDefinition defined on an EJB with all attributes
+     * configured enforces maxAsync and propagates context.
      */
-    public void testManagedScheduledExecutorDefinitionAllAttributes_EJB() throws Throwable {
+    public void testManagedScheduledExecutorDefinitionAllAttributesEJB() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBScheduledExecutorA");
 
         BlockingQueue<Integer> results = new LinkedBlockingQueue<Integer>();
@@ -87,119 +88,122 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
             executor.submit(task);
             executor.submit(task, "TaskResult");
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
-                         "ManagedScheduledExecutorService with maxAsync=3 must be able to run an async task.");
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33),
+                    "ManagedScheduledExecutorService with maxAsync=3 must be able to run an async task.");
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
-                         "ManagedScheduledExecutorService with maxAsync=3 must be able to run 2 async tasks concurrently.");
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33),
+                    "ManagedScheduledExecutorService with maxAsync=3 must be able to run 2 async tasks concurrently.");
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
-                         "ManagedScheduledExecutorService with maxAsync=3 must be able to run 3 async tasks concurrently.");
+            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33),
+                    "ManagedScheduledExecutorService with maxAsync=3 must be able to run 3 async tasks concurrently.");
 
-            assertEquals(results.poll(1, TimeUnit.SECONDS), null, 
-                         "ManagedScheduledExecutorService with maxAsync=3 must not run 4 async tasks concurrently.");
+            assertEquals(results.poll(1, TimeUnit.SECONDS), null,
+                    "ManagedScheduledExecutorService with maxAsync=3 must not run 4 async tasks concurrently.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
         }
 
-        assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33), 
-                     "ManagedScheduledExecutorService with maxAsync=3 must be able to run 4th task after 1st completes.");
-
+        assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(33),
+                "ManagedScheduledExecutorService with maxAsync=3 must be able to run 4th task after 1st completes.");
 
     }
-    
+
     /**
-     * A ManagedScheduledExecutorDefinition defined on an EJB with minimal attributes can run multiple async tasks concurrently
-     * and uses java:comp/DefaultContextService to determine context propagation and clearing.
+     * A ManagedScheduledExecutorDefinition defined on an EJB with minimal
+     * attributes can run multiple async tasks concurrently and uses
+     * java:comp/DefaultContextService to determine context propagation and
+     * clearing.
      */
-    public void testManagedScheduledExecutorDefinitionDefaults_EJB() throws Throwable {
-    	ManagedScheduledExecutorService executor = (ManagedScheduledExecutorService)managedScheduleExecutorDefinitionBean.doLookup("java:comp/concurrent/EJBScheduledExecutorC");
+    public void testManagedScheduledExecutorDefinitionDefaultsEJB() throws Throwable {
+        ManagedScheduledExecutorService executor = (ManagedScheduledExecutorService) managedScheduleExecutorDefinitionBean
+                .doLookup("java:comp/concurrent/EJBScheduledExecutorC");
 
-    	CountDownLatch blocker = new CountDownLatch(1);
-    	CountDownLatch allTasksRunning = new CountDownLatch(4);
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch allTasksRunning = new CountDownLatch(4);
 
-    	Callable<Integer> txCallable = () -> {
-    		allTasksRunning.countDown();
-    		UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
-    		int initialStatus = tx.getStatus();
-    		tx.begin();
-    		try {
-    			blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
-    		} finally {
-    			tx.rollback();
-    		}
-    		return initialStatus;
-    	};
+        Callable<Integer> txCallable = () -> {
+            allTasksRunning.countDown();
+            UserTransaction trans = InitialContext.doLookup("java:comp/UserTransaction");
+            int initialStatus = trans.getStatus();
+            trans.begin();
+            try {
+                blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
+            } finally {
+                trans.rollback();
+            }
+            return initialStatus;
+        };
 
-    	Function<String, Object> lookupFunction = jndiName -> {
-    		allTasksRunning.countDown();
-    		try {
-    			blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
-    			return (ManagedScheduledExecutorService)managedScheduleExecutorDefinitionBean.doLookup(jndiName);
-    		} catch (InterruptedException | NamingException x) {
-    			throw new CompletionException(x);
-    		}
-    	};
+        Function<String, Object> lookupFunction = jndiName -> {
+            allTasksRunning.countDown();
+            try {
+                blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
+                return (ManagedScheduledExecutorService) managedScheduleExecutorDefinitionBean.doLookup(jndiName);
+            } catch (InterruptedException | NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
 
-    	try {
-    		Future<Integer> txFuture1 = executor.submit(txCallable);
+        try {
+            Future<Integer> txFuture1 = executor.submit(txCallable);
 
-    		Future<Integer> txFuture2 = executor.submit(txCallable);
+            Future<Integer> txFuture2 = executor.submit(txCallable);
 
-    		CompletableFuture<?> lookupFuture1 = executor.completedFuture("java:comp/concurrent/EJBScheduledExecutorC")
-    				.thenApplyAsync(lookupFunction);
+            CompletableFuture<?> lookupFuture1 = executor.completedFuture("java:comp/concurrent/EJBScheduledExecutorC")
+                    .thenApplyAsync(lookupFunction);
 
-    		CompletableFuture<?> lookupFuture2 = executor.completedFuture("java:module/concurrent/ScheduledExecutorB")
-    				.thenApplyAsync(lookupFunction);
+            CompletableFuture<?> lookupFuture2 = executor.completedFuture("java:module/concurrent/ScheduledExecutorB")
+                    .thenApplyAsync(lookupFunction);
 
-    		assertTrue(allTasksRunning.await(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-    				"ManagedScheduledExecutorService without maxAsync must be able to run async tasks concurrently.");
+            assertTrue(allTasksRunning.await(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService without maxAsync must be able to run async tasks concurrently.");
 
-    		blocker.countDown();
+            blocker.countDown();
 
-    		int status;
-    		status = txFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-    		assertEquals(status, Status.STATUS_NO_TRANSACTION, 
-    				"Transaction context must be cleared from first async Callable task " +
-    				"per java:comp/concurrent/EJBScheduledExecutorC configuration.");
+            int status;
+            status = txFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
+                    "Transaction context must be cleared from first async Callable task "
+                            + "per java:comp/concurrent/EJBScheduledExecutorC configuration.");
 
-    		status = txFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-    		assertEquals(status, Status.STATUS_NO_TRANSACTION, 
-    				"Transaction context must be cleared from second async Callable task " +
-    				"per java:comp/concurrent/EJBScheduledExecutorC configuration.");
+            status = txFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
+                    "Transaction context must be cleared from second async Callable task "
+                            + "per java:comp/concurrent/EJBScheduledExecutorC configuration.");
 
-    		assertTrue(lookupFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
-    				"Application context must be propagated to first async Function " +
-    				"per java:comp/concurrent/EJBScheduledExecutorC configuration.");
+            assertTrue(lookupFuture1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
+                    "Application context must be propagated to first async Function "
+                            + "per java:comp/concurrent/EJBScheduledExecutorC configuration.");
 
-    		assertTrue(lookupFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
-    				"Application context must be propagated to second async Function " +
-    				"per java:comp/concurrent/ScheduledExecutorC configuration.");
-    	} finally {
-    		IntContext.set(0);
-    		blocker.countDown();
-    	}
+            assertTrue(lookupFuture2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS) instanceof ManagedScheduledExecutorService,
+                    "Application context must be propagated to second async Function "
+                            + "per java:comp/concurrent/ScheduledExecutorC configuration.");
+        } finally {
+            IntContext.set(0);
+            blocker.countDown();
+        }
 
-    	tx.begin();
-    	try {
-    		// run inline to verify that transaction context is cleared
-    		int status = executor.getContextService().contextualCallable(txCallable).call();
-    		assertEquals(status, Status.STATUS_NO_TRANSACTION,
-    				"Transaction context must be cleared from inline contextual Callable " +
-    				"per java:comp/concurrent/EJBScheduledExecutorC configuration.");
-    	} finally {
-    		tx.rollback();
-    	}
+        tx.begin();
+        try {
+            // run inline to verify that transaction context is cleared
+            int status = executor.getContextService().contextualCallable(txCallable).call();
+            assertEquals(status, Status.STATUS_NO_TRANSACTION,
+                    "Transaction context must be cleared from inline contextual Callable "
+                            + "per java:comp/concurrent/EJBScheduledExecutorC configuration.");
+        } finally {
+            tx.rollback();
+        }
     }
-    
+
     /**
-     * ManagedScheduledExecutorService creates an incomplete CompletableFuture to which dependent stages
-     * can be chained. The CompletableFuture can be completed from another thread lacking the
-     * same context, but the dependent stages all run with the thread context of the thread
-     * from which they were created, per ManagedScheduledExecutorDefinition config.
+     * ManagedScheduledExecutorService creates an incomplete CompletableFuture to
+     * which dependent stages can be chained. The CompletableFuture can be completed
+     * from another thread lacking the same context, but the dependent stages all
+     * run with the thread context of the thread from which they were created, per
+     * ManagedScheduledExecutorDefinition config.
      */
-    public void testIncompleteFutureMSE_EJB() throws Throwable {
+    public void testIncompleteFutureMSEEJB() throws Throwable {
         ManagedScheduledExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBScheduledExecutorA");
 
         StringBuilder results = new StringBuilder();
@@ -234,17 +238,15 @@ public class ManagedScheduledExecutorDefinitionOnEJBServlet extends TestServlet 
             stage1a.complete("java:app");
             stage1b.complete("concurrent/EJBScheduledExecutorA");
 
-            assertEquals(stage3.join(), null, 
-                         "CompletableFuture with Void return type must return null from join.");
+            assertEquals(stage3.join(), null, "CompletableFuture with Void return type must return null from join.");
             String result = results.toString();
-            assertEquals(result, "Application context propagated;StringContext cleared;IntContext propagated", 
-                         "Application context and IntContext must be propagated and StringContext must be cleared " +
-                         "per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
+            assertEquals(result, "Application context propagated;StringContext cleared;IntContext propagated",
+                    "Application context and IntContext must be propagated and StringContext must be cleared "
+                            + "per ManagedScheduledExecutorDefinition and ContextServiceDefinition config.");
         } finally {
             IntContext.set(0);
             StringContext.set(null);
         }
-
 
     }
 }

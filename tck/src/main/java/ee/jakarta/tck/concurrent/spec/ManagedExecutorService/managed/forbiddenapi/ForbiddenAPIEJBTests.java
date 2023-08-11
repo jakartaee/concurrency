@@ -26,79 +26,78 @@ import jakarta.ejb.EJB;
 
 @Web
 public class ForbiddenAPIEJBTests {
-	
-	@Deployment(name="ForbiddenAPITests")
-	public static JavaArchive createDeployment() {
-		return ShrinkWrap.create(JavaArchive.class)
-				.addPackages(true,  ForbiddenAPIEJBTests.class.getPackage());
-	}
 
-	@EJB
-	private TestEjbInterface testEjb;
+    @Deployment(name = "ForbiddenAPITests")
+    public static JavaArchive createDeployment() {
+        return ShrinkWrap.create(JavaArchive.class).addPackages(true, ForbiddenAPIEJBTests.class.getPackage());
+    }
 
-	/*
-	 * @testName: testAwaitTermination
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testAwaitTermination() {
-		testEjb.testAwaitTermination();
-	}
+    @EJB
+    private TestEjbInterface testEjb;
 
-	/*
-	 * @testName: testIsShutdown
-	 * 
-	 * @assertion_ids:
-	 * 
-	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsShutdown() {
-		testEjb.testIsShutdown();
-	}
+    /*
+     * @testName: testAwaitTermination
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testAwaitTermination() {
+        testEjb.testAwaitTermination();
+    }
 
-	/*
-	 * @testName: testIsTerminated
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testIsTerminated() {
-		testEjb.testIsTerminated();
-	}
+    /*
+     * @testName: testIsShutdown
+     *
+     * @assertion_ids:
+     *
+     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsShutdown() {
+        testEjb.testIsShutdown();
+    }
 
-	/*
-	 * @testName: testShutdown
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdown() {
-		testEjb.testShutdown();
-	}
+    /*
+     * @testName: testIsTerminated
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testIsTerminated() {
+        testEjb.testIsTerminated();
+    }
 
-	/*
-	 * @testName: testShutdownNow
-	 * 
-	 * @assertion_ids:
-	 * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testShutdownNow() {
-		testEjb.testShutdownNow();
-	}
+    /*
+     * @testName: testShutdown
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdown() {
+        testEjb.testShutdown();
+    }
+
+    /*
+     * @testName: testShutdownNow
+     *
+     * @assertion_ids:
+     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testShutdownNow() {
+        testEjb.testShutdownNow();
+    }
 }

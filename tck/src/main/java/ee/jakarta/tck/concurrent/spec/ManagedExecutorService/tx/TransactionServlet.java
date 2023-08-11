@@ -43,71 +43,69 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@SuppressWarnings({"serial", "unused"})
+@SuppressWarnings({ "serial", "unused" })
 @WebServlet(Constants.CONTEXT_PATH)
 @DataSourceDefinition(
-	name = "java:comp/env/jdbc/ManagedExecutorServiceDB", 
-	className = "org.apache.derby.jdbc.EmbeddedDataSource", 
-	databaseName = "memory:ManagedExecutorServiceDB", 
-	properties = {
-			"createDatabase=create" 
-			}
-)
+        name = "java:comp/env/jdbc/ManagedExecutorServiceDB",
+        className = "org.apache.derby.jdbc.EmbeddedDataSource",
+        databaseName = "memory:ManagedExecutorServiceDB",
+        properties = {
+                "createDatabase=create"
+        })
 public class TransactionServlet extends TestServlet {
 
-	private static final TestLogger log = TestLogger.get(TransactionServlet.class);
+    private static final TestLogger log = TestLogger.get(TransactionServlet.class);
 
-	@Resource(lookup = "java:comp/env/jdbc/ManagedExecutorServiceDB")
-	private DataSource ds;
-	
-    @Resource(lookup = TestConstants.DefaultManagedScheduledExecutorService)
-    public ManagedScheduledExecutorService scheduledExecutor;
+    @Resource(lookup = "java:comp/env/jdbc/ManagedExecutorServiceDB")
+    private DataSource ds;
 
-	@Override
-	protected void beforeClass() throws RemoteException {
-		log.enter("beforeClass");
-		
-		Connections.setDataSource(ds);
-		
-		try (Connection conn = Connections.getConnection(true); Statement stmt = conn.createStatement()) {
-			try {
-				stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
-			} catch (SQLException e) {
-				log.finest("Could not drop table, assume table did not exist.");
-			}
-			stmt.executeUpdate(Constants.SQL_TEMPLATE_CREATE);
-			log.exit("beforeClass");
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-	}
+    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
+    private ManagedScheduledExecutorService scheduledExecutor;
 
-	public void transactionTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
-		
-		Future<?> taskResult = scheduledExecutor.submit(
-		        new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT));
-		
-		Wait.waitForTaskComplete(taskResult);
-	}
+    @Override
+    protected void beforeClass() throws RemoteException {
+        log.enter("beforeClass");
 
-	public void cancelTest() {
-		int originTableCount = Counter.getCount();
-		
-		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.SQL_TEMPLATE_INSERT);
-		Future<?> future = scheduledExecutor.submit(cancelledTask);
-		
-		// then cancel it after transaction begin and
-		Wait.waitForTransactionBegan(cancelledTask);
-		
-		// before it commit.
-		cancelledTask.cancelTransaction.set(true);
-		
-		// continue to run if possible.
-		cancelledTask.runQuery.set(true);;
-		
-		int afterTransacted = Counter.getCount();
-		
-		assertEquals(originTableCount, afterTransacted,"task was not properly cancelled");
-	}
+        Connections.setDataSource(ds);
+
+        try (Connection conn = Connections.getConnection(true); Statement stmt = conn.createStatement()) {
+            try {
+                stmt.executeUpdate(Constants.SQL_TEMPLATE_DROP);
+            } catch (SQLException e) {
+                log.finest("Could not drop table, assume table did not exist.");
+            }
+            stmt.executeUpdate(Constants.SQL_TEMPLATE_CREATE);
+            log.exit("beforeClass");
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public void transactionTest(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
+        boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
+
+        Future<?> taskResult = scheduledExecutor.submit(new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT));
+
+        Wait.waitForTaskComplete(taskResult);
+    }
+
+    public void cancelTest() {
+        int originTableCount = Counter.getCount();
+
+        CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.SQL_TEMPLATE_INSERT);
+        Future<?> future = scheduledExecutor.submit(cancelledTask);
+
+        // then cancel it after transaction begin and
+        Wait.waitForTransactionBegan(cancelledTask);
+
+        // before it commit.
+        cancelledTask.getCancelTransaction().set(true);
+
+        // continue to run if possible.
+        cancelledTask.getRunQuery().set(true);
+
+        int afterTransacted = Counter.getCount();
+
+        assertEquals(originTableCount, afterTransacted, "task was not properly cancelled");
+    }
 }

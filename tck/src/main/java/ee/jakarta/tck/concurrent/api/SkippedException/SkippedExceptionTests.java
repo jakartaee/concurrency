@@ -31,39 +31,38 @@ import jakarta.enterprise.concurrent.SkippedException;
 
 @Web // TODO couldn't this be a unit test?
 public class SkippedExceptionTests {
-	
-	//TODO deploy as EJB and JSP artifacts
-	@Deployment(name="SkippedExceptionTests")
-	public static WebArchive createDeployment() {
-		return ShrinkWrap.create(WebArchive.class)
-				.addPackages(true,  SkippedExceptionTests.class.getPackage());
-	}
 
-	/*
-	 * @testName: SkippedExceptionNoArgTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:42
-	 * 
-	 * @test_Strategy: Constructs an SkippedException.
-	 */
-	@Test
-	public void SkippedExceptionNoArgTest() {
-	    SkippedException thrown = assertThrows(SkippedException.class, () -> {
-	        throw new SkippedException();
-	    });
-	    
-	    assertNull(thrown.getMessage());
-	}
+    // TODO deploy as EJB and JSP artifacts
+    @Deployment(name = "SkippedExceptionTests")
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class).addPackages(true, SkippedExceptionTests.class.getPackage());
+    }
 
-	/*
-	 * @testName: SkippedExceptionStringTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:43
-	 * 
-	 * @test_Strategy: Constructs an SkippedException.
-	 */
-	@Test
-	public void SkippedExceptionStringTest() {
+    /*
+     * @testName: SkippedExceptionNoArgTest
+     *
+     * @assertion_ids: CONCURRENCY:JAVADOC:42
+     *
+     * @test_Strategy: Constructs an SkippedException.
+     */
+    @Test
+    public void skippedExceptionNoArgTest() {
+        SkippedException thrown = assertThrows(SkippedException.class, () -> {
+            throw new SkippedException();
+        });
+
+        assertNull(thrown.getMessage());
+    }
+
+    /*
+     * @testName: SkippedExceptionStringTest
+     *
+     * @assertion_ids: CONCURRENCY:JAVADOC:43
+     *
+     * @test_Strategy: Constructs an SkippedException.
+     */
+    @Test
+    public void skippedExceptionStringTest() {
         final String expected = "thisisthedetailmessage";
 
         SkippedException thrown = assertThrows(SkippedException.class, () -> {
@@ -72,18 +71,18 @@ public class SkippedExceptionTests {
 
         assertNotNull(thrown.getMessage());
         assertEquals(expected, thrown.getMessage());
-	}
+    }
 
-	/*
-	 * @testName: SkippedExceptionThrowableTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:45
-	 * 
-	 * @test_Strategy: Constructs an SkippedException.
-	 */
-	@Test
-	public void SkippedExceptionThrowableTest() {
-	    SkippedException thrown;
+    /*
+     * @testName: SkippedExceptionThrowableTest
+     *
+     * @assertion_ids: CONCURRENCY:JAVADOC:45
+     *
+     * @test_Strategy: Constructs an SkippedException.
+     */
+    @Test
+    public void skippedExceptionThrowableTest() {
+        SkippedException thrown;
 
         final Throwable expected = new Throwable("thisisthethrowable");
 
@@ -101,18 +100,18 @@ public class SkippedExceptionTests {
         });
 
         assertNull(thrown.getCause());
-	}
+    }
 
-	/*
-	 * @testName: SkippedExceptionStringThrowableTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:JAVADOC:44
-	 * 
-	 * @test_Strategy: Constructs an SkippedException.
-	 */
-	@Test
-	public void SkippedExceptionStringThrowableTest() {
-	    SkippedException thrown;
+    /*
+     * @testName: SkippedExceptionStringThrowableTest
+     *
+     * @assertion_ids: CONCURRENCY:JAVADOC:44
+     *
+     * @test_Strategy: Constructs an SkippedException.
+     */
+    @Test
+    public void skippedExceptionStringThrowableTest() {
+        SkippedException thrown;
 
         String sExpected = "thisisthedetailmessage";
         String sExpectedNull = null;
@@ -150,5 +149,5 @@ public class SkippedExceptionTests {
 
         assertNull(thrown.getMessage());
         assertNull(thrown.getCause());
-	}
+    }
 }

@@ -33,77 +33,78 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
-	
-	@EJB
-	private SecurityTestInterface str;
 
-	private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
+    @EJB
+    private SecurityTestInterface str;
 
-	private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
+    private static final String TEST_JNDI_EVN_ENTRY_VALUE = "hello";
 
-	private static final String TEST_CLASSLOADER_CLASS_NAME = SecurityServlet.class.getCanonicalName();
+    private static final String TEST_JNDI_EVN_ENTRY_JNDI_NAME = "java:comp/env/ManagedThreadFactory_test_string";
 
-	public void jndiClassloaderPropagationTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    private static final String TEST_CLASSLOADER_CLASS_NAME = SecurityServlet.class.getCanonicalName();
 
-			ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
+    public void jndiClassloaderPropagationTest(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
 
-			CounterRunnableWithContext task = new CounterRunnableWithContext();
-			Thread thread = factory.newThread(task);
-			thread.start();
-			Wait.waitTillThreadFinish(thread);
-			assertEquals(task.getCount(), 1);
-	}
-	
-	public void jndiClassloaderPropagationWithSecurityTest(HttpServletRequest req, HttpServletResponse res) throws Exception {
+        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.defaultManagedThreadFactory);
 
-		req.login("javajoe", "javajoe");
-		
-		ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.DefaultManagedThreadFactory);
+        CounterRunnableWithContext task = new CounterRunnableWithContext();
+        Thread thread = factory.newThread(task);
+        thread.start();
+        Wait.waitTillThreadFinish(thread);
+        assertEquals(task.getCount(), 1);
+    }
 
-		CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
-		Thread thread = factory.newThread(task);
-		thread.start();
-		Wait.waitTillThreadFinish(thread);
-		assertEquals(task.getCount(), 1);
-}
+    public void jndiClassloaderPropagationWithSecurityTest(final HttpServletRequest req, final HttpServletResponse res)
+            throws Exception {
 
-	public static class CounterRunnableWithContext extends RunnableTask {
-		private volatile int count = 0;
+        req.login("javajoe", "javajoe");
 
-		public int getCount() {
-			return count;
-		}
+        ManagedThreadFactory factory = InitialContext.doLookup(TestConstants.defaultManagedThreadFactory);
 
-		public CounterRunnableWithContext() {
-			super(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME);
-		}
+        CounterRunnableWithSecurityCheck task = new CounterRunnableWithSecurityCheck(str);
+        Thread thread = factory.newThread(task);
+        thread.start();
+        Wait.waitTillThreadFinish(thread);
+        assertEquals(task.getCount(), 1);
+    }
 
-		public void run() {
-			super.run();
-			count++;
-		}
-	}
+    public static class CounterRunnableWithContext extends RunnableTask {
+        private volatile int count = 0;
 
-	public static class CounterRunnableWithSecurityCheck implements Runnable {
-		private volatile int count = 0;
-		
-		private SecurityTestInterface str;
-		
-		CounterRunnableWithSecurityCheck(SecurityTestInterface str) {
-			this.str = str;
-		}
+        public int getCount() {
+            return count;
+        }
 
-		public int getCount() {
-			return count;
-		}
+        public CounterRunnableWithContext() {
+            super(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME);
+        }
 
-		public void run() {
-			try {
-				assertEquals(str.managerMethod1(), TestConstants.SimpleReturnValue);
-			} catch (Exception e) {
-				return;
-			}
-			count++;
-		}
-	}
+        public void run() {
+            super.run();
+            count++;
+        }
+    }
+
+    public static class CounterRunnableWithSecurityCheck implements Runnable {
+        private volatile int count = 0;
+
+        private SecurityTestInterface str;
+
+        CounterRunnableWithSecurityCheck(final SecurityTestInterface str) {
+            this.str = str;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void run() {
+            try {
+                assertEquals(str.managerMethod1(), TestConstants.simpleReturnValue);
+            } catch (Exception e) {
+                return;
+            }
+            count++;
+        }
+    }
 }

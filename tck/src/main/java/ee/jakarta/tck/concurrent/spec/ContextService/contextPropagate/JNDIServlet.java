@@ -31,24 +31,22 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/JNDIServlet")
 public class JNDIServlet extends TestServlet {
 
-	@EJB
-	private ContextPropagateInterface intf;
-	
-    @Resource(lookup = TestConstants.DefaultContextService)
-    public ContextService context;
-	
+    @EJB
+    private ContextPropagateInterface intf;
 
-	public void testJNDIContextAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		String result = intf.executeWorker((TestWorkInterface) context
-				.createContextualProxy(new TestJNDIRunnableWork(), Runnable.class, TestWorkInterface.class,
-						Serializable.class));
-		resp.getWriter().println(result);
+    @Resource(lookup = TestConstants.defaultContextService)
+    private ContextService context;
 
-	}
+    public void testJNDIContextAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp)
+            throws Exception {
+        String result = intf.executeWorker((TestWorkInterface) context.createContextualProxy(new TestJNDIRunnableWork(),
+                Runnable.class, TestWorkInterface.class, Serializable.class));
+        resp.getWriter().println(result);
 
-	public void testJNDIContextAndCreateProxyInEJB(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		String result = intf.createWorker( TestJNDIRunnableWork.class.getCanonicalName())
-				.doSomeWork();
-		resp.getWriter().println(result);
-	}
+    }
+
+    public void testJNDIContextAndCreateProxyInEJB(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
+        String result = intf.createWorker(TestJNDIRunnableWork.class.getCanonicalName()).doSomeWork();
+        resp.getWriter().println(result);
+    }
 }

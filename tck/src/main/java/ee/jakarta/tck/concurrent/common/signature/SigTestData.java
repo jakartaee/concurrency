@@ -27,52 +27,51 @@ import java.util.Properties;
  * setup phase. This allows us to keep the passed data separate and reuse the
  * data between the signature test framework base classes.
  */
-public class SigTestData {
+public final class SigTestData {
 
-	private Properties props;
+    private SigTestData() {
+        // Helper class
+    }
 
-	public SigTestData() {
-		this.props = System.getProperties();
-		;
-	}
+    private static Properties props = System.getProperties();
 
-	public String getVehicle() {
-		return props.getProperty("vehicle", "");
-	}
+    public static String getVehicle() {
+        return props.getProperty("vehicle", "");
+    }
 
-	public String getBinDir() {
-		return props.getProperty("bin.dir", "");
-	}
+    public static String getBinDir() {
+        return props.getProperty("bin.dir", "");
+    }
 
-	public String getTSHome() {
-		return props.getProperty("ts_home", "");
-	}
+    public static String getTSHome() {
+        return props.getProperty("ts_home", "");
+    }
 
-	public String getTestClasspath() {
-		return props.getProperty("sigTestClasspath", "");
-	}
+    public static String getTestClasspath() {
+        return props.getProperty("sigTestClasspath", "");
+    }
 
-	public String getJavaeeLevel() {
-		return props.getProperty("javaee.level", "");
-	}
+    public static String getJavaeeLevel() {
+        return props.getProperty("javaee.level", "");
+    }
 
-	public String getCurrentKeywords() {
-		return props.getProperty("current.keywords", "");
-	}
+    public static String getCurrentKeywords() {
+        return props.getProperty("current.keywords", "");
+    }
 
-	public String getProperty(String prop) {
-		return props.getProperty(prop);
-	}
+    public static String getProperty(final String prop) {
+        return props.getProperty(prop);
+    }
 
-	public String getOptionalTechPackagesToIgnore() {
-		return props.getProperty("optional.tech.packages.to.ignore", "");
-	}
+    public static String getOptionalTechPackagesToIgnore() {
+        return props.getProperty("optional.tech.packages.to.ignore", "");
+    }
 
-	public String getJtaJarClasspath() {
-		return props.getProperty("jtaJarClasspath", "");
-	}
+    public static String getJtaJarClasspath() {
+        return props.getProperty("jtaJarClasspath", "");
+    }
 
-	public String getJImageDir() {
-		return props.getProperty("jimage.dir", "");
-	}
+    public static String getJImageDir() {
+        return props.getProperty("jimage.dir", "");
+    }
 } // end class SigTestData

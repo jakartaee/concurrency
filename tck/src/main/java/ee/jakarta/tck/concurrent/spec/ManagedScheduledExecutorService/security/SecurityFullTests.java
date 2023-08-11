@@ -33,53 +33,55 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full @RunAsClient //Requires client testing due to login request 
+@Full
+@RunAsClient // Requires client testing due to login request
 public class SecurityFullTests extends TestClient {
-	
-	@ArquillianResource(SecurityServlet.class)
-	URL baseURL;
-	
-	@Deployment(name="SecurityTests")
-	public static EnterpriseArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
-				.addPackages(true, SecurityFullTests.class.getPackage())
-				.addPackages(true, PACKAGE.TASKS.getPackageName())
-				.deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); //SecurityTestEjb and SecurityTestInterface are in the jar
-		
-		JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
-				.addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
-				.addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);
-		
-		EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear")
-				.addAsModules(war, jar);
-		
-		return ear;
-	}
-	
-    @TestName
-    String testname;
-	
-	@Override
-	protected String getServletPath() {
-		return "SecurityServlet";
-	}
 
-	/*
-	 * @testName: managedScheduledExecutorServiceAPISecurityTest
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
-	 * 
-	 * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
-	 * then submit a task by ManagedScheduledExecutorService in which call a ejb
-	 * that requires role manager.
+    @ArquillianResource(SecurityServlet.class)
+    private URL baseURL;
+
+    @Deployment(name = "SecurityTests")
+    public static EnterpriseArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "security_web.war")
+                .addPackages(true, SecurityFullTests.class.getPackage())
+                .addPackages(true, PACKAGE.TASKS.getPackageName())
+                .deleteClasses(SecurityTestInterface.class, SecurityTestEjb.class); // SecurityTestEjb and
+                                                                                    // SecurityTestInterface are in the
+                                                                                    // jar
+
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "security_ejb.jar")
+                .addClasses(SecurityTestInterface.class, SecurityTestEjb.class)
+                .addAsServiceProvider(EJBJNDIProvider.class, SecurityEJBProvider.FullProvider.class);
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "security.ear").addAsModules(war, jar);
+
+        return ear;
+    }
+
+    @TestName
+    private String testname;
+
+    @Override
+    protected String getServletPath() {
+        return "SecurityServlet";
+    }
+
+    /*
+     * @testName: managedScheduledExecutorServiceAPISecurityTest
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
+     *
+     * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
+     * then submit a task by ManagedScheduledExecutorService in which call a ejb
+     * that requires role manager.
      *
      * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-     * fix: https://github.com/jakartaee/concurrency/pull/221
-     * Can be reenabled in the next release of Jakarta Concurrency
-	 */
-	@Disabled
-	public void managedScheduledExecutorServiceAPISecurityTest() {
-		runTest(baseURL, testname);
-	}
+     * fix: https://github.com/jakartaee/concurrency/pull/221 Can be reenabled in
+     * the next release of Jakarta Concurrency
+     */
+    @Disabled
+    public void managedScheduledExecutorServiceAPISecurityTest() {
+        runTest(baseURL, testname);
+    }
 
 }

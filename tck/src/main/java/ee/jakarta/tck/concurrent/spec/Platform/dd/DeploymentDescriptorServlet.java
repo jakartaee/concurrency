@@ -47,17 +47,17 @@ public class DeploymentDescriptorServlet extends TestServlet {
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
     @EJB
-    DeploymentDescriptorTestBeanInterface enterpriseBean;
+    private DeploymentDescriptorTestBeanInterface enterpriseBean;
 
     @Resource
-    UserTransaction tx;    
+    private UserTransaction tx;
 
     /**
      * Tests context-service defined in a deployment descriptor.
      */
     public void testDeploymentDescriptorDefinesContextService() throws Throwable {
         ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/ContextD");
- 
+
         Callable<Integer> checkContextAndGetTransactionStatus;
 
         tx.begin();
@@ -131,10 +131,14 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
             taskCanEnd.countDown();
 
-            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedExecutor-1");
-            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedExecutor-2");
-            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedExecutor-3");
-            assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS), "testDeploymentDescriptorDefinesManagedExecutor-4");
+            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedExecutor-1");
+            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedExecutor-2");
+            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedExecutor-3");
+            assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "testDeploymentDescriptorDefinesManagedExecutor-4");
 
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
         } finally {

@@ -28,102 +28,102 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;;
 
 @Web
-@Common({PACKAGE.TASKS, PACKAGE.COUNTER, PACKAGE.FIXED_COUNTER})
+@Common({ PACKAGE.TASKS, PACKAGE.COUNTER, PACKAGE.FIXED_COUNTER })
 public class InheritedAPIWebTests {
-	
-	@Deployment(name="InheritedAPITests")
-	public static WebArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
-		        .addClasses(InheritedAPIWebTests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
-				.addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
-		return war;
-	}
 
-	@EJB
-	private TestEjbInterface testEjb;
+    @Deployment(name = "InheritedAPITests")
+    public static WebArchive createDeployment() {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "inheritedapi.war")
+                .addClasses(InheritedAPIWebTests.class, CounterEJBProvider.class, TestEjb.class, TestEjbInterface.class)
+                .addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.WebProvider.class);
+        return war;
+    }
 
-	/*
-	 * @testName: testApiSubmit
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.1
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiSubmit() {
-		testEjb.testApiSubmit();
-	}
+    @EJB
+    private TestEjbInterface testEjb;
 
-	/*
-	 * @testName: testApiExecute
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.2
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiExecute() {
-		testEjb.testApiExecute();
-	}
+    /*
+     * @testName: testApiSubmit
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.1
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiSubmit() {
+        testEjb.testApiSubmit();
+    }
 
-	/*
-	 * @testName: testApiInvokeAll
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.3
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiInvokeAll() {
-		testEjb.testApiInvokeAll();
-	}
+    /*
+     * @testName: testApiExecute
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.2
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiExecute() {
+        testEjb.testApiExecute();
+    }
 
-	/*
-	 * @testName: testApiInvokeAny
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.4
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiInvokeAny() {
-		testEjb.testApiInvokeAny();
-	}
+    /*
+     * @testName: testApiInvokeAll
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.3
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiInvokeAll() {
+        testEjb.testApiInvokeAll();
+    }
 
-	/*
-	 * @testName: testApiSchedule
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.5
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiSchedule() {
-		testEjb.testApiSchedule();
-	}
+    /*
+     * @testName: testApiInvokeAny
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.4
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiInvokeAny() {
+        testEjb.testApiInvokeAny();
+    }
 
-	/*
-	 * @testName: testApiScheduleAtFixedRate
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.6
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiScheduleAtFixedRate() {
-		testEjb.testApiScheduleAtFixedRate();
-	}
+    /*
+     * @testName: testApiSchedule
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.5
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiSchedule() {
+        testEjb.testApiSchedule();
+    }
 
-	/*
-	 * @testName: testApiScheduleWithFixedDelay
-	 * 
-	 * @assertion_ids: CONCURRENCY:SPEC:44.7
-	 * 
-	 * @test_Strategy:
-	 */
-	@Test
-	public void testApiScheduleWithFixedDelay() {
-		testEjb.testApiScheduleWithFixedDelay();
-	}
+    /*
+     * @testName: testApiScheduleAtFixedRate
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.6
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiScheduleAtFixedRate() {
+        testEjb.testApiScheduleAtFixedRate();
+    }
+
+    /*
+     * @testName: testApiScheduleWithFixedDelay
+     *
+     * @assertion_ids: CONCURRENCY:SPEC:44.7
+     *
+     * @test_Strategy:
+     */
+    @Test
+    public void testApiScheduleWithFixedDelay() {
+        testEjb.testApiScheduleWithFixedDelay();
+    }
 
 }

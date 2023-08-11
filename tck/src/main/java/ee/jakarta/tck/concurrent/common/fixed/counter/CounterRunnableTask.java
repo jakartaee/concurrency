@@ -26,7 +26,7 @@ public class CounterRunnableTask implements Runnable, WorkInterface {
     public CounterRunnableTask() {
     }
 
-    public CounterRunnableTask(Duration sleepTime) {
+    public CounterRunnableTask(final Duration sleepTime) {
         this.sleepTime = sleepTime;
     }
 

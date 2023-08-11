@@ -31,18 +31,19 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SecurityServlet")
 public class SecurityServlet extends TestServlet {
 
-	@EJB
-	private ContextPropagateInterface intf;
-	
-    @Resource(lookup = TestConstants.DefaultContextService)
-    public ContextService context;
-	
-	public void testSecurityAndCreateProxyInServlet(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		req.login("javajoe", "javajoe");
+    @EJB
+    private ContextPropagateInterface intf;
 
-		String result = intf.executeWorker((TestWorkInterface) context.createContextualProxy(
-				new TestSecurityRunnableWork(), Runnable.class, TestWorkInterface.class, Serializable.class));
+    @Resource(lookup = TestConstants.defaultContextService)
+    private ContextService context;
 
-		resp.getWriter().println(result);
-	}
+    public void testSecurityAndCreateProxyInServlet(final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
+        req.login("javajoe", "javajoe");
+
+        String result = intf
+                .executeWorker((TestWorkInterface) context.createContextualProxy(new TestSecurityRunnableWork(),
+                        Runnable.class, TestWorkInterface.class, Serializable.class));
+
+        resp.getWriter().println(result);
+    }
 }

@@ -30,29 +30,30 @@ import jakarta.transaction.UserTransaction;
 
 public class CancelledTransactedTask implements Runnable {
 
-    public AtomicBoolean runQuery = new AtomicBoolean(false);
+    private AtomicBoolean runQuery = new AtomicBoolean(false);
 
-    public AtomicBoolean beginTransaction = new AtomicBoolean(false);
+    private AtomicBoolean beginTransaction = new AtomicBoolean(false);
 
-    public AtomicBoolean cancelTransaction = new AtomicBoolean(false);
+    private AtomicBoolean cancelTransaction = new AtomicBoolean(false);
 
     private final String sqlTemplate;
 
-    public CancelledTransactedTask(String sqlTemplate) {
+    public CancelledTransactedTask(final String sqlTemplate) {
         this.sqlTemplate = sqlTemplate;
     }
 
     private void waitForRun() {
-        assertTimeoutPreemptively(TestConstants.WaitTimeout, () -> {
-            for (; !runQuery.get(); Wait.sleep(TestConstants.PollInterval))
-                ;
+        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
+            for (; !runQuery.get(); Wait.sleep(TestConstants.pollInterval)) {
+                //empty
+            }
         });
     }
 
     @Override
     public void run() {
         try {
-            UserTransaction ut = InitialContext.doLookup(TestConstants.UserTransaction);
+            UserTransaction ut = InitialContext.doLookup(TestConstants.userTransaction);
             ut.begin();
             beginTransaction.set(true);
             waitForRun();
@@ -81,5 +82,21 @@ public class CancelledTransactedTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public AtomicBoolean getRunQuery() {
+        return runQuery;
+    }
+
+    public AtomicBoolean getBeginTransaction() {
+        return beginTransaction;
+    }
+
+    public AtomicBoolean getCancelTransaction() {
+        return cancelTransaction;
+    }
+
+    public String getSqlTemplate() {
+        return sqlTemplate;
     }
 }

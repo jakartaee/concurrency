@@ -38,115 +38,119 @@ import jakarta.transaction.UserTransaction;
 
 @WebServlet("/ManagedExecutorDefinitionOnEJBServlet")
 public class ManagedExecutorDefinitionOnEJBServlet extends TestServlet {
-	private static final long serialVersionUID = 1L;
-	private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
+    private static final long serialVersionUID = 1L;
+    private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
-	@Inject AppBean appBean;
+    @Inject
+    private AppBean appBean;
 
-	@Resource
-	UserTransaction tx;
+    @Resource
+    private UserTransaction tx;
 
-	@EJB
-	private ManagedExecutorDefinitionInterface managedExecutorDefinitionBean;
+    @EJB
+    private ManagedExecutorDefinitionInterface managedExecutorDefinitionBean;
 
-	//Needed to initialize the ContextServiceDefinitions
-	@EJB
-	private ContextServiceDefinitionInterface contextServiceDefinitionBean;
-	 
-	/**
-	 * ManagedExecutorService creates an incomplete CompletableFuture to which dependent stages
-	 * can be chained. The CompletableFuture can be completed from another thread lacking the
-	 * same context, but the dependent stages all run with the thread context of the thread
-	 * from which they were created, per ManagedExecutorDefinition config.
-	 */
-	public void testIncompleteFutureEJB() throws Throwable {
-		ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBExecutorA");
+    // Needed to initialize the ContextServiceDefinitions
+    @EJB
+    private ContextServiceDefinitionInterface contextServiceDefinitionBean;
 
-		try {
-			IntContext.set(181);
-			StringContext.set("testIncompleteFutureEJB-1");
+    /**
+     * ManagedExecutorService creates an incomplete CompletableFuture to which
+     * dependent stages can be chained. The CompletableFuture can be completed from
+     * another thread lacking the same context, but the dependent stages all run
+     * with the thread context of the thread from which they were created, per
+     * ManagedExecutorDefinition config.
+     */
+    public void testIncompleteFutureEJB() throws Throwable {
+        ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/EJBExecutorA");
 
-			CompletableFuture<String> stage1 = executor.newIncompleteFuture();
+        try {
+            IntContext.set(181);
+            StringContext.set("testIncompleteFutureEJB-1");
 
-			IntContext.set(182);
+            CompletableFuture<String> stage1 = executor.newIncompleteFuture();
 
-			CompletableFuture<String> stage2a = stage1.thenApplyAsync(sep -> {
-				int i = IntContext.get();
-				return "IntContext " + (i == 182 ? "propagated" : "incorrect:" + i) + sep;
-			});
+            IntContext.set(182);
 
-			CompletableFuture<String> stage2b = stage1.thenApply(sep -> {
-				String s = StringContext.get();
-				return "StringContext " + ("".equals(s) ? "cleared" : "incorrect:" + s) + sep;
-			});
+            CompletableFuture<String> stage2a = stage1.thenApplyAsync(sep -> {
+                int i = IntContext.get();
+                return "IntContext " + (i == 182 ? "propagated" : "incorrect:" + i) + sep;
+            });
 
-			IntContext.set(183);
+            CompletableFuture<String> stage2b = stage1.thenApply(sep -> {
+                String s = StringContext.get();
+                return "StringContext " + ("".equals(s) ? "cleared" : "incorrect:" + s) + sep;
+            });
 
-			CompletableFuture<String> stage3 = stage2a.thenCombineAsync(stage2b, (status1, status2) -> {
-				try {
-					ManagedExecutorService mes = InitialContext.doLookup("java:app/concurrent/EJBExecutorA");
-					return status1 + status2 + "Application context " + (mes == null ? "incorrect" : "propagated");
-				} catch (NamingException x) {
-					throw new CompletionException(x);
-				}                
-			});
+            IntContext.set(183);
 
-			stage1.complete(";");
+            CompletableFuture<String> stage3 = stage2a.thenCombineAsync(stage2b, (status1, status2) -> {
+                try {
+                    ManagedExecutorService mes = InitialContext.doLookup("java:app/concurrent/EJBExecutorA");
+                    return status1 + status2 + "Application context " + (mes == null ? "incorrect" : "propagated");
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+            });
 
-			String result = stage3.join();
-			assertEquals(result, "IntContext propagated;StringContext cleared;Application context propagated", 
-					"Application context and IntContext must be propagated and StringContext must be cleared " +
-					"per ManagedExecutorDefinition and ContextServiceDefinition config.");
-		} finally {
-			IntContext.set(0);
-			StringContext.set(null);
-		}
-	}
+            stage1.complete(";");
 
-	/**
-	 * ManagedExecutorService can create a contextualized copy of an unmanaged CompletableFuture.
-	 */
-	public void testCopyCompletableFutureEJB() throws Throwable {
-		ManagedExecutorService executor = (ManagedExecutorService) managedExecutorDefinitionBean.doLookup("java:module/concurrent/ExecutorB");
+            String result = stage3.join();
+            assertEquals(result, "IntContext propagated;StringContext cleared;Application context propagated",
+                    "Application context and IntContext must be propagated and StringContext must be cleared "
+                            + "per ManagedExecutorDefinition and ContextServiceDefinition config.");
+        } finally {
+            IntContext.set(0);
+            StringContext.set(null);
+        }
+    }
 
-		IntContext.set(271);
-		StringContext.set("testCopyCompletableFutureEJB-1");
+    /**
+     * ManagedExecutorService can create a contextualized copy of an unmanaged
+     * CompletableFuture.
+     */
+    public void testCopyCompletableFutureEJB() throws Throwable {
+        ManagedExecutorService executor = (ManagedExecutorService) managedExecutorDefinitionBean
+                .doLookup("java:module/concurrent/ExecutorB");
 
-		try {        
-			CompletableFuture<Character> stage1unmanaged = new CompletableFuture<Character>();
-			CompletableFuture<Character> stage1copy = executor.copy(stage1unmanaged);
-			CompletableFuture<Character> permanentlyIncompleteStage = new CompletableFuture<Character>();
+        IntContext.set(271);
+        StringContext.set("testCopyCompletableFutureEJB-1");
 
-			StringContext.set("testCopyCompletableFutureEJB-2");
+        try {
+            CompletableFuture<Character> stage1unmanaged = new CompletableFuture<Character>();
+            CompletableFuture<Character> stage1copy = executor.copy(stage1unmanaged);
+            CompletableFuture<Character> permanentlyIncompleteStage = new CompletableFuture<Character>();
 
-			CompletableFuture<String> stage2 = stage1copy.applyToEitherAsync(permanentlyIncompleteStage, sep -> {
-				String s = StringContext.get();
-				return "StringContext " + ("testCopyCompletableFutureEJB-2".equals(s) ? "propagated" : "incorrect:" + s)
-						+ sep;
-			});
+            StringContext.set("testCopyCompletableFutureEJB-2");
 
-			StringContext.set("testCopyCompletableFutureEJB-3");
+            CompletableFuture<String> stage2 = stage1copy.applyToEitherAsync(permanentlyIncompleteStage, sep -> {
+                String s = StringContext.get();
+                return "StringContext " + ("testCopyCompletableFutureEJB-2".equals(s) ? "propagated" : "incorrect:" + s)
+                        + sep;
+            });
 
-			CompletableFuture<String> stage3 = stage2.handleAsync((result, failure) -> {
-				if (failure == null) {
-					int i = IntContext.get();
-					return result + "IntContext " + (i == 0 ? "unchanged" : "incorrect:" + i);
-				} else {
-					throw (AssertionError) new AssertionError().initCause(failure);
-				}
-			});
+            StringContext.set("testCopyCompletableFutureEJB-3");
 
-			assertTrue(stage1unmanaged.complete(';'),
-					"Completation stage that is supplied to copy must not be modified by the " +
-					"ManagedExecutorService.");
+            CompletableFuture<String> stage3 = stage2.handleAsync((result, failure) -> {
+                if (failure == null) {
+                    int i = IntContext.get();
+                    return result + "IntContext " + (i == 0 ? "unchanged" : "incorrect:" + i);
+                } else {
+                    throw (AssertionError) new AssertionError().initCause(failure);
+                }
+            });
 
-			String result = stage3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-			assertEquals(result, "StringContext propagated;IntContext unchanged", 
-					"StringContext must be propagated and Application context and IntContext must be left " +
-					"unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
-		} finally {
-			IntContext.set(0);;
-			StringContext.set(null);
-		}
-	}
+            assertTrue(stage1unmanaged.complete(';'),
+                    "Completation stage that is supplied to copy must not be modified by the "
+                            + "ManagedExecutorService.");
+
+            String result = stage3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            assertEquals(result, "StringContext propagated;IntContext unchanged",
+                    "StringContext must be propagated and Application context and IntContext must be left "
+                            + "unchanged per ManagedExecutorDefinition and ContextServiceDefinition config.");
+        } finally {
+            IntContext.set(0);
+            StringContext.set(null);
+        }
+    }
 }

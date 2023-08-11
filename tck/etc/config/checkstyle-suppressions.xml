@@ -1,5 +1,7 @@
-/*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /*
+ * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,21 +15,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate;
+-->
 
-import javax.naming.NamingException;
+<!DOCTYPE suppressions PUBLIC
+     "-//Puppy Crawl//DTD Suppressions 1.0//EN"
+     "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
 
-import jakarta.enterprise.concurrent.ContextService;
-
-public interface ContextServiceDefinitionInterface {
-
-    /**
-     * Get java:comp/concurrent/EJBContextC from the bean.
-     */
-    public ContextService getContextC() throws NamingException;
-
-    /**
-     * Get java:comp/concurrent/ContextB from the bean.
-     */
-    ContextService getContextB() throws NamingException;
-}
+<suppressions>
+  <suppress checks="Javadoc" files="."/>
+</suppressions>
