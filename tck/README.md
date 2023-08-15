@@ -34,7 +34,7 @@ To build the TCK locally, first clone this repository and then use the Maven ins
 
 ```sh
 git clone git@github.com:jakartaee/concurrency.git
-cd concurrency-api
+cd api
 mvn install
 ```
 
