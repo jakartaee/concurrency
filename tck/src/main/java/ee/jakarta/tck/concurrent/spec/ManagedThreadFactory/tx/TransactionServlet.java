@@ -94,17 +94,20 @@ public class TransactionServlet extends TestServlet {
         Thread thread = threadFactory.newThread(cancelledTask);
         thread.start();
 
-        // then cancel it after transaction begin and
+        // wait for transaction to begin
         Wait.waitForTransactionBegan(cancelledTask);
 
-        // before it commit.
+        // set flag to rollback transaction
         cancelledTask.getCancelTransaction().set(true);
 
-        // continue to run if possible.
+        // continue query
         cancelledTask.getRunQuery().set(true);
+        
+        // wait for transaction to finish
+        Wait.waitTillThreadFinish(thread);
 
+        // verify transaction rolled back
         int afterTransacted = Counter.getCount();
-
         assertEquals(originTableCount, afterTransacted, "task was not properly cancelled");
     }
 }

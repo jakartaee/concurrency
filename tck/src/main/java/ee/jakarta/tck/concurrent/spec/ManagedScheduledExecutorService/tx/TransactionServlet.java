@@ -43,7 +43,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@SuppressWarnings({ "serial", "unused" })
+@SuppressWarnings({ "serial" })
 @WebServlet(Constants.CONTEXT_PATH)
 @DataSourceDefinition(
         name = "java:comp/env/jdbc/ManagedScheduledExecutorServiceDB",
@@ -94,17 +94,20 @@ public class TransactionServlet extends TestServlet {
         CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.SQL_TEMPLATE_INSERT);
         Future<?> future = managedScheduledExecutorService.schedule(cancelledTask, new OnceTrigger());
 
-        // then cancel it after transaction begin and
+        // wait for transaction to begin
         Wait.waitForTransactionBegan(cancelledTask);
 
-        // before it commit.
+        // set flag to rollback transaction
         cancelledTask.getCancelTransaction().set(true);
 
-        // continue to run if possible.
+        // continue query
         cancelledTask.getRunQuery().set(true);
+        
+        // wait for transaction to finish
+        Wait.waitForTaskComplete(future);
 
+        // verify transaction rolled back
         int afterTransacted = Counter.getCount();
-
         assertEquals(originTableCount, afterTransacted, "task was not properly cancelled");
     }
 }
