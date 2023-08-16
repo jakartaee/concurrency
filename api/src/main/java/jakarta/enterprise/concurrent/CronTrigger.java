@@ -543,7 +543,7 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Advance to next minute.
      *
-     * @param minute index of the minute in minutes[]
+     * @param minuteIndex index of the minute in minutes[]
      * @param hourIndex index of the hour in hours[]
      * @param dayIndex index of the day in daysOfMonth[]
      * @param lastDayIndex index of the last day of the month in daysOfMonth[]
@@ -553,10 +553,10 @@ public class CronTrigger implements ZonedTrigger {
      * @param time Date/Time
      * @return ZonedDateTime for next second
      */
-    private ZonedDateTime nextMinute(final int minute, final int hourIndex, final int dayIndex, final int lastDayIndex, final int dayOfMonth,
+    private ZonedDateTime nextMinute(final int minuteIndex, final int hourIndex, final int dayIndex, final int lastDayIndex, final int dayOfMonth,
                                      final int monthIndex, final int year, final ZonedDateTime time) {
-        if (minute + 1 < minutes.length) {
-            return time.withMinute(minutes[minute + 1]).withSecond(seconds[0]);
+        if (minuteIndex + 1 < minutes.length) {
+            return time.withMinute(minutes[minuteIndex + 1]).withSecond(seconds[0]);
         } else {
             return nextHour(hourIndex, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
         }
