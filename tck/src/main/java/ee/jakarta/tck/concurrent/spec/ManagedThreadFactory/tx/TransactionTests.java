@@ -24,11 +24,11 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.transaction.Constants;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -45,61 +45,31 @@ public class TransactionTests extends TestClient {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, TransactionTests.class.getPackage());
     }
+    
+    // TODO rewrite test logic to avoid duplicate key violation
 
-    /*
-     * @testName: testRollbackTransactionWithManagedThreadFactory
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
-     * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
-     * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:107;
-     * CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:109;
-     *
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedThreadFactory. test roll back function in the submitted task.
-     */
-    @Test
     @Order(1)
+    @Assertion(id = "SPEC:107 SPEC:108 SPEC:110 SPEC:111 SPEC:115 SPEC:116 SPEC:8.1 SPEC:9 SPEC:107 SPEC:108 SPEC:109",
+    strategy = "Get UserTransaction inside one task submitted by ManagedThreadFactory."
+            + " Test rollback function in the submitted task.")
     public void testRollbackTransactionWithManagedThreadFactory() {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
     }
 
-    /*
-     * @testName: testCommitTransactionWithManagedThreadFactory
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
-     * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
-     * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:107;
-     * CONCURRENCY:SPEC:109;CONCURRENCY:SPEC:113;CONCURRENCY:SPEC:118;
-     * CONCURRENCY:SPEC:113;CONCURRENCY:SPEC:118;
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedThreadFactory.it support user-managed global transaction demarcation
-     * using the jakarta.transaction.UserTransaction interface.
-     */
-    @Test // TODO rewrite test logic to avoid duplicate key violation
     @Order(2)
+    @Assertion(id = "SPEC:107 SPEC:108 SPEC:110 SPEC:111 SPEC:115 SPEC:116 SPEC:8.1 SPEC:9"
+            + " SPEC:107 SPEC:109 SPEC:113 SPEC:118 SPEC:113 SPEC:118",
+            strategy = "Get UserTransaction inside one task submitted by ManagedThreadFactory."
+                    + " It support user-managed global transaction demarcation using the jakarta.transaction.UserTransaction interface.")
     public void testCommitTransactionWithManagedThreadFactory() throws InterruptedException {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
     }
 
-    /*
-     * @testName: testCancelTransactionWithManagedThreadFactory
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:107;CONCURRENCY:SPEC:108;CONCURRENCY:SPEC:110;
-     * CONCURRENCY:SPEC:111;CONCURRENCY:SPEC:115;CONCURRENCY:SPEC:116;
-     * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedThreadFactory.cancel the task after submit one task.
-     */
-    @Test
     @Order(3)
+    @Assertion(id = "SPEC:107 SPEC:108 SPEC:110 SPEC:111 SPEC:115 SPEC:116 SPEC:8.1 SPEC:9",
+    strategy = "Get UserTransaction inside one task submitted by ManagedThreadFactory.cancel the task after submit one task.")
     public void testCancelTransactionWithManagedThreadFactory() {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));

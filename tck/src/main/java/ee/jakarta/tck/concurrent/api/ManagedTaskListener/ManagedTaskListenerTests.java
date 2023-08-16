@@ -28,13 +28,13 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.RunnableTaskWithStatus;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -65,17 +65,8 @@ public class ManagedTaskListenerTests {
         managedTaskListener.clearEvents();
     }
 
-    /*
-     * @testName: taskAborted
-     *
-     * @assertion_ids:
-     * CONCURRENCY:JAVADOC:38;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.1;CONCURRENCY:
-     * SPEC:45.3;
-     *
-     * @test_Strategy: taskAborted of ManagedTaskListener is Called when a task's
-     * Future has been cancelled anytime during the life of a task.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:38 SPEC:7 SPEC:7.1 SPEC:45.3",
+            strategy = "taskAborted of ManagedTaskListener is Called when a task's Future has been cancelled anytime during the life of a task.")
     public void taskAborted() throws InterruptedException {
         final Duration blockTime = Duration.ofMillis(3000);
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener, blockTime);
@@ -91,16 +82,8 @@ public class ManagedTaskListenerTests {
         assertTrue(futureResult.isCancelled(), "Listener taskAborted failed");
     }
 
-    /*
-     * @testName: taskDone
-     *
-     * @assertion_ids:
-     * CONCURRENCY:JAVADOC:39;CONCURRENCY:SPEC:13.3;CONCURRENCY:SPEC:45.3;
-     *
-     * @test_Strategy: TaskDone is called when a submitted task has completed
-     * running, either successfully or failed .
-     */
-    @Test
+    @Assertion(id = "JAVADOC:39 SPEC:13.3 SPEC:45.3",
+            strategy = "TaskDone is called when a submitted task has completed running, either successfully or failed.")
     public void taskDone() throws InterruptedException {
         // in cancel case
         final Duration blockTime = Duration.ofMillis(3000);
@@ -135,18 +118,9 @@ public class ManagedTaskListenerTests {
                 "Listener TaskDone failed with exception task.");
     }
 
-    /*
-     * @testName: taskStarting
-     *
-     * @assertion_ids:
-     * CONCURRENCY:JAVADOC:40;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.3;CONCURRENCY:
-     * SPEC:45.3;
-     *
-     * @test_Strategy: TaskStarting is called before the task is about to start. The
-     * task will not enter the starting state until the taskSubmitted listener has
-     * completed.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:40 SPEC:7 SPEC:7.3 SPEC:45.3",
+            strategy = "TaskStarting is called before the task is about to start."
+                    + " The task will not enter the starting state until the taskSubmitted listener has completed.")
     public void taskStarting() {
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
@@ -161,18 +135,9 @@ public class ManagedTaskListenerTests {
         }
     }
 
-    /*
-     * @testName: taskSubmitted
-     *
-     * @assertion_ids:
-     * CONCURRENCY:JAVADOC:41;CONCURRENCY:SPEC:7;CONCURRENCY:SPEC:7.2;CONCURRENCY:
-     * SPEC:45.3;
-     *
-     * @test_Strategy: TaskSubmitted is called after the task has been submitted to
-     * the Executor. The task will not enter the starting state until the
-     * taskSubmitted listener has completed.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:41 SPEC:7 SPEC:7.2 SPEC:45.3",
+            strategy = "TaskSubmitted is called after the task has been submitted to the Executor."
+                    + " The task will not enter the starting state until the taskSubmitted listener has completed.")
     public void taskSubmitted() {
         Runnable runnableTask = new RunnableTaskWithStatus(managedTaskListener);
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);

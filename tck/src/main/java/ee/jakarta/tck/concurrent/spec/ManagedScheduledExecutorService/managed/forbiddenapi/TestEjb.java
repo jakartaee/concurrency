@@ -16,7 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,56 +28,37 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 @Stateless
 public class TestEjb implements TestEjbInterface {
 
-    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     private ManagedScheduledExecutorService scheduledExecutor;
 
     public void testAwaitTermination() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            fail(e.getMessage());
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testIsShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.isShutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testIsTerminated() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.isTerminated();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.shutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testShutdownNow() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.shutdownNow();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
 }

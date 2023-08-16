@@ -16,16 +16,16 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -41,98 +41,38 @@ public class ForbiddenAPIServletTests {
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
     private ManagedExecutorService mes;
 
-    /*
-     * @testName: testAwaitTermination
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.1", strategy = "Test basic function for ManagedExecutorService: awaitTermination")
     public void testAwaitTermination() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             mes.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (IllegalStateException e) { // what expected.
-            return;
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        });
     }
 
-    /*
-     * @testName: testIsShutdown
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.2", strategy = "Test basic function for ManagedExecutorService: isShutdown")
     public void testIsShutdown() {
-        try {
-            mes.isShutdown();
-        } catch (IllegalStateException e) { // what expected
-            return;
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        assertThrows(IllegalStateException.class, () -> {
+            
+        });
     }
 
-    /*
-     * @testName: testIsTerminated
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.3", strategy = "Test basic function for ManagedExecutorService: isTerminated")
     public void testIsTerminated() {
-        try {
-            mes.isTerminated();
-        } catch (IllegalStateException e) { // what expected
-            return;
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        assertThrows(IllegalStateException.class, () -> {
+            
+        });
     }
 
-    /*
-     * @testName: testShutdown
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
-     *
-     * @test_Strategy:
-     */
-    @Test
-    public void testShutdown() {
-        try {
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.4", strategy = "Test basic function for ManagedExecutorService: shutdown")
+   public void testShutdown() {
+        assertThrows(IllegalStateException.class, () -> {
             mes.shutdown();
-        } catch (IllegalStateException e) { // what expected
-            return;
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        });
     }
 
-    /*
-     * @testName: testShutdownNow
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.5", strategy = "Test basic function for ManagedExecutorService: shutdownNow")
     public void testShutdownNow() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             mes.shutdownNow();
-        } catch (IllegalStateException e) { // what expected
-            return;
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        });
     }
 }

@@ -24,11 +24,11 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.transaction.Constants;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -45,59 +45,30 @@ public class TransactionTests extends TestClient {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, TransactionTests.class.getPackage());
     }
+    
+    // TODO rewrite test logic to avoid duplicate key violation
 
-    /*
-     * @testName: testRollbackTransactionWithManagedScheduledExecutorService
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
-     * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;
-     * CONCURRENCY:SPEC:67;CONCURRENCY:SPEC:69;
-     * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedScheduledExecutorService. test roll back function in the submitted
-     * task.
-     */
-    @Test
     @Order(1)
+    @Assertion(id = "SPEC:63 SPEC:64 SPEC:65 SPEC:66 SPEC:67 SPEC:69 SPEC:71 SPEC:72",
+    strategy = "Get UserTransaction inside one task submitted by ManagedScheduledExecutorService."
+            + " Test rollback function in the submitted task.")
     public void testRollbackTransactionWithManagedScheduledExecutorService() {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_FALSE).withTestName("transactionTest"));
     }
 
-    /*
-     * @testName: testCommitTransactionWithManagedScheduledExecutorService
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
-     * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;CONCURRENCY:SPEC:67;
-     * CONCURRENCY:SPEC:69;CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;
-     * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedScheduledExecutorService.it support user-managed global transaction
-     * demarcation using the jakarta.transaction.UserTransaction interface.
-     */
-    @Test // TODO rewrite test logic to avoid duplicate key violation
     @Order(2)
+    @Assertion(id = "SPEC:63 SPEC:64 SPEC:65 SPEC:66 SPEC:67 SPEC:69 SPEC:8.1 SPEC:9 SPEC:71 SPEC:72",
+            strategy = "Get UserTransaction inside one task submitted by ManagedScheduledExecutorService."
+                    + " It support user-managed global transaction demarcation using the jakarta.transaction.UserTransaction interface.")
     public void testCommitTransactionWithManagedScheduledExecutorService() {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_TRUE).withTestName("transactionTest"));
     }
 
-    /*
-     * @testName: testCancelTransactionWithManagedScheduledExecutorService
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:42.1;CONCURRENCY:SPEC:42.3;
-     * CONCURRENCY:SPEC:63;CONCURRENCY:SPEC:64;
-     * CONCURRENCY:SPEC:65;CONCURRENCY:SPEC:66;
-     * CONCURRENCY:SPEC:67;CONCURRENCY:SPEC:69;
-     * CONCURRENCY:SPEC:71;CONCURRENCY:SPEC:72;
-     *
-     * @test_Strategy: get UserTransaction inside one task submitted by
-     * ManagedScheduledExecutorService.cancel the task after submit one task.
-     */
-    @Test
     @Order(3)
+    @Assertion(id = "SPEC:42.1 SPEC:42.3 SPEC:63 SPEC:64 SPEC:65 SPEC:66 SPEC:67 SPEC:69 SPEC:71 SPEC:72",
+    strategy = "Get UserTransaction inside one task submitted by ManagedScheduledExecutorService.cancel the task after submit one task.")
     public void testCancelTransactionWithManagedScheduledExecutorService() {
         runTest(URLBuilder.get().withBaseURL(baseURL).withPaths(Constants.CONTEXT_PATH)
                 .withQueries(Constants.COMMIT_CANCEL).withTestName("cancelTest"));

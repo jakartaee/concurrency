@@ -25,10 +25,10 @@ import java.util.Map;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -52,16 +52,8 @@ public class ManagedTaskTests {
         return new RunnableTask("java:comp/env/StringValue", "FakeValue", this.getClass().getName());
     }
 
-    /*
-     * @testName: getExecutionProperties
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:36
-     *
-     * @test_Strategy: Get ManagedTask to provides additional information to the
-     * ManagedExecutorService or ManagedScheduledExecutorService when executing this
-     * task.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:36", strategy = "Get ManagedTask to provides additional information to the ManagedExecutorService"
+            + " or ManagedScheduledExecutorService when executing this task.")
     public void getExecutionProperties() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
@@ -75,15 +67,8 @@ public class ManagedTaskTests {
         assertEquals("value", managedTask.getExecutionProperties().get("key"));
     }
 
-    /*
-     * @testName: getManagedTaskListener
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:37
-     *
-     * @test_Strategy: Get ManagedTask with ManagedTaskListener to receive
-     * notification of life cycle events of this task.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:37", strategy = "Get ManagedTask with ManagedTaskListener to receive notification"
+            + " of life cycle events of this task.")
     public void getManagedTaskListener() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");

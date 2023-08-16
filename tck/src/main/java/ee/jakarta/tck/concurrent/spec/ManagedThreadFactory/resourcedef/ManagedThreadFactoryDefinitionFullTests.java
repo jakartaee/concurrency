@@ -25,13 +25,13 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
@@ -82,40 +82,46 @@ public class ManagedThreadFactoryDefinitionFullTests extends TestClient {
         return "ManagedThreadFactoryDefinitionServlet";
     }
 
-    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Assertion(id = "GIT:156", strategy = "ManagedThreadFactoryDefinition with all attributes configured")
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
         runTest(baseURL, testname);
     }
 
-    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Assertion(id = "GIT:156",
+        strategy = "A ManagedThreadFactoryDefinition defined on an EJB with all attributes configured enforces priority and propagates context.")
     public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:156", strategy = "ManagedThreadFactoryDefinition with minimal attributes configured")
     public void testManagedThreadFactoryDefinitionDefaults() throws Throwable {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:156",
+            strategy = "ManagedThreadFactoryDefinition defined on an EJB with minimal attributes creates threads with normal priority"
+                    + " and uses java:comp/DefaultContextService to determine context propagation and clearing")
     public void testManagedThreadFactoryDefinitionDefaultsEJB() throws Throwable {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Assertion(id = "GIT:156",
+        strategy = "ManagedThreadFactory can be supplied to a ForkJoinPool, which manages thread context and priority as configured")
     public void testParallelStreamBackedByManagedThreadFactory() throws Throwable {
         runTest(baseURL, testname);
     }
 
-    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Assertion(id = "GIT:156",
+        strategy = "ManagedThreadFactoryDefinition defined on an EJB is supplied to a ForkJoinPool"
+                + " and uses java:comp/DefaultContextService to determine context propagation and priority.")
     public void testParallelStreamBackedByManagedThreadFactoryEJB() throws Throwable {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedThreadFactoryDefinitionOnEJBServlet").withTestName(testname);

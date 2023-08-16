@@ -23,9 +23,9 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -55,20 +55,12 @@ public class ContextWebTests extends TestClient {
         return "SecurityServlet";
     }
 
-    /*
-     * @testName: jndiClassloaderPropagationTest
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:96.7; CONCURRENCY:SPEC:100;
-     * CONCURRENCY:SPEC:106;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:96.7 SPEC:100 SPEC:106", strategy = "Ensures classloader context is propogated to ThreadFactory task.")
     public void jndiClassloaderPropagationTest() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "SPEC:96.7 SPEC:100 SPEC:106", strategy = "Ensures classloader context is propogated to ThreadFactory task that uses a security role.")
     public void jndiClassloaderPropagationWithSecurityTest() {
         runTest(baseURL, testname);
     }

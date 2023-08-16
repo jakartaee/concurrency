@@ -23,12 +23,12 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -71,62 +71,74 @@ public class ManagedExecutorDefinitionWebTests extends TestClient {
         return "ManagedExecutorDefinitionServlet";
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedExecutorService submits an action to run asynchronously as a CompletionStage."
+                    + " Dependent stages can be chained to the CompletionStage,"
+                    + " and all stages run with the thread context of the thread from which they were created, per ManagedExecutorDefinition config.")
     public void testAsyncCompletionStage() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Asynchronous method that returns CompletableFuture")
     public void testAsynchronousMethodReturnsCompletableFuture() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Asynchronous method that returns CompletionStage")
     public void testAsynchronousMethodReturnsCompletionStage() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Asynchronous method that returns void")
     public void testAsynchronousMethodVoidReturnType() {
         runTest(baseURL, testname);
     }
 
-    // TCK Accepted Challenge: https://github.com/jakartaee/concurrency/issues/224
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/224")
+    @Assertion(id = "GIT:154",
+        strategy = "ManagedExecutorService creates a completed CompletableFuture to which async dependent stages can be chained."
+                + " The dependent stages all run with the thread context of the thread from which they were created,"
+                + " per ManagedExecutorDefinition config.")
     public void testCompletedFuture() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "ManagedExecutorService can create a contextualized copy of an unmanaged CompletableFuture.")
     public void testCopyCompletableFuture() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Use another managed executor from ManagedExecutorDefinition that was defined in an EJB")
     public void testCopyCompletableFutureEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedExecutorService creates an incomplete CompletableFuture to which dependent stages can be chained."
+                    + " The CompletableFuture can be completed from another thread lacking the same context,"
+                    + " but the dependent stages all run with the thread context of the thread from which they were created,"
+                    + " per ManagedExecutorDefinition config.")
     public void testIncompleteFuture() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Use managed executor from ManagedExecutorDefinition that was defined in an EJB")
     public void testIncompleteFutureEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "ManagedExecutorDefinition with all attributes configured")
     public void testManagedExecutorDefinitionAllAttributes() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedExecutorDefinition with minimal attributes can run multiple async tasks concurrently"
+                    + " and uses java:comp/DefaultContextService to determine context propagation and clearing.")
     public void testManagedExecutorDefinitionDefaults() {
         runTest(baseURL, testname);
     }

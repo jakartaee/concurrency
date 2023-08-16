@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -58,21 +59,11 @@ public class SecurityWebTests extends TestClient {
     }
 
     /*
-     * @testName: managedExecutorServiceAPISecurityTest
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:4.3; CONCURRENCY:SPEC:50;
-     * CONCURRENCY:SPEC:85; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:106;
-     * CONCURRENCY:SPEC:22;
-     *
-     * @test_Strategy: login in a servlet with username "javajoe(in role manager)",
-     * then submit a task by ManagedExecutorService in which call a ejb that
-     * requires role manager.
-     *
-     * Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/227
-     * fix: https://github.com/jakartaee/concurrency/pull/218 Can be reenabled in
-     * next release of Concurrency
+     * fix: https://github.com/jakartaee/concurrency/pull/218 Can be reenabled in next release of Concurrency
      */
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/227")
+    @Assertion(id = "SPEC:4.3 SPEC:50 SPEC:85 SPEC:96.6 SPEC:106 SPEC:22",
+        strategy = "Login in a servlet with username javajoe(in role manager), then submit a task by ManagedExecutorService in which call a ejb that requires role manager.")
     public void managedExecutorServiceAPISecurityTest() {
         runTest(baseURL, testname);
     }

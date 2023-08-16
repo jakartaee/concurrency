@@ -25,11 +25,11 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -74,23 +74,23 @@ public class DeploymentDescriptorFullTests extends TestClient {
         return "DeploymentDescriptorServlet";
     }
 
-    @Test
+    @Assertion(id = "GIT:186", strategy = "Tests context-service defined in a deployment descriptor.")
     public void testDeploymentDescriptorDefinesContextService() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:186", strategy = "Tests managed-executor defined in a deployment descriptor.")
     public void testDeploymentDescriptorDefinesManagedExecutor() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:186", strategy = "Tests managed-scheduled-executor defined in a deployment descriptor.")
     public void testDeploymentDescriptorDefinesManagedScheduledExecutor() {
         runTest(baseURL, testname);
     }
 
-    // Accepted TCK challenge: https://github.com/jakartaee/concurrency/issues/226
-    @Disabled
+    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Assertion(id = "GIT:186", strategy = "Tests managed-thread-factory defined in a deployment descriptor.")
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
         runTest(baseURL, testname);
     }

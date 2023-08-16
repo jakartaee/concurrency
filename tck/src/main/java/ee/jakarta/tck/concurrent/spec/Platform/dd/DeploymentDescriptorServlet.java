@@ -52,9 +52,6 @@ public class DeploymentDescriptorServlet extends TestServlet {
     @Resource
     private UserTransaction tx;
 
-    /**
-     * Tests context-service defined in a deployment descriptor.
-     */
     public void testDeploymentDescriptorDefinesContextService() throws Throwable {
         ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/ContextD");
 
@@ -89,9 +86,6 @@ public class DeploymentDescriptorServlet extends TestServlet {
         assertEquals(status, Status.STATUS_NO_TRANSACTION);
     }
 
-    /**
-     * Tests managed-executor defined in a deployment descriptor.
-     */
     public void testDeploymentDescriptorDefinesManagedExecutor() throws Throwable {
         LinkedBlockingQueue<Object> started = new LinkedBlockingQueue<Object>();
         CountDownLatch taskCanEnd = new CountDownLatch(1);
@@ -147,16 +141,10 @@ public class DeploymentDescriptorServlet extends TestServlet {
         }
     }
 
-    /**
-     * Tests managed-scheduled-executor defined in a deployment descriptor.
-     */
     public void testDeploymentDescriptorDefinesManagedScheduledExecutor() throws Throwable {
         enterpriseBean.testDeploymentDescriptorDefinesManagedScheduledExecutor();
     }
 
-    /**
-     * Tests managed-thread-factory defined in a deployment descriptor.
-     */
     public void testDeploymentDescriptorDefinesManagedThreadFactory() throws Throwable {
         enterpriseBean.testDeploymentDescriptorDefinesManagedThreadFactory();
     }

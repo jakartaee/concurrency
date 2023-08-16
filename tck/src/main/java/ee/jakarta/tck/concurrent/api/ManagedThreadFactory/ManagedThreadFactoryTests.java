@@ -23,12 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -49,31 +49,16 @@ public class ManagedThreadFactoryTests extends TestClient {
     @Resource(lookup = TestConstants.defaultManagedThreadFactory)
     private ManagedThreadFactory threadFactory;
 
-    /*
-     * @testName: isShutdown
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:20;CONCURRENCY:SPEC:99.1;
-     *
-     * @test_Strategy: Lookup default ManagedThreadFactory object and create new
-     * thread. Check return value of method isShutdown of new thread.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:20 SPEC:99.1",
+            strategy = "Lookup default ManagedThreadFactory object and create new thread."
+                    + " Check return value of method isShutdown of new thread.")
     public void isShutdown() {
         ManageableThread m = (ManageableThread) threadFactory.newThread(new CounterRunnableTask());
         assertFalse(m.isShutdown());
     }
 
-    /*
-     * @testName: interruptThreadApiTest
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:83; CONCURRENCY:SPEC:83.1;
-     * CONCURRENCY:SPEC:83.2; CONCURRENCY:SPEC:83.3; CONCURRENCY:SPEC:103;
-     * CONCURRENCY:SPEC:96.5; CONCURRENCY:SPEC:96.6; CONCURRENCY:SPEC:105;
-     * CONCURRENCY:SPEC:96; CONCURRENCY:SPEC:93; CONCURRENCY:SPEC:96.3;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:83 SPEC:83.1 SPEC:83.2 SPEC:83.3 SPEC:103 SPEC:96.5 SPEC:96.6 SPEC:105 SPEC:96 SPEC:93 SPEC:96.3",
+            strategy = "Interrupt thread and ensure the thread did not run.")
     public void interruptThreadApiTest() {
         CounterRunnableTask task = new CounterRunnableTask(TestConstants.pollInterval);
         Thread thread = threadFactory.newThread(task);
@@ -83,14 +68,7 @@ public class ManagedThreadFactoryTests extends TestClient {
         assertEquals(0, StaticCounter.getCount());
     }
 
-    /*
-     * @testName: implementsManageableThreadInterfaceTest
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:97;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:97;", strategy = "Create thread and ensure the thread is an instance of ManageableThread")
     public void implementsManageableThreadInterfaceTest() {
         CounterRunnableTask task = new CounterRunnableTask();
         Thread thread = threadFactory.newThread(task);
