@@ -1,7 +1,7 @@
 = Jakarta Concurrency TCK Reference Guide
 :author: Kyle Aure
 :email: cu-dev@eclipse.org
-:revnumber: v1.0
+:revnumber: v1.1
 :toc:
 :sectnums:
 
@@ -13,7 +13,6 @@
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
 :TCKTestPlatform: Junit5
-:RuntimeTestCount: 164
 :SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:1.6
 
 == Preface
@@ -182,11 +181,12 @@ Because there is flexibility regarding how a user could use Maven to configure a
 
 === Runtime tests
 
-For the runtime test (JUnit) component of the TCK: 
+For the {TCKTestPlatform} runtime tests of the TCK, 
+the following table shows the number of tests that should pass based on platform: 
 
-* {RuntimeTestCount} tests must be passed to successfully execute the EE TCK suite
+include::generated/runtime-tests.adoc[]
 
-**Note:* This count includes the signature test
+**Note:** Counts include signature test, but do not include disabled tests.
 
 == Example runner
 
@@ -343,44 +343,9 @@ $ mvn clean test
 
 === Expected Output
 
-Here is example output when we, as in the starter runner, run successfully:
+Here is example output when the starter runner runs successfully:
 
-[source, sh]
-----
-    $ mvn clean test
-    ...
-    
-	-------------------------------------------------------
-	 T E S T S
-	-------------------------------------------------------
-	Running TestSuite
-	...
-	...
-	
-	Tests run: 162, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 410.985 sec - in TestSuite
-	
-	Results :
-	
-	Tests run: 162, Failures: 0, Errors: 0, Skipped: 0
-	
-	16:05:47,343 [INFO] 
-	16:05:47,344 [INFO] ------< io.openliberty.jakarta.enterprise.concurrent:tck.runner >-------
-	16:05:47,345 [INFO] Building Jakarta Concurrency TCK Runner 1.0-SNAPSHOT               [2/2]
-	16:05:47,346 [INFO] --------------------------------[ pom ]---------------------------------
-	16:05:47,351 [INFO] 
-	16:05:47,351 [INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ tck.runner ---
-	16:05:47,359 [INFO] ------------------------------------------------------------------------
-	16:05:47,380 [INFO] Reactor Summary for Jakarta Concurrency TCK Runner 1.0-SNAPSHOT:
-	16:05:47,381 [INFO] 
-	16:05:47,382 [INFO] Jakarta Concurrency TCK Runner TCK Module .......... SUCCESS [06:55 min]
-	16:05:47,383 [INFO] Jakarta Concurrency TCK Runner ..................... SUCCESS [  0.017 s]
-	16:05:47,384 [INFO] ------------------------------------------------------------------------
-	16:05:47,385 [INFO] BUILD SUCCESS
-	16:05:47,385 [INFO] ------------------------------------------------------------------------
-	16:05:47,386 [INFO] Total time:  06:55 min
-	16:05:47,387 [INFO] Finished at: 2022-03-30T16:05:47-05:00
-	16:05:47,387 [INFO] ------------------------------------------------------------------------
-----
+include::generated/expected-output.adoc[]
 
 == Signature Tests
 
@@ -433,92 +398,7 @@ As mentioned in the prerequisite section the signature file formats across the v
 
 The the Signature Test plugin will log output to `System.out`.  Whereas, the Signature Test framework we use to set up the test will log using `java.util.logging` so you may see these logs output to two separate locations depending on your application server. 
 
-[source, txt]
-----
-[3/30/22, 16:01:03:250 CDT] 00000045 TestServlet        I --> testSignatures
-[3/30/22, 16:01:12:618 CDT] 00000045 SystemOut          O ********** BEGIN PACKAGE LEVEL SIGNATURE VALIDATION **********
-[3/30/22, 16:01:12:618 CDT] 00000045 SystemOut          O ********** BEGIN VALIDATE PACKAGE 'jakarta.enterprise.concurrent' **********
-[3/30/22, 16:01:12:618 CDT] 00000045 SystemOut          O ********** VALIDATE IN STATIC MODE - TO CHECK CONSANT VALUES ****
-[3/30/22, 16:01:12:619 CDT] 00000045 SystemOut          O Static mode supports checks of static constants values 
-[3/30/22, 16:01:12:622 CDT] 00000045 SystemOut          O Setting static mode flag to allow constant checking.
-...
-[3/30/22, 16:01:13:392 CDT] 00000045 SystemOut          O ********** Status Report 'jakarta.enterprise.concurrent' **********
-[3/30/22, 16:01:13:392 CDT] 00000045 SystemOut          O SignatureTest report
-Base version: 3.0.0-SNAPSHOT
-Tested version: 
-Check mode: src [throws normalized]
-Constant checking: on
-
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<?> can't be resolved 
-
-[3/30/22, 16:01:13:392 CDT] 00000045 SystemOut          O ********** Package 'jakarta.enterprise.concurrent' - PASSED (STATIC MODE) **********
-[3/30/22, 16:01:13:393 CDT] 00000045 SystemOut          O ********** VALIDATE IN REFLECTIVE MODE  ****
-[3/30/22, 16:01:13:393 CDT] 00000045 SystemOut          O Reflective mode supports verification within containers (ie ejb, servlet, etc)
-[3/30/22, 16:01:13:394 CDT] 00000045 SystemOut          O Not Setting static mode flag to allow constant checking.
-[3/30/22, 16:01:13:404 CDT] 00000045 SystemOut          O Calling:  com.sun.tdk.signaturetest.SignatureTest() with following args:
-...
-[3/30/22, 16:01:13:892 CDT] 00000045 SystemOut          O ********** Status Report 'jakarta.enterprise.concurrent' **********
-[3/30/22, 16:01:13:892 CDT] 00000045 SystemOut          O SignatureTest report
-Base version: 3.0.0-SNAPSHOT
-Tested version: 
-Check mode: src [throws normalized]
-Constant checking: on
-
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<?> can't be resolved 
-
-[3/30/22, 16:01:13:893 CDT] 00000045 SystemOut          O ********** Package 'jakarta.enterprise.concurrent' - PASSED (REFLECTION MODE) **********
-[3/30/22, 16:01:13:893 CDT] 00000045 SystemOut          O ********** END VALIDATE PACKAGE 'jakarta.enterprise.concurrent' **********
-[3/30/22, 16:01:13:893 CDT] 00000045 SystemOut          O ********** BEGIN VALIDATE PACKAGE 'jakarta.enterprise.concurrent.spi' **********
-[3/30/22, 16:01:13:893 CDT] 00000045 SystemOut          O ********** VALIDATE IN STATIC MODE - TO CHECK CONSANT VALUES ****
-[3/30/22, 16:01:13:893 CDT] 00000045 SystemOut          O Static mode supports checks of static constants values 
-[3/30/22, 16:01:13:894 CDT] 00000045 SystemOut          O Setting static mode flag to allow constant checking.
-[3/30/22, 16:01:13:909 CDT] 00000045 SystemOut          O Calling:  com.sun.tdk.signaturetest.SignatureTest() with following args:
-...
-[3/30/22, 16:01:14:292 CDT] 00000045 SystemOut          O ********** Status Report 'jakarta.enterprise.concurrent.spi' **********
-[3/30/22, 16:01:14:293 CDT] 00000045 SystemOut          O SignatureTest report
-Base version: 3.0.0-SNAPSHOT
-Tested version: 
-Check mode: src [throws normalized]
-Constant checking: on
-
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<?> can't be resolved 
-
-[3/30/22, 16:01:14:293 CDT] 00000045 SystemOut          O ********** Package 'jakarta.enterprise.concurrent.spi' - PASSED (STATIC MODE) **********
-[3/30/22, 16:01:14:293 CDT] 00000045 SystemOut          O ********** VALIDATE IN REFLECTIVE MODE  ****
-[3/30/22, 16:01:14:293 CDT] 00000045 SystemOut          O Reflective mode supports verification within containers (ie ejb, servlet, etc)
-[3/30/22, 16:01:14:294 CDT] 00000045 SystemOut          O Not Setting static mode flag to allow constant checking.
-[3/30/22, 16:01:14:301 CDT] 00000045 SystemOut          O Calling:  com.sun.tdk.signaturetest.SignatureTest() with following args:
-...
-[3/30/22, 16:01:14:616 CDT] 00000045 SystemOut          O ********** Status Report 'jakarta.enterprise.concurrent.spi' **********
-[3/30/22, 16:01:14:616 CDT] 00000045 SystemOut          O SignatureTest report
-Base version: 3.0.0-SNAPSHOT
-Tested version: 
-Check mode: src [throws normalized]
-Constant checking: on
-
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<{%%0}> can't be resolved 
-Warning: The return type java.util.concurrent.Future<?> can't be resolved 
-
-[3/30/22, 16:01:14:617 CDT] 00000045 SystemOut          O ********** Package 'jakarta.enterprise.concurrent.spi' - PASSED (REFLECTION MODE) **********
-[3/30/22, 16:01:14:617 CDT] 00000045 SystemOut          O ********** END VALIDATE PACKAGE 'jakarta.enterprise.concurrent.spi' **********
-[3/30/22, 16:01:14:618 CDT] 00000045 ConcurrencySigTest I 
-******************************************************
-All package signatures passed.
-	Passed packages listed below: 
-		jakarta.enterprise.concurrent(static mode)
-		jakarta.enterprise.concurrent(reflection mode)
-		jakarta.enterprise.concurrent.spi(static mode)
-		jakarta.enterprise.concurrent.spi(reflection mode)
-******************************************************
-[3/30/22, 16:01:14:620 CDT] 00000045 TestServlet                                                  I <-- testSignatures
-----
+include::generated/expected-sig-output.adoc[]
 
 == TCK Challenges/Appeals Process
 
@@ -536,7 +416,14 @@ The challenge process is defined within the [underline]#Challenges# section with
 
 Challenges will be tracked via the {APIGitSite}/issues[issues] of the {APILongName} Specification repository.
 
-As a shortcut through the challenge process mentioned in the *Jakarta EE TCK Process 1.1* you can click {APIGitSite}/issues/new?labels=challenge[here], though it is recommended that you read through the challenge process to understand it in detail.
+The challenge process mentioned in the *Jakarta EE TCK Process 1.1* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=challenge&projects=&template=tck-challenge.yml&title=TCK+Challenge[here],
+it is recommended that you read through the challenge process to understand it in detail.
+
+=== Successful Challenges
+
+The following tests are exempt from TCK testing due to challenges:
+
+include::generated/successful-challenges.adoc[]
 
 == Certification of Compatibility
 
@@ -553,7 +440,8 @@ The certification of compatibility process is defined within the [underline]#Cer
 
 Certifications will be tracked via the {APIGitSite}/issues[issues] of the {APILongName} Specification repository.
 
-As a shortcut through the certification of compatibility process mentioned in the *Jakarta EE TCK Process 1.1* you can click {APIGitSite}/issues/new?labels=certification[here], though it is recommended that you read through the certification process to understand it in detail.
+The certification of compatibility process mentioned in the *Jakarta EE TCK Process 1.1* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=certification&projects=&template=certification.yml&title=Certification[here],
+it is recommended that you read through the certification process to understand it in detail.
 
 == Rules for {APILongName} Products
 

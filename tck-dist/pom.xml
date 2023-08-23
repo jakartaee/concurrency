@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0, which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- *
- * This Source Code may also be made available under the following Secondary
- * Licenses when the conditions for such availability set forth in the
- * Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
- * version 2 with the GNU Classpath Exception, which is available at
- * https://www.gnu.org/software/classpath/license.html.
- *
- * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
- */
+ ~ Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ ~ 
+ ~ This program and the accompanying materials are made available under the
+ ~ terms of the Eclipse Public License v. 2.0, which is available at
+ ~ http://www.eclipse.org/legal/epl-2.0.
+ ~ 
+ ~ This Source Code may also be made available under the following Secondary
+ ~ Licenses when the conditions for such availability set forth in the
+ ~ Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
+ ~ version 2 with the GNU Classpath Exception, which is available at
+ ~ https://www.gnu.org/software/classpath/license.html.
+ ~ 
+ ~ SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -26,8 +26,6 @@
     </parent>
 
     <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
-    <packaging>pom</packaging>
-
     <name>Jakarta Concurrency TCK Distribution</name>
     <description>Jakarta Concurrency TCK Distribution</description>
 
@@ -38,7 +36,8 @@
             <distribution>repo</distribution>
         </license>
         <license>
-            <name>GNU General Public License, version 2 with the GNU Classpath Exception</name>
+            <name>GNU General Public License, version 2 with the GNU Classpath
+                Exception</name>
             <url>https://projects.eclipse.org/license/secondary-gpl-2.0-cp</url>
             <distribution>repo</distribution>
         </license>
@@ -60,14 +59,65 @@
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.tck.version}</version>
-            <type>pom</type>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+			<!-- Compile class files -->
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            
+            <!-- Load TCK dependency location as variable -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Automatically generate a list of excluded tests and test counts -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-asciidoc</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>ee.jakarta.tck.data.metadata.CollectMetaData</mainClass>
+                    <arguments>
+                        <argument>true</argument>
+                        <argument>
+                            ${jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck:jar}</argument>
+                        <argument>
+                            ${project.basedir}/src/main/asciidoc/generated</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            
             <!-- Aciidoctor will create the html and pdf distributions of the user-guide -->
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -83,7 +133,7 @@
                 <executions>
                     <execution>
                         <id>asciidoc-to-html</id>
-                        <phase>generate-resources</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
@@ -96,7 +146,7 @@
                     </execution>
                     <execution>
                         <id>asciidoc-to-pdf</id>
-                        <phase>generate-resources</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>process-asciidoc</goal>
                         </goals>
@@ -117,7 +167,7 @@
                     <skip>${maven.adoc.skip}</skip>
                 </configuration>
             </plugin>
-            
+
             <!-- Assembly plugin to collect everything into a single distribution -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -132,7 +182,8 @@
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
-                            <finalName>concurrency-tck-${jakarta.concurrent.tck.version}</finalName>
+                            <finalName>
+                                concurrency-tck-${jakarta.concurrent.tck.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
