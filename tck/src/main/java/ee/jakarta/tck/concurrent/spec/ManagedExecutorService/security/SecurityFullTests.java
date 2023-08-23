@@ -25,11 +25,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -65,10 +65,8 @@ public class SecurityFullTests extends TestClient {
         return "SecurityServlet";
     }
 
-    /*
-     * fix: https://github.com/jakartaee/concurrency/pull/218 Can be reenabled in next release of Concurrency
-     */
-    @Disabled("https://github.com/jakartaee/concurrency/issues/227")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/227", version = "3.0.0",
+            fix = "https://github.com/jakartaee/concurrency/pull/218", reintroduce = "3.1.0")
     @Assertion(id = "SPEC:4.3 SPEC:50 SPEC:85 SPEC:96.6 SPEC:106 SPEC:22",
         strategy = "Login in a servlet with username javajoe(in role manager), then submit a task by ManagedExecutorService in which call a ejb that requires role manager.")
     public void managedExecutorServiceAPISecurityTest() {

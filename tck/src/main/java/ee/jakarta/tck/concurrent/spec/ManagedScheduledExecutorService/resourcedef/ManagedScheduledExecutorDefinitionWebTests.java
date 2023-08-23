@@ -22,13 +22,13 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -90,7 +90,7 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
         runTest(baseURL, testname);
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/224")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/224", version = "3.0.0")
     @Assertion(id = "GIT:154",
         strategy = "ManagedScheduledExecutorService creates a completed CompletableFuture to which async dependent stages can be chained."
                 + " The dependent stages all run with the thread context of the thread from which they were created,"

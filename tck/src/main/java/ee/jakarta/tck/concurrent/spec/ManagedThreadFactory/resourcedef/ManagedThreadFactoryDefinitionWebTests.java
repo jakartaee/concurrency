@@ -22,13 +22,13 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -73,13 +73,13 @@ public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
         return "ManagedThreadFactoryDefinitionServlet";
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/226", version = "3.0.0")
     @Assertion(id = "GIT:156", strategy = "ManagedThreadFactoryDefinition with all attributes configured")
     public void testManagedThreadFactoryDefinitionAllAttributes() throws Throwable {
         runTest(baseURL, testname);
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/226", version = "3.0.0")
     @Assertion(id = "GIT:156",
         strategy = "A ManagedThreadFactoryDefinition defined on an EJB with all attributes configured enforces priority and propagates context.")
     public void testManagedThreadFactoryDefinitionAllAttributesEJB() throws Throwable {
@@ -102,7 +102,7 @@ public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
         runTest(requestURL);
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/226", version = "3.0.0")
     @Assertion(id = "GIT:156",
         strategy = "ManagedThreadFactory can be supplied to a ForkJoinPool,"
                 + " which manages thread context and priority as configured")
@@ -110,7 +110,7 @@ public class ManagedThreadFactoryDefinitionWebTests extends TestClient {
         runTest(baseURL, testname);
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/226", version = "3.0.0")
     @Assertion(id = "GIT:156",
         strategy = "ManagedThreadFactoryDefinition defined on an EJB is supplied to a ForkJoinPool"
                 + " and uses java:comp/DefaultContextService to determine context propagation and priority.")

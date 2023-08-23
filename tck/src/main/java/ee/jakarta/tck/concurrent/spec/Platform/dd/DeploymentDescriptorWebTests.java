@@ -22,12 +22,12 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -78,7 +78,7 @@ public class DeploymentDescriptorWebTests extends TestClient {
         runTest(baseURL, testname);
     }
 
-    @Disabled("https://github.com/jakartaee/concurrency/issues/226")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/226", version = "3.0.0")
     @Assertion(id = "GIT:186", strategy = "Tests managed-thread-factory defined in a deployment descriptor.")
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
         runTest(baseURL, testname);

@@ -25,7 +25,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
@@ -34,6 +33,7 @@ import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -90,17 +90,19 @@ public class ContextPropagationFullTests extends TestClient {
     @ArquillianResource(ContextServiceDefinitionFromEJBServlet.class)
     private URL ejbContextURL;
 
-    // HttpServletRequest.getUserPrincipal behavior is unclear when accessed from
-    // another thread or the current user is changed
-    @Disabled("https://github.com/jakartaee/concurrency/pull/206")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/pull/206", version = "3.0.0",
+            reason = "HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed")
+    @Assertion(id = "GIT:154", strategy = "From a JSP, use a ContextService that is defined by a ContextServiceDefinition"
+            + " elsewhere within the application to clear Security context from the thread of execution while the task is running.")
     public void testSecurityClearedContext() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testname);
         runTest(requestURL);
     }
 
-    // HttpServletRequest.getUserPrincipal behavior is unclear when accessed from
-    // another thread or the current user is changed
-    @Disabled("https://github.com/jakartaee/concurrency/pull/206")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/pull/206", version = "3.0.0",
+            reason = "HttpServletRequest.getUserPrincipal behavior is unclear when accessed from another thread or the current user is changed")
+    @Assertion(id = "GIT:154", strategy = "From a JSP, use a ContextService that is defined by a ContextServiceDefinition"
+            + " elsewhere within the application to leave Security context unchanged on the executing thread.")
     public void testSecurityUnchangedContext() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(jspURL).withPaths("jspTests.jsp").withTestName(testname);
         runTest(requestURL);
@@ -191,11 +193,8 @@ public class ContextPropagationFullTests extends TestClient {
         runTest(requestURL);
     }
 
-    /**
-     * FIXME Assertions on results[0] and results[1] are both invalid because treating
-     * those two UNCHANGED context types as though they were CLEARED.
-     */
-    @Disabled("https://github.com/jakartaee/concurrency/issues/253")
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/253", version = "3.0.1",
+            reason = "Assertions on results[0] and results[1] are both invalid because treating those two UNCHANGED context types as though they were CLEARED.")
     @Assertion(id = "GIT:154",
         strategy = "A ContextService contextualizes a Function, which can be supplied as a dependent stage action to an unmanaged CompletableFuture."
             + " The dependent stage action runs with the thread context of the thread that contextualizes the Function,"
