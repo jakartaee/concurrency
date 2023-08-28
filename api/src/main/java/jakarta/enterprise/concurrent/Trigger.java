@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -99,13 +99,10 @@ public interface Trigger {
    *
    * @param lastExecutionInfo information about the last execution of the task.
    *                   This value will be null if the task has not yet run.
-   * @param taskScheduledTime the date/time in which the task was scheduled using
-   *                          the {@code ManagedScheduledExecutorService.schedule}
-   *                          method.
-   * @return the date/time in which the next task iteration should execute on or
-   *         after.
-
-
+   * @param taskScheduledTime the date/time at which the
+   *                          {@code ManagedScheduledExecutorService.schedule}
+   *                          method was invoked to schedule the task.
+   * @return the date/time after which the next execution of the task should start.
    */
   public java.util.Date getNextRunTime(LastExecution lastExecutionInfo,
                                        java.util.Date taskScheduledTime);
@@ -116,14 +113,14 @@ public interface Trigger {
    * This is useful if the task shouldn't run because it is late or if the task
    * is paused or suspended.
    * <p>
-   * Once this task is skipped, the state of it's Future's result will throw a
+   * Once this task is skipped, the state of its Future's result will throw a
    * {@link SkippedException}. Unchecked exceptions will be wrapped in a
    * <code>SkippedException</code>.
    *
    * @param lastExecutionInfo information about the last execution of the task.
    *                   This value will be null if the task has not yet run.
-   * @param scheduledRunTime the date/time that the task was originally scheduled
-   *                         to run.
+   * @param scheduledRunTime the date/time after which this execution of the task
+   *                         is scheduled to start.
    * @return true if the task should be skipped and rescheduled.
    */
   public boolean skipRun(LastExecution lastExecutionInfo,
