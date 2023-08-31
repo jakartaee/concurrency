@@ -4,23 +4,3 @@ updates:
     directory: /
     schedule:
       interval: daily
-
-  - package-ecosystem: maven
-    directory: /api/
-    schedule:
-      interval: weekly
-
-  - package-ecosystem: maven
-    directory: /specification/
-    schedule:
-      interval: weekly
-
-  - package-ecosystem: maven
-    directory: /tck/
-    schedule:
-      interval: weekly
-
-  - package-ecosystem: maven
-    directory: /tck-dist/
-    schedule:
-      interval: weekly
