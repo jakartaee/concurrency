@@ -82,12 +82,15 @@ public class TransactionServlet extends TestServlet {
 		CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.USERNAME, Constants.PASSWORD,
 				Constants.SQL_TEMPLATE_INSERT);
 		Future<?> future = TestUtil.getManagedExecutorService().submit(cancelledTask);
-		// then cancel it after transaction begin and
+		// wait for transaction to begin
 		Util.waitForTransactionBegan(cancelledTask);
-		// before it commit.
+		// set flag to rollback transaction
 		cancelledTask.cancelTask();
-		// continue to run if possible.
+		// continue query
 		cancelledTask.resume();
+		// wait for transaction to finish
+		TestUtil.waitForTaskComplete(future);
+		// verify transaction rolled back
 		int afterTransacted = Util.getCount(Constants.TABLE_P, Constants.USERNAME, Constants.PASSWORD);
 		assertEquals(originTableCount, afterTransacted,"task was not properly cancelled");
 	}

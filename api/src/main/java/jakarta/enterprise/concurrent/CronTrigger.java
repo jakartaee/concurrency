@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -406,6 +406,11 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Utility method for repeated logic in toString.
+     *
+     * @param s The string builder
+     * @param label The cron expression
+     * @param list Cron expression as list
+     * @param max Max value of cron expression
      */
     private void toStringBuilder(final StringBuilder s, final String label, final int[] list, final int max) {
         if (list.length == max) {
@@ -435,19 +440,19 @@ public class CronTrigger implements ZonedTrigger {
 
         for (int i = 0; i < 1000 /** just in case expression never matches */ && time != null; ++i) {
             int year = time.getYear();
-            int m = Arrays.binarySearch(months, time.getMonthValue());
-            if (m < 0) {
-                time = nextMonth(-m - 2, year);
+            int monthIndex = Arrays.binarySearch(months, time.getMonthValue());
+            if (monthIndex < 0) {
+                time = nextMonth(-monthIndex - 2, year);
             } else {
                 int dayOfMonth = time.getDayOfMonth();
                 int lastDayOfMonth = time.getMonth().length(Year.isLeap(year));
-                int d = Arrays.binarySearch(daysOfMonth, dayOfMonth);
-                int l = Arrays.binarySearch(daysOfMonth, dayOfMonth - lastDayOfMonth - 1);
-                if (d < 0 && l < 0) {
-                    time = nextDayOfMonth(-d - 2, -l - 2, m, year, time);
+                int dayIndex = Arrays.binarySearch(daysOfMonth, dayOfMonth);
+                int lastDayIndex = Arrays.binarySearch(daysOfMonth, dayOfMonth - lastDayOfMonth - 1);
+                if (dayIndex < 0 && lastDayIndex < 0) {
+                    time = nextDayOfMonth(-dayIndex - 2, -lastDayIndex - 2, monthIndex, year, time);
                 } else {
-                    d = d < 0 ? (-d - 2) : d;
-                    l = l < 0 ? (-l - 2) : l;
+                    dayIndex = dayIndex < 0 ? (-dayIndex - 2) : dayIndex;
+                    lastDayIndex = lastDayIndex < 0 ? (-lastDayIndex - 2) : lastDayIndex;
                     int dayOfWeek = time.getDayOfWeek().getValue();
                     int ordinalDayOfWeek = (((dayOfMonth - 1) / 7) + 1) * 7 + dayOfWeek;
                     int dayOfLastWeek = lastDayOfMonth - dayOfMonth >= 7 ? -1 : (6 * 7 + dayOfWeek);
@@ -455,19 +460,19 @@ public class CronTrigger implements ZonedTrigger {
                     if (Arrays.binarySearch(daysOfWeek, dayOfWeek) < 0 // (TUE)
                      && Arrays.binarySearch(daysOfWeek, ordinalDayOfWeek) < 0 // (WED#3)
                      && Arrays.binarySearch(daysOfWeek, dayOfLastWeek) < 0) { // (THU#L)
-                        time = nextDayOfMonth(d, l, m, year, time);
+                        time = nextDayOfMonth(dayIndex, lastDayIndex, monthIndex, year, time);
                     } else {
-                        int h = Arrays.binarySearch(hours, time.getHour());
-                        if (h < 0) {
-                            time = nextHour(-h - 2, d, l, dayOfMonth, m, year, time);
+                        int hourIndex = Arrays.binarySearch(hours, time.getHour());
+                        if (hourIndex < 0) {
+                            time = nextHour(-hourIndex - 2, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
                         } else {
-                            int min = Arrays.binarySearch(minutes, time.getMinute());
-                            if (min < 0) {
-                                time = nextMinute(-min - 2, h, d, l, dayOfMonth, m, year, time);
+                            int minuteIndex = Arrays.binarySearch(minutes, time.getMinute());
+                            if (minuteIndex < 0) {
+                                time = nextMinute(-minuteIndex - 2, hourIndex, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
                             } else {
-                                int s = Arrays.binarySearch(seconds, time.getSecond());
-                                if (s < 0) {
-                                    time = nextSecond(-s - 2, min, h, d, l, dayOfMonth, m, year, time);
+                                int secondIndex = Arrays.binarySearch(seconds, time.getSecond());
+                                if (secondIndex < 0) {
+                                    time = nextSecond(-secondIndex - 2, minuteIndex, hourIndex, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
                                 } else {
                                     return time;
                                 }
@@ -482,55 +487,94 @@ public class CronTrigger implements ZonedTrigger {
     
     /**
      * Advance to next day of month.
+     *
+     * @param dayIndex index of the day in daysOfMonth[]
+     * @param lastDayIndex index of the last day of the month in daysOfMonth[]
+     * @param monthIndex index of the month in months[]
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next month
      */
-    private ZonedDateTime nextDayOfMonth(final int d, final int l, final int m,
+    private ZonedDateTime nextDayOfMonth(final int dayIndex, final int lastDayIndex, final int monthIndex,
                                          final int year, final ZonedDateTime time) {
-        int lastDayOfMonth = Month.of(months[m]).length(Year.isLeap(year));
-        int dd = d + 1 < daysOfMonth.length ? daysOfMonth[d + 1] : 32;
-        int ld = l + 1 < daysOfMonth.length && daysOfMonth[l + 1] < 0 ? (1 + lastDayOfMonth + daysOfMonth[l + 1]) : 32;
+        int lastDayOfMonth = Month.of(months[monthIndex]).length(Year.isLeap(year));
+        int dd = dayIndex + 1 < daysOfMonth.length ? daysOfMonth[dayIndex + 1] : 32;
+        int ld = lastDayIndex + 1 < daysOfMonth.length && daysOfMonth[lastDayIndex + 1] < 0 ? (1 + lastDayOfMonth + daysOfMonth[lastDayIndex + 1]) : 32;
         int dayOfMonth = Math.min(dd, ld);
         if (dayOfMonth > lastDayOfMonth) {
-            return nextMonth(m, year);
+            return nextMonth(monthIndex, year);
         }
 
-        return ZonedDateTime.of(year, months[m], dayOfMonth, hours[0], minutes[0], seconds[0], 0, time.getZone());
+        return ZonedDateTime.of(year, months[monthIndex], dayOfMonth, hours[0], minutes[0], seconds[0], 0, time.getZone());
     }
 
     /**
      * Advance to next hour.
+     *
+     * @param hourIndex index of the hour in hours[]
+     * @param dayIndex index of the day in daysOfMonth[]
+     * @param lastDayIndex index of the last day of the month in daysOfMonth[]
+     * @param dayOfMonth day of month
+     * @param monthIndex index of the month in months[]
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next hour
      */
-    private ZonedDateTime nextHour(final int h, final int d, final int l, final int dayOfMonth,
-                                   final int m, final int year, final ZonedDateTime time) {
-        ZonedDateTime dst = ZonedDateTime.of(year, months[m], dayOfMonth,
-                                             hours[h], minutes[0], seconds[0], 0, time.getZone());
-        ZonedDateTime std = dst.plusHours(1);
-        if (dst.getHour() == std.getHour() && time.isAfter(dst) && time.isBefore(std)) {
-            return std; // Daylight Saving Time --> Standard Time
-        } else if (h + 1 < hours.length) {
-            return ZonedDateTime.of(year, months[m], dayOfMonth,
-                                    hours[h + 1], minutes[0], seconds[0], 0, time.getZone());
+    private ZonedDateTime nextHour(final int hourIndex, final int dayIndex, final int lastDayIndex, final int dayOfMonth,
+                                   final int monthIndex, final int year, final ZonedDateTime time) {
+        // Determine if the same hour can be kept due to transition from Daylight Saving Time to Standard Time:
+        if (hourIndex >= 0) {
+            ZonedDateTime dst = ZonedDateTime.of(year, months[monthIndex], dayOfMonth,
+                                                 hours[hourIndex], minutes[0], seconds[0], 0, time.getZone());
+            ZonedDateTime std = dst.plusHours(1);
+            if (dst.getHour() == std.getHour() && time.isAfter(dst) && time.isBefore(std)) {
+                return std; // Daylight Saving Time --> Standard Time
+            }
+        }
+
+        if (hourIndex + 1 < hours.length) {
+            return ZonedDateTime.of(year, months[monthIndex], dayOfMonth,
+                                    hours[hourIndex + 1], minutes[0], seconds[0], 0, time.getZone());
         } else {
-            return nextDayOfMonth(d, l, m, year, time);
+            return nextDayOfMonth(dayIndex, lastDayIndex, monthIndex, year, time);
         }
     }
 
     /**
      * Advance to next minute.
+     *
+     * @param minuteIndex index of the minute in minutes[]
+     * @param hourIndex index of the hour in hours[]
+     * @param dayIndex index of the day in daysOfMonth[]
+     * @param lastDayIndex index of the last day of the month in daysOfMonth[]
+     * @param dayOfMonth day of month
+     * @param monthIndex index of the month in months[]
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next second
      */
-    private ZonedDateTime nextMinute(final int min, final int h, final int d, final int l, final int dayOfMonth,
-                                     final int m, final int year, final ZonedDateTime time) {
-        if (min + 1 < minutes.length) {
-            return time.withMinute(minutes[min + 1]).withSecond(seconds[0]);
+    private ZonedDateTime nextMinute(final int minuteIndex, final int hourIndex, final int dayIndex, final int lastDayIndex, final int dayOfMonth,
+                                     final int monthIndex, final int year, final ZonedDateTime time) {
+        if (minuteIndex + 1 < minutes.length) {
+            return time.withMinute(minutes[minuteIndex + 1]).withSecond(seconds[0]);
         } else {
-            return nextHour(h, d, l, dayOfMonth, m, year, time);
+            return nextHour(hourIndex, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
         }
     }
 
     /**
      * Advance to next month.
+     *
+     * @param month the month
+     * @param year  the year
+     * @return ZonedDateTime for next month
      */
     private ZonedDateTime nextMonth(final int month, final int year) {
-        int dayOfMonth, lastDayOfMonth, cycles = 0, m = month, y = year;
+        int dayOfMonth;
+        int lastDayOfMonth;
+        int cycles = 0;
+        int m = month;
+        int y = year;
         do {
             if (++m >= months.length) {
                 m = 0;
@@ -553,14 +597,25 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Advance to next second.
+     *
+     * @param secondIndex index of the second in seconds[]
+     * @param minuteIndex index of the minute in minutes[]
+     * @param hourIndex index of the hour in hours[]
+     * @param dayIndex index of the day in daysOfMonth[]
+     * @param lastDayIndex index of the last day of the month in daysOfMonth[]
+     * @param dayOfMonth day of month
+     * @param monthIndex index of the month in months[]
+     * @param year year
+     * @param time Date/Time
+     * @return ZonedDateTime for next second
      */
-    private ZonedDateTime nextSecond(final int s, final int min, final int h,
-                                     final int d, final int l, final int dayOfMonth,
-                                     final int m, final int year, final ZonedDateTime time) {
-        if (s + 1 < seconds.length) {
-            return time.withSecond(seconds[s + 1]);
+    private ZonedDateTime nextSecond(final int secondIndex, final int minuteIndex, final int hourIndex,
+                                     final int dayIndex, final int lastDayIndex, final int dayOfMonth,
+                                     final int monthIndex, final int year, final ZonedDateTime time) {
+        if (secondIndex + 1 < seconds.length) {
+            return time.withSecond(seconds[secondIndex + 1]);
         } else {
-            return nextMinute(min, h, d, l, dayOfMonth, m, year, time);
+            return nextMinute(minuteIndex, hourIndex, dayIndex, lastDayIndex, dayOfMonth, monthIndex, year, time);
         }
     }
 
@@ -597,7 +652,7 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Validate that the supplied list values are within the allowed range for the cron field type.
      *
-     * @param type   cron field type, such as months or hours.
+     * @param name   cron field type, such as months or hours.
      * @param min    minimum allowed normal value
      * @param max    maximum allowed normal value
      * @param maxExt maximum allowed special value (L or SUN#L), or max if no special values allowed for this field.
@@ -659,6 +714,9 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Convert dayOfMonth value to 1-31, or negative for days from the end of the month
      * For example, L is the last day (-1) and 2L is the second to last day (-2).
+     * @param day name of day of month
+     * @return integer representation of day of month
+     * @throws IllegalArgumentException
      */
     private static int parseDayOfMonth(final String day) throws IllegalArgumentException {
         try {
@@ -683,6 +741,10 @@ public class CronTrigger implements ZonedTrigger {
     /**
      * Convert dayOfWeek value to 1-49 where first 7 are standard week days,
      * next 35 are ordinal 1st-5th of each day, and final 7 are ordinal last for each day.
+     *
+     * @param dayName name of day of the week
+     * @return integer representation of day of week
+     * @throws IllegalArgumentException
      */
     private static int parseDayOfWeek(final String dayName) throws IllegalArgumentException {
         String day = dayName;
@@ -713,6 +775,10 @@ public class CronTrigger implements ZonedTrigger {
 
     /**
      * Convert month value to 1-12.
+     *
+     * @param monthName name of month (January)
+     * @return integer representation of month
+     * @throws IllegalArgumentException
      */
     private static int parseMonth(final String monthName) throws IllegalArgumentException {
         String month = monthName;
