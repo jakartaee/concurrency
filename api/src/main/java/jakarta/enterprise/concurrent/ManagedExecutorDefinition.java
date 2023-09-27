@@ -23,9 +23,15 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.inject.Qualifier;
+
 /**
  * <p>Defines a {@link ManagedExecutorService}
- * to be registered in JNDI by the container
+ * to be injected into
+ * {@link ManagedExecutorService} injection points
+ * with the specified {@link #qualifiers()}
+ * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
  *
@@ -36,16 +42,27 @@ import java.lang.annotation.Target;
  * <pre>
  * {@literal @}ManagedExecutorDefinition(
  *     name = "java:module/concurrent/MyExecutor",
+ *     qualifiers = MyQualifier.class,
  *     context = "java:module/concurrent/MyExecutorContext",
  *     hungTaskThreshold = 120000,
  *     maxAsync = 5)
  * {@literal @}ContextServiceDefinition(
  *     name = "java:module/concurrent/MyExecutorContext",
  *     propagated = { SECURITY, APPLICATION })
- *  public class MyServlet extends HttpServlet {
- *    {@literal @}Resource(lookup = "java:module/concurrent/MyExecutor",
+ * public class MyServlet extends HttpServlet {
+ *     {@literal @}Inject
+ *     {@literal @}MyQualifier
+ *     ManagedExecutorService myExecutor1;
+ *
+ *     {@literal @}Resource(lookup = "java:module/concurrent/MyExecutor",
  *               name = "java:module/concurrent/env/MyExecutorRef")
- *     ManagedExecutorService myExecutor;
+ *     ManagedExecutorService myExecutor2;
+ *     ...
+ *
+ * {@literal @}Qualifier
+ * {@literal @}Retention(RetentionPolicy.RUNTIME)
+ * {@literal @}Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
+ * public {@literal @}interface MyQualifier {}
  * </pre>
  *
  * <p>Resource environment references in a deployment descriptor
@@ -98,6 +115,28 @@ public @interface ManagedExecutorDefinition {
      * @return <code>ManagedExecutorService</code> JNDI name.
      */
     String name();
+
+    /**
+     * <p>List of {@link Qualifier qualifier annotations}.</p>
+     *
+     * <p>A {@link ManagedExecutorService} injection point
+     * with these qualifier annotations injects a bean that is
+     * produced by this {@code ManagedExecutorDefinition}.</p>
+     *
+     * <p>The default value is an empty list, indicating that this
+     * {@code ManagedExecutorDefinition} does not automatically produce
+     * bean instances for any injection points.</p>
+     *
+     * <p>Applications can define their own {@link Producer Producers}
+     * for {@link ManagedExecutorService} injection points as long as the
+     * qualifier annotations on the producer do not conflict with the
+     * non-empty {@link #qualifiers()} list of a
+     * {@code ManagedExecutorDefinition}.</p>
+     *
+     * @return list of qualifiers.
+     * @since 3.1
+     */
+    Class<?>[] qualifiers() default {};
 
     /**
      * The name of a {@link ContextService} instance which

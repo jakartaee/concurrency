@@ -25,7 +25,10 @@ import java.lang.annotation.Target;
 
 /**
  * <p>Defines a {@link ContextService}
- * to be registered in JNDI by the container
+ * to be injected into
+ * {@link ContextService} injection points
+ * with the specified {@link #qualifiers()}
+ * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
  *
@@ -39,9 +42,19 @@ import java.lang.annotation.Target;
  *     unchanged = TRANSACTION,
  *     cleared = ALL_REMAINING)
  * public class MyServlet extends HttpServlet {
- *    {@literal @}Resource(lookup = "java:app/concurrent/MyContext",
+ *     {@literal @}Inject
+ *     {@literal @}MyQualifier
+ *     ConetxtService appContextSvc1;
+ *
+ *     {@literal @}Resource(lookup = "java:app/concurrent/MyContext",
  *               name = "java:app/concurrent/env/MyContextRef")
- *     ContextService appContextSvc;
+ *     ContextService appContextSvc2;
+ *     ...
+ *
+ * {@literal @}Qualifier
+ * {@literal @}Retention(RetentionPolicy.RUNTIME)
+ * {@literal @}Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
+ * public {@literal @}interface MyQualifier {}
  * </pre>
  *
  * <p>Resource environment references in a deployment descriptor
@@ -111,6 +124,28 @@ public @interface ContextServiceDefinition {
      * @return <code>ContextService</code> JNDI name.
      */
     String name();
+
+    /**
+     * <p>List of {@link Qualifier qualifier annotations}.</p>
+     *
+     * <p>A {@link ContextService} injection point
+     * with these qualifier annotations injects a bean that is
+     * produced by this {@code ContextServiceDefinition}.</p>
+     *
+     * <p>The default value is an empty list, indicating that this
+     * {@code ContextServiceDefinition} does not automatically produce
+     * bean instances for any injection points.</p>
+     *
+     * <p>Applications can define their own {@link Producer Producers}
+     * for {@link ContextService} injection points as long as the
+     * qualifier annotations on the producer do not conflict with the
+     * non-empty {@link #qualifiers()} list of a
+     * {@code ContextServiceDefinition}.</p>
+     *
+     * @return list of qualifiers.
+     * @since 3.1
+     */
+    Class<?>[] qualifiers() default {};
 
     /**
      * <p>Types of context to clear whenever a thread runs the
