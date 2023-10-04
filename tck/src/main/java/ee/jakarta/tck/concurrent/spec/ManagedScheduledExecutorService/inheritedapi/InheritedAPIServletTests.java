@@ -67,16 +67,13 @@ public class InheritedAPIServletTests {
     @Assertion(id = "SPEC:44.1", strategy = "Test basic function for ManagedScheduledExecutorService: submit")
     public void testApiSubmit() throws Exception {
         Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), TestConstants.simpleReturnValue);
+        assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
 
         result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
-        Wait.waitTillFutureIsDone(result);
-        result.get();
+        Wait.waitForTaskComplete(result);
 
         result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), TestConstants.simpleReturnValue);
+        assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
     }
 
     @Assertion(id = "SPEC:44.2", strategy = "Test basic function for ManagedScheduledExecutorService: execute")
@@ -98,7 +95,7 @@ public class InheritedAPIServletTests {
             taskList.add(new CommonTasks.SimpleArgCallable(3));
             List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
@@ -106,7 +103,7 @@ public class InheritedAPIServletTests {
             resultList = scheduledExecutor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(),
                     TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
@@ -154,13 +151,11 @@ public class InheritedAPIServletTests {
     public void testApiSchedule() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), TestConstants.simpleReturnValue);
+        assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
 
         result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(), TestConstants.pollInterval.getSeconds(),
                 TimeUnit.SECONDS);
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), null);
+        assertEquals(Wait.waitForTaskComplete(result), null);
     }
 
     @Assertion(id = "SPEC:44.6", strategy = "Test basic function for ManagedScheduledExecutorService: scheduleAtFixedRate")

@@ -54,16 +54,13 @@ public class TestEjb implements TestEjbInterface {
     public void testApiSubmit() {
         try {
             Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
-            Wait.waitTillFutureIsDone(result);
-            assertEquals(result.get(), TestConstants.simpleReturnValue);
+            assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
 
             result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable());
-            Wait.waitTillFutureIsDone(result);
-            result.get();
+            Wait.waitForTaskComplete(result);
 
             result = scheduledExecutor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
-            Wait.waitTillFutureIsDone(result);
-            assertEquals(result.get(), TestConstants.simpleReturnValue);
+            assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +84,7 @@ public class TestEjb implements TestEjbInterface {
             taskList.add(new CommonTasks.SimpleArgCallable(3));
             List<Future<Integer>> resultList = scheduledExecutor.invokeAll(taskList);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
@@ -96,7 +93,7 @@ public class TestEjb implements TestEjbInterface {
             resultList = scheduledExecutor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(),
                     TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
@@ -151,13 +148,11 @@ public class TestEjb implements TestEjbInterface {
         try {
             Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                     TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
-            Wait.waitTillFutureIsDone(result);
-            assertEquals(TestConstants.simpleReturnValue, result.get());
+            assertEquals(TestConstants.simpleReturnValue, Wait.waitForTaskComplete(result));
 
             result = scheduledExecutor.schedule(new CommonTasks.SimpleRunnable(),
                     TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
-            Wait.waitTillFutureIsDone(result);
-            assertEquals(result.get(), null);
+            assertEquals(null, Wait.waitForTaskComplete(result));
         } catch (Exception e) {
             fail(e.getMessage());
         }

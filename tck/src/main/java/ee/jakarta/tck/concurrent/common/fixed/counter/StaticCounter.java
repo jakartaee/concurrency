@@ -44,11 +44,15 @@ public final class StaticCounter {
     }
 
     public static void waitTill(final int expected) {
+        waitTill(expected, "Expected count " + expected + " within timeout.");
+    }
+    
+    public static void waitTill(final int expected, final String message) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
             for (; expected != StaticCounter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
                 //empty
             }
-        });
+        }, message);
     }
 
     public static void waitTillSurpassed(final int expected) {
