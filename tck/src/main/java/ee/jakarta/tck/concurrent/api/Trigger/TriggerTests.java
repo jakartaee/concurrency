@@ -46,7 +46,6 @@ import jakarta.enterprise.concurrent.SkippedException;
 @Common({ PACKAGE.FIXED_COUNTER, PACKAGE.TASKS })
 public class TriggerTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "TriggerTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, TriggerTests.class.getPackage());

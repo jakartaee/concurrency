@@ -32,7 +32,6 @@ import jakarta.enterprise.concurrent.SkippedException;
 @Web // TODO couldn't this be a unit test?
 public class SkippedExceptionTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "SkippedExceptionTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, SkippedExceptionTests.class.getPackage());

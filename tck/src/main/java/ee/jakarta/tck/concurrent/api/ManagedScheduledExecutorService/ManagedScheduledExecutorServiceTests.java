@@ -43,7 +43,6 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 @Common({ PACKAGE.TASKS })
 public class ManagedScheduledExecutorServiceTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedScheduledExecutorServiceTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class)

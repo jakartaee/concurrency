@@ -65,8 +65,6 @@ public class ManagedExecutorDefinitionFullTests extends TestClient {
                         ManagedExecutorDefinitionServlet.class, ManagedExecutorDefinitionOnEJBServlet.class,
                         ContextServiceDefinitionServlet.class)
                 .addClasses(ContextServiceDefinitionInterface.class, ContextServiceDefinitionBean.class);
-        // TODO document how users can dynamically inject vendor specific deployment
-        // descriptors into this archive
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedExecutorDefinitionTests.ear")
                 .addAsModules(war, jar);
