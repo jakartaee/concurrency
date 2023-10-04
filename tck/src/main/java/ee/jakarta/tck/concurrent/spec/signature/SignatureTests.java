@@ -18,9 +18,9 @@ package ee.jakarta.tck.concurrent.spec.signature;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
@@ -33,7 +33,8 @@ public class SignatureTests {
         return ShrinkWrap.create(WebArchive.class, "signatureTest.war");
     }
 
-    @Test
+    @Assertion(id = "GIT:156",
+            strategy = "Ensure API signatures used by vendor match the signatures expected for this version of the API.")
     public void testSignatures() throws Exception {
         ConcurrencySignatureTestRunner.assertProjectSetup();
         ConcurrencySignatureTestRunner sigTest = new ConcurrencySignatureTestRunner();

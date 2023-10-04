@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.AbortedException;
 
@@ -37,14 +37,7 @@ public class AbortedExceptionTests {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, AbortedExceptionTests.class.getPackage());
     }
 
-    /*
-     * @testName: abortedExceptionNoArgTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:1
-     *
-     * @test_Strategy: Constructs an AbortedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:1", strategy = "Constructs an AbortedException")
     public void abortedExceptionNoArgTest() {
         AbortedException thrown = assertThrows(AbortedException.class, () -> {
             throw new AbortedException();
@@ -53,14 +46,7 @@ public class AbortedExceptionTests {
         assertNull(thrown.getMessage());
     }
 
-    /*
-     * @testName: abortedExceptionStringTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:3
-     *
-     * @test_Strategy: Constructs an AbortedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:3", strategy = "Constructs an AbortedException")
     public void abortedExceptionStringTest() {
         final String expected = "thisisthedetailmessage";
 
@@ -72,14 +58,7 @@ public class AbortedExceptionTests {
         assertEquals(expected, thrown.getMessage());
     }
 
-    /*
-     * @testName: abortedExceptionThrowableTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:4
-     *
-     * @test_Strategy: Constructs an AbortedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:4", strategy = "Constructs an AbortedException")
     public void abortedExceptionThrowableTest() {
         AbortedException thrown;
 
@@ -101,14 +80,7 @@ public class AbortedExceptionTests {
         assertNull(thrown.getCause());
     }
 
-    /*
-     * @testName: abortedExceptionStringThrowableTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:2
-     *
-     * @test_Strategy: Constructs an AbortedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:2", strategy = "Constructs an AbortedException")
     public void abortedExceptionStringThrowableTest() {
         AbortedException thrown;
 

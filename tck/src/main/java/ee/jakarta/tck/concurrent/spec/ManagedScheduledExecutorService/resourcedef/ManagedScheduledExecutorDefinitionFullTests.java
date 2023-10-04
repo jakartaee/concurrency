@@ -24,13 +24,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.context.providers.IntContextProvider;
 import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -82,74 +82,97 @@ public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
         return "ManagedScheduledExecutorDefinitionServlet";
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorService submits an action to run asynchronously as a CompletionStage."
+                    + " Dependent stages can be chained to the CompletionStage,"
+                    + " and all stages run with the thread context of the thread from which they were created,"
+                    + " per ManagedScheduledExecutorDefinition config.")
     public void testAsyncCompletionStageMSE() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Asynchronous method runs with thread context captured from caller")
     public void testAsynchronousMethodRunsWithContext() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "Asynchronous method execution is constrained by executor's maxAsync")
     public void testAsynchronousMethodWithMaxAsync3() {
         runTest(baseURL, testname);
     }
 
-    // Accepted TCK Challenge: https://github.com/jakartaee/concurrency/issues/224
-    @Disabled
+    @Challenge(link = "https://github.com/jakartaee/concurrency/issues/224", version = "3.0.0")
+    @Assertion(id = "GIT:154",
+        strategy = "ManagedScheduledExecutorService creates a completed CompletableFuture to which async dependent stages can be chained."
+                + " The dependent stages all run with the thread context of the thread from which they were created,"
+                + " per ManagedScheduledExecutorDefinition config.")
     public void testCompletedFutureMSE() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+                strategy = "ManagedScheduledExecutorService creates an incomplete CompletableFuture to which dependent stages can be chained."
+                        + " The CompletableFuture can be completed from another thread lacking the same context,"
+                        + " but the dependent stages all run with the thread context of the thread from which they were created,"
+                        + " per ManagedScheduledExecutorDefinition config.")
     public void testIncompleteFutureMSE() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorService creates an incomplete CompletableFuture to which dependent stages can be chained."
+                    + " The CompletableFuture can be completed from another thread lacking the same context,"
+                    + " but the dependent stages all run with the thread context of the thread from which they were created,"
+                    + " per ManagedScheduledExecutorDefinition config.")
     public void testIncompleteFutureMSEEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "ManagedScheduledExecutorDefinition with all attributes configured")
     public void testManagedScheduledExecutorDefinitionAllAttributes() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorDefinition defined on an EJB with all attributes configured enforces maxAsync and propagates context")
     public void testManagedScheduledExecutorDefinitionAllAttributesEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorDefinition with minimal attributes can run multiple async tasks concurrently"
+                    + " and uses java:comp/DefaultContextService to determine context propagation and clearing.")
     public void testManagedScheduledExecutorDefinitionDefaults() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorDefinition defined on an EJB with minimal attributes can run multiple async tasks concurrently"
+                    + " and uses java:comp/DefaultContextService to determine context propagation and clearing")
     public void testManagedScheduledExecutorDefinitionDefaultsEJB() {
         URLBuilder requestURL = URLBuilder.get().withBaseURL(ejbContextURL)
                 .withPaths("ManagedScheduledExecutorDefinitionOnEJBServlet").withTestName(testname);
         runTest(requestURL);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "A method that lacks the Asynchronous annotation does not run as an asynchronous method,"
+                    + " even if it returns a CompletableFuture.")
     public void testNotAnAsynchronousMethod() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154", strategy = "ManagedScheduledExecutorService can schedule a task with a CronTrigger")
     public void testScheduleWithCronTrigger() {
         runTest(baseURL, testname);
     }
 
-    @Test
+    @Assertion(id = "GIT:154",
+            strategy = "ManagedScheduledExecutorService can schedule a task with a ZonedTrigger implementation that uses the LastExecution methods with ZonedDateTime parameters")
     public void testScheduleWithZonedTrigger() {
         runTest(baseURL, testname);
     }

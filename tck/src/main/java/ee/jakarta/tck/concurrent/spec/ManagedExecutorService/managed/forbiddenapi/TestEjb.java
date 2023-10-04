@@ -16,7 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddenapi;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,61 +28,37 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 @Stateless
 public class TestEjb implements TestEjbInterface {
 
-    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
     private ManagedExecutorService executor;
 
     public void testAwaitTermination() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             executor.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            fail(e.toString());
-        } catch (IllegalStateException e) {
-            return;
-        }
-
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testIsShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             executor.isShutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testIsTerminated() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             executor.isTerminated();
-        } catch (IllegalStateException e) {
-            return;
-        }
-
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             executor.shutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
     public void testShutdownNow() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             executor.shutdownNow();
-        } catch (IllegalStateException e) {
-            return;
-        }
-
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
 }

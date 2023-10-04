@@ -19,8 +19,8 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.managed.forbiddena
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.ejb.EJB;
 
@@ -35,68 +35,27 @@ public class ForbiddenAPIEJBTests {
     @EJB
     private TestEjbInterface testEjb;
 
-    /*
-     * @testName: testAwaitTermination
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.1;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.1", strategy = "Test basic function for ManagedExecutorService: awaitTermination")
     public void testAwaitTermination() {
         testEjb.testAwaitTermination();
     }
 
-    /*
-     * @testName: testIsShutdown
-     *
-     * @assertion_ids:
-     *
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.2;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.2", strategy = "Test basic function for ManagedExecutorService: isShutdown")
     public void testIsShutdown() {
         testEjb.testIsShutdown();
     }
 
-    /*
-     * @testName: testIsTerminated
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.3;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.3", strategy = "Test basic function for ManagedExecutorService: isTerminated")
     public void testIsTerminated() {
         testEjb.testIsTerminated();
     }
 
-    /*
-     * @testName: testShutdown
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.4;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.4", strategy = "Test basic function for ManagedExecutorService: shutdown")
     public void testShutdown() {
         testEjb.testShutdown();
     }
 
-    /*
-     * @testName: testShutdownNow
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:23;CONCURRENCY:SPEC:24;CONCURRENCY:SPEC:24.5;
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.5", strategy = "Test basic function for ManagedExecutorService: shutdownNow")
     public void testShutdownNow() {
         testEjb.testShutdownNow();
     }

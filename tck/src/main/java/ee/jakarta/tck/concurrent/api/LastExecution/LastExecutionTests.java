@@ -26,12 +26,12 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterCallableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
@@ -64,16 +64,9 @@ public class LastExecutionTests {
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     private ManagedScheduledExecutorService scheduledExecutor;
 
-    /*
-     * @testName: lastExecutionGetIdentityNameTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:15
-     *
-     * @test_Strategy: The name or ID of the identifiable object, as specified in
-     * the ManagedTask#IDENTITY_NAME execution property of the task if it also
-     * implements the ManagedTask interface.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:15", strategy = "The name or ID of the identifiable object,"
+            + " as specified in the ManagedTask#IDENTITY_NAME execution property of the task "
+            + "if it also implements the ManagedTask interface.")
     public void lastExecutionGetIdentityNameTest() {
 
         Map<String, String> executionProperties = new HashMap<String, String>();
@@ -89,14 +82,7 @@ public class LastExecutionTests {
                 "Got wrong identity name. See server log for more details.");
     }
 
-    /*
-     * @testName: lastExecutionGetResultTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:16
-     *
-     * @test_Strategy: Result of the last execution.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:16", strategy = "Result of the last execution.")
     public void lastExecutionGetResultRunnableTest() {
         // test with runnable, LastExecution should return null
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
@@ -109,14 +95,7 @@ public class LastExecutionTests {
                 "Got wrong last execution result. See server log for more details.");
     }
 
-    /*
-     * @testName: lastExecutionGetResultTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:16
-     *
-     * @test_Strategy: Result of the last execution.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:16", strategy = "Result of the last execution.")
     public void lastExecutionGetResultCallableTest() {
         // test with callable, LastExecution should return 1
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
@@ -129,15 +108,7 @@ public class LastExecutionTests {
                 "Got wrong last execution result. See server log for more details.");
     }
 
-    /*
-     * @testName: lastExecutionGetRunningTimeTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:17; CONCURRENCY:JAVADOC:18;
-     * CONCURRENCY:JAVADOC:19
-     *
-     * @test_Strategy: The last time in which the task was completed.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:17 JAVADOC:18 JAVADOC:19", strategy = "The last time in which the task was completed.")
     public void lastExecutionGetRunningTimeTest() {
         ScheduledFuture<?> sf = scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(TestConstants.pollInterval), null, null),

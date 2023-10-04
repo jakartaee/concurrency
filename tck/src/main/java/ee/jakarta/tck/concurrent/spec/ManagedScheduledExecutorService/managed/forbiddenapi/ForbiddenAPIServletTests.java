@@ -16,7 +16,7 @@
 
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.managed.forbiddenapi;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,10 +24,10 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -43,8 +43,6 @@ public class ForbiddenAPIServletTests {
         return ShrinkWrap.create(WebArchive.class);
     }
 
-    private static final String DIDNOT_CATCH_ILLEGALSTATEEXCEPTION = "IllegalStateException expected";
-
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     private ManagedScheduledExecutorService scheduledExecutor;
 
@@ -53,90 +51,38 @@ public class ForbiddenAPIServletTests {
         StaticCounter.reset();
     }
 
-    /*
-     * @testName: testAwaitTermination
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:57.1
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:56 SPEC:57.1", strategy = "Test basic function for ManagedScheduledExecutorService: awaitTermination")
     public void testAwaitTermination() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            fail(e.getMessage());
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
-    /*
-     * @testName: testIsShutdown
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:57.2
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:56 SPEC:57.2", strategy = "Test basic function for ManagedScheduledExecutorService: isShutdown")
     public void testIsShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.isShutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
-    /*
-     * @testName: testIsTerminated
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:57.3
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:56 SPEC:57.3", strategy = "Test basic function for ManagedScheduledExecutorService: isTerminated")
     public void testIsTerminated() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.isTerminated();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
-    /*
-     * @testName: testShutdown
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:57.4
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:56 SPEC:57.4", strategy = "Test basic function for ManagedScheduledExecutorService: shutdown")
     public void testShutdown() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.shutdown();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 
-    /*
-     * @testName: testShutdownNow
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:57.5
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:56 SPEC:57.5", strategy = "Test basic function for ManagedScheduledExecutorService: shutdownNow")
     public void testShutdownNow() {
-        try {
+        assertThrows(IllegalStateException.class, () -> {
             scheduledExecutor.shutdownNow();
-        } catch (IllegalStateException e) {
-            return;
-        }
-        fail(DIDNOT_CATCH_ILLEGALSTATEEXCEPTION);
+        });
     }
 }

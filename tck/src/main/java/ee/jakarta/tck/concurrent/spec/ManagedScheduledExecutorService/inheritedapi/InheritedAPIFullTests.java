@@ -20,9 +20,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import jakarta.ejb.EJB;
@@ -48,86 +48,37 @@ public class InheritedAPIFullTests {
     @EJB
     private TestEjbInterface testEjb;
 
-    /*
-     * @testName: testApiSubmit
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.1
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.1", strategy = "Test basic function for ManagedScheduledExecutorService: submit")
     public void testApiSubmit() {
         testEjb.testApiSubmit();
     }
 
-    /*
-     * @testName: testApiExecute
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.2
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.2", strategy = "Test basic function for ManagedScheduledExecutorService: execute")
     public void testApiExecute() {
         testEjb.testApiExecute();
     }
 
-    /*
-     * @testName: testApiInvokeAll
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.3
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.3", strategy = "Test basic function for ManagedScheduledExecutorService: invokeAll")
     public void testApiInvokeAll() {
         testEjb.testApiInvokeAll();
     }
 
-    /*
-     * @testName: testApiInvokeAny
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.4
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.4", strategy = "Test basic function for ManagedScheduledExecutorService: invokeAny")
     public void testApiInvokeAny() {
         testEjb.testApiInvokeAny();
     }
 
-    /*
-     * @testName: testApiSchedule
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.5
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.5", strategy = "Test basic function for ManagedScheduledExecutorService: schedule")
     public void testApiSchedule() {
         testEjb.testApiSchedule();
     }
 
-    /*
-     * @testName: testApiScheduleAtFixedRate
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.6
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.6", strategy = "Test basic function for ManagedScheduledExecutorService: scheduleAtFixedRate")
     public void testApiScheduleAtFixedRate() {
         testEjb.testApiScheduleAtFixedRate();
     }
 
-    /*
-     * @testName: testApiScheduleWithFixedDelay
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.7
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.7", strategy = "Test basic function for ManagedScheduledExecutorService: scheduleWithFixedDelay")
     public void testApiScheduleWithFixedDelay() {
         testEjb.testApiScheduleWithFixedDelay();
     }

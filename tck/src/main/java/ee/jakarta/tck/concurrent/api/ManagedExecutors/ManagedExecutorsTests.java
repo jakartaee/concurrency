@@ -31,13 +31,13 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -110,16 +110,7 @@ public class ManagedExecutorsTests {
 
     }
 
-    /*
-     * @testName: isCurrentThreadShutdown
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:21
-     *
-     * @test_Strategy: Use a regular thread(non-Manageable thread) and verify
-     * isCurrentThreadShutdown() returns false
-     *
-     */
-    @Test
+    @Assertion(id = "JAVADOC:21", strategy = "Use a regular thread(non-Manageable thread) and verify isCurrentThreadShutdown() returns false")
     public void isCurrentThreadShutdown() {
         Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
@@ -135,15 +126,7 @@ public class ManagedExecutorsTests {
         assertFalse(shutdown, "Failed because shutdown is set to be true when running job");
     }
 
-    /*
-     * @testName: isCurrentThreadShutdown_ManageableThread
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:21
-     *
-     * @test_Strategy: Create a ManageableThread from ManagedThreadFactory and check
-     * the shutdown status.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:21", strategy = "Create a ManageableThread from ManagedThreadFactory and check the shutdown status.")
     public void isCurrentThreadShutdownManageableThread() {
         Thread createdThread = threadFactory.newThread(new Runnable() {
             @Override
@@ -159,19 +142,10 @@ public class ManagedExecutorsTests {
         assertFalse(shutdown, "Failed because shutdown is set to be true when running job");
     }
 
-    /*
-     * @testName: manageRunnableTaskWithTaskListener
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:22;CONCURRENCY:SPEC:7;
-     * CONCURRENCY:SPEC:7.1;CONCURRENCY:SPEC:7.2;
-     * CONCURRENCY:SPEC:4;CONCURRENCY:SPEC:4.2; CONCURRENCY:SPEC:18;
-     *
-     * @test_Strategy: Returns a Runnable object that also implements ManagedTask
-     * interface so it can receive notification of life cycle events with the
-     * provided ManagedTaskListener when the task is submitted to a
-     * ManagedExecutorService or a ManagedScheduledExecutorService.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:22 SPEC:7 SPEC:7.1 SPEC:7.2 SPEC:4 SPEC:4.2 SPEC:18",
+            strategy = "Returns a Runnable object that also implements ManagedTask interface"
+                    + " so it can receive notification of life cycle events with the provided ManagedTaskListener"
+                    + " when the task is submitted to a ManagedExecutorService or a ManagedScheduledExecutorService.")
     public void manageRunnableTaskWithTaskListener() {
         RunnableTask runnableTask = createRunnableTask();
         Runnable taskWithListener = ManagedExecutors.managedTask(runnableTask, managedTaskListener);
@@ -179,15 +153,7 @@ public class ManagedExecutorsTests {
         assertTaskAndListenerComplete(futureResult, runnableTask);
     }
 
-    /*
-     * @testName: manageRunnableTaskWithNullArg
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:23
-     *
-     * @test_Strategy: Catch IllegalArgumentException when get the manage task with
-     * null runnable task.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:23", strategy = "Catch IllegalArgumentException when get the manage task with null runnable task.")
     public void manageRunnableTaskWithNullArg() {
         Runnable nullTask = null;
         assertThrows(IllegalArgumentException.class, () -> {
@@ -195,17 +161,10 @@ public class ManagedExecutorsTests {
         });
     }
 
-    /*
-     * @testName: manageRunnableTaskWithTaskListenerAndMap
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:24;CONCURRENCY:SPEC:13;
-     *
-     * @test_Strategy: Returns a Runnable object that also implements ManagedTask
-     * interface so it can receive notification of life cycle events with the
-     * provided ManagedTaskListener and to provide additional execution properties
-     * when the task is submitted to a ManagedExecutorService
-     */
-    @Test
+    @Assertion(id = "JAVADOC:24 SPEC:13",
+            strategy = "Returns a Runnable object that also implements ManagedTask interface"
+                    + " so it can receive notification of life cycle events with the provided ManagedTaskListener"
+                    + " and to provide additional execution properties when the task is submitted to a ManagedExecutorService")
     public void manageRunnableTaskWithTaskListenerAndMap() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
@@ -220,15 +179,7 @@ public class ManagedExecutorsTests {
         assertTaskAndListenerComplete(executor.submit(task), runnableTask);
     }
 
-    /*
-     * @testName: manageRunnableTaskWithMapAndNullArg
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:25
-     *
-     * @test_Strategy: Catch IllegalArgumentException when get the manage task with
-     * null runnable task and additional execution properties.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:25", strategy = "Catch IllegalArgumentException when get the manage task with null runnable task and additional execution properties.")
     public void manageRunnableTaskWithMapAndNullArg() {
         Runnable nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();
@@ -238,17 +189,10 @@ public class ManagedExecutorsTests {
         });
     }
 
-    /*
-     * @testName: manageCallableTaskWithTaskListener
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:26
-     *
-     * @test_Strategy: Returns a Callable object that also implements ManagedTask
-     * interface so it can receive notification of life cycle events with the
-     * provided ManagedTaskListener when the task is submitted to a
-     * ManagedExecutorService
-     */
-    @Test
+    @Assertion(id = "JAVADOC:26",
+            strategy = "Returns a Callable object that also implements ManagedTask interface"
+                    + " so it can receive notification of life cycle events with the provided ManagedTaskListener"
+                    + " when the task is submitted to a ManagedExecutorService")
     public void manageCallableTaskWithTaskListener() {
         String expectedResultStr = "expected something";
         CallableTask<String> callableTask = createCallableTask(expectedResultStr);
@@ -258,15 +202,7 @@ public class ManagedExecutorsTests {
         assertTaskAndListenerComplete(expectedResultStr, futureResult, callableTask);
     }
 
-    /*
-     * @testName: manageCallableTaskWithNullArg
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:27
-     *
-     * @test_Strategy: Catch IllegalArgumentException when get the manage task with
-     * null Callable task.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:27", strategy = "Catch IllegalArgumentException when get the manage task with null Callable task.")
     public void manageCallableTaskWithNullArg() {
         Callable<?> nullTask = null;
         assertThrows(IllegalArgumentException.class, () -> {
@@ -274,18 +210,10 @@ public class ManagedExecutorsTests {
         });
     }
 
-    /*
-     * @testName: manageCallableTaskWithTaskListenerAndMap
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:28;CONCURRENCY:SPEC:13.1;
-     * CONCURRENCY:SPEC:45;CONCURRENCY:SPEC:45.1;
-     *
-     * @test_Strategy: Returns a Callable object that also implements ManagedTask
-     * interface so it can receive notification of life cycle events with the
-     * provided ManagedTaskListener and to provide additional execution properties
-     * when the task is submitted to a ManagedExecutorService
-     */
-    @Test
+    @Assertion(id = "JAVADOC:28 SPEC:13.1 SPEC:45 SPEC:45.1",
+            strategy = "Returns a Callable object that also implements ManagedTask interface"
+                    + " so it can receive notification of life cycle events with the provided ManagedTaskListener"
+                    + " and to provide additional execution properties when the task is submitted to a ManagedExecutorService")
     public void manageCallableTaskWithTaskListenerAndMap() {
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
@@ -305,15 +233,7 @@ public class ManagedExecutorsTests {
         assertTaskAndListenerComplete(expectedResultStr, executor.submit(task), callableTask);
     }
 
-    /*
-     * @testName: manageCallableTaskWithMapAndNullArg
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:29
-     *
-     * @test_Strategy: Catch IllegalArgumentException when get the manage task with
-     * null Callable task and additional execution properties.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:29", strategy = "Catch IllegalArgumentException when get the manage task with null Callable task and additional execution properties.")
     public void manageCallableTaskWithMapAndNullArg() {
         Callable<?> nullTask = null;
         Map<String, String> properties = new HashMap<String, String>();

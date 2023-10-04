@@ -26,12 +26,12 @@ import java.util.concurrent.ScheduledFuture;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.tasks.CallableTask;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.common.tasks.RunnableTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -62,17 +62,9 @@ public class ManagedScheduledExecutorServiceTests {
     @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
     private ManagedScheduledExecutorService scheduledExecutor;
 
-    /*
-     * @testName: normalScheduleProcess1Test
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:30;CONCURRENCY:SPEC:42;
-     * CONCURRENCY:SPEC:42.2;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.1;
-     * CONCURRENCY:SPEC:49;CONCURRENCY:SPEC:51; CONCURRENCY:SPEC:54;
-     *
-     * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
-     * determines when the task should run and how often.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:30 SPEC:42 SPEC:42.2 SPEC:43 SPEC:43.1 SPEC:49 SPEC:51 SPEC:54",
+            strategy = "Creates and executes a task based on a Trigger."
+                    + " The Trigger determines when the task should run and how often.")
     public void normalScheduleProcess1Test() throws Exception {
         ScheduledFuture<?> result = scheduledExecutor.schedule(
                 new RunnableTask(TEST_JNDI_EVN_ENTRY_JNDI_NAME, TEST_JNDI_EVN_ENTRY_VALUE, TEST_CLASSLOADER_CLASS_NAME),
@@ -81,14 +73,7 @@ public class ManagedScheduledExecutorServiceTests {
         assertNull(result.get());
     }
 
-    /*
-     * @testName: nullCommandScheduleProcessTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:32
-     *
-     * @test_Strategy: if command is null.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:32", strategy = "If command is null.")
     public void nullCommandScheduleProcessTest() {
         Runnable command = null;
 
@@ -97,17 +82,9 @@ public class ManagedScheduledExecutorServiceTests {
         });
     }
 
-    /*
-     * @testName: normalScheduleProcess2Test
-     *
-     * @assertion_ids:
-     * CONCURRENCY:JAVADOC:33;CONCURRENCY:SPEC:43;CONCURRENCY:SPEC:43.2;
-     * CONCURRENCY:SPEC:54;CONCURRENCY:SPEC:52;
-     *
-     * @test_Strategy: Creates and executes a task based on a Trigger. The Trigger
-     * determines when the task should run and how often.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:33 SPEC:43 SPEC:43.2 SPEC:54 SPEC:52",
+            strategy = "Creates and executes a task based on a Trigger."
+                    + " The Trigger determines when the task should run and how often.")
     public void normalScheduleProcess2Test() throws Exception {
         ScheduledFuture<?> result = scheduledExecutor
                 .schedule(
@@ -120,14 +97,7 @@ public class ManagedScheduledExecutorServiceTests {
 
     }
 
-    /*
-     * @testName: nullCallableScheduleProcessTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:35
-     *
-     * @test_Strategy: if callable is null.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:35", strategy = "If callable is null.")
     public void nullCallableScheduleProcessTest() {
         Callable<?> callable = null;
 

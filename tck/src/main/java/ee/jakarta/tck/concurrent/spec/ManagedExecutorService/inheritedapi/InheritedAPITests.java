@@ -31,12 +31,12 @@ import java.util.concurrent.TimeoutException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -57,24 +57,8 @@ public class InheritedAPITests {
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
     private ManagedExecutorService executor;
 
-    /*
-     * @testName: testBasicManagedExecutorService
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:10.2;CONCURRENCY:SPEC:13;CONCURRENCY:SPEC:13.1;CONCURRENCY
-     * :SPEC:13.2;
-     * CONCURRENCY:SPEC:14;CONCURRENCY:SPEC:14.1;CONCURRENCY:SPEC:14.2;CONCURRENCY
-     * :SPEC:14.3;
-     * CONCURRENCY:SPEC:14.4;CONCURRENCY:SPEC:6.1;CONCURRENCY:SPEC:6.2;CONCURRENCY
-     * :SPEC:8;
-     * CONCURRENCY:SPEC:8.1;CONCURRENCY:SPEC:9;CONCURRENCY:SPEC:10;CONCURRENCY:
-     * SPEC:10.2; CONCURRENCY:SPEC:12;CONCURRENCY:SPEC:19;CONCURRENCY:SPEC:27;
-     *
-     * @test_Strategy: test basic function for ManagedExecutorService include
-     * execute, submit, invokeAny, invokeAll, atMostOnce
-     */
-
-    @Test
+    @Assertion(id = "SPEC:10.2; SPEC:13; SPEC:13.1; SPEC:13.2",
+            strategy = "Test basic function for ManagedExecutorService: execute")
     public void testExecute() {
         try {
             executor.execute(new CounterRunnableTask());
@@ -84,7 +68,8 @@ public class InheritedAPITests {
         }
     }
 
-    @Test
+    @Assertion(id = "SPEC:14; SPEC:14.1; SPEC:14.2; SPEC:14.3",
+            strategy = "Test basic function for ManagedExecutorService: submit")
     public void testSubmit() throws Exception {
         Future<?> result = executor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
@@ -99,7 +84,8 @@ public class InheritedAPITests {
         assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
-    @Test
+    @Assertion(id = "SPEC:14.4; SPEC:6.1; SPEC:6.2; SPEC:8",
+            strategy = "Test basic function for ManagedExecutorService: invokeAny")
     public void testInvokeAny() {
         try {
             List<Callable<Integer>> taskList = new ArrayList<>();
@@ -123,7 +109,8 @@ public class InheritedAPITests {
         });
     }
 
-    @Test
+    @Assertion(id = "SPEC:8.1; SPEC:9; SPEC:10; SPEC:10.2; SPEC:12; SPEC:19; SPEC:27",
+            strategy = "Test basic function for ManagedExecutorService: invokeAll")
     public void testInvokeAll() {
         try {
             List<Callable<Integer>> taskList = new ArrayList<>();

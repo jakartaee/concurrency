@@ -15,22 +15,69 @@
  */
 package ee.jakarta.tck.concurrent.framework.junit.extensions;
 
+import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestWatcher;
 
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
 /**
  * Logs before and after test execution, and injects the name of the test into
  * the @TestName field.
  */
-public class AssertionExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+public class AssertionExtension implements TestWatcher, BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private static final Logger log = Logger.getLogger(AssertionExtension.class.getCanonicalName());
+    private static final String nl = System.lineSeparator();
+    
+    @Override
+    public void testFailed(final ExtensionContext context, final Throwable cause) {
+        Method testMethod = context.getRequiredTestMethod();
+        Assertion instance = testMethod.getAnnotation(Assertion.class);
+        if (instance != null) {
+            log.warning(testMethod.getName() + " failed " + nl
+                    + " @Assertion.ids: " + instance.id() + nl
+                    + " @Assertion.strategy: " + instance.strategy() + nl
+                    + " Throwable.cause: " + cause.getLocalizedMessage());
+        }
+    }
+    
+    @Override
+    public void testAborted(final ExtensionContext context, final Throwable cause) {
+        Method testMethod = context.getRequiredTestMethod();
+        Assertion instance = testMethod.getAnnotation(Assertion.class);
+        if (instance != null) {
+            log.warning(testMethod.getName() + " was aborted " + nl
+                    + " @Assertion.ids: " + instance.id() + nl
+                    + " @Assertion.strategy: " + instance.strategy() + nl
+                    + " Throwable.cause: " + cause.getLocalizedMessage());
+        }
+    }
+    
+    @Override
+    public void testDisabled(final ExtensionContext context, final Optional<String> reason) {
+        Method testMethod = context.getRequiredTestMethod();
+        Assertion instance = testMethod.getAnnotation(Assertion.class);
+        boolean isChallenge = testMethod.isAnnotationPresent(Challenge.class);
+        Challenge challenge =  isChallenge ? testMethod.getAnnotation(Challenge.class) : null;
+        if (instance != null) {
+            log.warning(testMethod.getName() + " is disabled" + nl
+                    + " @Assertion.id: #" + instance.id() + nl
+                    + " @Assertion.strategy: " + instance.strategy() + nl
+                    + (isChallenge
+                    ? " @Challenge.issue:" + challenge.link() + nl
+                    + " @Challenge.version: " + challenge.version()
+                    : " @Disabled.reason:" + reason.get()));
+        }
+    }
 
     @Override
     public void beforeTestExecution(final ExtensionContext context) throws Exception {

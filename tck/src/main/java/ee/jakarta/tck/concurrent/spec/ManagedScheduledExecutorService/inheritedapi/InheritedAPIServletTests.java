@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
 
-package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi.servlet;
+package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,12 +33,12 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -64,14 +64,7 @@ public class InheritedAPIServletTests {
         StaticCounter.reset();
     }
 
-    /*
-     * @testName: testApiSubmit
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.1
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.1", strategy = "Test basic function for ManagedScheduledExecutorService: submit")
     public void testApiSubmit() throws Exception {
         Future<?> result = scheduledExecutor.submit(new CommonTasks.SimpleCallable());
         Wait.waitTillFutureIsDone(result);
@@ -86,14 +79,7 @@ public class InheritedAPIServletTests {
         assertEquals(result.get(), TestConstants.simpleReturnValue);
     }
 
-    /*
-     * @testName: testApiExecute
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.2
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.2", strategy = "Test basic function for ManagedScheduledExecutorService: execute")
     public void testApiExecute() {
         try {
             scheduledExecutor.execute(new CounterRunnableTask());
@@ -103,14 +89,7 @@ public class InheritedAPIServletTests {
         }
     }
 
-    /*
-     * @testName: testApiInvokeAll
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.3
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.3", strategy = "Test basic function for ManagedScheduledExecutorService: invokeAll")
     public void testApiInvokeAll() throws Exception {
         try {
             List<Callable<Integer>> taskList = new ArrayList<>();
@@ -150,14 +129,7 @@ public class InheritedAPIServletTests {
         }
     }
 
-    /*
-     * @testName: testApiInvokeAny
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.4
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.4", strategy = "Test basic function for ManagedScheduledExecutorService: invokeAny")
     public void testApiInvokeAny() throws Exception {
 
         List<Callable<Integer>> taskList = new ArrayList<>();
@@ -178,14 +150,7 @@ public class InheritedAPIServletTests {
         });
     }
 
-    /*
-     * @testName: testApiSchedule
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.5
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.5", strategy = "Test basic function for ManagedScheduledExecutorService: schedule")
     public void testApiSchedule() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 TestConstants.pollInterval.getSeconds(), TimeUnit.SECONDS);
@@ -198,14 +163,7 @@ public class InheritedAPIServletTests {
         assertEquals(result.get(), null);
     }
 
-    /*
-     * @testName: testApiScheduleAtFixedRate
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.6
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.6", strategy = "Test basic function for ManagedScheduledExecutorService: scheduleAtFixedRate")
     public void testApiScheduleAtFixedRate() {
         ScheduledFuture<?> result = null;
 
@@ -224,14 +182,7 @@ public class InheritedAPIServletTests {
         }
     }
 
-    /*
-     * @testName: testApiScheduleWithFixedDelay
-     *
-     * @assertion_ids: CONCURRENCY:SPEC:44.7
-     *
-     * @test_Strategy:
-     */
-    @Test
+    @Assertion(id = "SPEC:44.7", strategy = "Test basic function for ManagedScheduledExecutorService: scheduleWithFixedDelay")
     public void testApiScheduleWithFixedDelay() {
         ScheduledFuture<?> result = null;
         try {

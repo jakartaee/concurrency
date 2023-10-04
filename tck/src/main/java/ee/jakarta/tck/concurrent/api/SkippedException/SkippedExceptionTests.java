@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 import jakarta.enterprise.concurrent.SkippedException;
 
@@ -38,14 +38,7 @@ public class SkippedExceptionTests {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, SkippedExceptionTests.class.getPackage());
     }
 
-    /*
-     * @testName: SkippedExceptionNoArgTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:42
-     *
-     * @test_Strategy: Constructs an SkippedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:42", strategy = "Constructs an SkippedException.")
     public void skippedExceptionNoArgTest() {
         SkippedException thrown = assertThrows(SkippedException.class, () -> {
             throw new SkippedException();
@@ -54,14 +47,7 @@ public class SkippedExceptionTests {
         assertNull(thrown.getMessage());
     }
 
-    /*
-     * @testName: SkippedExceptionStringTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:43
-     *
-     * @test_Strategy: Constructs an SkippedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:43", strategy = "Constructs an SkippedException.")
     public void skippedExceptionStringTest() {
         final String expected = "thisisthedetailmessage";
 
@@ -73,14 +59,7 @@ public class SkippedExceptionTests {
         assertEquals(expected, thrown.getMessage());
     }
 
-    /*
-     * @testName: SkippedExceptionThrowableTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:45
-     *
-     * @test_Strategy: Constructs an SkippedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:45", strategy = "Constructs an SkippedException.")
     public void skippedExceptionThrowableTest() {
         SkippedException thrown;
 
@@ -102,14 +81,7 @@ public class SkippedExceptionTests {
         assertNull(thrown.getCause());
     }
 
-    /*
-     * @testName: SkippedExceptionStringThrowableTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:44
-     *
-     * @test_Strategy: Constructs an SkippedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:44", strategy = "Constructs an SkippedException.")
     public void skippedExceptionStringThrowableTest() {
         SkippedException thrown;
 

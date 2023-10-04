@@ -26,14 +26,13 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.common.fixed.counter.CounterRunnableTask;
 import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTriggers;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
@@ -61,17 +60,7 @@ public class TriggerTests {
         StaticCounter.reset();
     }
 
-    /*
-     * @testName: triggerGetNextRunTimeTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:46
-     *
-     * @test_Strategy: Retrieve the next time that the task should run after. fix:
-     * https://github.com/jakartaee/concurrency/pull/222 Accepted TCK challenge:
-     * https://github.com/jakartaee/concurrency/issues/228 Can be reenabled in next
-     * release of Jakarta Concurrency
-     */
-    @Disabled
+    @Assertion(id = "JAVADOC:46", strategy = "Retrieve the next time that the task should run after.")
     public void triggerGetNextRunTimeTest() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
                 new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.pollInterval.toMillis()));
@@ -87,22 +76,14 @@ public class TriggerTests {
         }
     }
 
-    /*
-     * @testName: triggerSkipRunTest
-     *
-     * @assertion_ids: CONCURRENCY:JAVADOC:47
-     *
-     * @test_Strategy: Return true if this run instance should be skipped. This is
-     * useful if the task shouldn't run because it is late or if the task is paused
-     * or suspended. Once this task is skipped, the state of it's Future's result
-     * will throw a SkippedException. Unchecked exceptions will be wrapped in a
-     * SkippedException.
-     */
-    @Test
+    @Assertion(id = "JAVADOC:47", strategy = "Return true if this run instance should be skipped."
+            + " This is useful if the task shouldn't run because it is late or if the task is paused or suspended."
+            + " Once this task is skipped, the state of it's Future's result will throw a SkippedException."
+            + " Unchecked exceptions will be wrapped in a SkippedException.")
     public void triggerSkipRunTest() {
         ScheduledFuture<?> sf = scheduledExecutor.schedule(new CommonTasks.SimpleCallable(),
                 new CommonTriggers.OnceTriggerDelaySkip(TestConstants.pollInterval));
-
+        
         try {
             Wait.waitTillFutureThrowsException(sf, SkippedException.class);
         } finally {

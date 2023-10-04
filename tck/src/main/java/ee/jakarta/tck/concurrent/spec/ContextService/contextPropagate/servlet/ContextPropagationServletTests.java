@@ -27,11 +27,11 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.jupiter.api.Test;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
 import ee.jakarta.tck.concurrent.framework.URLBuilder;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
@@ -81,19 +81,8 @@ public class ContextPropagationServletTests extends TestClient {
         return "ProxyCreatorServlet";
     }
 
-    /*
-     * @testName: testJNDIContextInServlet
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
-     * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
-     * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
-     *
-     * @test_Strategy: create proxy in servlet and pass it to other servlet in other
-     * web module, then verify JNDI Context.
-     *
-     */
-    @Test
+    @Assertion(id = "SPEC:85 SPEC:76 SPEC:76.1 SPEC:76.2 SPEC:76.3 SPEC:77 SPEC:78 SPEC:82 SPEC:84",
+            strategy = "Create proxy in servlet and pass it to other servlet in other web module, then verify JNDI Context.")
     public void testJNDIContextInServlet() {
         URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
         URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath())
@@ -108,19 +97,8 @@ public class ContextPropagationServletTests extends TestClient {
         assertStringInResponse(testname + " failed to get correct result.", "JNDIContextWeb", resp.trim());
     }
 
-    /*
-     * @testName: testClassloaderInServlet
-     *
-     * @assertion_ids:
-     * CONCURRENCY:SPEC:85;CONCURRENCY:SPEC:76;CONCURRENCY:SPEC:76.1;
-     * CONCURRENCY:SPEC:76.2;CONCURRENCY:SPEC:76.3;CONCURRENCY:SPEC:77;
-     * CONCURRENCY:SPEC:78;CONCURRENCY:SPEC:82;CONCURRENCY:SPEC:84;
-     *
-     * @test_Strategy: create proxy in servlet and pass it into other servlet in
-     * other web module, then verify classloader.
-     *
-     */
-    @Test
+    @Assertion(id = "SPEC:85 SPEC:76 SPEC:76.1 SPEC:76.2 SPEC:76.3 SPEC:77 SPEC:78 SPEC:82 SPEC:84",
+            strategy = "Create proxy in servlet and pass it into other servlet in other web module, then verify classloader.")
     public void testClassloaderInServlet() {
         URL proxyURL = URLBuilder.get().withBaseURL(workInterfaceURL).withPaths("WorkInterfaceServlet").build();
         URLBuilder requestURL = URLBuilder.get().withBaseURL(baseURL).withPaths(getServletPath())
