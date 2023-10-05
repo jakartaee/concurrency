@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -128,6 +128,26 @@ public @interface ManagedThreadFactoryDefinition {
      * @return the priority for new threads.
      */
     int priority() default Thread.NORM_PRIORITY;
+
+    /**
+     * <p>Indicates whether this thread factory is requested to
+     * create {@link Thread#isVirtual() virtual} threads.</p>
+     *
+     * <p>When {@code true}, the thread factory can create
+     * virtual threads if it is capable of doing so
+     * and if the request is not overridden by vendor-specific
+     * configuration that restricts the use of virtual threads.</p>
+     *
+     * <p>The default is {@code false}, indicating that the
+     * thread factory must not create virtual threads.
+     * When {@code false}, the thread factory always creates
+     * platform threads.</p>
+     *
+     * @return {@code true} if the thread factory is requested to
+     *         create virtual threads, otherwise {@code false}.
+     * @since 3.1
+     */
+    boolean virtual() default false;
 
     /**
      * Enables multiple <code>ManagedThreadFactoryDefinition</code>

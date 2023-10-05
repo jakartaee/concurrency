@@ -153,6 +153,32 @@ public @interface ManagedExecutorDefinition {
     int maxAsync() default -1;
 
     /**
+     * <p>Indicates whether this executor is requested to
+     * create {@link Thread#isVirtual() virtual} threads
+     * for tasks that do not run inline.</p>
+     *
+     * <p>When {@code true}, the executor can create
+     * virtual threads if it is capable of doing so
+     * and if the request is not overridden by vendor-specific
+     * configuration that restricts the use of virtual threads.</p>
+     *
+     * <p>The default is {@code false}, indicating that the
+     * executor must not create virtual threads.</p>
+     *
+     * <p>It should be noted that some tasks, such as
+     * completion stage actions, can run inline on an existing
+     * thread in response to events such as the completion of
+     * another stage or a join operation on the completion stage.
+     * In situations such as these, the executor does not control
+     * the type of thread that is used to run the task.</p>
+     *
+     * @return {@code true} if the executor can create virtual threads,
+     *         otherwise {@code false}.
+     * @since 3.1
+     */
+    boolean virtual() default false;
+
+    /**
      * Enables multiple <code>ManagedExecutorDefinition</code>
      * annotations on the same type.
      */
