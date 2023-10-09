@@ -44,7 +44,6 @@ import jakarta.enterprise.concurrent.ManagedTaskListener;
 @Common({ PACKAGE.FIXED_COUNTER })
 public class ContextServiceTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ContextServiceTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class);

@@ -49,7 +49,6 @@ public class ManagedTaskListenerTests {
 
     private static final TestLogger log = TestLogger.get(ManagedTaskListenerTests.class);
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedTaskListenerTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, ManagedTaskListenerTests.class.getPackage());

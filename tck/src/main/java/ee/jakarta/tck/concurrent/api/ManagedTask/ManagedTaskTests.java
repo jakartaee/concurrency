@@ -39,7 +39,6 @@ import jakarta.enterprise.concurrent.ManagedTask;
 @Common({ PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS })
 public class ManagedTaskTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedTaskTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addPackages(true, ManagedTaskTests.class.getPackage());

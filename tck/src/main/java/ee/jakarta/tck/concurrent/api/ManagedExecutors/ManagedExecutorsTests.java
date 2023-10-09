@@ -52,7 +52,6 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 @Common({ PACKAGE.MANAGED_TASK_LISTENER, PACKAGE.TASKS })
 public class ManagedExecutorsTests {
 
-    // TODO deploy as EJB and JSP artifacts
     @Deployment(name = "ManagedExecutorsTests")
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class).addAsWebInfResource(ManagedExecutorsTests.class.getPackage(),
