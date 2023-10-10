@@ -1,5 +1,5 @@
 :sectnums:
-= Jakarta Concurrency Specification, Version 3.0
+= Jakarta Concurrency Specification, Version 3.1
 
 Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
 
@@ -58,6 +58,7 @@ The following Java Platform and Jakarta specifications are referenced in this
 document:
 
 * Concurrency Utilities Specification (JSR-166)
+* Jakarta Contexts and Dependency Injection
 * Jakarta Connectors
 * Java Platform Standard Edition
 * Jakarta Management
@@ -341,7 +342,16 @@ application components to run tasks asynchronously.
 Application Component Providers (application developers) (EE2.11.2) use
 a ManagedExecutorService instance and associated interfaces to develop
 application components that utilize the concurrency functions that these
-interfaces provide. Instances for these objects are retrieved using the
+interfaces provide.
+
+The application uses the
+`jakarta.enterprise.concurrent.ManagedExecutorDefinition` annotation
+to define instances of `ManagedExecutorService` and enumerate the
+qualifiers for `ManagedExecutorService` injection points
+that are to receive a `ManagedExecutorService` bean
+that is produced by the `ManagedExecutorDefinition`.
+
+Applications can also retrieve instances using the
 Java Naming and Directory Interface (JNDI) Naming Context (EE.5) or
 through injection of resource environment references (EE.5.8.1.1).
 
@@ -869,6 +879,12 @@ be propagated by this default `ManagedExecutorService` from a
 contextualizing application component must include naming context,
 classloader, and security information.
 
+The Jakarta EE Product Provider must inject the default
+`ManagedExecutorService` into injection points of
+`ManagedExecutorService` that do not have any qualifiers
+except for where the application provides the producer,
+in which case the application's producer takes precedence.
+
 ==== System Administrator’s Responsibilities 
 
 The System Administrator (EE.2.11.5) is responsible for monitoring and
@@ -1042,7 +1058,16 @@ provides with the addition of `Trigger` and `ManagedTaskListener`.
 Application Component Providers (application developers) (EE2.11.2) use
 a `ManagedScheduledExecutorService` instance and associated interfaces to
 develop application components that utilize the concurrency functions
-that these interfaces provide. Instances for these objects are retrieved
+that these interfaces provide.
+
+The application uses the
+`jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition` annotation
+to define instances of `ManagedScheduledExecutorService` and enumerate the
+qualifiers for `ManagedScheduledExecutorService` injection points
+that are to receive a `ManagedScheduledExecutorService` bean
+that is produced by the `ManagedScheduledExecutorDefinition`.
+
+Applications can also retrieve instances
 using the Java Naming and Directory Interface (JNDI) Naming Context
 (EE.5.2) or through injection of resource environment references
 (EE.5.8.1.1).
@@ -1334,6 +1359,12 @@ types of contexts to be propagated by this default
 component must include naming context, class loader, and security
 information.
 
+The Jakarta EE Product Provider must inject the default
+`ManagedScheduledExecutorService` into injection points of
+`ManagedScheduledExecutorService` that do not have any qualifiers
+except for where the application provides the producer,
+in which case the application's producer takes precedence.
+
 ==== System Administrator’s Responsibilities 
 
 The System Administrator (EE.2.110.5) is responsible for monitoring and
@@ -1481,8 +1512,17 @@ provider's undefined thread context.).
 ==== Application Component Provider’s Responsibilities 
 
 Application Component Providers (application developers) (EE2.11.2) use
-a ContextService instance to create contextual object proxies. Instances
-for these objects are retrieved using the Java Naming and Directory
+a ContextService instance to create contextual object proxies.
+
+The application uses the
+`jakarta.enterprise.concurrent.ContextServiceDefinition` annotation
+to define instances of `ContextService` and enumerate the
+qualifiers for `ContextService` injection points
+that are to receive a `ContextService` bean
+that is produced by the `ContextServiceDefinition`.
+
+Applications can also
+retrieve instances using the Java Naming and Directory
 Interface (JNDI) Naming Context (EE.5) or through injection of resource
 environment references (EE.5.8.1.1).
 
@@ -1851,6 +1891,12 @@ by this default `ContextService` from a contextualizing application
 component must include naming context, class loader, and security
 information.
 
+The Jakarta EE Product Provider must inject the default
+`ContextService` into injection points of
+`ContextService` that do not have any qualifiers
+except for where the application provides the producer,
+in which case the application's producer takes precedence.
+
 ==== Transaction Management 
 
 Contextual dynamic proxies support user-managed global transaction
@@ -1928,7 +1974,16 @@ thread.
 
 Application Component Providers (application developers) (EE2.11.2) use
 a `jakarta.enterprise.concurrent.ManagedThreadFactory` instance to create
-manageable threads. `ManagedThreadFactory` instances are retrieved using
+manageable threads.
+
+The application uses the
+`jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition` annotation
+to define instances of `ManagedThreadFactory` and enumerate the
+qualifiers for `ManagedThreadFactory` injection points
+that are to receive a `ManagedThreadFactory` bean
+that is produced by the `ManagedThreadFactoryDefinition`.
+
+Applications can also retrieve instances using
 the Java Naming and Directory Interface (JNDI) Naming Context (EE.5) or
 through injection of resource environment references (EE.5.8.1.1).
 
@@ -2236,6 +2291,12 @@ name `java:comp/DefaultManagedThreadFactory`. The types of contexts to be
 propagated by this default `ManagedThreadFactory` from a contextualizing
 application component must include naming context, class loader, and
 security information.
+
+The Jakarta EE Product Provider must inject an instance of the
+default `ManagedThreadFactory` into injection points of
+`ManagedThreadFactory` that do not have any qualifiers
+except for where the application provides the producer,
+in which case the application's producer takes precedence.
 
 ==== System Administrator’s Responsibilities 
 
