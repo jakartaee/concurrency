@@ -39,6 +39,7 @@ import java.lang.annotation.Target;
  * <pre>
  * {@literal @}ManagedThreadFactoryDefinition(
  *     name = "java:global/concurrent/MyThreadFactory",
+ *     qualifiers = MyQualifier.class,
  *     context = "java:global/concurrent/MyThreadFactoryContext",
  *     priority = 4)
  * {@literal @}ContextServiceDefinition(

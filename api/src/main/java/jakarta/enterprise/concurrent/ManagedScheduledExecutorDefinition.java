@@ -39,6 +39,7 @@ import java.lang.annotation.Target;
  * <pre>
  * {@literal @}ManagedScheduledExecutorDefinition(
  *     name = "java:comp/concurrent/MyScheduledExecutor",
+ *     qualifiers = MyQualifier.class,
  *     context = "java:comp/concurrent/MyScheduledExecutorContext",
  *     hungTaskThreshold = 30000,
  *     maxAsync = 3)
