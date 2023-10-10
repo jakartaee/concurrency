@@ -71,7 +71,7 @@ public class TriggerTests {
             Assertions.assertBetween(StaticCounter.getCount(), TestConstants.pollsPerTimeout - 2,
                     TestConstants.pollsPerTimeout + 2);
         } finally {
-            Wait.waitTillFutureIsDone(result);
+            Wait.waitForTaskComplete(result);
         }
     }
 

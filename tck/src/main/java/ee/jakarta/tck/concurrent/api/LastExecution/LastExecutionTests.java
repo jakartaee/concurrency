@@ -16,11 +16,8 @@
 
 package ee.jakarta.tck.concurrent.api.LastExecution;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -36,7 +33,6 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
-import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutors;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -72,51 +68,40 @@ public class LastExecutionTests {
         Map<String, String> executionProperties = new HashMap<String, String>();
         executionProperties.put(ManagedTask.IDENTITY_NAME, IDENTITY_NAME_TEST_ID);
 
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
+        scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(), executionProperties, null),
                 new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
-        Wait.waitTillFutureIsDone(sf);
-
-        assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
-                StaticCounter.getCount(), // actual
-                "Got wrong identity name. See server log for more details.");
+        
+        StaticCounter.waitTill(LogicDrivenTrigger.RIGHT_COUNT, "Got wrong identity name. See server log for more details.");
     }
 
     @Assertion(id = "JAVADOC:16", strategy = "Result of the last execution.")
     public void lastExecutionGetResultRunnableTest() {
         // test with runnable, LastExecution should return null
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
+        scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(), null, null),
                 new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
-        Wait.waitTillFutureIsDone(sf);
-
-        assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
-                StaticCounter.getCount(), // actual
-                "Got wrong last execution result. See server log for more details.");
+        
+        StaticCounter.waitTill(LogicDrivenTrigger.RIGHT_COUNT, "Got wrong last execution result. See server log for more details.");
     }
 
     @Assertion(id = "JAVADOC:16", strategy = "Result of the last execution.")
     public void lastExecutionGetResultCallableTest() {
         // test with callable, LastExecution should return 1
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
+        scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterCallableTask(), null, null),
                 new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
-        Wait.waitTillFutureIsDone(sf);
-
-        assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
-                StaticCounter.getCount(), // actual
-                "Got wrong last execution result. See server log for more details.");
+        
+        StaticCounter.waitTill(LogicDrivenTrigger.RIGHT_COUNT, "Got wrong last execution result. See server log for more details.");
     }
 
     @Assertion(id = "JAVADOC:17 JAVADOC:18 JAVADOC:19", strategy = "The last time in which the task was completed.")
     public void lastExecutionGetRunningTimeTest() {
-        ScheduledFuture<?> sf = scheduledExecutor.schedule(
+        scheduledExecutor.schedule(
                 ManagedExecutors.managedTask(new CounterRunnableTask(TestConstants.pollInterval), null, null),
                 new LogicDrivenTrigger(TestConstants.pollInterval.toMillis(), testname));
-        Wait.waitTillFutureIsDone(sf);
-        assertEquals(LogicDrivenTrigger.RIGHT_COUNT, // expected
-                StaticCounter.getCount(), // actual
-                "Got wrong last execution result.");
+        
+        StaticCounter.waitTill(LogicDrivenTrigger.RIGHT_COUNT, "Got wrong last execution result. See server log for more details.");
     }
 
 }

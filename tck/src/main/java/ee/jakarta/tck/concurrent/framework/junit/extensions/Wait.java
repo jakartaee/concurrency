@@ -73,25 +73,6 @@ public final class Wait {
     }
 
     /**
-     * Waits for future to complete, but will timeout after
-     * {@link TestConstants#waitTimeout}, and will be polled every
-     * {@link TestConstants#pollInterval}
-     *
-     * The difference between this method and waitForTaskComplete is that some
-     * scheduled task will return values for multiple times, in this situation
-     * waitForTaskComplete does not work.
-     *
-     * @param future - the future to wait for
-     */
-    public static void waitTillFutureIsDone(final Future<?> future) {
-        assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; !future.isDone(); sleep(TestConstants.pollInterval)) {
-                //empty
-            }
-        });
-    }
-
-    /**
      * Waits for future to throw an error, but will timeout after
      * {@link TestConstants#waitTimeout}, and will be polled every
      * {@link TestConstants#pollInterval}

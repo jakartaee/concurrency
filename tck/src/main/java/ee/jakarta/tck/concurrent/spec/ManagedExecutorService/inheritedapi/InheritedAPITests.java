@@ -72,16 +72,13 @@ public class InheritedAPITests {
             strategy = "Test basic function for ManagedExecutorService: submit")
     public void testSubmit() throws Exception {
         Future<?> result = executor.submit(new CommonTasks.SimpleCallable());
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), TestConstants.simpleReturnValue);
+        assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
 
         result = executor.submit(new CommonTasks.SimpleRunnable());
-        Wait.waitTillFutureIsDone(result);
-        result.get();
+        Wait.waitForTaskComplete(result);
 
         result = executor.submit(new CommonTasks.SimpleRunnable(), TestConstants.simpleReturnValue);
-        Wait.waitTillFutureIsDone(result);
-        assertEquals(result.get(), TestConstants.simpleReturnValue);
+        assertEquals(Wait.waitForTaskComplete(result), TestConstants.simpleReturnValue);
     }
 
     @Assertion(id = "SPEC:14.4; SPEC:6.1; SPEC:6.2; SPEC:8",
@@ -119,7 +116,7 @@ public class InheritedAPITests {
             taskList.add(new CommonTasks.SimpleArgCallable(3));
             List<Future<Integer>> resultList = executor.invokeAll(taskList);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
@@ -127,7 +124,7 @@ public class InheritedAPITests {
 
             resultList = executor.invokeAll(taskList, TestConstants.waitTimeout.getSeconds(), TimeUnit.SECONDS);
             for (Future<?> each : resultList) {
-                Wait.waitTillFutureIsDone(each);
+                Wait.waitForTaskComplete(each);
             }
             assertEquals(resultList.get(0).get(), 1);
             assertEquals(resultList.get(1).get(), 2);
