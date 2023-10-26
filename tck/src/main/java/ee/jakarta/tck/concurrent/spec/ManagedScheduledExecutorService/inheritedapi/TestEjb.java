@@ -31,7 +31,6 @@ import java.util.concurrent.TimeoutException;
 
 import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.counter.CounterRunnableTask;
-import ee.jakarta.tck.concurrent.common.fixed.counter.StaticCounter;
 import ee.jakarta.tck.concurrent.common.tasks.CommonTasks;
 import ee.jakarta.tck.concurrent.framework.EJBJNDIProvider;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
@@ -70,7 +69,7 @@ public class TestEjb implements TestEjbInterface {
         try {
             EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
             scheduledExecutor.execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
-            StaticCounter.waitTillSurpassed(1);
+            Wait.waitForCounter(counter, 1);
         } finally {
             counter.reset();
         }
