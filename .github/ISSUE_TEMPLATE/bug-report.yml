@@ -15,11 +15,11 @@ body:
     attributes: 
       label: Specification Version
       description: What version of the Concurrency Spec are you running using? 
-      options: #TODO need to update this list per release
-        - 3.1.0-SNAPSHOT (Locally built)
-        - 3.0.2          (Generally available)
-        - 3.0.1          (Generally available)
-        - 3.0.0          (Generally available)
+      options:
+        - 3.0.2
+        - 3.0.1
+        - 3.0.0
+        - SNAPSHOT (Locally built)
   - type: textarea
     validations:
       required: true
