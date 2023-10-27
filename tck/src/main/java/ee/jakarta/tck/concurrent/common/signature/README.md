@@ -49,24 +49,23 @@ The plugin that generates the signature file has been copied below for reference
 
 ### Generating the Signature File
 
-To generate the signature file go to the TCK project:
+To generate the signature file first build the API:
 
 ```sh
-cd tck
+cd api
+mvn package
 ```
 
-Use Maven to build the TCK and run the custom profile to generate the signature file:
+Then build the TCK with the `signature-generation` profile to re-generate the signature file:
 
 ```sh
-mvn install -Psignature-generation
+cd ../tck
+mvn package -Psignature-generation
 ```
 
 The signature file will be generated in the `/target/` directory.
 
-The signature file name expected is `jakarta.enterprise.concurrent.sig_${version}`, where version is the api version form which the signature is generated.
-
-Copy the signature file to the TCK so that it can be used by the test project, and checked into version control.
-`src/main/resources/ee/jakarta/tck/concurrent/spec/signature`
+The signature file will be automatically copied to the `/src/main/resource/ee/jakarta/tck/concurrent/common/signature/` directory.
 
 ## For TCK users
 
