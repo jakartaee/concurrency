@@ -49,6 +49,9 @@ The plugin that generates the signature file has been copied below for reference
 
 ### Generating the Signature File
 
+> NOTE: A GitHub actions workflow automatically updates signature files after API updates so this only needs to happen 
+> when creating a new signature file for a newly support JDK level.
+
 To generate the signature file first build the API:
 
 ```sh

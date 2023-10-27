@@ -34,7 +34,6 @@ body:
           #### Prepare
             - [X] Open this issue.
             - [ ] Complete outstanding work
-            - [ ] (Update TCK Signatures to capture API changes)[https://github.com/jakartaee/concurrency/blob/main/tck/src/main/java/ee/jakarta/tck/concurrent/common/signature/README.md#generating-the-signature-file]
           #### Stage release
             - [ ] [Build and stage artifacts to staging repository](https://ci.eclipse.org/cu/view/Release/job/concurrency_api_1-build-and-stage/)
             - [ ] [Build and stage the TCK distribution artifact to download.eclipse.org](https://ci.eclipse.org/cu/view/Release/job/concurrency_tck_1-build-and-stage/)
