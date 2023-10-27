@@ -5,7 +5,8 @@
 if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
   VERSION="$1"
 else
-  VERSION="3.0.1"
+  echo "A valid version is required to execute this script"
+  exit 1
 fi
 
 # Parent pom
