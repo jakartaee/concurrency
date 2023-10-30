@@ -48,7 +48,8 @@ body:
             - [ ] Update this issue with a comment that links to the published artifacts and the generated GitHub branch and tag
             - [ ] [Modify the `pre-release` on GitHub to be `latest`](https://github.com/jakartaee/concurrency/releases)
           #### Follow up
-            - [ ] [Email a Jakarta steering committee member to promote the TCK Distribution publically](https://ci.eclipse.org/jakartaee-spec-committee/job/promote-release/)
+            - [ ] [Email the Concurrency Mailing list to have a Jakarta Steering Committee member promote the TCK Distribution publically](https://accounts.eclipse.org/mailing-list/cu-dev)
+              - via [Jenkins build](https://ci.eclipse.org/jakartaee-spec-committee/job/promote-release/)
             - [ ] Update versions in non-build files, such as:
               Documentation:
               - [tck/README.adoc](https://github.com/jakartaee/concurrency/tree/main/tck#getting-the-tck)
