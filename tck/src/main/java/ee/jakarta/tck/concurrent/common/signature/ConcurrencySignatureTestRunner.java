@@ -16,7 +16,6 @@
 package ee.jakarta.tck.concurrent.common.signature;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
@@ -311,11 +310,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         // signature testing
         assertNotNull(System.getProperty("jimage.dir"),
                 "The system property jimage.dir must be set in order to run the Signature test.");
-
-        // Ensure user is running on JDK 11 or higher, different JDKs produce different
-        // signatures
-        int javaSpecVersion = Integer.parseInt(System.getProperty("java.specification.version"));
-        assertTrue(javaSpecVersion >= 11, "The signature tests must be run on a JVM using Java 11 or higher.");
 
         // Ensure user has the correct security/JDK settings to allow the plugin access
         // to internal JDK classes.
