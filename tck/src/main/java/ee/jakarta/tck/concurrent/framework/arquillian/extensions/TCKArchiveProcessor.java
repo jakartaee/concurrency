@@ -31,6 +31,7 @@ import org.jboss.shrinkwrap.api.container.ResourceContainer;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
@@ -83,9 +84,14 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
         if (!testClass.isAnnotationPresent(Signature.class)) {
             return; //Nothing to append
         }
+        final String jdkVersion = System.getProperty("java.specification.version");
         
-        final boolean isJava21orAbove = Integer.parseInt(System.getProperty("java.specification.version")) >= 21;
         final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
+        final String signatureFileName = ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_" + jdkVersion;
+        
+        if (!signatureFileExists(signaturePackage, signatureFileName)) {
+            throw new RuntimeException("No signature file exists for name: " + signatureFileName);
+        }
 
         if (applicationArchive instanceof ClassContainer) {
             
@@ -105,10 +111,16 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
                     ConcurrencySignatureTestRunner.SIG_MAP_NAME, ConcurrencySignatureTestRunner.SIG_PKG_NAME);
             ((ResourceContainer<?>) applicationArchive).addAsResource(signaturePackage,
                     // Get local resource based on JDK level
-                    isJava21orAbove ? ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_21"
-                            : ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_17",
+                    signatureFileName,
                     // Target same package as test
                     signaturePackage.getName().replace(".", "/") + "/" + ConcurrencySignatureTestRunner.SIG_FILE_NAME);
         }
+    }
+    
+    private static boolean signatureFileExists(final Package pkg, final String fileName) {
+        String classloaderResourceName = AssetUtil.getClassLoaderResourceName(pkg, fileName);
+        
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        return cl.getResource(classloaderResourceName) != null;
     }
 }

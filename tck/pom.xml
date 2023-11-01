@@ -240,6 +240,8 @@
                             </execution>
                         </executions>
                     </plugin>
+                    
+                    <!-- Extract JDK modules into output directory for use by signature plugin -->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -262,6 +264,8 @@
                             </arguments>
                         </configuration>
                     </plugin>
+                    
+                    <!-- Run signature plugin to generate signature file -->
                     <plugin>
                         <groupId>org.netbeans.tools</groupId>
                         <artifactId>sigtest-maven-plugin</artifactId>
@@ -269,6 +273,7 @@
                         <executions>
                             <execution>
                                 <id>createSigFile</id>
+                                <phase>generate-resources</phase>
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
@@ -282,8 +287,37 @@
                                 jakarta.enterprise.concurrent.spi,
                             </packages>
                             <attach>false</attach>
-                            <sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${project.version}</sigfile>
+                            <sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${java.version}</sigfile>
                         </configuration>
+                    </plugin>
+                    
+                    <!-- Copy signature file to tck resources with major java version -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>copySigFile</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <mkdir dir="${project.basedir}/src/main/resources/ee/jakarta/tck/concurrent/common/signature/" />
+                                        <copy todir="${project.basedir}/src/main/resources/ee/jakarta/tck/concurrent/common/signature/">
+                                            <fileset
+                                                dir="${project.build.directory}"
+                                                includes="jakarta.enterprise.concurrent.sig_${java.version}" />
+                                            <mapper
+                                                from="^(jakarta.enterprise.concurrent.sig_[0-9]+)"
+                                                to="\1" type="regexp" />
+                                        </copy>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
