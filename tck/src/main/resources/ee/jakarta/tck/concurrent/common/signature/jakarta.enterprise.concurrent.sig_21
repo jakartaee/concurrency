@@ -18,6 +18,7 @@ CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Asynchr
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[METHOD, TYPE])
 innr public final static Result
 intf java.lang.annotation.Annotation
+meth public abstract !hasdefault jakarta.enterprise.concurrent.Schedule[] runAt()
 meth public abstract !hasdefault java.lang.String executor()
 
 CLSS public final static jakarta.enterprise.concurrent.Asynchronous$Result
@@ -55,6 +56,7 @@ fld public final static java.lang.String SECURITY = "Security"
 fld public final static java.lang.String TRANSACTION = "Transaction"
 innr public abstract interface static !annotation List
 intf java.lang.annotation.Annotation
+meth public abstract !hasdefault java.lang.Class<?>[] qualifiers()
 meth public abstract !hasdefault java.lang.String[] cleared()
 meth public abstract !hasdefault java.lang.String[] propagated()
 meth public abstract !hasdefault java.lang.String[] unchanged()
@@ -109,7 +111,9 @@ CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Managed
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[TYPE])
 innr public abstract interface static !annotation List
 intf java.lang.annotation.Annotation
+meth public abstract !hasdefault boolean virtual()
 meth public abstract !hasdefault int maxAsync()
+meth public abstract !hasdefault java.lang.Class<?>[] qualifiers()
 meth public abstract !hasdefault java.lang.String context()
 meth public abstract !hasdefault long hungTaskThreshold()
 meth public abstract java.lang.String name()
@@ -150,7 +154,9 @@ CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Managed
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[TYPE])
 innr public abstract interface static !annotation List
 intf java.lang.annotation.Annotation
+meth public abstract !hasdefault boolean virtual()
 meth public abstract !hasdefault int maxAsync()
+meth public abstract !hasdefault java.lang.Class<?>[] qualifiers()
 meth public abstract !hasdefault java.lang.String context()
 meth public abstract !hasdefault long hungTaskThreshold()
 meth public abstract java.lang.String name()
@@ -193,7 +199,9 @@ CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Managed
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[TYPE])
 innr public abstract interface static !annotation List
 intf java.lang.annotation.Annotation
+meth public abstract !hasdefault boolean virtual()
 meth public abstract !hasdefault int priority()
+meth public abstract !hasdefault java.lang.Class<?>[] qualifiers()
 meth public abstract !hasdefault java.lang.String context()
 meth public abstract java.lang.String name()
 
@@ -203,6 +211,21 @@ CLSS public abstract interface static !annotation jakarta.enterprise.concurrent.
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[TYPE])
 intf java.lang.annotation.Annotation
 meth public abstract jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition[] value()
+
+CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Schedule
+ anno 0 java.lang.annotation.Documented()
+ anno 0 java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy value=RUNTIME)
+ anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[ANNOTATION_TYPE])
+intf java.lang.annotation.Annotation
+meth public abstract !hasdefault int[] daysOfMonth()
+meth public abstract !hasdefault int[] hours()
+meth public abstract !hasdefault int[] minutes()
+meth public abstract !hasdefault int[] seconds()
+meth public abstract !hasdefault java.lang.String cron()
+meth public abstract !hasdefault java.lang.String zone()
+meth public abstract !hasdefault java.time.DayOfWeek[] daysOfWeek()
+meth public abstract !hasdefault java.time.Month[] months()
+meth public abstract !hasdefault long skipIfLateBy()
 
 CLSS public jakarta.enterprise.concurrent.SkippedException
 cons public init()
