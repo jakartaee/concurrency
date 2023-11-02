@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Flow;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -215,6 +216,25 @@ public interface ContextService {
    * @since 3.0
    */
   public <R> Supplier<R> contextualSupplier(Supplier<R> supplier);
+
+  /**
+   * <p>Wraps a {@link java.util.concurrent.Flow.Subscriber} with context captured from the thread that invokes
+   * <code>contextualSubscriber</code>. Context is captured at the time <code>contextualSubscriber</code> is invoked.</p>
+   *
+   * <p>When one of the methods of the {@link java.util.concurrent.Flow.Subscriber} interface (<code>onSubscribe</code>, <code>onNext</code>,
+   * <code>onError</code>, or <code>onComplete</code>) is invoked on the proxy instance,
+   * context is first established on the thread that will run the method,
+   * then the method of the provided <code>Flow.Subscriber</code> is invoked.
+   * Finally, the previous context is restored on the thread, and the result of the
+   * <code>Flow.Subscriber</code> is returned to the invoker.</p>
+   *
+   * @param <T> the subscriber's item type
+   * @param subscriber instance to contextualize
+   * @return contextualized proxy instance that wraps execution of the <code>onSubscribe</code>, <code>onNext</code>,
+   * <code>onError</code>, and <code>onComplete</code> methods
+   * @since 3.1
+   */
+  public <T> Flow.Subscriber<T> contextualSubscriber(Flow.Subscriber<T> subscriber);
 
   /**
    * Creates a new contextual object proxy for the input object instance.
