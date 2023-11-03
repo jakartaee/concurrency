@@ -221,17 +221,16 @@ public interface ContextService {
    * <p>Wraps a {@link java.util.concurrent.Flow.Subscriber} with context captured from the thread that invokes
    * <code>contextualSubscriber</code>. Context is captured at the time <code>contextualSubscriber</code> is invoked.</p>
    *
-   * <p>When one of the methods of the {@link java.util.concurrent.Flow.Subscriber} interface (<code>onSubscribe</code>,
+   * <p>Whenever one of the methods of the {@link java.util.concurrent.Flow.Subscriber} interface (such as <code>onSubscribe</code>,
    * <code>onNext</code>, <code>onError</code>, or <code>onComplete</code>) is invoked on the proxy instance,
    * context is first established on the thread that will run the method,
    * then the method of the provided <code>Flow.Subscriber</code> is invoked.
    * Finally, the previous context is restored on the thread, and the result of the
-   * <code>Flow.Subscriber</code> is returned to the invoker.</p>
+   * <code>Flow.Subscriber</code> method is returned to the invoker.</p>
    *
    * @param <T> the subscribed item type
    * @param subscriber instance to contextualize
-   * @return contextualized proxy instance that wraps execution of the <code>onSubscribe</code>, <code>onNext</code>,
-   * <code>onError</code>, and <code>onComplete</code> methods
+   * @return contextualized proxy instance that wraps execution of all <code>Subscriber</code> methods.
    * @since 3.1
    */
   public <T> Flow.Subscriber<T> contextualSubscriber(Flow.Subscriber<T> subscriber);
@@ -240,18 +239,17 @@ public interface ContextService {
    * <p>Wraps a {@link java.util.concurrent.Flow.Processor} with context captured from the thread that invokes
    * <code>contextualProcessor</code>. Context is captured at the time <code>contextualProcessor</code> is invoked.</p>
    *
-   * <p>When one of the methods of the {@link java.util.concurrent.Flow.Subscriber} interface (<code>onSubscribe</code>,
+   * <p>Whenever one of the methods of the {@link java.util.concurrent.Flow.Subscriber} interface (such as <code>onSubscribe</code>,
    * <code>onNext</code>, <code>onError</code>, or <code>onComplete</code>) from which {@link java.util.concurrent.Flow.Processor}
    * extends is invoked on the proxy instance, context is first established on the thread that will run the method,
    * then the method of the provided <code>Flow.Processor</code> is invoked.
    * Finally, the previous context is restored on the thread, and the result of the
-   * <code>Flow.Processor</code> is returned to the invoker.</p>
+   * <code>Flow.Processor</code> method is returned to the invoker.</p>
    *
    * @param <T> the subscribed item type
    * @param <R> the published item type
    * @param processor instance to contextualize
-   * @return contextualized proxy instance that wraps execution of the <code>onSubscribe</code>, <code>onNext</code>,
-   * <code>onError</code>, and <code>onComplete</code> methods
+   * @return contextualized proxy instance that wraps execution of all methods that are inherited from <code>Subscriber</code>.
    * @since 3.1
    */
   public <T, R> Flow.Processor<T, R> contextualProcessor(Flow.Processor<T, R> processor);
