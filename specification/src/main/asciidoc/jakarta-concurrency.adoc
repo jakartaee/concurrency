@@ -153,7 +153,7 @@ need to be available.
 
 Jakarta EE depends on various context information to be available on the
 thread when interacting with other Jakarta EE services such as JDBC data
-sources, Jakarta Messaging providers and Jakarta Enterrise Beans. When using Jakarta EE services from a
+sources, Jakarta Messaging providers and Jakarta Enterprise Beans. When using Jakarta EE services from a
 non-container thread, the following behaviors are required:
 
 * Saving the application component thread’s container context.
@@ -174,7 +174,7 @@ Containers (represented here in a single rectangle) provide environments
 for application components to safely interact with Jakarta EE Standard
 Services (represented in the rectangles directly below the Enterprise Bean/Web
 Container rectangle). Four new concurrency services (represented by four
-dark-gray rectangles) allow application components and Jakarta EE Standard
+orange horizontal rectangles) allow application components and Jakarta EE Standard
 Services to run asynchronous tasks without violating container
 contracts.
 
@@ -205,6 +205,9 @@ as "tasks" will be referred to throughout the specification:
 ** `apply(T)`
 * `java.util.function.Supplier`
 ** `get()`
+
+===== Flow Contextual Invocation Points
+The `java.util.concurrent.Flow` class provides interfaces for establishing flow-controlled components. Container context and management constructs are also propagated to methods on the `java.util.concurrent.Flow.Subscriber` interface, including the inherited methods in `java.util.concurrent.Flow.Processor`.
 
 ===== Optional Contextual Invocation Points
 
