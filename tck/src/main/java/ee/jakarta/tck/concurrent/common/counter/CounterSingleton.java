@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +16,28 @@
 
 package ee.jakarta.tck.concurrent.common.counter;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import jakarta.ejb.Singleton;
 
 @Singleton
 public class CounterSingleton implements CounterInterface {
 
-    private int count = 0;
+    /**
+     * Test will spawn a thread that will increment count, and JUnit will
+     * spawn a timeout thread to get the count.
+     */
+    private AtomicInteger count = new AtomicInteger();
 
     public void inc() {
-        count++;
+        count.incrementAndGet();
     }
 
     public int getCount() {
-        return count;
+        return count.get();
     }
 
     public void reset() {
-        count = 0;
+        count.set(0);
     }
 }

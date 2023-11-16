@@ -35,8 +35,7 @@ public class InheritedAPIFullTests {
         JavaArchive inheritedJAR = ShrinkWrap.create(JavaArchive.class, "inheritedapi.jar")
                 .addClasses(InheritedAPIFullTests.class, CounterEJBProvider.class, TestEjb.class,
                         TestEjbInterface.class)
-                .addPackages(true, PACKAGE.TASKS.getPackageName(), PACKAGE.COUNTER.getPackageName(),
-                        PACKAGE.FIXED_COUNTER.getPackageName())
+                .addPackages(true, PACKAGE.TASKS.getPackageName(), PACKAGE.COUNTER.getPackageName())
                 .addAsServiceProvider(EJBJNDIProvider.class, CounterEJBProvider.FullProvider.class);
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "inheritedapi.ear")

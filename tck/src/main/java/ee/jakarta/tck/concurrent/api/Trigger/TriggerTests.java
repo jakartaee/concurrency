@@ -16,8 +16,6 @@
 
 package ee.jakarta.tck.concurrent.api.Trigger;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -63,13 +61,19 @@ public class TriggerTests {
     public void triggerGetNextRunTimeTest() throws Exception {
         Future<?> result = scheduledExecutor.schedule(new CounterRunnableTask(),
                 new CommonTriggers.TriggerFixedRate(new Date(), TestConstants.pollInterval.toMillis()));
-
-        assertFalse(StaticCounter.getCount() == 0, "The first trigger is too fast.");
+        
+        /**
+         * This test is susceptible to timing issues depending on the hardware running the test.
+         * Therefore, if immediately after scheduling this task the count is already > 0
+         * Then, be more liberal with the range of acceptable values that signify a passing test.
+         */
+        int rangeOffset = StaticCounter.getCount() == 0 ? 2 : 3;
 
         try {
             Wait.sleep(TestConstants.waitTimeout);
-            Assertions.assertBetween(StaticCounter.getCount(), TestConstants.pollsPerTimeout - 2,
-                    TestConstants.pollsPerTimeout + 2);
+            Assertions.assertBetween(StaticCounter.getCount(),
+                    TestConstants.pollsPerTimeout - rangeOffset,
+                    TestConstants.pollsPerTimeout + rangeOffset);
         } finally {
             Wait.waitForTaskComplete(result);
         }

@@ -51,14 +51,14 @@ public class ForbiddenAPIServletTests {
     @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.2", strategy = "Test basic function for ManagedExecutorService: isShutdown")
     public void testIsShutdown() {
         assertThrows(IllegalStateException.class, () -> {
-            
+            mes.isShutdown();
         });
     }
 
     @Assertion(id = "SPEC:23 SPEC:24 SPEC:24.3", strategy = "Test basic function for ManagedExecutorService: isTerminated")
     public void testIsTerminated() {
         assertThrows(IllegalStateException.class, () -> {
-            
+            mes.isTerminated();
         });
     }
 
