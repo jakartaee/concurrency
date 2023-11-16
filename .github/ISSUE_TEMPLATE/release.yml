@@ -1,5 +1,5 @@
 name: Release
-description: Propose a new minor/major release
+description: Propose a new major/minor/milestone release
 title: "[Release]: "
 labels: ["release"] #Verified - label exists
 body:
