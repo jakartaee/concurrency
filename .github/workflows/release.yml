@@ -1,20 +1,21 @@
 # This workflow will run when a release is created, and automatically update GitHub issue templates
 
-name: GitHub Release
+name: Release published
 
 on:
   release:
     types: [published]
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Create branch
-      run: git checkout -b update-templates-${{ github.sha }}
+      id: checkout
+      run: .github/scripts/checkout.sh update-templates-${{ github.sha }}
     - name: Insert release - ${{ github.event.release.tag_name }}
       uses: mikefarah/yq@c11a53322bce866fbfa3032e326f58c89e8c0759 #v4.40.3
       with:
@@ -23,10 +24,8 @@ jobs:
             yq -i '( .body.[] | select(.id == "version") ) ref $x | $x .attributes.options = ["${{ github.event.release.tag_name }}"] + $x .attributes.options' .github/ISSUE_TEMPLATE/tck-challenge.yml
     - name: Needs updates
       id: update
-      run: |
-        echo "update_count=$(git status -s -uno | wc -l)" >> $GITHUB_OUTPUT
-        echo "update_files=$(git status -s -uno)"         >> $GITHUB_OUTPUT
-    - name: Create Pull Request
+      run: echo "update_count=$(git status -s -uno | wc -l)" >> $GITHUB_OUTPUT
+    - name: Create commit
       if: steps.update.outputs.update_count > 0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,9 +39,10 @@ jobs:
         git commit -m "Update templates to include release ${{ github.event.release.tag_name }}"
         git push origin update-templates-${{ github.sha }}
 
-        gh pr create \
-          -B main \
-          --title 'Update templates to include release ${{ github.event.release.tag_name }}' \
-          --body '${{ steps.update.outputs.update_files }}' \
-          --label 'version' \
-          --label 'bot'
+  pull-request:
+    needs: [update]
+    uses: ./.github/workflows/pull-request.yml
+    with:
+      branch: 'update-templates-${{ github.sha }}'
+      title: 'Update templates to include release ${{ github.event.release.tag_name }}'
+      body: 'generated pull request'
