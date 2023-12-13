@@ -103,6 +103,8 @@ import java.lang.annotation.Target;
  * {@code ContextService} definition, with each attribute that is specified
  * in the {@code context-service} deployment descriptor entry taking
  * precedence over the corresponding attribute of the annotation.
+ * If any qualifier elements are specified, the set of qualifier elements
+ * replaces the qualifiers attribute of the annotation.
  *
  * @since 3.0
  */
