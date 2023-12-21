@@ -94,6 +94,8 @@ import jakarta.inject.Qualifier;
  * {@code ManagedExecutorService} definition, with each attribute that is specified
  * in the {@code managed-executor} deployment descriptor entry taking
  * precedence over the corresponding attribute of the annotation.
+ * If any qualifier elements are specified, the set of qualifier elements
+ * replaces the qualifiers attribute of the annotation.
  *
  * @since 3.0
  */
