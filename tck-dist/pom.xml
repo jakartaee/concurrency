@@ -49,25 +49,32 @@
         <maven.site.skip>true</maven.site.skip>
         <asciidoctor-maven.version>2.2.4</asciidoctor-maven.version>
         <asciidoctorj-pdf.version>2.3.10</asciidoctorj-pdf.version>
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+            <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
             <version>${jakarta.concurrent.tck.version}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
             <version>${jakarta.concurrent.tck.version}</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise.concurrent</groupId>
+            <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+            <version>${jakarta.concurrent.tck.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-			<!-- Compile class files -->
-			<plugin>
+            <!-- Compile class files -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.12.0</version>
@@ -171,6 +178,7 @@
             <!-- Assembly plugin to collect everything into a single distribution -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>distribution</id>
