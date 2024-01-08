@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,8 +15,10 @@
  */
 package ee.jakarta.tck.concurrent.spec.Platform.dd;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -32,11 +34,16 @@ import javax.naming.NamingException;
 
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
+import ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1;
+import ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2;
+import ee.jakarta.tck.concurrent.common.qualifiers.InvalidQualifier3;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
@@ -51,6 +58,120 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
     @Resource
     private UserTransaction tx;
+
+    // Context Services
+    @Inject
+    private ContextService injectedDefContextSvc;
+
+    @Inject
+    @CustomQualifier1
+    private ContextService injectedContextD;
+
+    @Inject
+    @InvalidQualifier3
+    private ContextService notInjectedContextD;
+    
+    // Managed Executor Services
+    @Inject
+    private ManagedExecutorService injectedDefMES;
+
+    @Inject
+    @CustomQualifier2
+    private ManagedExecutorService injectedMESD;
+
+    @Inject
+    @CustomQualifier2
+    @InvalidQualifier3
+    private ManagedExecutorService notInjectedMESD;
+    
+    // Managed Scheduled Executor Services
+    @Inject
+    private ManagedExecutorService injectedDefMSES;
+
+    @Inject
+    @CustomQualifier1
+    @CustomQualifier2
+    private ManagedExecutorService injectedMSESD;
+
+    @Inject
+    @CustomQualifier1
+    private ManagedExecutorService notInjectedMSESD;
+    
+    // Managed Thread Factory
+    @Inject
+    private ManagedThreadFactory injectedDefMTF;
+
+    @Resource(lookup = "java:app/concurrent/ThreadFactoryD")
+    private ManagedThreadFactory resourceMTFD;
+
+    @Inject
+    @CustomQualifier1
+    private ManagedThreadFactory notInjectedMTFD;
+
+    public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
+        ContextService lookupDefContextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
+        ContextService lookupContextD = InitialContext.doLookup("java:global/concurrent/ContextD");
+
+        assertAll("Context Service Tests",
+                () -> assertNotNull(injectedDefContextSvc,
+                        "Default contextService was not injected when no qualifiers were present."),
+                () -> assertEquals(lookupDefContextSvc, injectedDefContextSvc,
+                        "Default contextService from injection was not the same as from lookup"),
+                () -> assertNotNull(injectedContextD,
+                        "Deployment Descriptor defined contextService was not inject with valid qualifier."),
+                () -> assertEquals(lookupContextD, injectedContextD,
+                        "The contextService from injection was not the same as from lookup"),
+                () -> assertNull(notInjectedContextD,
+                        "A contextService was injected with a qualifier which was not defined in it's deployment description"));
+
+        ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+        ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
+        
+        assertAll("Managed Executor Service",
+            () -> assertNotNull(injectedDefMES,
+                    "Default managedExecutorService was not injected when no qualifiers were present."),
+            () -> assertEquals(lookupDefMES, injectedDefMES,
+                    "Default managedExecutorService from injection was not the same as from lookup"),
+            () -> assertNotNull(injectedMESD,
+                    "Deployment Descriptor defined managedExecutorService was not inject with valid qualifier."),
+            () -> assertEquals(lookupMESD, injectedMESD,
+                    "The managedExecutorService from injection was not the same as from lookup"),
+            () -> assertNull(notInjectedMESD,
+                    "A managedExecutorService was injected with both a valid and invalid qualifier.")
+        );
+        
+        ManagedExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+        ManagedExecutorService lookupMSESD = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
+
+        assertAll("Managed Scheduled Executor Service",
+                () -> assertNotNull(injectedDefMSES,
+                        "Default managedScheduledExecutorService was not injected when no qualifiers were present."),
+                () -> assertEquals(lookupDefMSES, injectedDefMSES,
+                        "Default managedScheduledExecutorService from injection was not the same as from lookup"),
+                () -> assertNotNull(injectedMSESD,
+                        "Deployment Descriptor defined managedScheduledExecutorService was not inject with valid qualifiers."),
+                () -> assertEquals(lookupMSESD, injectedMSESD,
+                        "The managedScheduledExecutorService from injection was not the same as from lookup"),
+                () -> assertNull(notInjectedMSESD,
+                        "A managedScheduledExecutorService was injected with one of two required qualifiers.")
+        );
+        
+        ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
+        ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
+
+        assertAll("Thread Factory",
+            () -> assertNotNull(injectedDefMTF,
+                    "Default managedThreadFactory was not injected when no qualifiers were present."),
+            () -> assertEquals(lookupDefMTF, injectedDefMTF,
+                    "Default managedThreadFactory from injection was not the same as from lookup"),
+            () -> assertNotNull(resourceMTFD,
+                    "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
+            () -> assertEquals(lookupMTFD, resourceMTFD,
+                    "The managedThreadFactory from resource was not the same as from lookup"),
+            () -> assertNull(notInjectedMTFD,
+                    "A managedThreadFactory was injected with a qualifier that was not defined in it's deployment description.")
+        );
+    }
 
     public void testDeploymentDescriptorDefinesContextService() throws Throwable {
         ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/ContextD");

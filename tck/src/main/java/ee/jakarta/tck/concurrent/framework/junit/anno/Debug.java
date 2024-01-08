@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,20 +20,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.TYPE })
+import org.jboss.arquillian.junit5.ArquillianExtension;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
+
+/**
+ * This is a tag annotation that works the same as Core/Web/Full.
+ * Used only for TCK development to tag test classes you need to debug without running
+ * all of the other tests in that profile.
+ */
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Common {
-
-    public enum PACKAGE {
-        CONTEXT, CONTEXT_PROVIDERS, COUNTER, FIXED_COUNTER,
-        MANAGED_TASK_LISTENER, TASKS, TRANSACTION, QUALIFIERS, SIGNATURE;
-
-        private static final String prefix = "ee/jakarta/tck/concurrent/common/";
-
-        public String getPackageName() {
-            return prefix + this.name().toLowerCase().replace("_", "/");
-        }
-    }
-
-    PACKAGE[] value();
+@Deprecated
+@Tag("debug")
+@ExtendWith({ ArquillianExtension.class, AssertionExtension.class })
+public @interface Debug {
 }

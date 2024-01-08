@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -40,7 +40,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  */
 @Web
 @RunAsClient // Requires client testing due to annotation configuration
-@Common({ PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS })
+@Common({ PACKAGE.CONTEXT, PACKAGE.CONTEXT_PROVIDERS, PACKAGE.QUALIFIERS })
 public class DeploymentDescriptorWebTests extends TestClient {
 
     @ArquillianResource(DeploymentDescriptorServlet.class)
@@ -61,6 +61,11 @@ public class DeploymentDescriptorWebTests extends TestClient {
     @Override
     protected String getServletPath() {
         return "DeploymentDescriptorServlet";
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of concurrent resources defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinesQualifiers() {
+        runTest(baseURL, testname);
     }
 
     @Assertion(id = "GIT:186", strategy = "Tests context-service defined in a deployment descriptor.")

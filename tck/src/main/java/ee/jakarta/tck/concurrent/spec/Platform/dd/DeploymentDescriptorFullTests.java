@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -54,7 +54,10 @@ public class DeploymentDescriptorFullTests extends TestClient {
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "DeploymentDescriptorTests_ejb.jar")
                 .addClasses(DeploymentDescriptorTestBean.class, DeploymentDescriptorTestBeanInterface.class)
-                .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
+                .addPackages(false,
+                        PACKAGE.CONTEXT.getPackageName(),
+                        PACKAGE.CONTEXT_PROVIDERS.getPackageName(),
+                        PACKAGE.QUALIFIERS.getPackageName())
                 .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
                         StringContextProvider.class.getName());
 
@@ -72,6 +75,11 @@ public class DeploymentDescriptorFullTests extends TestClient {
     @Override
     protected String getServletPath() {
         return "DeploymentDescriptorServlet";
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of concurrent resources defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinesQualifiers() {
+        runTest(baseURL, testname);
     }
 
     @Assertion(id = "GIT:186", strategy = "Tests context-service defined in a deployment descriptor.")
