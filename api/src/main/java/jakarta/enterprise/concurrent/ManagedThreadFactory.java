@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -34,8 +34,9 @@ import java.util.concurrent.ThreadFactory;
  * Component Provider and Deployer identify these requirements and map the
  * resource environment reference appropriately.<p>
  *
- * Threads returned from the {@code newThread()} method should implement the
- * {@link ManageableThread} interface.
+ * Platform threads returned from the {@code newThread()} method should implement the
+ * {@link ManageableThread} interface. Virtual threads do not implement
+ * {@code ManageableThread}.
  *
  * The Runnable task that is allocated to the new thread using the
  * {@link ThreadFactory#newThread(Runnable)} method
