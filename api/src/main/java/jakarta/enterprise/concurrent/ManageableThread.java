@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,9 +18,10 @@ package jakarta.enterprise.concurrent;
 
 /**
  *
- * Interface to be implemented by the Jakarta&trade; EE product providers on threads
- * that are created by calling
+ * Interface to be implemented by the Jakarta&trade; EE product providers
+ * on platform threads that are created by calling
  * {@link ManagedThreadFactory#newThread(java.lang.Runnable) }.
+ * Virtual threads do not implement {@code ManageableThread}.
  *
  * @since 1.0
  */

@@ -1,7 +1,7 @@
 :sectnums:
 = Jakarta Concurrency Specification, Version 3.1
 
-Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
@@ -2164,8 +2164,8 @@ attributes. See EE.5.8.2 for details.
 The Jakarta EE Product Provider’s responsibilities are as defined in
 EE.5.8.3 and must support the following:
 
-* Threads returned by the `newThread()` method must implement the
-`ManageableThread` interface.
+* Platform threads returned by the `newThread()` method must implement the
+`ManageableThread` interface. Virtual threads do not implement `ManageableThread`.
 * When a `ManagedThreadFactory` instance is stopped, such as when the
 component that created it is stopped or when the application server is
 shutting down, all threads that it has created using the `newThread()`
