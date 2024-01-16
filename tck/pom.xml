@@ -49,7 +49,7 @@
     <properties>
         <jakarta.concurrent.api.version>${project.version}</jakarta.concurrent.api.version>
         <sigtest.version>1.6</sigtest.version>
-        <shrinkwrap.resolver.version>3.2.1</shrinkwrap.resolver.version>
+        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
     </properties>
 
     <dependencies>
