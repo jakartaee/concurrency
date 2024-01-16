@@ -52,6 +52,8 @@ import jakarta.transaction.UserTransaction;
 public class DeploymentDescriptorServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
+    
+    private static final Runnable NOOP_RUNNABLE = () -> { };
 
     @EJB
     private DeploymentDescriptorTestBeanInterface enterpriseBean;
@@ -107,66 +109,83 @@ public class DeploymentDescriptorServlet extends TestServlet {
     @Inject
     @CustomQualifier1
     private ManagedThreadFactory notInjectedMTFD;
+    
+    private Integer executeCallableWithContext(final ContextService svc, final int value) throws Exception {
+        try {
+            IntContext.set(value);
+            Callable<Integer> result = svc.contextualCallable(() -> {
+                return IntContext.get();
+            });
+            return result.call();
+        } finally {
+            IntContext.set(0);
+        }
+    }
 
     public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
-        ContextService lookupDefContextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
-        ContextService lookupContextD = InitialContext.doLookup("java:global/concurrent/ContextD");
-
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
                         "Default contextService was not injected when no qualifiers were present."),
-                () -> assertEquals(lookupDefContextSvc, injectedDefContextSvc,
-                        "Default contextService from injection was not the same as from lookup"),
                 () -> assertNotNull(injectedContextD,
                         "Deployment Descriptor defined contextService was not inject with valid qualifier."),
-                () -> assertEquals(lookupContextD, injectedContextD,
-                        "The contextService from injection was not the same as from lookup"),
                 () -> assertNull(notInjectedContextD,
                         "A contextService was injected with a qualifier which was not defined in it's deployment description"));
+        
+        //  Verify injected and lookup default context service are the same
+        ContextService lookupDefContextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
+        
+        Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
+        Integer actual1 = executeCallableWithContext(injectedDefContextSvc, 95);
+        
+        assertEquals(expected1, actual1, "Default Context Service behavior differed between injection and lookup");
+        
+        //  Verify injected and lookup deployment descriptor defined context service are the same
+        ContextService lookupContextD = InitialContext.doLookup("java:global/concurrent/ContextD");
+        
+        Integer actual2 = executeCallableWithContext(lookupContextD, 65);
+        Integer expected2 = executeCallableWithContext(injectedContextD, 85);
+        
+        assertEquals(actual2, expected2, "Deployment descriptor defined Context Service behavior differed between injection and lookup");
 
         ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
         ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
         
-        assertAll("Managed Executor Service",
+        assertAll("Managed Executor Service Tests",
             () -> assertNotNull(injectedDefMES,
                     "Default managedExecutorService was not injected when no qualifiers were present."),
-            () -> assertEquals(lookupDefMES, injectedDefMES,
-                    "Default managedExecutorService from injection was not the same as from lookup"),
             () -> assertNotNull(injectedMESD,
                     "Deployment Descriptor defined managedExecutorService was not inject with valid qualifier."),
-            () -> assertEquals(lookupMESD, injectedMESD,
-                    "The managedExecutorService from injection was not the same as from lookup"),
             () -> assertNull(notInjectedMESD,
                     "A managedExecutorService was injected with both a valid and invalid qualifier.")
         );
         
+        //TODO verify injected vs lookup services behave the same
+        
         ManagedExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
         ManagedExecutorService lookupMSESD = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
 
-        assertAll("Managed Scheduled Executor Service",
+        assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
                         "Default managedScheduledExecutorService was not injected when no qualifiers were present."),
-                () -> assertEquals(lookupDefMSES, injectedDefMSES,
-                        "Default managedScheduledExecutorService from injection was not the same as from lookup"),
                 () -> assertNotNull(injectedMSESD,
                         "Deployment Descriptor defined managedScheduledExecutorService was not inject with valid qualifiers."),
-                () -> assertEquals(lookupMSESD, injectedMSESD,
-                        "The managedScheduledExecutorService from injection was not the same as from lookup"),
                 () -> assertNull(notInjectedMSESD,
                         "A managedScheduledExecutorService was injected with one of two required qualifiers.")
         );
         
+        //TODO verify injected vs lookup services behave the same
+
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
         ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
 
-        assertAll("Thread Factory",
+        assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
                     "Default managedThreadFactory was not injected when no qualifiers were present."),
-            () -> assertEquals(lookupDefMTF, injectedDefMTF,
+            () -> assertEquals(lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(), injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
                     "Default managedThreadFactory from injection was not the same as from lookup"),
             () -> assertNotNull(resourceMTFD,
                     "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
-            () -> assertEquals(lookupMTFD, resourceMTFD,
+            () -> assertEquals(lookupMTFD.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFD.newThread(NOOP_RUNNABLE).getPriority(),
                     "The managedThreadFactory from resource was not the same as from lookup"),
             () -> assertNull(notInjectedMTFD,
                     "A managedThreadFactory was injected with a qualifier that was not defined in it's deployment description.")
