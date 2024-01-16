@@ -142,10 +142,10 @@ public class DeploymentDescriptorServlet extends TestServlet {
         //  Verify injected and lookup deployment descriptor defined context service are the same
         ContextService lookupContextD = InitialContext.doLookup("java:global/concurrent/ContextD");
         
-        Integer actual2 = executeCallableWithContext(lookupContextD, 65);
-        Integer expected2 = executeCallableWithContext(injectedContextD, 85);
-        
-        assertEquals(actual2, expected2, "Deployment descriptor defined Context Service behavior differed between injection and lookup");
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextD, 65),
+                "Deployment descriptor defined Context Service that was looked up did not clear the IntContext as configured.");
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(injectedContextD, 85),
+                "Deployment descriptor defined Context Service that was injected based on a qualifier did not clear the IntContext as configured.");
 
         ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
         ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
