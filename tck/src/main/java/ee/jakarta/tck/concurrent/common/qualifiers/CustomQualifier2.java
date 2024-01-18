@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,27 +13,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.framework.junit.anno;
+package ee.jakarta.tck.concurrent.common.qualifiers;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ ElementType.TYPE })
+import jakarta.inject.Qualifier;
+
+/**
+ * A qualifier used to identify concurrent resources for injection
+ */
+@Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Common {
-
-    public enum PACKAGE {
-        CONTEXT, CONTEXT_PROVIDERS, COUNTER, FIXED_COUNTER,
-        MANAGED_TASK_LISTENER, TASKS, TRANSACTION, QUALIFIERS, SIGNATURE;
-
-        private static final String prefix = "ee/jakarta/tck/concurrent/common/";
-
-        public String getPackageName() {
-            return prefix + this.name().toLowerCase().replace("_", "/");
-        }
-    }
-
-    PACKAGE[] value();
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
+public @interface CustomQualifier2 {
 }

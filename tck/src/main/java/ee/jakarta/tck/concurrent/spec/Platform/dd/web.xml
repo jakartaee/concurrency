@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2022 Contributors to the Eclipse Foundation
+
+    Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
     http://www.eclipse.org/legal/epl-2.0.
+
     This Source Code may also be made available under the following Secondary
     Licenses when the conditions for such availability set forth in the
     Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
     version 2 with the GNU Classpath Exception, which is available at
     https://www.gnu.org/software/classpath/license.html.
-    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
--->
 
+    SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
+
+-->
+<!-- TODO update to 11 once schema is released -->
 <web-app 
 	version="6.0" 
 	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
@@ -20,6 +25,7 @@
 
   <context-service>
     <name>java:global/concurrent/ContextD</name>
+    <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1</qualifier>
     <cleared>IntContext</cleared>
     <propagated>Application</propagated>
     <propagated>StringContext</propagated>
@@ -29,12 +35,15 @@
   <managed-executor>
     <name>java:app/concurrent/ExecutorD</name>
     <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2</qualifier>
     <max-async>3</max-async>
   </managed-executor>
 
   <managed-scheduled-executor>
     <name>java:global/concurrent/ScheduledExecutorD</name>
     <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1</qualifier>
+    <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2</qualifier>
     <max-async>2</max-async>
     <hung-task-threshold>200000</hung-task-threshold>
   </managed-scheduled-executor>
@@ -42,6 +51,7 @@
   <managed-thread-factory>
     <name>java:app/concurrent/ThreadFactoryD</name>
     <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <qualifier></qualifier>
     <priority>6</priority>
   </managed-thread-factory>
 
