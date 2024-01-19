@@ -18,7 +18,8 @@ package ee.jakarta.tck.concurrent.spec.Platform.dd;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+//import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -42,7 +43,10 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
@@ -68,10 +72,6 @@ public class DeploymentDescriptorServlet extends TestServlet {
     @Inject
     @CustomQualifier1
     private ContextService injectedContextD;
-
-    @Inject
-    @InvalidQualifier3
-    private ContextService notInjectedContextD;
     
     // Managed Executor Services
     @Inject
@@ -80,24 +80,15 @@ public class DeploymentDescriptorServlet extends TestServlet {
     @Inject
     @CustomQualifier2
     private ManagedExecutorService injectedMESD;
-
-    @Inject
-    @CustomQualifier2
-    @InvalidQualifier3
-    private ManagedExecutorService notInjectedMESD;
     
     // Managed Scheduled Executor Services
     @Inject
-    private ManagedExecutorService injectedDefMSES;
+    private ManagedScheduledExecutorService injectedDefMSES;
 
     @Inject
     @CustomQualifier1
     @CustomQualifier2
-    private ManagedExecutorService injectedMSESD;
-
-    @Inject
-    @CustomQualifier1
-    private ManagedExecutorService notInjectedMSESD;
+    private ManagedScheduledExecutorService injectedMSESD;
     
     // Managed Thread Factory
     @Inject
@@ -105,10 +96,6 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
     @Resource(lookup = "java:app/concurrent/ThreadFactoryD")
     private ManagedThreadFactory resourceMTFD;
-
-    @Inject
-    @CustomQualifier1
-    private ManagedThreadFactory notInjectedMTFD;
     
     private Integer executeCallableWithContext(final ContextService svc, final int value) throws Exception {
         try {
@@ -123,13 +110,16 @@ public class DeploymentDescriptorServlet extends TestServlet {
     }
 
     public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
+        
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
                         "Default contextService was not injected when no qualifiers were present."),
                 () -> assertNotNull(injectedContextD,
                         "Deployment Descriptor defined contextService was not inject with valid qualifier."),
-                () -> assertNull(notInjectedContextD,
-                        "A contextService was injected with a qualifier which was not defined in it's deployment description"));
+                () -> assertThrows(Exception.class,
+                        () -> CDI.current().select(ContextService.class, new AnnotationLiteral<InvalidQualifier3>() { }).get(),
+                        "A contextService was injected with a qualifier which was not defined in it's deployment description")
+                );
         
         //  Verify injected and lookup default context service are the same
         ContextService lookupDefContextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
@@ -155,21 +145,23 @@ public class DeploymentDescriptorServlet extends TestServlet {
                     "Default managedExecutorService was not injected when no qualifiers were present."),
             () -> assertNotNull(injectedMESD,
                     "Deployment Descriptor defined managedExecutorService was not inject with valid qualifier."),
-            () -> assertNull(notInjectedMESD,
+            () -> assertThrows(Exception.class,
+                    () -> CDI.current().select(ManagedExecutorService.class, new AnnotationLiteral<CustomQualifier2>() { }, new AnnotationLiteral<InvalidQualifier3>() { }),
                     "A managedExecutorService was injected with both a valid and invalid qualifier.")
         );
         
         //TODO verify injected vs lookup services behave the same
         
-        ManagedExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
-        ManagedExecutorService lookupMSESD = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
-
+        ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
+        
         assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
                         "Default managedScheduledExecutorService was not injected when no qualifiers were present."),
                 () -> assertNotNull(injectedMSESD,
                         "Deployment Descriptor defined managedScheduledExecutorService was not inject with valid qualifiers."),
-                () -> assertNull(notInjectedMSESD,
+                () -> assertThrows(Exception.class,
+                        () -> CDI.current().select(ManagedScheduledExecutorService.class, new AnnotationLiteral<CustomQualifier1>() { }),
                         "A managedScheduledExecutorService was injected with one of two required qualifiers.")
         );
         
@@ -177,7 +169,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
         ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
-
+        
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
                     "Default managedThreadFactory was not injected when no qualifiers were present."),
@@ -187,7 +179,8 @@ public class DeploymentDescriptorServlet extends TestServlet {
                     "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
             () -> assertEquals(lookupMTFD.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFD.newThread(NOOP_RUNNABLE).getPriority(),
                     "The managedThreadFactory from resource was not the same as from lookup"),
-            () -> assertNull(notInjectedMTFD,
+            () -> assertThrows(Exception.class,
+                    () -> CDI.current().select(ManagedThreadFactory.class, new AnnotationLiteral<CustomQualifier1>() { }),
                     "A managedThreadFactory was injected with a qualifier that was not defined in it's deployment description.")
         );
     }

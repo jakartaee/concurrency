@@ -16,7 +16,7 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
-<!-- TODO update to 11 once schema is released -->
+<!-- TODO update to 6.1 -->
 <web-app 
 	version="6.0" 
 	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
