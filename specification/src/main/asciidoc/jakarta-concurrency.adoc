@@ -2367,6 +2367,55 @@ ends.
 See section 3.1.8.2.1 for an example of using a `UserTransaction` within a
 task.
 
+=== Beans for Managed Objects
+
+The resource definition annotations, `ContextServiceDefinition`, `ManagedExecutorDefinition`, `ManagedScheduledExecutorDefinition`, and `ManagedThreadFactoryDefinition`, provide a `qualifiers` attribute that the application can optionally configure to specify a list of qualifier annotation classes. Similarly, the corresponding deployment descriptor elements, `<context-service>`, `<managed-executor>`, `<managed-scheduled-executor>`, and `<managed-thread-factory>`, allow `<qualifier>` sub-elements that the application can optionally configure to specify one or more qualifier annotation class names.
+
+When the a non-empty list of qualifier classes is configured for a resource definition, the container creates an instance of the corresponding managed object and registers an `jakarta.enterprise.context.ApplicationScoped` bean for it with the configured qualifiers.
+
+The container also creates a default instance of each managed object type for which the application does not already produce a bean without qualifiers, registering a `jakarta.enterprise.context.ApplicationScoped` bean without qualifiers for the default instance.
+
+The life cycle of these beans aligns with the life cycle of the application component. The configured qualifier annotation classes must be accessible to the application and must not have any attributes without default values. The application must not configure `java:global` names on resource definitions that have a non-empty list of qualifier classes. The container raises an error and does not register the bean if these requirements are not met.
+
+==== Qualifiers Example
+
+In this example, the application configures a single qualifier annotation when defining a `ManagedExecutorService`. The application injects the `ManagedExecutorService` bean by specifying the qualifier annotation on the injection point.
+
+===== Example Qualifier Annotation Class
+
+[source,java]
+----
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import jakarta.inject.Qualifier;
+
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
+public @interface MaxAsync5 {
+}
+----
+
+===== Example usage of Qualifier Annotation
+
+[source,java]
+----
+@ManagedExecutorDefinition(
+        name = "java:comp/concurrent/MyExecutor",
+        qualifiers = Max5Async.class,
+        maxAsync = 5)
+public class MyServlet extends HttpServlet {
+   @Inject
+   @Max5Async
+   ManagedExecutorService executor;
+
+   ...
+}
+----
+
 == Thread Context Providers
 
 The `ThreadContextProvider` SPI standardizes the interaction between
