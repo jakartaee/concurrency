@@ -56,7 +56,7 @@ public class AnnotationTestBean implements AnnotationTestBeanInterface {
             };
 
             ManagedScheduledExecutorService executor = InitialContext
-                    .doLookup("java:global/concurrent/ScheduledExecutorE");
+                    .doLookup("java:app/concurrent/ScheduledExecutorE");
 
             IntContext.set(3000);
 

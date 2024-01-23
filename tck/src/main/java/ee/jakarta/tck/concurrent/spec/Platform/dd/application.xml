@@ -34,7 +34,7 @@
   </module>
 
   <context-service>
-    <name>java:global/concurrent/ContextD</name>
+    <name>java:app/concurrent/ContextD</name>
     <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1</qualifier>
     <cleared>IntContext</cleared>
     <propagated>Application</propagated>
@@ -44,14 +44,14 @@
 
   <managed-executor>
     <name>java:app/concurrent/ExecutorD</name>
-    <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <context-service-ref>java:app/concurrent/ContextD</context-service-ref>
     <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2</qualifier>
     <max-async>3</max-async>
   </managed-executor>
 
   <managed-scheduled-executor>
-    <name>java:global/concurrent/ScheduledExecutorD</name>
-    <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <name>java:app/concurrent/ScheduledExecutorD</name>
+    <context-service-ref>java:app/concurrent/ContextD</context-service-ref>
     <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1</qualifier>
     <qualifier>ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2</qualifier>
     <max-async>2</max-async>
@@ -60,7 +60,7 @@
 
   <managed-thread-factory>
     <name>java:app/concurrent/ThreadFactoryD</name>
-    <context-service-ref>java:global/concurrent/ContextD</context-service-ref>
+    <context-service-ref>java:app/concurrent/ContextD</context-service-ref>
     <qualifier></qualifier>
     <priority>6</priority>
   </managed-thread-factory>

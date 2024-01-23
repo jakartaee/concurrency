@@ -56,7 +56,7 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
             };
 
             ManagedScheduledExecutorService executor = InitialContext
-                    .doLookup("java:global/concurrent/ScheduledExecutorD");
+                    .doLookup("java:app/concurrent/ScheduledExecutorD");
 
             IntContext.set(3000);
 

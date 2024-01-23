@@ -18,8 +18,6 @@ package ee.jakarta.tck.concurrent.spec.Platform.dd;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Callable;
@@ -46,7 +44,6 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.inject.spi.CDI;
-import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
@@ -109,16 +106,16 @@ public class DeploymentDescriptorServlet extends TestServlet {
         }
     }
 
+    @SuppressWarnings("unused")
     public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
         
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
-                        "Default contextService was not injected when no qualifiers were present."),
+                        "Default contextService was not registered with default qualifier."),
                 () -> assertNotNull(injectedContextD,
-                        "Deployment Descriptor defined contextService was not inject with valid qualifier."),
-                () -> assertThrows(Exception.class,
-                        () -> CDI.current().select(ContextService.class, new AnnotationLiteral<InvalidQualifier3>() { }).get(),
-                        "A contextService was injected with a qualifier which was not defined in it's deployment description")
+                        "Deployment Descriptor defined contextService was not registered with required qualifier."),
+                () -> assertTrue(CDI.current().select(ContextService.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
+                        "A contextService was satisfied with a qualifier which was not defined in it's deployment description")
                 );
         
         //  Verify injected and lookup default context service are the same
@@ -130,7 +127,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
         assertEquals(expected1, actual1, "Default Context Service behavior differed between injection and lookup");
         
         //  Verify injected and lookup deployment descriptor defined context service are the same
-        ContextService lookupContextD = InitialContext.doLookup("java:global/concurrent/ContextD");
+        ContextService lookupContextD = InitialContext.doLookup("java:app/concurrent/ContextD");
         
         assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextD, 65),
                 "Deployment descriptor defined Context Service that was looked up did not clear the IntContext as configured.");
@@ -142,27 +139,25 @@ public class DeploymentDescriptorServlet extends TestServlet {
         
         assertAll("Managed Executor Service Tests",
             () -> assertNotNull(injectedDefMES,
-                    "Default managedExecutorService was not injected when no qualifiers were present."),
+                    "Default managedExecutorService was not registered with default qualifier."),
             () -> assertNotNull(injectedMESD,
-                    "Deployment Descriptor defined managedExecutorService was not inject with valid qualifier."),
-            () -> assertThrows(Exception.class,
-                    () -> CDI.current().select(ManagedExecutorService.class, new AnnotationLiteral<CustomQualifier2>() { }, new AnnotationLiteral<InvalidQualifier3>() { }),
-                    "A managedExecutorService was injected with both a valid and invalid qualifier.")
+                    "Deployment Descriptor defined managedExecutorService was not registered with required qualifiers."),
+            () -> assertTrue(CDI.current().select(ManagedExecutorService.class, CustomQualifier2.Literal.get(), InvalidQualifier3.Literal.get()).isUnsatisfied(),
+                    "A managedExecutorService was satisfied with both a required and non-required qualifier.")
         );
         
         //TODO verify injected vs lookup services behave the same
         
         ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
-        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:global/concurrent/ScheduledExecutorD");
+        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorD");
         
         assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
-                        "Default managedScheduledExecutorService was not injected when no qualifiers were present."),
+                        "Default managedScheduledExecutorService was not registered with default qualifier."),
                 () -> assertNotNull(injectedMSESD,
-                        "Deployment Descriptor defined managedScheduledExecutorService was not inject with valid qualifiers."),
-                () -> assertThrows(Exception.class,
-                        () -> CDI.current().select(ManagedScheduledExecutorService.class, new AnnotationLiteral<CustomQualifier1>() { }),
-                        "A managedScheduledExecutorService was injected with one of two required qualifiers.")
+                        "Deployment Descriptor defined managedScheduledExecutorService was not registered with required qualifiers."),
+                () -> assertTrue(CDI.current().select(ManagedScheduledExecutorService.class, CustomQualifier1.Literal.get()).isUnsatisfied(),
+                        "A managedScheduledExecutorService was satisfied with one of two required qualifiers.")
         );
         
         //TODO verify injected vs lookup services behave the same
@@ -172,21 +167,20 @@ public class DeploymentDescriptorServlet extends TestServlet {
         
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
-                    "Default managedThreadFactory was not injected when no qualifiers were present."),
+                    "Default managedThreadFactory was not registered with default qualifier."),
             () -> assertEquals(lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(), injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
-                    "Default managedThreadFactory from injection was not the same as from lookup"),
+                    "Default managedThreadFactory from injection and lookup did not have the same priority."),
             () -> assertNotNull(resourceMTFD,
                     "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
             () -> assertEquals(lookupMTFD.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFD.newThread(NOOP_RUNNABLE).getPriority(),
-                    "The managedThreadFactory from resource was not the same as from lookup"),
-            () -> assertThrows(Exception.class,
-                    () -> CDI.current().select(ManagedThreadFactory.class, new AnnotationLiteral<CustomQualifier1>() { }),
-                    "A managedThreadFactory was injected with a qualifier that was not defined in it's deployment description.")
+                    "The managedThreadFactory from resource injection and lookup did not have the same priority."),
+            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, CustomQualifier1.Literal.get()).isUnsatisfied(),
+                    "A managedThreadFactory was satisfied with a required qualifier that should have been overriden by the deployment descriptor.")
         );
     }
 
     public void testDeploymentDescriptorDefinesContextService() throws Throwable {
-        ContextService contextSvc = InitialContext.doLookup("java:global/concurrent/ContextD");
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/ContextD");
 
         Callable<Integer> checkContextAndGetTransactionStatus;
 
