@@ -31,7 +31,7 @@ import jakarta.inject.Qualifier;
  * <p>Defines a {@link ManagedExecutorService}
  * to be injected into
  * {@link ManagedExecutorService} injection points
- * with the specified {@link #qualifiers()}
+ * with the specified required {@link #qualifiers()}
  * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
@@ -120,7 +120,7 @@ public @interface ManagedExecutorDefinition {
     String name();
 
     /**
-     * <p>List of {@link Qualifier qualifier annotations}.</p>
+     * <p>List of required {@link Qualifier qualifier annotations}.</p>
      *
      * <p>A {@link ManagedExecutorService} injection point
      * with these qualifier annotations injects a bean that is
@@ -132,7 +132,8 @@ public @interface ManagedExecutorDefinition {
      *
      * <p>When the qualifiers list is non-empty, the container creates
      * a {@link ManagedExecutorService} instance and registers
-     * an {@link ApplicationScoped} bean for it with the specified qualifiers.
+     * an {@link ApplicationScoped} bean for it with the specified
+     * required qualifiers and required type of {@code ManagedExecutorService}.
      * The life cycle of the bean aligns with the life cycle of the application
      * and the bean is not accessible from outside of the application.
      * Applications must not configure a {@code java:global} {@link #name() name}
