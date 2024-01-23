@@ -72,20 +72,20 @@ public class AnnotationTestBean implements AnnotationTestBeanInterface {
             StringContext.set("testAnnotationDefinesManagedScheduledExecutor-4");
 
             // 2 can start per max-async
-            assertEquals(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0));
-            assertEquals(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0));
-            assertEquals(started.poll(1, TimeUnit.SECONDS), null);
+            assertEquals(Integer.valueOf(0), started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals(Integer.valueOf(0), started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals(null, started.poll(1, TimeUnit.SECONDS));
 
             taskCanEnd.countDown();
 
-            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testAnnotationDefinesManagedScheduledExecutor-1");
-            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testAnnotationDefinesManagedScheduledExecutor-2");
-            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testAnnotationDefinesManagedScheduledExecutor-3");
+            assertEquals("testAnnotationDefinesManagedScheduledExecutor-1",
+                    future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals("testAnnotationDefinesManagedScheduledExecutor-2",
+                    future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals("testAnnotationDefinesManagedScheduledExecutor-3",
+                    future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
 
-            assertEquals(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0));
+            assertEquals(Integer.valueOf(0), started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
         } catch (ExecutionException | InterruptedException | NamingException | TimeoutException x) {
             throw new EJBException(x);
         } finally {
@@ -118,15 +118,15 @@ public class AnnotationTestBean implements AnnotationTestBeanInterface {
                 }
             });
 
-            assertEquals(thread.getPriority(), 6); // configured value on managed-thread-factory
+            assertEquals(6, thread.getPriority()); // configured value on managed-thread-factory
 
             thread.start();
 
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(6)); // priority from
-                                                                                                // managed-thread-factory
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS), Integer.valueOf(0)); // IntContext cleared
-            assertEquals(results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testAnnotationDefinesManagedThreadFactory-1"); // propagated
+            // priority from managed-thread-factory
+            assertEquals(Integer.valueOf(6), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS)); // IntContext cleared
+            assertEquals("testAnnotationDefinesManagedThreadFactory-1",
+                    results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS)); // propagated
             Object lookupResult = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
             if (lookupResult instanceof Exception)
                 throw new EJBException((Exception) lookupResult);

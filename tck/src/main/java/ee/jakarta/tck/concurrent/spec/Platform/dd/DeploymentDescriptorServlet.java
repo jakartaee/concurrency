@@ -115,7 +115,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
                 () -> assertNotNull(injectedContextD,
                         "Deployment Descriptor defined contextService was not registered with required qualifier."),
                 () -> assertTrue(CDI.current().select(ContextService.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
-                        "A contextService was satisfied with a qualifier which was not defined in it's deployment description")
+                        "A contextService was satisfied with a qualifier which was not defined in it's deployment descriptior")
                 );
         
         //  Verify injected and lookup default context service are the same
