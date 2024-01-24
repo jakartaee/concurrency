@@ -56,20 +56,20 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
             };
 
             ManagedScheduledExecutorService executor = InitialContext
-                    .doLookup("java:app/concurrent/ScheduledExecutorE");
+                    .doLookup("java:app/concurrent/ScheduledExecutorD");
 
             IntContext.set(3000);
 
-            StringContext.set("testAnnotationDefinesManagedScheduledExecutor-1");
+            StringContext.set("testDeploymentDescriptorDefinesManagedScheduledExecutor-1");
             Future<String> future1 = executor.submit(task);
 
-            StringContext.set("testAnnotationDefinesManagedScheduledExecutor-2");
+            StringContext.set("testDeploymentDescriptorDefinesManagedScheduledExecutor-2");
             Future<String> future2 = executor.submit(task);
 
-            StringContext.set("testAnnotationDefinesManagedScheduledExecutor-3");
+            StringContext.set("testDeploymentDescriptorDefinesManagedScheduledExecutor-3");
             Future<String> future3 = executor.submit(task);
 
-            StringContext.set("testAnnotationDefinesManagedScheduledExecutor-4");
+            StringContext.set("testDeploymentDescriptorDefinesManagedScheduledExecutor-4");
 
             // 2 can start per max-async
             assertEquals(Integer.valueOf(0), started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
@@ -78,11 +78,11 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
 
             taskCanEnd.countDown();
 
-            assertEquals("testAnnotationDefinesManagedScheduledExecutor-1",
+            assertEquals("testDeploymentDescriptorDefinesManagedScheduledExecutor-1",
                     future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals("testAnnotationDefinesManagedScheduledExecutor-2",
+            assertEquals("testDeploymentDescriptorDefinesManagedScheduledExecutor-2",
                     future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals("testAnnotationDefinesManagedScheduledExecutor-3",
+            assertEquals("testDeploymentDescriptorDefinesManagedScheduledExecutor-3",
                     future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
 
             assertEquals(Integer.valueOf(0), started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
@@ -98,12 +98,12 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
     public void testDeploymentDescriptorDefinesManagedThreadFactory() {
         try {
             IntContext.set(4000);
-            StringContext.set("testAnnotationDefinesManagedThreadFactory-1");
+            StringContext.set("testDeploymentDescriptorDefinesManagedThreadFactory-1");
 
             ManagedThreadFactory threadFactory = (ManagedThreadFactory) InitialContext
-                    .doLookup("java:app/concurrent/ThreadFactoryE");
+                    .doLookup("java:app/concurrent/ThreadFactoryD");
 
-            StringContext.set("testAnnotationDefinesManagedThreadFactory-2");
+            StringContext.set("testDeploymentDescriptorDefinesManagedThreadFactory-2");
 
             LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
 
@@ -112,7 +112,7 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
                 results.add(IntContext.get());
                 results.add(StringContext.get());
                 try {
-                    results.add(InitialContext.doLookup("java:app/concurrent/ThreadFactoryE"));
+                    results.add(InitialContext.doLookup("java:app/concurrent/ThreadFactoryD"));
                 } catch (Exception x) {
                     results.add(x);
                 }
@@ -125,7 +125,7 @@ public class DeploymentDescriptorTestBean implements DeploymentDescriptorTestBea
             // priority from managed-thread-factory
             assertEquals(Integer.valueOf(6), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
             assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS)); // IntContext cleared
-            assertEquals("testAnnotationDefinesManagedThreadFactory-1",
+            assertEquals("testDeploymentDescriptorDefinesManagedThreadFactory-1",
                     results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS)); // propagated
             Object lookupResult = results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
             if (lookupResult instanceof Exception)

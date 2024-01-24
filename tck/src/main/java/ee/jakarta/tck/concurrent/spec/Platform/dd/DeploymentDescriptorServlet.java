@@ -156,8 +156,8 @@ public class DeploymentDescriptorServlet extends TestServlet {
                         "Default managedScheduledExecutorService was not registered with default qualifier."),
                 () -> assertNotNull(injectedMSESD,
                         "Deployment Descriptor defined managedScheduledExecutorService was not registered with required qualifiers."),
-                () -> assertTrue(CDI.current().select(ManagedScheduledExecutorService.class, CustomQualifier1.Literal.get()).isUnsatisfied(),
-                        "A managedScheduledExecutorService was satisfied with one of two required qualifiers.")
+                () -> assertTrue(CDI.current().select(ManagedScheduledExecutorService.class, CustomQualifier1.Literal.get()).isResolvable(),
+                        "A managedScheduledExecutorService was not satisfied with one of two configured qualifiers.")
         );
         
         //TODO verify injected vs lookup services behave the same
@@ -190,8 +190,8 @@ public class DeploymentDescriptorServlet extends TestServlet {
             StringContext.set("testDeploymentDescriptorDefinesContextService-1");
 
             checkContextAndGetTransactionStatus = contextSvc.contextualCallable(() -> {
-                assertEquals(IntContext.get(), 0); // cleared
-                assertEquals(StringContext.get(), "testDeploymentDescriptorDefinesContextService-1"); // propagated
+                assertEquals(0, IntContext.get()); // cleared
+                assertEquals("testDeploymentDescriptorDefinesContextService-1", StringContext.get()); // propagated
                 assertNotNull(InitialContext.doLookup("java:app/concurrent/ExecutorD")); // propagated
                 return tx.getStatus(); // unchanged
             });
@@ -199,10 +199,10 @@ public class DeploymentDescriptorServlet extends TestServlet {
             StringContext.set("testDeploymentDescriptorDefinesContextService-2");
 
             int status = checkContextAndGetTransactionStatus.call();
-            assertEquals(status, Status.STATUS_ACTIVE);
+            assertEquals(Status.STATUS_ACTIVE, status);
 
-            assertEquals(IntContext.get(), 1001); // restored
-            assertEquals(StringContext.get(), "testDeploymentDescriptorDefinesContextService-2"); // restored
+            assertEquals(1001, IntContext.get()); // restored
+            assertEquals("testDeploymentDescriptorDefinesContextService-2", StringContext.get()); // restored
         } finally {
             IntContext.set(0);
             StringContext.set(null);
@@ -210,7 +210,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
         }
 
         int status = checkContextAndGetTransactionStatus.call();
-        assertEquals(status, Status.STATUS_NO_TRANSACTION);
+        assertEquals(Status.STATUS_NO_TRANSACTION, status);
     }
 
     public void testDeploymentDescriptorDefinesManagedExecutor() throws Throwable {
@@ -248,18 +248,18 @@ public class DeploymentDescriptorServlet extends TestServlet {
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals(started.poll(1, TimeUnit.SECONDS), null);
+            assertEquals(null, started.poll(1, TimeUnit.SECONDS));
 
             taskCanEnd.countDown();
 
-            assertEquals(future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testDeploymentDescriptorDefinesManagedExecutor-1");
-            assertEquals(future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testDeploymentDescriptorDefinesManagedExecutor-2");
-            assertEquals(future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testDeploymentDescriptorDefinesManagedExecutor-3");
-            assertEquals(future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "testDeploymentDescriptorDefinesManagedExecutor-4");
+            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-1",
+                    future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-2",
+                    future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-3",
+                    future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
+            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-4",
+                    future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
 
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
         } finally {
