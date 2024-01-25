@@ -31,7 +31,7 @@ import jakarta.inject.Qualifier;
  * <p>Defines {@link ManagedThreadFactory} instances
  * to be injected into
  * {@link ManagedThreadFactory} injection points
- * with the specified required {@link #qualifiers()}
+ * including any required {@link Qualifier} annotations specified by {@link #qualifiers()}
  * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
