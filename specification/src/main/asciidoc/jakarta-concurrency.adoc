@@ -2371,7 +2371,7 @@ task.
 
 The resource definition annotations, `ContextServiceDefinition`, `ManagedExecutorDefinition`, `ManagedScheduledExecutorDefinition`, and `ManagedThreadFactoryDefinition`, provide a `qualifiers` attribute that the application can optionally configure to specify a list of required qualifier annotation classes. Similarly, the corresponding deployment descriptor elements, `<context-service>`, `<managed-executor>`, `<managed-scheduled-executor>`, and `<managed-thread-factory>`, allow `<qualifier>` sub-elements that the application can optionally configure to specify one or more required qualifier annotation class names.
 
-When a non-empty list of qualifier classes is configured for a resource definition, the container creates an instance of the corresponding managed object and registers an `jakarta.enterprise.context.ApplicationScoped` bean for it with the configured qualifiers.
+When a non-empty list of qualifier classes is configured for a resource definition, the container creates an instance of the corresponding managed object and registers a `jakarta.enterprise.context.ApplicationScoped` bean for it with the configured qualifiers.
 
 The container also creates a default instance of each managed object type for which the application does not already produce a bean without required qualifiers, registering a `jakarta.enterprise.context.ApplicationScoped` bean without qualifiers for the default instance.
 
