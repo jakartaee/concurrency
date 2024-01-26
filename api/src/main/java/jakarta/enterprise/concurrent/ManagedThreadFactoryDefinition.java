@@ -23,11 +23,15 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.inject.Qualifier;
+
 /**
  * <p>Defines {@link ManagedThreadFactory} instances
  * to be injected into
  * {@link ManagedThreadFactory} injection points
- * with the specified {@link #qualifiers()}
+ * including any required {@link Qualifier} annotations specified by {@link #qualifiers()}
  * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
@@ -114,7 +118,7 @@ public @interface ManagedThreadFactoryDefinition {
     String name();
 
     /**
-     * <p>List of {@link Qualifier qualifier annotations}.</p>
+     * <p>List of required {@link Qualifier qualifier annotations}.</p>
      *
      * <p>A {@link ManagedThreadFactory} injection point
      * with these qualifier annotations injects a bean that is
@@ -123,6 +127,15 @@ public @interface ManagedThreadFactoryDefinition {
      * <p>The default value is an empty list, indicating that this
      * {@code ManagedThreadFactoryDefinition} does not automatically produce
      * bean instances for any injection points.</p>
+     *
+     * <p>When the qualifiers list is non-empty, the container creates
+     * a {@link ManagedThreadFactory} instance and registers
+     * an {@link ApplicationScoped} bean for it with the specified
+     * required qualifiers and required type of {@code ManagedThreadFactory}.
+     * The life cycle of the bean aligns with the life cycle of the application
+     * and the bean is not accessible from outside of the application.
+     * Applications must not configure a {@code java:global} {@link #name() name}
+     * if also configuring a non-empty list of qualifiers.</p>
      *
      * <p>Applications can define their own {@link Producer Producers}
      * for {@link ManagedThreadFactory} injection points as long as the

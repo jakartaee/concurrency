@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,11 +23,15 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.Producer;
+import jakarta.inject.Qualifier;
+
 /**
  * <p>Defines a {@link ContextService}
  * to be injected into
  * {@link ContextService} injection points
- * with the specified {@link #qualifiers()}
+ * including any required {@link Qualifier} annotations specified by {@link #qualifiers()}
  * and registered in JNDI by the container
  * under the JNDI name that is specified in the
  * {@link #name()} attribute.</p>
@@ -129,7 +133,7 @@ public @interface ContextServiceDefinition {
     String name();
 
     /**
-     * <p>List of {@link Qualifier qualifier annotations}.</p>
+     * <p>List of required {@link Qualifier qualifier annotations}.</p>
      *
      * <p>A {@link ContextService} injection point
      * with these qualifier annotations injects a bean that is
@@ -138,6 +142,15 @@ public @interface ContextServiceDefinition {
      * <p>The default value is an empty list, indicating that this
      * {@code ContextServiceDefinition} does not automatically produce
      * bean instances for any injection points.</p>
+     *
+     * <p>When the qualifiers list is non-empty, the container creates
+     * a {@link ContextService} instance and registers
+     * an {@link ApplicationScoped} bean for it with the specified
+     * required qualifiers and required type of {@code ContextService}.
+     * The life cycle of the bean aligns with the life cycle of the application
+     * and the bean is not accessible from outside of the application.
+     * Applications must not configure a {@code java:global} {@link #name() name}
+     * if also configuring a non-empty list of qualifiers.</p>
      *
      * <p>Applications can define their own {@link Producer Producers}
      * for {@link ContextService} injection points as long as the
