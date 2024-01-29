@@ -9,7 +9,7 @@ Status: {revremark}
 Release: {revdate}
 ....
 
-Copyright (c) 2018,2022 Eclipse Foundation.
+Copyright (c) 2018,2024 Eclipse Foundation.
 
 === Eclipse Foundation Specification License
 
