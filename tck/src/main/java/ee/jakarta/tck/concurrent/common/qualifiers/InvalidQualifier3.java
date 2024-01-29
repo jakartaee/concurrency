@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -30,4 +31,15 @@ import jakarta.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE })
 public @interface InvalidQualifier3 {
+    
+    class Literal extends AnnotationLiteral<InvalidQualifier3> implements InvalidQualifier3 {
+        private static final long serialVersionUID = 1L;
+        
+        private static Literal inst = new Literal();
+        
+        public static Literal get() {
+            return inst;
+        }
+    }
+    
 }

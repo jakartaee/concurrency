@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,12 +13,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spec.Platform.dd;
+package ee.jakarta.tck.concurrent.spec.Platform.anno;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -40,24 +43,52 @@ import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
-@WebServlet("/DeploymentDescriptorServlet")
-public class DeploymentDescriptorServlet extends TestServlet {
+@ContextServiceDefinition(
+        name = "java:app/concurrent/ContextE",
+        qualifiers = {CustomQualifier1.class},
+        cleared = {"IntContext"},
+        propagated = {APPLICATION, "StringContext"},
+        unchanged = {TRANSACTION})
+@ManagedExecutorDefinition(
+        name = "java:app/concurrent/ExecutorE",
+        context = "java:app/concurrent/ContextE",
+        qualifiers = {CustomQualifier2.class},
+        maxAsync = 3)
+@ManagedScheduledExecutorDefinition(
+        name = "java:app/concurrent/ScheduledExecutorE",
+        context = "java:app/concurrent/ContextE",
+        qualifiers = {CustomQualifier1.class, CustomQualifier2.class},
+        maxAsync = 2,
+        hungTaskThreshold = 200000)
+@ManagedThreadFactoryDefinition(
+        name = "java:app/concurrent/ThreadFactoryE",
+        context = "java:app/concurrent/ContextE",
+        qualifiers = InvalidQualifier3.class, // overridden via deployment descriptor
+        priority = 6
+        )
+@WebServlet("/AnnotationServlet")
+public class AnnotationServlet extends TestServlet {
+    
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
     
     private static final Runnable NOOP_RUNNABLE = () -> { };
 
     @EJB
-    private DeploymentDescriptorTestBeanInterface enterpriseBean;
+    private AnnotationTestBeanInterface enterpriseBean;
 
     @Resource
     private UserTransaction tx;
@@ -91,7 +122,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
     @Inject
     private ManagedThreadFactory injectedDefMTF;
 
-    @Resource(lookup = "java:app/concurrent/ThreadFactoryD")
+    @Resource(lookup = "java:app/concurrent/ThreadFactoryE")
     private ManagedThreadFactory resourceMTFD;
     
     private Integer executeCallableWithContext(final ContextService svc, final int value) throws Exception {
@@ -107,15 +138,14 @@ public class DeploymentDescriptorServlet extends TestServlet {
     }
 
     @SuppressWarnings("unused")
-    public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
-        
+    public void testAnnotationDefinesQualifiers() throws Throwable {
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
                         "Default contextService was not registered with default qualifier."),
                 () -> assertNotNull(injectedContextD,
-                        "Deployment Descriptor defined contextService was not registered with required qualifier."),
+                        "Annotation defined contextService was not registered with required qualifier."),
                 () -> assertTrue(CDI.current().select(ContextService.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
-                        "A contextService was satisfied with a qualifier which was not defined in it's deployment descriptior")
+                        "A contextService was satisfied with a qualifier which was not defined in it's annotation")
                 );
         
         //  Verify injected and lookup default context service are the same
@@ -126,22 +156,22 @@ public class DeploymentDescriptorServlet extends TestServlet {
         
         assertEquals(expected1, actual1, "Default Context Service behavior differed between injection and lookup");
         
-        //  Verify injected and lookup deployment descriptor defined context service are the same
+        //  Verify injected and lookup annotation defined context service are the same
         ContextService lookupContextD = InitialContext.doLookup("java:app/concurrent/ContextD");
         
         assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextD, 65),
-                "Deployment descriptor defined Context Service that was looked up did not clear the IntContext as configured.");
+                "Annotation defined Context Service that was looked up did not clear the IntContext as configured.");
         assertEquals(Integer.valueOf(0), executeCallableWithContext(injectedContextD, 85),
-                "Deployment descriptor defined Context Service that was injected based on a qualifier did not clear the IntContext as configured.");
+                "Annotation defined Context Service that was injected based on a qualifier did not clear the IntContext as configured.");
 
         ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
-        ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
+        ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorE");
         
         assertAll("Managed Executor Service Tests",
             () -> assertNotNull(injectedDefMES,
                     "Default managedExecutorService was not registered with default qualifier."),
             () -> assertNotNull(injectedMESD,
-                    "Deployment Descriptor defined managedExecutorService was not registered with required qualifiers."),
+                    "Annotation defined managedExecutorService was not registered with required qualifiers."),
             () -> assertTrue(CDI.current().select(ManagedExecutorService.class, CustomQualifier2.Literal.get(), InvalidQualifier3.Literal.get()).isUnsatisfied(),
                     "A managedExecutorService was satisfied with both a required and non-required qualifier.")
         );
@@ -149,13 +179,13 @@ public class DeploymentDescriptorServlet extends TestServlet {
         //TODO verify injected vs lookup services behave the same
         
         ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
-        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorD");
+        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorE");
         
         assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
                         "Default managedScheduledExecutorService was not registered with default qualifier."),
                 () -> assertNotNull(injectedMSESD,
-                        "Deployment Descriptor defined managedScheduledExecutorService was not registered with required qualifiers."),
+                        "Annotation defined managedScheduledExecutorService was not registered with required qualifiers."),
                 () -> assertTrue(CDI.current().select(ManagedScheduledExecutorService.class, CustomQualifier1.Literal.get()).isResolvable(),
                         "A managedScheduledExecutorService was not satisfied with one of two configured qualifiers.")
         );
@@ -163,7 +193,7 @@ public class DeploymentDescriptorServlet extends TestServlet {
         //TODO verify injected vs lookup services behave the same
 
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
-        ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
+        ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryE");
         
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
@@ -171,38 +201,38 @@ public class DeploymentDescriptorServlet extends TestServlet {
             () -> assertEquals(lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(), injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
                     "Default managedThreadFactory from injection and lookup did not have the same priority."),
             () -> assertNotNull(resourceMTFD,
-                    "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
+                    "Annotation defined managedThreadFactory with no qualifiers could not be found via @Resource."),
             () -> assertEquals(lookupMTFD.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFD.newThread(NOOP_RUNNABLE).getPriority(),
                     "The managedThreadFactory from resource injection and lookup did not have the same priority."),
-            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, CustomQualifier1.Literal.get()).isUnsatisfied(),
+            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
                     "A managedThreadFactory was satisfied with a required qualifier that should have been overriden by the deployment descriptor.")
         );
     }
 
-    public void testDeploymentDescriptorDefinesContextService() throws Throwable {
-        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/ContextD");
+    public void testAnnotationDefinesContextService() throws Throwable {
+        ContextService contextSvc = InitialContext.doLookup("java:app/concurrent/ContextE");
 
         Callable<Integer> checkContextAndGetTransactionStatus;
 
         tx.begin();
         try {
             IntContext.set(1001);
-            StringContext.set("testDeploymentDescriptorDefinesContextService-1");
+            StringContext.set("testAnnotationDefinesContextService-1");
 
             checkContextAndGetTransactionStatus = contextSvc.contextualCallable(() -> {
                 assertEquals(0, IntContext.get()); // cleared
-                assertEquals("testDeploymentDescriptorDefinesContextService-1", StringContext.get()); // propagated
-                assertNotNull(InitialContext.doLookup("java:app/concurrent/ExecutorD")); // propagated
+                assertEquals("testAnnotationDefinesContextService-1", StringContext.get()); // propagated
+                assertNotNull(InitialContext.doLookup("java:app/concurrent/ExecutorE")); // propagated
                 return tx.getStatus(); // unchanged
             });
 
-            StringContext.set("testDeploymentDescriptorDefinesContextService-2");
+            StringContext.set("testAnnotationDefinesContextService-2");
 
             int status = checkContextAndGetTransactionStatus.call();
             assertEquals(Status.STATUS_ACTIVE, status);
 
             assertEquals(1001, IntContext.get()); // restored
-            assertEquals("testDeploymentDescriptorDefinesContextService-2", StringContext.get()); // restored
+            assertEquals("testAnnotationDefinesContextService-2", StringContext.get()); // restored
         } finally {
             IntContext.set(0);
             StringContext.set(null);
@@ -213,13 +243,13 @@ public class DeploymentDescriptorServlet extends TestServlet {
         assertEquals(Status.STATUS_NO_TRANSACTION, status);
     }
 
-    public void testDeploymentDescriptorDefinesManagedExecutor() throws Throwable {
+    public void testAnnotationDefinesManagedExecutor() throws Throwable {
         LinkedBlockingQueue<Object> started = new LinkedBlockingQueue<Object>();
         CountDownLatch taskCanEnd = new CountDownLatch(1);
 
         Supplier<String> task = () -> {
             try {
-                started.add(InitialContext.doLookup("java:app/concurrent/ExecutorD")); // requires Application context
+                started.add(InitialContext.doLookup("java:app/concurrent/ExecutorE")); // requires Application context
                 assertTrue(taskCanEnd.await(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
             } catch (InterruptedException | NamingException x) {
                 throw new CompletionException(x);
@@ -227,22 +257,22 @@ public class DeploymentDescriptorServlet extends TestServlet {
             return StringContext.get();
         };
 
-        ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/ExecutorD");
+        ManagedExecutorService executor = InitialContext.doLookup("java:app/concurrent/ExecutorE");
 
         try {
-            StringContext.set("testDeploymentDescriptorDefinesManagedExecutor-1");
+            StringContext.set("testAnnotationDefinesManagedExecutor-1");
             CompletableFuture<String> future1 = executor.supplyAsync(task);
 
-            StringContext.set("testDeploymentDescriptorDefinesManagedExecutor-2");
+            StringContext.set("testAnnotationDefinesManagedExecutor-2");
             CompletableFuture<String> future2 = executor.supplyAsync(task);
 
-            StringContext.set("testDeploymentDescriptorDefinesManagedExecutor-3");
+            StringContext.set("testAnnotationDefinesManagedExecutor-3");
             CompletableFuture<String> future3 = executor.supplyAsync(task);
 
-            StringContext.set("testDeploymentDescriptorDefinesManagedExecutor-4");
+            StringContext.set("testAnnotationDefinesManagedExecutor-4");
             CompletableFuture<String> future4 = executor.supplyAsync(task);
 
-            StringContext.set("testDeploymentDescriptorDefinesManagedExecutor-5");
+            StringContext.set("testAnnotationDefinesManagedExecutor-5");
 
             // 3 can start per max-async
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
@@ -252,13 +282,13 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
             taskCanEnd.countDown();
 
-            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-1",
+            assertEquals("testAnnotationDefinesManagedExecutor-1",
                     future1.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-2",
+            assertEquals("testAnnotationDefinesManagedExecutor-2",
                     future2.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-3",
+            assertEquals("testAnnotationDefinesManagedExecutor-3",
                     future3.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
-            assertEquals("testDeploymentDescriptorDefinesManagedExecutor-4",
+            assertEquals("testAnnotationDefinesManagedExecutor-4",
                     future4.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
 
             assertNotNull(started.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS));
@@ -268,11 +298,12 @@ public class DeploymentDescriptorServlet extends TestServlet {
         }
     }
 
-    public void testDeploymentDescriptorDefinesManagedScheduledExecutor() throws Throwable {
-        enterpriseBean.testDeploymentDescriptorDefinesManagedScheduledExecutor();
+    public void testAnnotationDefinesManagedScheduledExecutor() throws Throwable {
+        enterpriseBean.testAnnotationDefinesManagedScheduledExecutor();
     }
 
-    public void testDeploymentDescriptorDefinesManagedThreadFactory() throws Throwable {
-        enterpriseBean.testDeploymentDescriptorDefinesManagedThreadFactory();
+    public void testAnnotationDefinesManagedThreadFactory() throws Throwable {
+        enterpriseBean.testAnnotationDefinesManagedThreadFactory();
     }
+
 }
