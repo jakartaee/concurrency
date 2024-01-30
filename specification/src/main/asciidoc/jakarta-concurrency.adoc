@@ -26,7 +26,7 @@ It is because of this behavior that application components are typically
 unable to reliably use other Jakarta EE platform services from a thread
 that is not managed by the container.
 
-Jakarta EE Product Providers (see chapter 2.11 of the Jakarta EE 9
+Jakarta EE Product Providers (see chapter 2.12 of the Jakarta EE 11
 Specification) also discourage the use of resources in a non-managed
 way, because it can potentially undermine the enterprise features that
 the platform is designed to provide such as availability, security, and
@@ -245,8 +245,8 @@ user identity).
 [NOTE]
 ====
 Contextual Objects and Tasks referred here is not the same as
-the Context object as defined in the Jakarta Contexts and Dependency Injection specification. See section_ _2.3.2.1_ _on
-using CDI beans as tasks._
+the Context object as defined in the Jakarta Contexts and Dependency Injection specification. See section 2.3.2.1 on
+_using CDI beans as tasks._
 ====
 
 When a task instance is submitted to a managed instance of an
@@ -299,7 +299,7 @@ functionalities within this specification when appropriate.
 Resource Adapters can access each of the Managed Objects described in
 the following sections by looking them up in the JNDI global namespace,
 through the JNDI context of the accessing application (see section
-10.3.2 of the Connectors specification).
+11.3.2 of the Jakarta Connectors specification).
 
 === Security
 
@@ -319,7 +319,7 @@ allowed.
 == Managed Objects
 
 This section introduces four programming interfaces for Jakarta EE Product
-Providers to implement (see EE.2.11 for a detailed definition of each of
+Providers to implement (see EE.2.12 for a detailed definition of each of
 the roles described here). Instances of these interfaces must be made
 available to application components through containers as managed
 objects:
@@ -342,7 +342,7 @@ application components to run tasks asynchronously.
 
 ==== Application Component Provider’s Responsibilities
 
-Application Component Providers (application developers) (EE2.11.2) use
+Application Component Providers (application developers) (EE2.12.2) use
 a ManagedExecutorService instance and associated interfaces to develop
 application components that utilize the concurrency functions that these
 interfaces provide.
@@ -683,14 +683,14 @@ public class AppServlet extends HttpServlet implements Servlet {
 ----
 ==== Application Assembler’s Responsibilities 
 
-The Application Assembler (EE.2.11.3) is responsible for assembling the
+The Application Assembler (EE.2.12.3) is responsible for assembling the
 application components into a complete Jakarta EE application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
 ==== Deployer’s Responsibilities 
 
-The Deployer (EE.2.11.4) is responsible for deploying the application
+The Deployer (EE.2.12.4) is responsible for deploying the application
 components into a specific operational environment. In the terms of this
 specification, the Deployer installs the application components and maps
 the dependencies defined by the Application Component Provider and
@@ -890,7 +890,7 @@ in which case the application's producer takes precedence.
 
 ==== System Administrator’s Responsibilities 
 
-The System Administrator (EE.2.11.5) is responsible for monitoring and
+The System Administrator (EE.2.12.5) is responsible for monitoring and
 overseeing the runtime environment. In the scope of this specification,
 these duties may include:
 
@@ -1058,7 +1058,7 @@ provides with the addition of `Trigger` and `ManagedTaskListener`.
 
 ==== Application Component Provider’s Responsibilities 
 
-Application Component Providers (application developers) (EE2.11.2) use
+Application Component Providers (application developers) (EE2.12.2) use
 a `ManagedScheduledExecutorService` instance and associated interfaces to
 develop application components that utilize the concurrency functions
 that these interfaces provide.
@@ -1230,14 +1230,14 @@ public class CtxListener implements ServletContextListener {
 ----
 ==== Application Assembler’s Responsibilities 
 
-The Application Assembler (EE.2.11.3) is responsible for assembling the
+The Application Assembler (EE.2.12.3) is responsible for assembling the
 application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
 ==== Deployer’s Responsibilities 
 
-The Deployer (EE.2.11.4) is responsible for deploying the application
+The Deployer (EE.2.12.4) is responsible for deploying the application
 components into a specific operational environment. In the terms of this
 specification, the Deployer installs the application components and maps
 the dependencies defined by the Application Component Provider and
@@ -1370,7 +1370,7 @@ in which case the application's producer takes precedence.
 
 ==== System Administrator’s Responsibilities 
 
-The System Administrator (EE.2.110.5) is responsible for monitoring and
+The System Administrator (EE.2.12.5) is responsible for monitoring and
 overseeing the runtime environment. In the scope of this specification,
 these duties may include:
 
@@ -1486,7 +1486,8 @@ transaction demarcation APIs must not be used (e.g., if a
 . The task instance must complete the transaction before the task method
 ends.
 
-See section 3.1.8.2.1 for an example on how to use a `UserTransaction`
+See the example titled _UserTransaction Usage Example_ under section 3.1.8.2
+for an example on how to use a `UserTransaction`
 within a task.
 
 === ContextService 
@@ -1497,7 +1498,7 @@ create contextual objects without using a managed executor. The
 `java.lang.reflect` package or creates proxy instances in a
 non-dynamic manner to associate the application component
 container context with an object instance. The object becomes a
-contextual object (see section 2.3.2 ) and whenever a method on the
+contextual object (see section 2.3.2) and whenever a method on the
 contextual object is invoked, the method executes with the thread
 context of the associated application component instance.
 
@@ -1514,7 +1515,7 @@ provider's undefined thread context.).
 
 ==== Application Component Provider’s Responsibilities 
 
-Application Component Providers (application developers) (EE2.11.2) use
+Application Component Providers (application developers) (EE2.12.2) use
 a ContextService instance to create contextual object proxies.
 
 The application uses the
@@ -1759,14 +1760,14 @@ class LoanCheckerBean {
 
 ==== Application Assembler’s Responsibilities 
 
-The Application Assembler (EE.2.11.3) is responsible for assembling the
+The Application Assembler (EE.2.12.3) is responsible for assembling the
 application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
 ==== Deployer’s Responsibilities 
 
-The Deployer (EE.2.11.4) is responsible for deploying the application
+The Deployer (EE.2.12.4) is responsible for deploying the application
 components into a specific operational environment. In the terms of this
 specification, the Deployer installs the application components and maps
 the dependencies defined by the Application Component Provider and
@@ -1816,7 +1817,7 @@ using resource environment references or providers may choose to use the
 context information supplied as default context propagation policies for
 a `ManagedExecutorService`, `ManagedScheduledExecutorService` or
 `ManagedThreadFactory`. The configuration examples covered in sections
-3.1.4.2 3.2.4.2 and 3.4.4.2 refer to one of the `ContextService`
+3.1.4.2, 3.2.4.2 and 3.4.4.2 refer to one of the `ContextService`
 configuration examples that follow.
 
 Each of the examples has the following attributes:
@@ -1957,7 +1958,8 @@ transaction demarcation APIs must not be used (e.g. if a
 . The task instance must complete the transaction before the task method
 ends.
 
-See section 3.1.8.2.1 for an example of using a UserTransaction within a
+See the example titled _UserTransaction Usage Example_ under section 3.1.8.2
+for an example of using a UserTransaction within a
 task.
 
 === ManagedThreadFactory 
@@ -1975,7 +1977,7 @@ thread.
 
 ==== Application Component Provider’s Responsibilities 
 
-Application Component Providers (application developers) (EE2.11.2) use
+Application Component Providers (application developers) (EE2.12.2) use
 a `jakarta.enterprise.concurrent.ManagedThreadFactory` instance to create
 manageable threads.
 
@@ -2024,7 +2026,7 @@ threads in the application component, each with a different container
 context (for example, user identity). By always applying the context of
 the `ManagedThreadFactory` creator, each thread has a consistent context.
 If a different context is required for each thread, use the
-`ContextService` to create a contextual object (see section_ _3.3)._
+`ContextService` to create a contextual object (see section 3.3).
 ====
 
 * If a `ManagedThreadFactory` instance is stopped, all subsequent calls to
@@ -2034,7 +2036,7 @@ If a different context is required for each thread, use the
 
 In this example, an application component uses a background daemon task
 to dump in-memory events to a database log, similar to the timer usage
-example in section 3.2.1.1.1 .
+example in section 3.2.1.1.
 
 The attributes of the `ManagedThreadFactory` reference is documented using
 the `<description>` tag within the deployment descriptor of the
@@ -2051,7 +2053,7 @@ database log. Its lifecycle is controlled using a
 
 The following resource environment reference is added to the web.xml
 file for the web component. The description reflects the desired
-configuration attributes (see section 3.4.4.2 ). Alternatively, the
+configuration attributes (see section 3.4.4.2). Alternatively, the
 `@Resource` annotation can be used in the Servlet code.
 
 [NOTE]
@@ -2145,14 +2147,14 @@ public class CtxListener implments ServletContextListener {
 ----
 ==== Application Assembler’s Responsibilities 
 
-The Application Assembler (EE.2.11.3) is responsible for assembling the
+The Application Assembler (EE.2.12.3) is responsible for assembling the
 application components into a complete Jakarta EE Application and providing
 assembly instructions that describe the dependencies to the managed
 objects.
 
 ==== Deployer’s Responsibilities 
 
-The Deployer (EE.2.11.4) is responsible for deploying the application
+The Deployer (EE.2.12.4) is responsible for deploying the application
 components into a specific operational environment. In the terms of this
 specification, the Deployer installs the application components and maps
 the dependencies defined by the Application Component Provider and
@@ -2303,7 +2305,7 @@ in which case the application's producer takes precedence.
 
 ==== System Administrator’s Responsibilities 
 
-The System Administrator (EE.2.11.5) is responsible for monitoring and
+The System Administrator (EE.2.12.5) is responsible for monitoring and
 overseeing the runtime environment. In the scope of this specification,
 these duties may include:
 
@@ -2364,7 +2366,8 @@ transaction demarcation APIs must not be used (e.g. if a
 . The task instance must complete the transaction before the task method
 ends.
 
-See section 3.1.8.2.1 for an example of using a `UserTransaction` within a
+See the example titled _UserTransaction Usage Example_ under section 3.1.8.2
+for an example of using a `UserTransaction` within a
 task.
 
 === Beans for Managed Objects
@@ -2660,7 +2663,7 @@ or the method returns a non-null result value or raises an exception.
 
 ==== Application Component Provider’s Responsibilities
 
-Application Component Providers (application developers) (EE2.11.2)
+Application Component Providers (application developers) (EE2.12.2)
 specify the `jakarta.enterprise.concurrent.Asynchronous` annotation on
 CDI managed bean methods with return type of
 `java.util.concurrent.CompletableFuture`,
