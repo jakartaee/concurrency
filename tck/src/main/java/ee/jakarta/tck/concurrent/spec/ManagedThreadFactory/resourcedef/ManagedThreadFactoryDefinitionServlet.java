@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -37,7 +37,6 @@ import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
-import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
@@ -55,9 +54,6 @@ import jakarta.transaction.UserTransaction;
 public class ManagedThreadFactoryDefinitionServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
-
-    @Resource
-    private UserTransaction tx;
 
     /**
      * A ManagedThreadFactoryDefinition with all attributes configured enforces
