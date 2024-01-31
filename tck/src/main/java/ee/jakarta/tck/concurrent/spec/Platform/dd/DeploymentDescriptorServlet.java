@@ -61,39 +61,8 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
     @Resource
     private UserTransaction tx;
-
-    // Context Services
-    @Inject
-    private ContextService injectedDefContextSvc;
-
-    @Inject
-    @CustomQualifier1
-    private ContextService injectedContextD;
     
-    // Managed Executor Services
-    @Inject
-    private ManagedExecutorService injectedDefMES;
 
-    @Inject
-    @CustomQualifier2
-    private ManagedExecutorService injectedMESD;
-    
-    // Managed Scheduled Executor Services
-    @Inject
-    private ManagedScheduledExecutorService injectedDefMSES;
-
-    @Inject
-    @CustomQualifier1
-    @CustomQualifier2
-    private ManagedScheduledExecutorService injectedMSESD;
-    
-    // Managed Thread Factory
-    @Inject
-    private ManagedThreadFactory injectedDefMTF;
-
-    @Resource(lookup = "java:app/concurrent/ThreadFactoryD")
-    private ManagedThreadFactory resourceMTFD;
-    
     private Integer executeCallableWithContext(final ContextService svc, final int value) throws Exception {
         try {
             IntContext.set(value);
@@ -105,10 +74,16 @@ public class DeploymentDescriptorServlet extends TestServlet {
             IntContext.set(0);
         }
     }
+    
+    // Context Services
+    @Inject
+    private ContextService injectedDefContextSvc;
 
-    @SuppressWarnings("unused")
-    public void testDeploymentDescriptorDefinesQualifiers() throws Throwable {
-        
+    @Inject
+    @CustomQualifier1
+    private ContextService injectedContextD;
+    
+    public void testDeploymentDescriptorDefinedContextServiceQualifiers() throws Throwable {
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
                         "Default contextService was not registered with default qualifier."),
@@ -134,9 +109,17 @@ public class DeploymentDescriptorServlet extends TestServlet {
         assertEquals(Integer.valueOf(0), executeCallableWithContext(injectedContextD, 85),
                 "Deployment descriptor defined Context Service that was injected based on a qualifier did not clear the IntContext as configured.");
 
-        ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
-        ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
-        
+    }
+    
+    // Managed Executor Services
+    @Inject
+    private ManagedExecutorService injectedDefMES;
+
+    @Inject
+    @CustomQualifier2
+    private ManagedExecutorService injectedMESD;
+    
+    public void testDeploymentDescriptorDefinedManagedExecutorSvcQualifiers() throws Throwable {
         assertAll("Managed Executor Service Tests",
             () -> assertNotNull(injectedDefMES,
                     "Default managedExecutorService was not registered with default qualifier."),
@@ -146,11 +129,40 @@ public class DeploymentDescriptorServlet extends TestServlet {
                     "A managedExecutorService was satisfied with both a required and non-required qualifier.")
         );
         
-        //TODO verify injected vs lookup services behave the same
         
-        ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
-        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorD");
+        //  Verify injected and looked up default ManagedExecutorService behave the same
+        ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
         
+        ContextService lookupDefContextSvc = lookupDefMES.getContextService();
+        ContextService extractedDefContextSvc = injectedDefMES.getContextService();
+        
+        Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
+        Integer actual1 = executeCallableWithContext(extractedDefContextSvc, 95);
+        
+        assertEquals(expected1, actual1, "Default ManagedExecutorService behavior via context service differed between injection and lookup");
+        
+        //  Verify injected and lookup deployment descriptor defined ManagedExecutorService behave the same
+        ManagedExecutorService lookupMESD = InitialContext.doLookup("java:app/concurrent/ExecutorD");
+        
+        ContextService lookupContextE = lookupMESD.getContextService();
+        ContextService extractedContextE = injectedMESD.getContextService();
+        
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextE, 65),
+                "Deployment descriptor defined and looked up ManagedExecutorService was configured with a context service that did not clear the IntContext as configured.");
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(extractedContextE, 85),
+                "Deployment descriptor defined and injected ManagedExecutorService was configured with a context service that did not clear the IntContext as configured.");
+    }
+    
+    // Managed Scheduled Executor Services
+    @Inject
+    private ManagedScheduledExecutorService injectedDefMSES;
+
+    @Inject
+    @CustomQualifier1
+    @CustomQualifier2
+    private ManagedScheduledExecutorService injectedMSESD;
+    
+    public void testDeploymentDescriptorDefinedManagedScheduledExecutorSvcQualifers() throws Throwable {
         assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
                         "Default managedScheduledExecutorService was not registered with default qualifier."),
@@ -160,11 +172,44 @@ public class DeploymentDescriptorServlet extends TestServlet {
                         "A managedScheduledExecutorService was not satisfied with one of two configured qualifiers.")
         );
         
-        //TODO verify injected vs lookup services behave the same
+        //  Verify injected and looked up default ManagedScheduledExecutorService behave the same
+        ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
+
+        ContextService lookupDefContextSvc = lookupDefMSES.getContextService();
+        ContextService extractedDefContextSvc = injectedDefMSES.getContextService();
+        
+        Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
+        Integer actual1 = executeCallableWithContext(extractedDefContextSvc, 95);
+        
+        assertEquals(expected1, actual1, "Default ManagedScheduledExecutorService behavior via context service differed between injection and lookup");
+        
+        //  Verify injected and looked up annotation defined ManagedExecutorService behave the same
+        ManagedScheduledExecutorService lookupMSESD = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorD");
+
+        ContextService lookupContextE = lookupMSESD.getContextService();
+        ContextService extractedContextE = injectedMSESD.getContextService();
+        
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextE, 65),
+                "Deployment descriptor defined and looked up ManagedScheduledExecutorService"
+                + " was configured with a context service that did not clear the IntContext as configured.");
+        assertEquals(Integer.valueOf(0), executeCallableWithContext(extractedContextE, 85),
+                "Deployment descriptor defined and injected ManagedScheduledExecutorService"
+                + " was configured with a context service that did not clear the IntContext as configured.");
+
+    }
+
+    // Managed Thread Factory
+    @Inject
+    private ManagedThreadFactory injectedDefMTF;
+
+    @Resource(lookup = "java:app/concurrent/ThreadFactoryD")
+    private ManagedThreadFactory resourceMTFD;
+
+    public void testDeploymentDescriptorDefinedManagedThreadFactoryQualifers() throws Throwable {
 
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
         ManagedThreadFactory lookupMTFD = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
-        
+
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
                     "Default managedThreadFactory was not registered with default qualifier."),

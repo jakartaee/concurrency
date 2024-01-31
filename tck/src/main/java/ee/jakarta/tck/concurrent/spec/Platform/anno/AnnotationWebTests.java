@@ -63,8 +63,23 @@ public class AnnotationWebTests extends TestClient {
         return "AnnotationServlet";
     }
     
-    @Assertion(id = "GIT:404", strategy = "Tests injection of concurrent resources defined in a annotation with qualifier(s).")
-    public void testAnnotationDefinesQualifiers() {
+    @Assertion(id = "GIT:404", strategy = "Tests injection of context service defined in an annotation with qualifier(s).")
+    public void testAnnoDefinedContextServiceQualifiers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed executor service defined in an annotation with qualifier(s).")
+    public void testAnnoDefinedManagedExecutorSvcQualifiers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed scheduled exectuor service defined in an annotation with qualifier(s).")
+    public void testAnnoDefinedManagedScheduledExecutorSvcQualifers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed thread factory defined in an annotation with qualifier(s).")
+    public void testAnnoDefinedManagedThreadFactoryQualifers() {
         runTest(baseURL, testname);
     }
 

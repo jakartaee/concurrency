@@ -77,8 +77,23 @@ public class DeploymentDescriptorFullTests extends TestClient {
         return "DeploymentDescriptorServlet";
     }
     
-    @Assertion(id = "GIT:404", strategy = "Tests injection of concurrent resources defined in a deployment descriptor with qualifier(s).")
-    public void testDeploymentDescriptorDefinesQualifiers() {
+    @Assertion(id = "GIT:404", strategy = "Tests injection of context service defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinedContextServiceQualifiers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed executor service defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinedManagedExecutorSvcQualifiers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed scheduled exectuor service defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinedManagedScheduledExecutorSvcQualifers() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:404", strategy = "Tests injection of managed thread factory defined in a deployment descriptor with qualifier(s).")
+    public void testDeploymentDescriptorDefinedManagedThreadFactoryQualifers() {
         runTest(baseURL, testname);
     }
 
