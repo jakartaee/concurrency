@@ -212,15 +212,17 @@ public class DeploymentDescriptorServlet extends TestServlet {
 
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
-                    "Default managedThreadFactory was not registered with default qualifier."),
-            () -> assertEquals(lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(), injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
-                    "Default managedThreadFactory from injection and lookup did not have the same priority."),
+                    "A managedThreadFactory was not registered with the default qualifier when the application included a producer."),
+            () -> assertEquals(5, lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
+                    "Default managedThreadFactory from lookup did not have the default priority."),
+            () -> assertEquals(7, injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
+                    "Default managedThreadFactory from injection did not have the expected priority."),
             () -> assertNotNull(resourceMTFD,
                     "Deployment Descriptor defined managedThreadFactory with no qualifiers could not be found via @Resource."),
             () -> assertEquals(lookupMTFD.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFD.newThread(NOOP_RUNNABLE).getPriority(),
                     "The managedThreadFactory from resource injection and lookup did not have the same priority."),
             () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, CustomQualifier1.Literal.get()).isUnsatisfied(),
-                    "A managedThreadFactory was satisfied with a required qualifier that should have been overriden by the deployment descriptor.")
+                    "A managedThreadFactory was satisfied with a required qualifier that was not configured on the deployment descriptor.")
         );
     }
 

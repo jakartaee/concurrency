@@ -53,5 +53,11 @@
     <qualifier></qualifier>
     <priority>6</priority>
   </managed-thread-factory>
+  
+  <managed-thread-factory>
+    <name>java:app/concurrent/ThreadFactoryDefault</name>
+    <context-service-ref>java:comp/DefaultContextService</context-service-ref>
+    <priority>7</priority>
+  </managed-thread-factory>
 
 </web-app>

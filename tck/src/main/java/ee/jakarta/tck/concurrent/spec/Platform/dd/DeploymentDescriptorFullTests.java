@@ -50,7 +50,7 @@ public class DeploymentDescriptorFullTests extends TestClient {
     public static EnterpriseArchive createDeployment() {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentDescriptorTests_web.war")
-                .addClasses(DeploymentDescriptorServlet.class);
+                .addClasses(DeploymentDescriptorServlet.class, ManagedThreadFactoryProducer.class);
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "DeploymentDescriptorTests_ejb.jar")
                 .addClasses(DeploymentDescriptorTestBean.class, DeploymentDescriptorTestBeanInterface.class)
