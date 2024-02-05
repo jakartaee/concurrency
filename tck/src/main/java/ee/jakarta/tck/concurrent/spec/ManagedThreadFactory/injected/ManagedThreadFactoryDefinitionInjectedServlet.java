@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.resourcedef;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.injected;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,18 +52,18 @@ import jakarta.transaction.UserTransaction;
  * @ContextServiceDefinitions are defined under
  * *                            {@link ContextServiceDefinitionServlet}
  */
-@ManagedThreadFactoryDefinition(name = "java:app/concurrent/ThreadFactoryA", context = "java:app/concurrent/ContextA", priority = 4)
-@ManagedThreadFactoryDefinition(name = "java:comp/concurrent/ThreadFactoryB")
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/ThreadFactoryInjA", context = "java:app/concurrent/ContextA", priority = 4)
+@ManagedThreadFactoryDefinition(name = "java:comp/concurrent/ThreadFactoryInjB")
 @WebServlet("/ManagedThreadFactoryDefinitionServlet")
 public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
 
-    @Resource(lookup = "java:app/concurrent/ThreadFactoryA")
-    private ManagedThreadFactory threadFactoryA;
+    @Resource(lookup = "java:app/concurrent/ThreadFactoryInjA")
+    private ManagedThreadFactory threadFactoryInjA;
 
-    @Resource(lookup = "java:comp/concurrent/ThreadFactoryB")
-    private ManagedThreadFactory threadFactoryB;
+    @Resource(lookup = "java:comp/concurrent/ThreadFactoryInjB")
+    private ManagedThreadFactory threadFactoryInjB;
 
     /**
      * A ManagedThreadFactoryDefinition with all attributes configured enforces
@@ -76,14 +76,14 @@ public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
             IntContext.set(162);
             StringContext.set("testManagedThreadFactoryDefinitionAllAttributes-2");
 
-            Thread thread1 = threadFactoryA.newThread(() -> {
+            Thread thread1 = threadFactoryInjA.newThread(() -> {
             });
             assertEquals(thread1.getPriority(), 4, "New threads must be created with the priority that is specified on "
                     + "ManagedThreadFactoryDefinition");
 
             BlockingQueue<Object> results = new LinkedBlockingQueue<>();
 
-            threadFactoryA.newThread(() -> {
+            threadFactoryInjA.newThread(() -> {
                 results.add(Thread.currentThread().getPriority());
                 results.add(StringContext.get());
                 results.add(IntContext.get());
@@ -158,8 +158,8 @@ public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
         };
 
         try {
-            threadFactoryB.newThread(lookupTask).start();
-            threadFactoryB.newThread(txTask).start();
+            threadFactoryInjB.newThread(lookupTask).start();
+            threadFactoryInjB.newThread(txTask).start();
 
             assertTrue(allThreadsRunning.await(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                     "ManagedThreadFactory threads must start running.");
@@ -172,7 +172,7 @@ public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
             if (result instanceof Throwable)
                 throw new AssertionError().initCause((Throwable) result);
             assertTrue(result instanceof ContextService, "Application context must be propagated to first thread "
-                    + "per java:comp/concurrent/ThreadFactoryB configuration.");
+                    + "per java:comp/concurrent/ThreadFactoryInjB configuration.");
 
             result = txTaskResult.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
             if (result instanceof Throwable throwable) {
@@ -180,7 +180,7 @@ public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
             }
             assertEquals(result, Status.STATUS_NO_TRANSACTION,
                     "Transaction context must be cleared from async Callable task "
-                            + "per java:comp/concurrent/ThreadFactoryB configuration.");
+                    + "per java:comp/concurrent/ThreadFactoryInjB configuration.");
         } finally {
             IntContext.set(0);
             blocker.countDown();
@@ -200,7 +200,7 @@ public class ManagedThreadFactoryDefinitionInjectedServlet extends TestServlet {
             IntContext.set(2000);
             StringContext.set("testParallelStreamBackedByManagedThreadFactory-2");
 
-            fj = new ForkJoinPool(4, threadFactoryA, null, false);
+            fj = new ForkJoinPool(4, threadFactoryInjA, null, false);
 
             IntContext.set(3000);
             StringContext.set("testParallelStreamBackedByManagedThreadFactory-3");

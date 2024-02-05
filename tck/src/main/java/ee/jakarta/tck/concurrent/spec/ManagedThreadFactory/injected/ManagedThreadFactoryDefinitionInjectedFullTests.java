@@ -13,7 +13,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.resourcedef;
+package ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.injected;
 
 import java.net.URL;
 
@@ -37,6 +37,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
+import ee.jakarta.tck.concurrent.spec.ManagedThreadFactory.resourcedef.ManagedThreadFactoryDefinitionFullTests;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 @Full
@@ -56,19 +57,19 @@ public class ManagedThreadFactoryDefinitionInjectedFullTests extends TestClient 
                 .addPackages(false, PACKAGE.CONTEXT.getPackageName(), PACKAGE.CONTEXT_PROVIDERS.getPackageName())
                 .addClasses(ManagedThreadFactoryDefinitionOnEJBInjectedServlet.class,
                         ManagedThreadFactoryDefinitionInjectedServlet.class, ContextServiceDefinitionServlet.class)
-                .addAsWebInfResource(ManagedThreadFactoryDefinitionInjectedFullTests.class.getPackage(), "web.xml", "web.xml")
+                .addAsWebInfResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "web.xml", "web.xml")
                 .addAsServiceProvider(ThreadContextProvider.class.getName(), IntContextProvider.class.getName(),
                         StringContextProvider.class.getName());
 
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionTests_ejb.jar")
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "ManagedThreadFactoryDefinitionInjectedTests_ejb.jar")
                 .addPackages(false, ManagedThreadFactoryDefinitionInjectedFullTests.class.getPackage())
                 .deleteClasses(ManagedThreadFactoryDefinitionOnEJBInjectedServlet.class,
                         ManagedThreadFactoryDefinitionInjectedServlet.class)
                 .addClasses(ContextServiceDefinitionInterface.class, ContextServiceDefinitionBean.class)
-                .addAsManifestResource(ManagedThreadFactoryDefinitionInjectedFullTests.class.getPackage(), "ejb-jar.xml",
+                .addAsManifestResource(ManagedThreadFactoryDefinitionFullTests.class.getPackage(), "ejb-jar.xml",
                         "ejb-jar.xml");
 
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionTests.ear")
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "ManagedThreadFactoryDefinitionInjectedTests.ear")
                 .addAsModules(war, jar);
 
         return ear;
