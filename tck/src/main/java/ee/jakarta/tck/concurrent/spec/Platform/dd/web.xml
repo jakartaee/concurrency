@@ -16,12 +16,11 @@
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 
 -->
-<!-- TODO update to 6.1 -->
 <web-app 
-	version="6.0" 
+	version="6.1" 
 	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
 
   <context-service>
     <name>java:app/concurrent/ContextD</name>
@@ -53,6 +52,12 @@
     <context-service-ref>java:app/concurrent/ContextD</context-service-ref>
     <qualifier></qualifier>
     <priority>6</priority>
+  </managed-thread-factory>
+  
+  <managed-thread-factory>
+    <name>java:app/concurrent/ThreadFactoryDefault</name>
+    <context-service-ref>java:comp/DefaultContextService</context-service-ref>
+    <priority>7</priority>
   </managed-thread-factory>
 
 </web-app>
