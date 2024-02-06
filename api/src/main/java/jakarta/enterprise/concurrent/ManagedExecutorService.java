@@ -66,8 +66,8 @@ import java.util.function.Supplier;
  * }
  * </pre>
  *
- * Tasks can optionally provide an {@link ManagedTaskListener} to receive
- * notifications of lifecycle events, through the use of {@link ManagedTask}
+ * Tasks can optionally provide a {@link ManagedTaskListener} to receive
+ * notifications of lifecycle events, through the use of the {@link ManagedTask}
  * interface.
  * <p>
  * Example:
