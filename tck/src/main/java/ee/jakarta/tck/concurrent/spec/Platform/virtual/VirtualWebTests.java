@@ -31,7 +31,7 @@ import ee.jakarta.tck.concurrent.framework.junit.anno.UsingVirtualThreads;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
-@Debug
+@Debug // TODO remove
 @RunAsClient // Requires client testing due to annotation configuration
 @UsingVirtualThreads
 public class VirtualWebTests extends TestClient {
@@ -54,13 +54,35 @@ public class VirtualWebTests extends TestClient {
         return "VirtualThreadServlet";
     }
 
+    @Assertion(id = "GIT:414", strategy = "Tests that a managed executor with virtual = false never uses a virtual thread.")
+    public void testPlatformExecutor() throws Exception {
+        runTest(baseURL, testname);
+    }
+
+    @Assertion(id = "GIT:414", strategy = "Tests that a managed executor with virtual = true can use a virtual thread,"
+            + " or returns a platform thread if it is not capable of providing virtual threads.")
+    public void testVirtualExecutor() throws Exception {
+        runTest(baseURL, testname);
+    }
+
+    @Assertion(id = "GIT:414", strategy = "Tests that a managed scheduled executor with virtual = false never uses a virtual thread.")
+    public void testPlatformScheduledExecutor() throws Exception {
+        runTest(baseURL, testname);
+    }
+
+    @Assertion(id = "GIT:414", strategy = "Tests that a managed scheduled executor with virtual = true can use a virtual thread,"
+            + " or returns a platform thread if it is not capable of providing virtual threads.")
+    public void testVirtualScheduledExecutor() throws Exception {
+        runTest(baseURL, testname);
+    }
+
     @Assertion(id = "GIT:414", strategy = "Tests that a thread factory with virtual = false never returns a virtual thread.")
     public void testPlatformThreadFactory() {
         runTest(baseURL, testname);
     }
-    
+
     @Assertion(id = "GIT:414", strategy = "Tests that a thread factory with virtual = true can return and use a virtual thread,"
-            + " or returns a platform thread if it is not capable of providing virtual threads..")
+            + " or returns a platform thread if it is not capable of providing virtual threads.")
     public void testVirtualThreadFactory() {
         runTest(baseURL, testname);
     }

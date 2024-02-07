@@ -22,6 +22,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
 
+  <managed-executor>
+    <name>java:app/concurrent/ManagedExecutorDDPlatform</name>
+    <virtual>false</virtual>
+  </managed-executor>
+
+  <managed-executor>
+    <name>java:app/concurrent/ManagedExecutorDDVirtual</name>
+    <virtual>true</virtual>
+  </managed-executor>
+  
+  <managed-scheduled-executor>
+    <name>java:app/concurrent/ManagedScheduledExecutorDDPlatform</name>
+    <virtual>false</virtual>
+  </managed-scheduled-executor>
+
+  <managed-scheduled-executor>
+    <name>java:app/concurrent/ManagedScheduledExecutorDDVirtual</name>
+    <virtual>true</virtual>
+  </managed-scheduled-executor>
+  
   <managed-thread-factory>
     <name>java:app/concurrent/ThreadFactoryDDPlatform</name>
     <virtual>false</virtual>
