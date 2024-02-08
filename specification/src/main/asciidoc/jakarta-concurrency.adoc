@@ -2437,7 +2437,9 @@ provides a way for applying empty/cleared context of that type to threads,
 and provides a way to restore the previous thread context after a
 contextual task or action completes.
 
-===== Third-Party Context Provider’s Requirements
+=== Responsibilities and Requirements
+
+==== Third-Party Context Provider’s Requirements
 
 This subsection describes the requirements of a third-party provider
 of thread context.
@@ -2458,7 +2460,7 @@ upon request from the Jakarta EE Product Provider.
 thread, restoring the previous thread context, upon request from the
 Jakarta EE Product Provider.
 
-===== Jakarta EE Product Provider’s Requirements
+==== Jakarta EE Product Provider’s Requirements
 
 This subsection describes the requirements of the Jakarta EE Product
 Provider.
@@ -2482,7 +2484,9 @@ on a thread that will run the contextual task or action.
 . Invoke the `ThreadContextRestorer.endContext` method to restore the
 previous context after the contextual task or action completes.
 
-===== Usage Example
+=== Usage Examples
+
+==== Custom Thread Context Example
 
 This example supplies a `ThreadContextProvider` that turns priority
 (from `java.lang.Thread`) into a third-party context type.
@@ -2493,7 +2497,7 @@ and already built into Java, allowing the reader to focus on the
 mechanisms of thread context capture/propagation/restore rather than the
 details of the context type itself. 
 
-====== Example of Custom ThreadContextProvider
+===== Example of Custom ThreadContextProvider
 
 The interface, `jakarta.enterprise.concurrent.spi.ThreadContextProvider`,
 is the means by which the Jakarta EE Product Provider requests the
@@ -2525,7 +2529,7 @@ public class ThreadPriorityContextProvider implements ThreadContextProvider {
 }
 ----
 
-====== Example of Custom ThreadContextSnapshot and ThreadContextRestorer
+===== Example of Custom ThreadContextSnapshot and ThreadContextRestorer
 
 The interface, `jakarta.enterprise.concurrent.spi.ThreadContextSnapshot`,
 represents a snapshot of thread context. The Jakarta EE Product Provider
@@ -2571,7 +2575,7 @@ public class ThreadPrioritySnapshot implements ThreadContextSnapshot {
 }
 ----
 
-====== ServiceLoader Entry
+===== ServiceLoader Entry
 
 To make the `ThreadContextProvider` implementation available to the
 `ServiceLoader`, the provider JAR includes a file of the following name
@@ -2589,7 +2593,7 @@ which contains the following line,
 example.jakarta.concurrency.priority.ThreadPriorityContextProvider
 ----
 
-====== Usage of the Custom Context Type from a Servlet
+===== Usage of the Custom Context Type from a Servlet
 
 The following example shows application code that uses a
 `ManagedExecutorService` that propagates the example context type.
@@ -2650,7 +2654,7 @@ Application code, including from within the asynchronous method, can query
 the status of the completable future instance and can choose to complete
 it at any time and by any means.
 
-==== Scheduled Asynchronous Methods
+=== Scheduled Asynchronous Methods
 
 The `runAt` attribute of `Asynchronous` allows schedules to be assigned
 to asynchronous methods, such that the
@@ -2660,6 +2664,8 @@ With each execution, the method indicates that subsequent executions are
 needed by returning a `null` result value. The Jakarta EE Product attempts
 to run the method at its scheduled times until its future is completed
 or the method returns a non-null result value or raises an exception.
+
+=== Responsibilities and Requirements
 
 ==== Application Component Provider’s Responsibilities
 
@@ -2779,7 +2785,7 @@ for any reason after this point, it completes the
 `java.util.concurrent.CompletableFuture` instance with a
 `java.util.concurrent.CancellationException`.
 
-==== Transaction Management
+=== Transaction Management
 
 When an asynchronous method is also annotated with
 `jakarta.transaction.Transactional`, the transactional types which can be
