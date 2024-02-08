@@ -93,7 +93,7 @@ public class AnnotationFullTests extends TestClient {
     }
     
     @Assertion(id = "GIT:404", strategy = "Tests injection of managed thread factory defined in an annotation with qualifier(s).")
-    public void testAnnoDefinedManagedThreadFactoryQualifers() {
+    public void testAnnoDefinedManagedThreadFactoryQualifersFull() {
         runTest(baseURL, testname);
     }
 
