@@ -86,4 +86,10 @@ public class VirtualWebTests extends TestClient {
     public void testVirtualThreadFactory() {
         runTest(baseURL, testname);
     }
+    
+    @Assertion(id = "GIT:414", strategy = "Tests that a ForkJoinPool created from a thread factory with virtual = true"
+            + " can return and use a virtual thread, or returns a platform thread if it is not capable of providing virtual threads.")
+    public void testVirtualThreadFactoryForkJoinPool() {
+        runTest(baseURL, testname);
+    }
 }

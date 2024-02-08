@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -286,6 +287,37 @@ public class VirtualThreadServlet extends TestServlet {
         assertNotNull(result);
         if (result instanceof Throwable)
             throw new AssertionError("An error occured on thread.", (Throwable) result);
+    }
+    
+    public void testVirtualThreadFactoryForkJoinPool() throws Exception {
+        ManagedThreadFactory virtualThreadFactoryAnno = InitialContext
+                .doLookup("java:app/concurrent/ThreadFactoryAnnoVirtual");
+        ManagedThreadFactory platformThreadFactoryAnno = InitialContext
+                .doLookup("java:app/concurrent/ThreadFactoryAnnoPlatform");
+        
+        //Test virtual thread factory
+        Thread thread1;
+        ForkJoinPool virtualPool = new ForkJoinPool(3, virtualThreadFactoryAnno, null, false);
+        
+        try {
+            thread1 = virtualPool.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        } finally {
+            virtualPool.shutdown();
+        }
+        
+        assertFalse(isVirtual(thread1));
+        
+        //Test platform thread factory
+        Future<Thread> thread2;
+        ForkJoinPool platformPool = new ForkJoinPool(3, platformThreadFactoryAnno, null, false);
+        
+        try {
+            thread2 = platformPool.submit(Thread::currentThread);
+        } finally {
+            platformPool.shutdown();
+        }
+        
+        assertFalse(isVirtual(thread2.get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS)));
     }
 
     /**

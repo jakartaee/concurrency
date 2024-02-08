@@ -92,4 +92,10 @@ public class VirtualFullTests extends TestClient {
     public void testVirtualThreadFactory() {
         runTest(baseURL, testname);
     }
+    
+    @Assertion(id = "GIT:414", strategy = "Tests that a ForkJoinPool created from a thread factory with virtual = true"
+            + " or virtual = false always uses a platform thread which is a restriction of Java.")
+    public void testVirtualThreadFactoryForkJoinPool() {
+        runTest(baseURL, testname);
+    }
 }
