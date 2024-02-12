@@ -47,7 +47,7 @@
         <jakarta.concurrent.tck.version>${project.version}</jakarta.concurrent.tck.version>
 
         <maven.site.skip>true</maven.site.skip>
-        <asciidoctor-maven.version>2.2.5</asciidoctor-maven.version>
+        <asciidoctor-maven.version>2.2.6</asciidoctor-maven.version>
         <asciidoctorj-pdf.version>2.3.12</asciidoctorj-pdf.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
     </properties>
