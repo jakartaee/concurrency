@@ -1,10 +1,10 @@
 name: Bug Report
-description: Jakarta Concurrency Bug Report
+description: Report a mistake or inconsistency in the specification code or documentation text.
 title: "[Bug]: "
 labels: ["bug"] #Verified - label exists
 body:
   - type: markdown
-    attributes: 
+    attributes:
       value: |
         > Report a mistake or inconsistency in the specification code, TCK tests, or documentation text.
         > If error is related to a TCK test after release, then use the TCK Challenge template instead.
@@ -12,9 +12,9 @@ body:
     id: version
     validations:
       required: true
-    attributes: 
+    attributes:
       label: Specification Version
-      description: What version of the Concurrency Spec are you running using? 
+      description: What version of the Concurrency Spec are you running using?
       options:
         - 3.1.0-M1
         - 3.0.2
