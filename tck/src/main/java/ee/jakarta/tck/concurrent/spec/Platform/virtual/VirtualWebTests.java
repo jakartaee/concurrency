@@ -25,15 +25,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Debug;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
-import ee.jakarta.tck.concurrent.framework.junit.anno.UsingVirtualThreads;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Web;
 
 @Web
-@Debug // TODO remove
 @RunAsClient // Requires client testing due to annotation configuration
-@UsingVirtualThreads
 public class VirtualWebTests extends TestClient {
 
     @ArquillianResource(VirtualThreadServlet.class)
