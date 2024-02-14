@@ -1,5 +1,5 @@
 name: Use Case
-description: Jakarta Concurrency Use Case
+description: Describe a new use case for the specification. 
 title: "[Use Case]: "
 labels: ["enhancement"] #Verified - label exists
 body:
