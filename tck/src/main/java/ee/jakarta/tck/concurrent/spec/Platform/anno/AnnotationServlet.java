@@ -39,6 +39,7 @@ import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier1;
 import ee.jakarta.tck.concurrent.common.qualifiers.CustomQualifier2;
 import ee.jakarta.tck.concurrent.common.qualifiers.InvalidQualifier3;
+import ee.jakarta.tck.concurrent.common.qualifiers.OverwrittenQualifier4;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
@@ -76,7 +77,7 @@ import jakarta.transaction.UserTransaction;
 @ManagedThreadFactoryDefinition(
         name = "java:app/concurrent/ThreadFactoryE",
         context = "java:app/concurrent/ContextE",
-        qualifiers = InvalidQualifier3.class, // overridden via deployment descriptor
+        qualifiers = OverwrittenQualifier4.class, // overwritten via web.xml
         priority = 6
         )
 @WebServlet("/AnnotationServlet")
@@ -229,11 +230,32 @@ public class AnnotationServlet extends TestServlet {
 
     @Resource(lookup = "java:app/concurrent/ThreadFactoryE")
     private ManagedThreadFactory resourceMTFE;
+    
+    // Qualifier on @ManagedThreadFactoryDefinition is only overridden in web mode
+    public void testAnnoDefinedManagedThreadFactoryQualifersFull() throws Throwable {
+        
+        ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
+        ManagedThreadFactory lookupMTFE = InitialContext.doLookup("java:app/concurrent/ThreadFactoryE");
 
-    public void testAnnoDefinedManagedThreadFactoryQualifers() throws Throwable {
+        assertAll("Thread Factory Tests",
+            () -> assertNotNull(injectedDefMTF,
+                    "Default managedThreadFactory was not registered with default qualifier."),
+            () -> assertEquals(lookupDefMTF.newThread(NOOP_RUNNABLE).getPriority(), injectedDefMTF.newThread(NOOP_RUNNABLE).getPriority(),
+                    "Default managedThreadFactory from injection and lookup did not have the same priority."),
+            () -> assertNotNull(resourceMTFE,
+                    "Annotation defined managedThreadFactory with qualifiers could not be found via @Resource."),
+            () -> assertEquals(lookupMTFE.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFE.newThread(NOOP_RUNNABLE).getPriority(),
+                    "The managedThreadFactory from resource injection and lookup did not have the same priority."),
+            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, OverwrittenQualifier4.Literal.get()).isResolvable(),
+                    "A managedThreadFactory was not satisfied with a required qualifier that was not overwritten by a deployment descriptor.")
+        );
+    }
+
+    // Qualifier on @ManagedThreadFactoryDefinition is overridden in web mode
+    public void testAnnoDefinedManagedThreadFactoryQualifersWeb() throws Throwable {
 
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
-        ManagedThreadFactory lookupMTFE = InitialContext.doLookup("java:app/concurrent/ThreadFactoryD");
+        ManagedThreadFactory lookupMTFE = InitialContext.doLookup("java:app/concurrent/ThreadFactoryE");
 
         assertAll("Thread Factory Tests",
             () -> assertNotNull(injectedDefMTF,
@@ -244,8 +266,8 @@ public class AnnotationServlet extends TestServlet {
                     "Annotation defined managedThreadFactory with no qualifiers could not be found via @Resource."),
             () -> assertEquals(lookupMTFE.newThread(NOOP_RUNNABLE).getPriority(), resourceMTFE.newThread(NOOP_RUNNABLE).getPriority(),
                     "The managedThreadFactory from resource injection and lookup did not have the same priority."),
-            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
-                    "A managedThreadFactory was satisfied with a required qualifier that should have been overriden by the deployment descriptor.")
+            () -> assertTrue(CDI.current().select(ManagedThreadFactory.class, OverwrittenQualifier4.Literal.get()).isUnsatisfied(),
+                    "A managedThreadFactory was satisfied with a required qualifier that should have been overwritten by the deployment descriptor.")
         );
     }
 

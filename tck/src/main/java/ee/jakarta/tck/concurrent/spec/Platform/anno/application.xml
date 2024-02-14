@@ -32,9 +32,4 @@
     <ejb>AnnotationTests_ejb.jar</ejb>
   </module>
 
-  <managed-thread-factory>
-    <name>java:app/concurrent/ThreadFactoryE</name>
-    <qualifier></qualifier> <!-- Overrides qualifiers defined in ManagedThreadFactoryDefinition -->
-  </managed-thread-factory>
-
 </application>
