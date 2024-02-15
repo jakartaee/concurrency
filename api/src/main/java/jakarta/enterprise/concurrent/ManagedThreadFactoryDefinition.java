@@ -182,9 +182,16 @@ public @interface ManagedThreadFactoryDefinition {
      */
     int priority() default Thread.NORM_PRIORITY;
 
+    // TODO switch the link below back to
+    //      {@link Thread#isVirtual() virtual} threads
+    //      instead of
+    //      virtual {@link Thread threads}
+    //      once this project compiles against Java SE 21 again.
     /**
      * <p>Indicates whether this thread factory is requested to
-     * create {@link Thread#isVirtual() virtual} threads.</p>
+     * create virtual {@link Thread threads}.
+     * Virtual threads are discussed in the {@link Thread} JavaDoc
+     * under the section that is titled <i><b>Virtual threads</b></i>.</p>
      *
      * <p>When {@code true}, the thread factory can create
      * virtual threads if it is capable of doing so
@@ -195,6 +202,11 @@ public @interface ManagedThreadFactoryDefinition {
      * thread factory must not create virtual threads.
      * When {@code false}, the thread factory always creates
      * platform threads.</p>
+     *
+     * <p>When running on Java SE 17, the {@code true} value
+     * behaves the same as the {@code false} value and results in
+     * platform threads being created rather than virtual threads.
+     * </p>
      *
      * @return {@code true} if the thread factory is requested to
      *         create virtual threads, otherwise {@code false}.

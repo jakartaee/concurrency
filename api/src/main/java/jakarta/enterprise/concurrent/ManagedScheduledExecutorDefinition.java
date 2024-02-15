@@ -204,10 +204,17 @@ public @interface ManagedScheduledExecutorDefinition {
      */
     int maxAsync() default -1;
 
+    // TODO switch the link below back to
+    //      {@link Thread#isVirtual() virtual} threads
+    //      instead of
+    //      virtual {@link Thread threads}
+    //      once this project compiles against Java SE 21 again.
     /**
      * <p>Indicates whether this executor is requested to
-     * create {@link Thread#isVirtual() virtual} threads
-     * for tasks that do not run inline.</p>
+     * create virtual {@link Thread threads}
+     * for tasks that do not run inline.
+     * Virtual threads are discussed in the {@link Thread} JavaDoc
+     * under the section that is titled <i><b>Virtual threads</b></i>.</p>
      *
      * <p>When {@code true}, the executor can create
      * virtual threads if it is capable of doing so
@@ -223,6 +230,11 @@ public @interface ManagedScheduledExecutorDefinition {
      * another stage or a join operation on the completion stage.
      * In situations such as these, the executor does not control
      * the type of thread that is used to run the task.</p>
+     *
+     * <p>When running on Java SE 17, the {@code true} value
+     * behaves the same as the {@code false} value and results in
+     * platform threads being created rather than virtual threads.
+     * </p>
      *
      * @return {@code true} if the executor can create virtual threads,
      *         otherwise {@code false}.
