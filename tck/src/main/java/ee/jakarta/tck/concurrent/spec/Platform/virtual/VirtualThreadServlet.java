@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.InitialContext;
 
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import ee.jakarta.tck.concurrent.framework.TestLogger;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
@@ -62,6 +63,8 @@ import jakarta.servlet.annotation.WebServlet;
 public class VirtualThreadServlet extends TestServlet {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final TestLogger log = TestLogger.get(VirtualThreadServlet.class);
 
     private static final Runnable NOOP_RUNNABLE = () -> {
     };
@@ -95,10 +98,11 @@ public class VirtualThreadServlet extends TestServlet {
         assertNotNull(virtualManagedExecutorAnno);
         assertNotNull(virtualManagedExecutorDD);
         
-        Thread annoThread = virtualManagedExecutorAnno.submit(Thread::currentThread)
+        // Force executor to run task on a new thread, if the platform supports virutal=true we should get a virtual thread
+        Thread annoThread = virtualManagedExecutorAnno.supplyAsync(Thread::currentThread)
                 .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
-        Thread ddThread = virtualManagedExecutorDD.submit(Thread::currentThread)
-                .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        Thread ddThread = virtualManagedExecutorDD.supplyAsync(Thread::currentThread)
+              .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
         if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
             assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
@@ -107,9 +111,8 @@ public class VirtualThreadServlet extends TestServlet {
         }
 
         // Java 21+
-        assertEquals(isVirtual(annoThread), isVirtual(ddThread));
-        assumingThat(isVirtual(annoThread) && isVirtual(ddThread), () -> {
-            // Test invokeAll on virtual threads
+        assumingThat(isVirtual(annoThread), () -> {
+            // Test invokeAll on potential virtual threads
             List<Future<Object>> results = virtualManagedExecutorAnno.invokeAll(
                     List.of(new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorAnnoVirtual"),
                             new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorAnnoVirtual"),
@@ -127,32 +130,41 @@ public class VirtualThreadServlet extends TestServlet {
             assertNotNull(result0);
             if (result0 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result0);
-            assertTrue(isVirtual((Thread) result0));
-            virtualThreads.add((Thread) result0);
+            if (isVirtual((Thread) result0))
+                virtualThreads.add((Thread) result0);
 
             assertNotNull(result1);
             if (result1 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result1);
-            assertTrue(isVirtual((Thread) result1));
-            virtualThreads.add((Thread) result1);
+            if (isVirtual((Thread) result1))
+                virtualThreads.add((Thread) result1);
+            
 
             assertNotNull(result2);
             if (result2 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result2);
-            assertTrue(isVirtual((Thread) result2));
-            virtualThreads.add((Thread) result2);
-
-            assertEquals(3, virtualThreads.size(), "Each task execution should have used a different virtual thread");
-
+            if (isVirtual((Thread) result2))
+                virtualThreads.add((Thread) result2);
+            
+            // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
+            log.info("ManagedExecutorService.invokeAll() resulted in" + virtualThreads.size()
+                + " out of 3 tasks were run on virtual threads.");
+        });
+        
+        assumingThat(isVirtual(ddThread), () -> {
             // Test invokeAny on virtual threads
             Object result = virtualManagedExecutorDD
-                    .invokeAny(List.of(new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorDDVirtual"),
+                    .invokeAny(List.of(
+                            new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorDDVirtual"),
                             new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorDDVirtual")));
 
             assertNotNull(result);
             if (result instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result);
-            assertTrue(isVirtual((Thread) result));
+            
+            // Avoid assertion that a task was executed on a virtual thread since there is no guarantee
+            if (isVirtual((Thread) result))
+                log.info("ManagedExecutorService.invokeAny() resulted in task being run on a virtual thread.");
         });
 
     }
@@ -184,9 +196,10 @@ public class VirtualThreadServlet extends TestServlet {
         assertNotNull(virtualManagedScheduledExecutorAnno);
         assertNotNull(virtualManagedScheduledExecutorDD);
         
-        Thread annoThread = virtualManagedScheduledExecutorAnno.submit(Thread::currentThread)
+        // Force executor to run task on a new thread, if the platform supports virtual=true we should get a virtual thread
+        Thread annoThread = virtualManagedScheduledExecutorAnno.supplyAsync(Thread::currentThread)
                 .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
-        Thread ddThread = virtualManagedScheduledExecutorDD.submit(Thread::currentThread)
+        Thread ddThread = virtualManagedScheduledExecutorDD.supplyAsync(Thread::currentThread)
                 .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
         if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
@@ -196,8 +209,7 @@ public class VirtualThreadServlet extends TestServlet {
         }
 
         // Java 21+
-        assertEquals(isVirtual(annoThread), isVirtual(ddThread));
-        assumingThat(isVirtual(annoThread) && isVirtual(ddThread), () -> {
+        assumingThat(isVirtual(ddThread), () -> {
             
             // Test schedule on virtual threads
             final LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
@@ -220,8 +232,14 @@ public class VirtualThreadServlet extends TestServlet {
     
             if (result instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result);
-            assertTrue(isVirtual((Thread) thread));
-    
+            
+            // Avoid assertion that a task was executed on a virtual thread since there is no guarantee
+            if (isVirtual((Thread) thread))
+                log.info("ManagedScheduledExecutorService.schedule() resulted in task being run on a virtual thread.");
+
+        });
+        
+        assumingThat(isVirtual(annoThread), () -> {
             // Test scheduleAtFixedRate on virtual threads
             final LinkedBlockingQueue<Object> resultsFixedRate = new LinkedBlockingQueue<>();
             ScheduledFuture<?> future = virtualManagedScheduledExecutorAnno.scheduleAtFixedRate(
@@ -255,20 +273,22 @@ public class VirtualThreadServlet extends TestServlet {
     
             if (result0 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result0);
-            assertTrue(isVirtual((Thread) thread0));
-            virtualThreads.add((Thread) thread0);
+            if (isVirtual((Thread) thread0))
+                virtualThreads.add((Thread) thread0);
     
             if (result1 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result1);
-            assertTrue(isVirtual((Thread) thread1));
-            virtualThreads.add((Thread) thread1);
+            if (isVirtual((Thread) thread1))
+                virtualThreads.add((Thread) thread1);
     
             if (result2 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result2);
-            assertTrue(isVirtual((Thread) thread2));
-            virtualThreads.add((Thread) thread2);
-    
-            assertEquals(3, virtualThreads.size(), "Each task execution should have used a different virtual thread");
+            if (isVirtual((Thread) thread2))
+                virtualThreads.add((Thread) thread2);
+            
+            // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
+            log.info("ManagedScheduledExecutorService.scheduleAtFixedRate() resulted in" + virtualThreads.size()
+                + " out of 3 tasks were run on virtual threads.");
         });
     }
 
@@ -306,8 +326,7 @@ public class VirtualThreadServlet extends TestServlet {
         }
 
         // Java 21+
-        assertEquals(isVirtual(annoThread), isVirtual(ddThread));
-        assumingThat(isVirtual(annoThread) && isVirtual(ddThread), () -> {
+        assumingThat(isVirtual(annoThread), () -> {
             LinkedBlockingQueue<Object> results;
             Object result;
 
@@ -321,15 +340,21 @@ public class VirtualThreadServlet extends TestServlet {
             if (result instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result);
 
-            // Test virtual thread from Deployment Descriptor
-            results = new LinkedBlockingQueue<Object>();
-            Thread thread2 = virtualThreadFactoryDD
-                    .newThread(new LookupAction(results, "java:app/concurrent/ThreadFactoryDDVirtual"));
-            thread2.start();
-            result = results.poll(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
-            assertNotNull(result);
-            if (result instanceof Throwable)
-                throw new AssertionError("An error occured on thread.", (Throwable) result);
+        });
+        
+       assumingThat(isVirtual(ddThread), () -> {
+           LinkedBlockingQueue<Object> results;
+           Object result;
+            
+           // Test virtual thread from Deployment Descriptor
+           results = new LinkedBlockingQueue<Object>();
+           Thread thread2 = virtualThreadFactoryDD
+                   .newThread(new LookupAction(results, "java:app/concurrent/ThreadFactoryDDVirtual"));
+           thread2.start();
+           result = results.poll(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+           assertNotNull(result);
+           if (result instanceof Throwable)
+               throw new AssertionError("An error occured on thread.", (Throwable) result);
         });
         
     }
