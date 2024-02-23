@@ -147,7 +147,7 @@ public class VirtualThreadServlet extends TestServlet {
                 virtualThreads.add((Thread) result2);
             
             // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
-            log.info("ManagedExecutorService.invokeAll() resulted in" + virtualThreads.size()
+            log.info("ManagedExecutorService.invokeAll() resulted in " + virtualThreads.size()
                 + " out of 3 tasks were run on virtual threads.");
         });
         
