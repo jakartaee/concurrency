@@ -287,7 +287,7 @@ public class VirtualThreadServlet extends TestServlet {
                 virtualThreads.add((Thread) thread2);
             
             // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
-            log.info("ManagedScheduledExecutorService.scheduleAtFixedRate() resulted in" + virtualThreads.size()
+            log.info("ManagedScheduledExecutorService.scheduleAtFixedRate() resulted in " + virtualThreads.size()
                 + " out of 3 tasks were run on virtual threads.");
         });
     }
