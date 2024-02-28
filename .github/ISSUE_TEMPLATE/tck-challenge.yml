@@ -5,16 +5,14 @@ labels: ["challenge"] #Verified - label exists
 body:
   - type: markdown
     attributes:
-      value: |
-        > Before submitting a TCK Challenge to the Jakarta Concurrency community please read and be familiar with the 
-        > [TCK Process document](https://jakarta.ee/committees/specification/tckprocess) which may be updated occasionally.
+      value: "> Before submitting a TCK Challenge to the Jakarta Concurrency community please read and be familiar with the \n> [TCK Process document](https://jakarta.ee/committees/specification/tckprocess) which may be updated occasionally.\n"
   - type: input
     id: specification
     validations:
       required: true
     attributes:
       label: Specification
-      description: What specification is the challenge related to? Provide a link to the API class or SPEC document section. 
+      description: What specification is the challenge related to? Provide a link to the API class or SPEC document section.
       placeholder: |
         ex. [Aborted Exception](https://github.com/jakartaee/concurrency/blob/master/api/src/main/java/jakarta/enterprise/concurrent/AbortedException.java#L22)
   - type: input
@@ -34,6 +32,7 @@ body:
       label: TCK Version
       description: What version of the TCK are you running against?
       options:
+        - 3.1.0-M2
         - 3.1.0-M1
         - 3.0.2
         - 3.0.1
