@@ -224,4 +224,24 @@ public class ContextPropagationFullTests extends TestClient {
                 .withTestName(testname);
         runTest(requestURL);
     }
+
+    @Assertion(id = "GIT:368",
+               strategy = "A ContextService contextualizes a Flow.Subscriber, which is subscribed to an unmanaged Flow.Producer."
+               + "The Flow.Subscriber methods are run with the thread context of the thread which contextualizes the Flow.Subscriber"
+               + " per the configuration of the ContextServiceDefinition.")
+    public void testContextualFlowSubscriber() throws Throwable {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet")
+                .withTestName(testname);
+        runTest(requestURL);
+    }
+
+    @Assertion(id = "GIT:368",
+                strategy = "A ContextService contextualizes a Flow.Processor, which is subscribed to an unmanaged Flow.Producer."
+                + "The Flow.Processor methods are run with the thread context of the thread which contextualizes the Flow.Processor"
+                + " per the configuration of the ContextServiceDefinition.")
+    public void testContextualFlowProcessor() throws Throwable {
+        URLBuilder requestURL = URLBuilder.get().withBaseURL(contextURL).withPaths("ContextServiceDefinitionServlet")
+                .withTestName(testname);
+        runTest(requestURL);
+    }
 }
