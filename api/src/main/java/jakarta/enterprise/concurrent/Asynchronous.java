@@ -185,9 +185,9 @@ public @interface Asynchronous {
      * The Jakarta EE product attempts to run the method at the scheduled times
      * until its future is completed or the method returns a non-null result value
      * or raises an exception. The future is always accessible from within the method via
-     * Asynchronous.Result which returns a typed CompleteableFuture which matches the return
-     * type of the method. If the method return type is void then Asynchronous.Result
-     * will return a CompletableFuture&lt;Void&gt;.</p>
+     * {@code Asynchronous.Result} which returns a typed {@code CompletableFuture} which matches the return
+     * type of the method. If the method return type is {@code void} then {@code Asynchronous.Result}
+     * will return a {@code CompletableFuture<Void>}.</p>
      *
      * <p>Computation of the start time for the next execution occurs
      * after the completion of the current execution. This prevents overlap
