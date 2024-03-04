@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
   ~ 
   ~ This program and the accompanying materials are made available under the
   ~ terms of the Eclipse Public License v. 2.0, which is available at
@@ -78,13 +78,12 @@
         <junit5.version>5.10.2</junit5.version>
         <arquillian.version>1.8.0.Final</arquillian.version>
 
-        <!-- TODO update for Jakarta 11 -->
-        <jakarta.servlet.version>6.0.0</jakarta.servlet.version>
+        <jakarta.servlet.version>6.1.0-M2</jakarta.servlet.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
-        <jakarta.jsp.version>3.1.1</jakarta.jsp.version>
-        <jakarta.annotation.version>2.1.1</jakarta.annotation.version>
-        <jakarta.interceptor.version>2.1.0</jakarta.interceptor.version>
-        <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
+        <jakarta.jsp.version>4.0.0-M2</jakarta.jsp.version>
+        <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
+        <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
+        <jakarta.cdi.version>4.1.0</jakarta.cdi.version>
     </properties>
 
     <dependencyManagement>
