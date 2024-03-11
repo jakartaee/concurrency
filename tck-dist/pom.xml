@@ -49,7 +49,7 @@
         <maven.site.skip>true</maven.site.skip>
         <asciidoctor-maven.version>3.0.0</asciidoctor-maven.version>
         <asciidoctorj-pdf.version>2.3.13</asciidoctorj-pdf.version>
-        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.7.0</maven-assembly-plugin.version>
     </properties>
 
     <dependencies>
