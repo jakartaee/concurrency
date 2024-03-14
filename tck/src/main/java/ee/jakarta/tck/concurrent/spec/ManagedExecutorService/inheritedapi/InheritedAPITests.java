@@ -44,6 +44,7 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.Assertions;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import org.junit.jupiter.api.BeforeEach;
 
 @Web
 @Common({ PACKAGE.TASKS, PACKAGE.FIXED_COUNTER })
@@ -56,6 +57,11 @@ public class InheritedAPITests {
 
     @Resource(lookup = TestConstants.defaultManagedExecutorService)
     private ManagedExecutorService executor;
+
+    @BeforeEach
+    public void reset() {
+        StaticCounter.reset();
+    }
 
     @Assertion(id = "SPEC:10.2; SPEC:13; SPEC:13.1; SPEC:13.2",
             strategy = "Test basic function for ManagedExecutorService: execute")

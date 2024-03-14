@@ -60,6 +60,7 @@ public class ManagedThreadFactoryTests extends TestClient {
     @Assertion(id = "SPEC:83 SPEC:83.1 SPEC:83.2 SPEC:83.3 SPEC:103 SPEC:96.5 SPEC:96.6 SPEC:105 SPEC:96 SPEC:93 SPEC:96.3",
             strategy = "Interrupt thread and ensure the thread did not run.")
     public void interruptThreadApiTest() {
+        StaticCounter.reset();
         CounterRunnableTask task = new CounterRunnableTask(TestConstants.pollInterval);
         Thread thread = threadFactory.newThread(task);
         thread.start();
