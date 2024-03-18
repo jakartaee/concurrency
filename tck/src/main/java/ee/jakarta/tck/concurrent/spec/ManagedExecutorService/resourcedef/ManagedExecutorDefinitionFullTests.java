@@ -32,7 +32,6 @@ import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Debug;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
@@ -41,7 +40,6 @@ import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextSer
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 @Full
-@Debug //TODO remove after testing
 @RunAsClient // Requires client testing due to multiple servlets and annotation configuration
 public class ManagedExecutorDefinitionFullTests extends TestClient {
 
