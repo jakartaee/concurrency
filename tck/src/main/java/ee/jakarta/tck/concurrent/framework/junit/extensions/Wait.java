@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import java.time.Duration;
 import java.util.concurrent.Future;
 
-import ee.jakarta.tck.concurrent.common.counter.CounterInterface;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ListenerEvent;
 import ee.jakarta.tck.concurrent.common.managed.task.listener.ManagedTaskListenerImpl;
 import ee.jakarta.tck.concurrent.common.transaction.CancelledTransactedTask;
 import ee.jakarta.tck.concurrent.framework.TestConstants;
+import java.util.function.IntSupplier;
 
 /**
  * Utility class for waiting for results.
@@ -159,9 +159,9 @@ public final class Wait {
      * @param counter
      * @param expected
      */
-    public static void waitForCounter(final CounterInterface counter, final int expected) {
+    public static void waitForCounter(final IntSupplier counter, final int expected) {
         assertTimeoutPreemptively(TestConstants.waitTimeout, () -> {
-            for (; expected != counter.getCount(); Wait.sleep(TestConstants.pollInterval)) {
+            for (; expected != counter.getAsInt(); Wait.sleep(TestConstants.pollInterval)) {
                 //empty
             }
         });
