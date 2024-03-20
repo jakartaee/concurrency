@@ -31,4 +31,5 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      #TODO remove -Pstaging once all Jakarta EE 11 dependencies are GA
       run: mvn -B -Pstaging package --file pom.xml
