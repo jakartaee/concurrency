@@ -69,7 +69,7 @@ public class TestEjb implements TestEjbInterface {
         try {
             EJBJNDIProvider nameProvider = ServiceLoader.load(EJBJNDIProvider.class).findFirst().orElseThrow();
             scheduledExecutor.execute(new CounterRunnableTask(nameProvider.getEJBJNDIName()));
-            Wait.waitForCounter(counter, 1);
+            Wait.waitForCounter(() -> counter.getCount(), 1);
         } finally {
             counter.reset();
         }
