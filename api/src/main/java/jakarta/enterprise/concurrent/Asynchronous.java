@@ -199,7 +199,7 @@ public @interface Asynchronous {
      * attempts to start the next execution of the method at 8:03 AM.</p>
      *
      * <p>Scheduled asynchronous methods are treated similar to other scheduled
-     * tasks in that they are not subject to {@code max-async} constaints of
+     * tasks in that they are not subject to {@code max-async} constraints of
      * {@code managed-scheduled-executor-definition} and
      * {@code managed-executor-definition} and the corresponding
      * {@link ManagedScheduledExecutorDefinition#maxAsync()} and

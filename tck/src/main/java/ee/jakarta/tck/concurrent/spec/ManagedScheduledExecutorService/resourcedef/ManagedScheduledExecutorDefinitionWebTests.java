@@ -165,4 +165,47 @@ public class ManagedScheduledExecutorDefinitionWebTests extends TestClient {
      public void testScheduleWithZonedTrigger() {
         runTest(baseURL, testname);
     }
+
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods are completed when future is completed.")
+    public void testScheduledAsynchCompletedFuture() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods are completed when a non-null result is returned.")
+    public void testScheduledAsynchCompletedResult() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods are completed when an exception is thrown.")
+    public void testScheduledAsynchCompletedExceptionally() {
+        runTest(baseURL, testname);
+    }
+
+    @Assertion(id = "GIT:439", strategy = "Ensure overlapping scheduled asynchronous methods are skipped.")
+    public void testScheduledAsynchOverlapSkipping() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods ignore the max-async configuration."
+            + " Ensure scheduled asynchronous methods honor cleared context configuration")
+    public void testScheduledAsynchIgnoresMaxAsync() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods choose closest execution time when multiple schedules are provided."
+            + " Ensure scheduled asynchronous methods honor propogated context configuration")
+    public void testScheduledAsynchWithMultipleSchedules() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods are not executed when an invalid JNDI name is provided.")
+    public void testScheduledAsynchWithInvalidJNDIName() {
+        runTest(baseURL, testname);
+    }
+    
+    @Assertion(id = "GIT:439", strategy = "Ensure scheduled asynchronous methods with void return type stop execution via completable future or exception.")
+    public void testScheduledAsynchVoidReturn() {
+        runTest(baseURL, testname);
+    }
+
 }

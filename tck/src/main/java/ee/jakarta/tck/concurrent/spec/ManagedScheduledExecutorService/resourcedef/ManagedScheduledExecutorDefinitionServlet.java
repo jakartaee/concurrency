@@ -16,24 +16,33 @@
 package ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.resourcedef;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import javax.naming.InitialContext;
@@ -42,7 +51,9 @@ import javax.naming.NamingException;
 import ee.jakarta.tck.concurrent.common.context.IntContext;
 import ee.jakarta.tck.concurrent.common.context.StringContext;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
+import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
+import ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.resourcedef.ReqBean.RETURN;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.CronTrigger;
@@ -605,4 +616,252 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
         }
 
     }
+    
+    public void testScheduledAsynchCompletedFuture() throws Throwable {
+        AtomicInteger counter = new AtomicInteger();
+        
+        // Method returns an incomplete future - stopping schedule because non-null value is returned
+        try {
+            CompletableFuture<Integer> future = reqBean.scheduledEvery5seconds(1, RETURN.INCOMPLETE, counter);
+            assertThrows(TimeoutException.class, () -> { // Slow assertion
+                future.get(10, TimeUnit.SECONDS);
+            });
+            
+            assertFalse(future.isCancelled());
+            assertFalse(future.isCompletedExceptionally());
+            assertFalse(future.isDone());
+            assertEquals(1, counter.get(), "Schedule should have executed exactly once.");
+            
+            future.cancel(false); // Cleanup resources
+        } finally {
+            counter.set(0);
+        }
+
+        
+        // Caller completes future before scheduled asynch is completed - stopping schedule because future was cancelled
+        try {
+            CompletableFuture<Integer> future = reqBean.scheduledEvery5seconds(1, RETURN.NULL, counter);
+            
+            assertFalse(future.isCancelled());
+            assertFalse(future.isCompletedExceptionally());
+            assertFalse(future.isDone());
+            
+            int countBeforeCancel = counter.get();
+            future.cancel(false);
+            assertThrows(CancellationException.class, () -> {
+                future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            });
+            int countAfterCancel = counter.get();
+            
+            assertTrue((countAfterCancel - countBeforeCancel) <= 1, "Schedule should not have executed more than once after cancel was called.");
+        } finally {
+            counter.set(0);
+        }
+    }
+    
+    
+    public void testScheduledAsynchCompletedResult() throws Throwable {
+        AtomicInteger counter = new AtomicInteger();
+        
+        // Method returns an expected result - stopping schedule because non-null value is returned
+        try {
+            int expected = 3;
+            CompletableFuture<Integer> future = reqBean.scheduledEvery5seconds(expected, RETURN.COMPLETE_RESULT, counter);
+            
+            int result = future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS); // Slow assertion
+            
+            assertFalse(future.isCancelled());
+            assertFalse(future.isCompletedExceptionally());
+            assertTrue(future.isDone());
+            assertEquals(expected, result);
+        } finally {
+            counter.set(0);
+        }
+
+    }
+    
+    /**
+     * Ensure completion of scheduled asynch after completing exceptionally
+     */
+    public void testScheduledAsynchCompletedExceptionally() {
+        AtomicInteger counter = new AtomicInteger();
+        
+        // Method invokes completeExceptionally - stopping schedule because non-null value is returned
+        try {
+            String expected = "testScheduledAsynchCompletedExceptionally-1";
+            CompletableFuture<Integer> future = reqBean.scheduledEvery5seconds(1, RETURN.COMPLETE_EXCEPTIONALLY.withMessage(expected), counter);
+            
+            ExecutionException cause = assertThrows(ExecutionException.class, () -> {
+                future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            });
+            
+            assertFalse(future.isCancelled());
+            assertTrue(future.isCompletedExceptionally());
+            assertTrue(future.isDone());
+            assertTrue(cause.getMessage().contains(expected));
+            assertEquals(1, counter.get(), "Schedule should have executed exactly once.");
+            
+        } finally {
+            counter.set(0);
+        }
+
+        // Method throws exception, platform invokes completeExceptionally - stopping schedule because future is completed
+        try {
+            String expected = "testScheduledAsynchCompletedExceptionally-2";
+            CompletableFuture<Integer> future = reqBean.scheduledEvery5seconds(1, RETURN.THROW_EXCEPTION.withMessage(expected), counter);
+            
+            ExecutionException cause = assertThrows(ExecutionException.class, () -> {
+                future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            });
+            
+            assertFalse(future.isCancelled());
+            assertTrue(future.isCompletedExceptionally());
+            assertTrue(future.isDone());
+            assertTrue(cause.getMessage().contains(expected));
+            assertEquals(1, counter.get());
+        } finally {
+            counter.set(0);
+        }
+    }
+    
+    
+    public void testScheduledAsynchOverlapSkipping() throws Throwable {
+        AtomicInteger counter = new AtomicInteger();
+        
+        try {
+            int expected = 3;
+            CompletableFuture<Integer> future = reqBean.scheduledEvery3SecondsTakes5Seconds(expected, counter);
+            
+            // If scheduled async tasks are not skipped while overlapping this will fail
+            assertThrows(TimeoutException.class, () -> { // Slow assertion
+                future.get(expected * 3, TimeUnit.SECONDS);
+            });
+            
+            int result = future.get(expected * 5, TimeUnit.SECONDS);
+            assertEquals(expected, result);
+            
+        } finally {
+            counter.set(0);
+        }
+    }
+    
+    public void testScheduledAsynchIgnoresMaxAsync() throws Throwable {
+        ManagedScheduledExecutorService executor = InitialContext.doLookup("java:module/concurrent/ScheduledExecutorB");
+
+        BlockingQueue<Integer> results = new LinkedBlockingQueue<Integer>();
+        CountDownLatch blocker = new CountDownLatch(1);
+
+        Runnable task = () -> {
+            results.add(IntContext.get());
+            try {
+                blocker.await(MAX_WAIT_SECONDS * 5, TimeUnit.SECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        };
+        
+        AtomicInteger counter = new AtomicInteger();
+
+        try {
+            IntContext.set(22); //Context should be cleared
+
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
+            CompletableFuture<Integer> future = reqBean.scheduledEvery3Seconds(1, counter);
+            
+
+            assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must be able to run one async task.");
+            
+            assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must be able to run two async tasks.");
+            
+            assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must be able to run three async tasks.");
+            
+            assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must be able to run four async tasks.");
+            
+            assertEquals(null, results.poll(1, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must not run 5 async tasks concurrently.");
+
+            assertEquals(Integer.valueOf(0), future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedScheduledExecutorService with maxAsync=4 must be able to run scheduled async methods concurrently.");
+        } finally {
+            IntContext.set(0);
+            counter.set(0);
+            blocker.countDown();
+        }
+    }
+    
+    public void testScheduledAsynchWithMultipleSchedules() throws Throwable {
+        AtomicInteger counter = new AtomicInteger();
+        
+        try {
+            String expected = "testScheduledAsynchWithMultipleSchedules";
+            StringContext.set(expected);
+            
+            CompletableFuture<String> future = reqBean.scheduledEvery3SecondsAnd1Minute(5, counter);
+            
+            String result = future.get(1, TimeUnit.MINUTES);
+            assertEquals(expected, result);
+            
+        } finally {
+            StringContext.set(null);
+            counter.set(0);
+        }
+    }
+    
+    public void testScheduledAsynchWithInvalidJNDIName() {
+        assertThrows(RejectedExecutionException.class, () -> {
+            reqBean.scheduledInvalidExecutor();
+        });
+    }
+    
+    public void testScheduledAsynchVoidReturn() {
+        AtomicInteger counter = new AtomicInteger();
+        
+        // Test future.complete(null);
+        try {
+            int expected = 3;
+            reqBean.scheduledEvery3SecondsVoidReturn(expected, RETURN.COMPLETE_RESULT, counter);
+            assertTimeoutPreemptively(Duration.ofSeconds(MAX_WAIT_SECONDS), () -> {
+                for (; expected != counter.get(); Wait.sleep(Duration.ofSeconds(3))) {
+                    //empty
+                }
+            });
+        } finally {
+            counter.set(0);
+        }
+        
+        // Test future.completeExceptionally();
+        try {
+            int expected = 3;
+            reqBean.scheduledEvery3SecondsVoidReturn(expected, RETURN.COMPLETE_EXCEPTIONALLY, counter);
+            assertTimeoutPreemptively(Duration.ofSeconds(MAX_WAIT_SECONDS), () -> {
+                for (; expected != counter.get(); Wait.sleep(Duration.ofSeconds(3))) {
+                    //empty
+                }
+            });
+        } finally {
+            counter.set(0);
+        }
+        
+        // Test method throws exception
+        try {
+            int expected = 3;
+            reqBean.scheduledEvery3SecondsVoidReturn(expected, RETURN.THROW_EXCEPTION, counter);
+            assertTimeoutPreemptively(Duration.ofSeconds(MAX_WAIT_SECONDS), () -> {
+                for (; expected != counter.get(); Wait.sleep(Duration.ofSeconds(3))) {
+                    //empty
+                }
+            });
+        } finally {
+            counter.set(0);
+        }
+    }
+
 }
