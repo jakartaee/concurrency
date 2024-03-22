@@ -79,14 +79,18 @@ public class VirtualThreadServlet extends TestServlet {
         
         assertNotNull(platformManagedExecutorAnno);
         assertNotNull(platformManagedExecutorDD);
+        
+        Thread annoThread = platformManagedExecutorAnno.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        Thread ddThread = platformManagedExecutorDD.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        
+        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
+            return;
+        }
 
-        Future<Thread> future;
-
-        future = platformManagedExecutorAnno.submit(Thread::currentThread);
-        assertFalse(isVirtual(future.get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS)));
-
-        future = platformManagedExecutorDD.submit(Thread::currentThread);
-        assertFalse(isVirtual(future.get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS)));
+        assertFalse(isVirtual(annoThread));
+        assertFalse(isVirtual(ddThread));
     }
 
     public void testVirtualExecutor() throws Exception {
@@ -178,13 +182,17 @@ public class VirtualThreadServlet extends TestServlet {
         assertNotNull(platformManagedScheduledExecutorAnno);
         assertNotNull(platformManagedScheduledExecutorDD);
 
-        Future<Thread> future;
+        Thread annoThread = platformManagedScheduledExecutorAnno.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        Thread ddThread = platformManagedScheduledExecutorDD.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
+        
+        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
+            return;
+        }
 
-        future = platformManagedScheduledExecutorAnno.submit(Thread::currentThread);
-        assertFalse(isVirtual(future.get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS)));
-
-        future = platformManagedScheduledExecutorDD.submit(Thread::currentThread);
-        assertFalse(isVirtual(future.get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS)));
+        assertFalse(isVirtual(annoThread));
+        assertFalse(isVirtual(ddThread));
     }
 
     public void testVirtualScheduledExecutor() throws Exception {
@@ -300,10 +308,19 @@ public class VirtualThreadServlet extends TestServlet {
         
         assertNotNull(platfromThreadFactoryAnno);
         assertNotNull(platfromThreadFactoryDD);
+        
+        Thread annoThread = platfromThreadFactoryAnno.newThread(NOOP_RUNNABLE);
+        Thread ddThread = platfromThreadFactoryDD.newThread(NOOP_RUNNABLE);
+        
+        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
+            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
+            return;
+        }
 
-        assertFalse(isVirtual(platfromThreadFactoryAnno.newThread(NOOP_RUNNABLE)),
+        assertFalse(isVirtual(annoThread),
                 "Thread Factory should not have returned a virtual thread when defined with virtual=false");
-        assertFalse(isVirtual(platfromThreadFactoryDD.newThread(NOOP_RUNNABLE)),
+        assertFalse(isVirtual(ddThread),
                 "Thread Factory should not have returned a virtual thread when defined with virtual=false");
     }
 
