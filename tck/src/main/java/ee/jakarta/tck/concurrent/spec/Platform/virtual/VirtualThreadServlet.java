@@ -301,16 +301,16 @@ public class VirtualThreadServlet extends TestServlet {
     }
 
     public void testPlatformThreadFactory() throws Exception {
-        ManagedThreadFactory platfromThreadFactoryAnno = InitialContext
+        ManagedThreadFactory platformThreadFactoryAnno = InitialContext
                 .doLookup("java:app/concurrent/ThreadFactoryAnnoPlatform");
-        ManagedThreadFactory platfromThreadFactoryDD = InitialContext
+        ManagedThreadFactory platformThreadFactoryDD = InitialContext
                 .doLookup("java:app/concurrent/ThreadFactoryDDPlatform");
         
-        assertNotNull(platfromThreadFactoryAnno);
-        assertNotNull(platfromThreadFactoryDD);
+        assertNotNull(platformThreadFactoryAnno);
+        assertNotNull(platformThreadFactoryDD);
         
-        Thread annoThread = platfromThreadFactoryAnno.newThread(NOOP_RUNNABLE);
-        Thread ddThread = platfromThreadFactoryDD.newThread(NOOP_RUNNABLE);
+        Thread annoThread = platformThreadFactoryAnno.newThread(NOOP_RUNNABLE);
+        Thread ddThread = platformThreadFactoryDD.newThread(NOOP_RUNNABLE);
         
         if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
             assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
