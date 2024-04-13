@@ -20,6 +20,7 @@ import java.net.URL;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -50,7 +51,8 @@ public class AnnotationFullTests extends TestClient {
     public static EnterpriseArchive createDeployment() {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, "AnnotationTests_web.war")
-                .addClasses(AnnotationServlet.class);
+                .addClasses(AnnotationServlet.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "AnnotationTests_ejb.jar")
                 .addClasses(AnnotationTestBean.class, AnnotationTestBeanInterface.class)
