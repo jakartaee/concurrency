@@ -45,7 +45,7 @@
     <properties>
         <!-- default is the same for backward compatibility reason
             Easy to override when building with a system property -->
-        <spec.version>${project.version}</spec.version>
+        <spec.version>3.1</spec.version>
     </properties>
 
     <dependencies>
