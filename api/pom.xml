@@ -42,6 +42,12 @@
         <url>https://github.com/jakartaee/concurrency</url>
     </scm>
 
+    <properties>
+        <!-- default is the same for backward compatibility reason
+            Easy to override when building with a system property -->
+        <spec.version>${project.version}</spec.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>jakarta.interceptor</groupId>
@@ -78,9 +84,9 @@
                 <version>2.2</version>
                 <configuration>
                     <spec>
-                        <specVersion>3.1</specVersion>
+                        <specVersion>${spec.version}</specVersion>
                         <specImplVersion>${project.version}</specImplVersion>
-                        <apiPackage>jakarta.enterprise.concurrent</apiPackage>
+                        <apiPackage>${project.groupId}</apiPackage>
                     </spec>
                 </configuration>
                 <executions>
@@ -161,7 +167,7 @@
                             <description>Jakarta Concurrency API documentation</description>
                             <doctitle>Jakarta Concurrency API documentation</doctitle>
                             <windowtitle>Jakarta Concurrency API documentation</windowtitle>
-                            <header><![CDATA[<br>Jakarta Concurrency API v${project.version}]]></header>
+                            <header><![CDATA[<br>Jakarta Concurrency API v${spec.specification.version}]]></header>
                             <bottom><![CDATA[
 Comments to: <a href="mailto:cu-dev@eclipse.org">cu-dev@eclipse.org</a>.<br>
 Copyright &#169; 2020, 2024 Eclipse Foundation. All rights reserved.<br>
