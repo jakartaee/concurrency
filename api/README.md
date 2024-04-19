@@ -9,7 +9,7 @@ Building
 Prerequisites:
 
 * JDK 17+
-* Maven 3.0.3+
+* Maven 3.8.0+
 
 Build and test the API:
 
