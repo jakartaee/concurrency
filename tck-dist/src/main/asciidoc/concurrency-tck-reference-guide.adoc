@@ -343,7 +343,7 @@ $ mvn clean test
 
 === Expected Output
 
-Here is example output when the starter runner runs successfully:
+Here is example output when the starter runner runs successfully in full mode:
 
 include::generated/expected-output.adoc[]
 
