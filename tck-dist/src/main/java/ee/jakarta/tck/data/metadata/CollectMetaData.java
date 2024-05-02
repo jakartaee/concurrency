@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
@@ -110,6 +111,10 @@ public final class CollectMetaData {
         writeSigOutput(new File(adocGeneratedLocation, SIG_OUTPUT_FILE));
         writeOutput(testMetaData, new File(adocGeneratedLocation, EXPECTED_OUTPUT_FILE));
         writeGitIgnore(new File(adocGeneratedLocation, ".gitignore"), RUNTIME_TESTS_FILE, CHALLENGED_TESTS_FILE, SIG_OUTPUT_FILE, EXPECTED_OUTPUT_FILE, TEST_PROPERTIES_FILE);
+        
+        for (TestMetaData data: testMetaData) {
+            debug(data.debugString());
+        }
     }
 
     /**
@@ -201,7 +206,7 @@ public final class CollectMetaData {
      * @return String output
      */
     private static String getTotalTests(final List<TestMetaData> testMetaData) {
-        long totalTestCount = testMetaData.stream().filter(metaData -> !metaData.isDisabled).count();
+        long totalTestCount = testMetaData.stream().count();
         long totalDisabledCount = testMetaData.stream().filter(metaData -> metaData.isDisabled).count();
         
         if (totalDisabledCount > 0) {
@@ -298,9 +303,9 @@ public final class CollectMetaData {
         String output =
                 """
                 |===
-                |standalone |core |web |full
+                |standalone |core |web |full |skipped
                 
-                |%d         |%d   |%d  |%d
+                |%d         |%d   |%d  |%d   |%d
 
                 |===""".formatted(getTestCounts(testMetaData));
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLocation))) {
@@ -317,6 +322,7 @@ public final class CollectMetaData {
         results.add(runnableTestMetaData.stream().filter(TestMetaData::isCore).count());
         results.add(runnableTestMetaData.stream().filter(TestMetaData::isWeb).count());
         results.add(runnableTestMetaData.stream().filter(TestMetaData::isFull).count());
+        results.add(testMetaData.stream().filter(Predicate.not(TestMetaData::isRunnable)).count());
         
         return results.toArray();
     }
@@ -470,6 +476,10 @@ public final class CollectMetaData {
     
         boolean isRunnable() {
             return !isDisabled;
+        }
+        
+        public String debugString() {
+            return "TestMetaData [testName=" + testName + ", isDisabled=" + isDisabled + ", tags=" + tags + "]";
         }
         
         @Override
