@@ -11,10 +11,10 @@ Release: {revdate}
 
 Copyright (c) 2018,2024 Eclipse Foundation.
 
-=== Eclipse Foundation Specification License
+=== Eclipse Foundation Specification License - v1.1
 
 By using and/or copying this document, or the Eclipse Foundation
-document from which this statement is linked, you (the licensee) agree
+document from which this statement is linked or incorporated by reference, you (the licensee) agree
 that you have read, understood, and will comply with the following
 terms and conditions:
 
@@ -28,7 +28,7 @@ document, or portions thereof, that you use:
 * All existing copyright notices, or if one does not exist, a notice
   (hypertext is preferred, but a textual representation is permitted)
   of the form: "Copyright (c) [$date-of-document]
-  Eclipse Foundation, Inc. https://www.eclipse.org/legal/efsl.php"
+  Eclipse Foundation AISBL https://www.eclipse.org/legal/efsl.php "
 
 Inclusion of the full text of this NOTICE must be provided. We
 request that authorship attribution be provided in any software,
@@ -47,14 +47,14 @@ specification is expressly prohibited.
 
 The notice is:
 
-"Copyright (c) 2021 Eclipse Foundation. This software or
+"Copyright (c) 2018, 2024 Eclipse Foundation AISBL.This software or
 document includes material copied from or derived from Jakarta Concurrency and 
 https://jakarta.ee/specifications/concurrency/3.0/."
 
 ==== Disclaimers
 
-THIS DOCUMENT IS PROVIDED &quot;AS IS,&quot; AND THE COPYRIGHT
-HOLDERS AND THE ECLIPSE FOUNDATION MAKE NO REPRESENTATIONS OR
+THIS DOCUMENT IS PROVIDED "AS IS," AND TO THE EXTENT PERMITTED BY APPLICABLE LAW THE COPYRIGHT
+HOLDERS AND THE ECLIPSE FOUNDATION AISBL MAKE NO REPRESENTATIONS OR
 WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
 WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
 NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE
@@ -62,13 +62,13 @@ SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS
 WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR
 OTHER RIGHTS.
 
-THE COPYRIGHT HOLDERS AND THE ECLIPSE FOUNDATION WILL NOT BE LIABLE
+TO THE EXTENT PERMITTED BY APPLICABLE LAW THE COPYRIGHT HOLDERS AND THE ECLIPSE FOUNDATION AISBL WILL NOT BE LIABLE
 FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT
 OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE
 CONTENTS THEREOF.
 
 The name and trademarks of the copyright holders or the Eclipse
-Foundation may NOT be used in advertising or publicity pertaining to
+Foundation AISBL may NOT be used in advertising or publicity pertaining to
 this document or its contents without specific, written prior
 permission. Title to copyright in this document will at all times
 remain with copyright holders.
