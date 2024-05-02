@@ -9,11 +9,12 @@
 :APIShortNameLC: concurrency
 :APILongName: Jakarta Concurrency
 :APIVersion: 3.1.0
-:APISpecSite: https://jakarta.ee/specifications/concurrency/3.0/
+:APISpecSite: https://jakarta.ee/specifications/concurrency/3.1/
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
 :TCKTestPlatform: Junit5
 :SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:1.6
+:last-update-label!:
 
 == Preface
 
