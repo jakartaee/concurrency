@@ -8,12 +8,18 @@ Building
 
 Prerequisites:
 
-* JDK8+
-* Maven 3.0.3+
+* JDK 17+
+* Maven 3.8.0+
 
 Build and test the API:
 
 `mvn package`
+
+Build the API for publication:
+
+`mvn package -file api/pom.xml -Dspec.version=X.Y`
+
+Where `X.Y` indicates the Major and Minor version. Example: `3.1`
 
 Look for any error in the checkstye:
 - target/checkstyle/checkstyle.html
