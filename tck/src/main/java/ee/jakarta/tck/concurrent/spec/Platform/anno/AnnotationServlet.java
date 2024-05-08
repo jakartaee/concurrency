@@ -51,6 +51,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -81,11 +82,12 @@ import jakarta.transaction.UserTransaction;
         priority = 6
         )
 @WebServlet("/AnnotationServlet")
+@ApplicationScoped
 public class AnnotationServlet extends TestServlet {
-    
+
     private static final long serialVersionUID = 1L;
     private static final long MAX_WAIT_SECONDS = TimeUnit.MINUTES.toSeconds(2);
-    
+
     private static final Runnable NOOP_RUNNABLE = () -> { };
 
     @EJB
@@ -93,7 +95,7 @@ public class AnnotationServlet extends TestServlet {
 
     @Resource
     private UserTransaction tx;
-    
+
     private Integer executeCallableWithContext(final ContextService svc, final int value) throws Exception {
         try {
             IntContext.set(value);
@@ -105,7 +107,7 @@ public class AnnotationServlet extends TestServlet {
             IntContext.set(0);
         }
     }
-    
+
     // Context Services
     @Inject
     private ContextService injectedDefContextSvc;
@@ -113,7 +115,7 @@ public class AnnotationServlet extends TestServlet {
     @Inject
     @CustomQualifier1
     private ContextService injectedContextE;
-    
+
     public void testAnnoDefinedContextServiceQualifiers() throws Throwable {
         assertAll("Context Service Tests",
                 () -> assertNotNull(injectedDefContextSvc,
@@ -123,24 +125,24 @@ public class AnnotationServlet extends TestServlet {
                 () -> assertTrue(CDI.current().select(ContextService.class, InvalidQualifier3.Literal.get()).isUnsatisfied(),
                         "A contextService was satisfied with a qualifier which was not defined in it's annotation")
                 );
-        
+
         //  Verify injected and looked up default context service are the same
         ContextService lookupDefContextSvc = InitialContext.doLookup("java:comp/DefaultContextService");
-        
+
         Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
         Integer actual1 = executeCallableWithContext(injectedDefContextSvc, 95);
-        
+
         assertEquals(expected1, actual1, "Default Context Service behavior differed between injection and lookup");
-        
+
         //  Verify injected and looked up annotation defined context service are the same
         ContextService lookupContextE = InitialContext.doLookup("java:app/concurrent/ContextE");
-        
+
         assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextE, 65),
                 "Annotation defined Context Service that was looked up did not clear the IntContext as configured.");
         assertEquals(Integer.valueOf(0), executeCallableWithContext(injectedContextE, 85),
                 "Annotation defined Context Service that was injected based on a qualifier did not clear the IntContext as configured.");
     }
-    
+
     // Managed Executor Services
     @Inject
     private ManagedExecutorService injectedDefMES;
@@ -148,7 +150,7 @@ public class AnnotationServlet extends TestServlet {
     @Inject
     @CustomQualifier2
     private ManagedExecutorService injectedMESE;
-    
+
     public void testAnnoDefinedManagedExecutorSvcQualifiers() throws Throwable {
         assertAll("Managed Executor Service Tests",
             () -> assertNotNull(injectedDefMES,
@@ -158,30 +160,30 @@ public class AnnotationServlet extends TestServlet {
             () -> assertTrue(CDI.current().select(ManagedExecutorService.class, CustomQualifier2.Literal.get(), InvalidQualifier3.Literal.get()).isUnsatisfied(),
                     "A managedExecutorService was satisfied with both a required and non-required qualifier.")
         );
-        
+
         //  Verify injected and looked up default ManagedExecutorService behave the same
         ManagedExecutorService lookupDefMES = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
-        
+
         ContextService lookupDefContextSvc = lookupDefMES.getContextService();
         ContextService extractedDefContextSvc = injectedDefMES.getContextService();
-        
+
         Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
         Integer actual1 = executeCallableWithContext(extractedDefContextSvc, 95);
-        
+
         assertEquals(expected1, actual1, "Default ManagedExecutorService behavior via context service differed between injection and lookup");
-        
+
         //  Verify injected and looked up annotation defined ManagedExecutorService behave the same
         ManagedExecutorService lookupMESE = InitialContext.doLookup("java:app/concurrent/ExecutorE");
-        
+
         ContextService lookupContextE = lookupMESE.getContextService();
         ContextService extractedContextE = injectedMESE.getContextService();
-        
+
         assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextE, 65),
                 "Annotation defined and looked up ManagedExecutorService was configured with a context service that did not clear the IntContext as configured.");
         assertEquals(Integer.valueOf(0), executeCallableWithContext(extractedContextE, 85),
                 "Annotation defined and injected ManagedExecutorService was configured with a context service that did not clear the IntContext as configured.");
     }
-    
+
     // Managed Scheduled Executor Services
     @Inject
     private ManagedScheduledExecutorService injectedDefMSES;
@@ -190,7 +192,7 @@ public class AnnotationServlet extends TestServlet {
     @CustomQualifier1
     @CustomQualifier2
     private ManagedScheduledExecutorService injectedMSESE;
-    
+
     public void testAnnoDefinedManagedScheduledExecutorSvcQualifers() throws Throwable {
         assertAll("Managed Scheduled Executor Service Tests",
                 () -> assertNotNull(injectedDefMSES,
@@ -200,24 +202,24 @@ public class AnnotationServlet extends TestServlet {
                 () -> assertTrue(CDI.current().select(ManagedScheduledExecutorService.class, CustomQualifier1.Literal.get()).isResolvable(),
                         "A managedScheduledExecutorService was not satisfied with one of two configured qualifiers.")
         );
-        
+
         //  Verify injected and looked up default ManagedScheduledExecutorService behave the same
         ManagedScheduledExecutorService lookupDefMSES = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
 
         ContextService lookupDefContextSvc = lookupDefMSES.getContextService();
         ContextService extractedDefContextSvc = injectedDefMSES.getContextService();
-        
+
         Integer expected1 = executeCallableWithContext(lookupDefContextSvc, 95);
         Integer actual1 = executeCallableWithContext(extractedDefContextSvc, 95);
-        
+
         assertEquals(expected1, actual1, "Default ManagedScheduledExecutorService behavior via context service differed between injection and lookup");
-        
+
         //  Verify injected and looked up annotation defined ManagedExecutorService behave the same
         ManagedScheduledExecutorService lookupMSESE = InitialContext.doLookup("java:app/concurrent/ScheduledExecutorE");
 
         ContextService lookupContextE = lookupMSESE.getContextService();
         ContextService extractedContextE = injectedMSESE.getContextService();
-        
+
         assertEquals(Integer.valueOf(0), executeCallableWithContext(lookupContextE, 65),
                 "Annotation defined and looked up ManagedScheduledExecutorService was configured with a context service that did not clear the IntContext as configured.");
         assertEquals(Integer.valueOf(0), executeCallableWithContext(extractedContextE, 85),
@@ -230,10 +232,10 @@ public class AnnotationServlet extends TestServlet {
 
     @Resource(lookup = "java:app/concurrent/ThreadFactoryE")
     private ManagedThreadFactory resourceMTFE;
-    
+
     // Qualifier on @ManagedThreadFactoryDefinition is only overridden in web mode
     public void testAnnoDefinedManagedThreadFactoryQualifersFull() throws Throwable {
-        
+
         ManagedThreadFactory lookupDefMTF = InitialContext.doLookup("java:comp/DefaultManagedThreadFactory");
         ManagedThreadFactory lookupMTFE = InitialContext.doLookup("java:app/concurrent/ThreadFactoryE");
 
