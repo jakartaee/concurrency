@@ -51,7 +51,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -82,7 +82,7 @@ import jakarta.transaction.UserTransaction;
         priority = 6
         )
 @WebServlet("/AnnotationServlet")
-@ApplicationScoped
+@Dependent
 public class AnnotationServlet extends TestServlet {
 
     private static final long serialVersionUID = 1L;
