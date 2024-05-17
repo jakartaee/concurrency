@@ -17,6 +17,7 @@ package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.resourcedef;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -666,13 +667,15 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             executor.runAsync(task);
             executor.runAsync(task);
             CompletableFuture<Integer> future = appBean.scheduledEvery3Seconds(1, counter);
-            
 
             assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                     "ManagedExecutorService with maxAsync=1 must be able to run an async task.");
             
             assertEquals(null, results.poll(1, TimeUnit.SECONDS),
                     "ManagedExecutorService with maxAsync=1 must not run 2 async tasks concurrently.");
+
+            assertNotNull(future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+                    "ManagedExecutorService with maxAsync=1 must be able to run scheduled async methods concurrently.");
         } finally {
             IntContext.set(0);
             counter.set(0);
