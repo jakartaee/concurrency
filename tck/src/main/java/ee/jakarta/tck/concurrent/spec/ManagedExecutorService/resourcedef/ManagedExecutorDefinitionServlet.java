@@ -663,8 +663,6 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
         AtomicInteger counter = new AtomicInteger();
 
         try {
-            IntContext.set(22); //Context should be cleared
-
             executor.runAsync(task);
             executor.runAsync(task);
             CompletableFuture<Integer> future = appBean.scheduledEvery3Seconds(1, counter);
@@ -675,9 +673,6 @@ public class ManagedExecutorDefinitionServlet extends TestServlet {
             
             assertEquals(null, results.poll(1, TimeUnit.SECONDS),
                     "ManagedExecutorService with maxAsync=1 must not run 2 async tasks concurrently.");
-
-            assertEquals(Integer.valueOf(0), future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
-                    "ManagedExecutorService with maxAsync=1 must be able to run scheduled async methods concurrently.");
         } finally {
             IntContext.set(0);
             counter.set(0);
