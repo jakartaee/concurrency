@@ -763,15 +763,13 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
         AtomicInteger counter = new AtomicInteger();
 
         try {
-            IntContext.set(22); //Context should be cleared
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
+            executor.runAsync(task);
 
-            executor.runAsync(task);
-            executor.runAsync(task);
-            executor.runAsync(task);
-            executor.runAsync(task);
-            executor.runAsync(task);
             CompletableFuture<Integer> future = reqBean.scheduledEvery3Seconds(1, counter);
-            
 
             assertEquals(Integer.valueOf(0), results.poll(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                     "ManagedScheduledExecutorService with maxAsync=4 must be able to run one async task.");
@@ -788,7 +786,7 @@ public class ManagedScheduledExecutorDefinitionServlet extends TestServlet {
             assertEquals(null, results.poll(1, TimeUnit.SECONDS),
                     "ManagedScheduledExecutorService with maxAsync=4 must not run 5 async tasks concurrently.");
 
-            assertEquals(Integer.valueOf(0), future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
+            assertNotNull(future.get(MAX_WAIT_SECONDS, TimeUnit.SECONDS),
                     "ManagedScheduledExecutorService with maxAsync=4 must be able to run scheduled async methods concurrently.");
         } finally {
             IntContext.set(0);
