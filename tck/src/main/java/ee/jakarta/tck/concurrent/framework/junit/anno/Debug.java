@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
 
 /**
- * This is a tag annotation that works the same as Core/Web/Full.
+ * This is a tag annotation that works the same as Core/Web/Platform.
  * Used only for TCK development to tag test classes you need to debug without running
  * all of the other tests in that profile.
  */

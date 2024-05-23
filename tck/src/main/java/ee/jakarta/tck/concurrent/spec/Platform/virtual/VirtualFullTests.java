@@ -26,10 +26,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Platform;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 
-@Full
+@Platform
 @RunAsClient // Requires client testing due to annotation configuration
 public class VirtualFullTests extends TestClient {
 
