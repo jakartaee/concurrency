@@ -6,14 +6,26 @@
 :sectnums:
 
 :APIShortName: Concurrency
-:APIShortNameLC: concurrency
 :APILongName: Jakarta Concurrency
 :APIVersion: 3.1.0
+
 :APISpecSite: https://jakarta.ee/specifications/concurrency/3.1/
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
+
 :TCKTestPlatform: Junit5
-:SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:1.6
+:SigPluginVersion: 1.6
+:SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:{SigPluginVersion}
+
+:JavaVersion1: 17
+:JavaVersion2: 21
+
+:license: Eclipse Foundation Technology Compatibility Kit License
+:licenseURL: https://www.eclipse.org/legal/tck.php
+
+:TCKProcess: Jakarta EE TCK Process
+:TCKProcessURL: https://jakarta.ee/committees/specification/tckprocess/
+
 :last-update-label!:
 
 == Preface
@@ -24,7 +36,7 @@ The specification describes the job specification language, Java programming mod
 
 === Licensing
 
-The {APILongName} TCK is provided under the *Eclipse Foundation Technology Compatibility Kit License - v 1.0* [https://www.eclipse.org/legal/tck.php].
+The {APILongName} TCK is provided under the {licenseURL}[*{license}*].
 
 === Who Should Use This Guide
 
@@ -76,17 +88,17 @@ The two types of tests are encapsulated in a single execution or configuration. 
 
 By "runtime" tests we simply mean tests simulating {APILongName} applications running against the {APIShortName} implementation attempting to certify compatibility.  These tests verify that the {APIShortName} applications behave according to the details defined in the specification, as validated by the TCK test logic.
 
-=== Java SE level - Java 11 or Java 17
+=== Java SE level - Java {JavaVersion1} or Java {JavaVersion2}
 
 The JDK used during test execution must be noted and listed as an important component of the certification request.   In particular, the Java SE version is important to note, and this version must be used consistently throughout both the {TCKTestPlatform} runtime and Signature tests for a given certification request.   
 
-For the current TCK version, this can be done with either Java SE Version 11 or Version 17.
+For the current TCK version, this can be done with either Java SE Version {JavaVersion1} or Version {JavaVersion2}.
 
 == Prerequisites
 
 === Software To Install
 
-1. **Java/JDK** - Install the JDK you intend to use for this certification request (Java SE Version 11 or Version 17).  
+1. **Java/JDK** - Install the JDK you intend to use for this certification request (Java SE Version {JavaVersion1} or Version {JavaVersion2}).  
 1. **Maven** - Install Apache Maven 3.6.0 or higher.
 1. **Jakarta EE Platform** - Jakarta EE Application Server or Container [Glassfish, Open Liberty, JBoss, WebLogic, etc.]
 
@@ -142,22 +154,9 @@ The {APIShortName} TCK is a test library that includes four types of packages:
 - `ee.jakarta.tck.concurrent.common.*` these are common packages shared between test packages.
 - `ee.jakarta.tck.concurrent.framework` this package is an abstraction layer to make writing tests using {TCKTestPlatform}, Arquillian, SigTest, and java.util.logging easier.
 
-===== {TCKTestPlatform} "suite" definition XML files
-
-Here we use the term "suite" informally to describe groups of tests required to pass the TCK (and NOT specifically to refer to any particular "suite" construct defined by the {TCKTestPlatform} API).
-
-There are two "suites" included in the TCK.  There is a "suite" for the {APIShortName} API portion of the "Jakarta EE Platform" TCK and there is a second suite for the {APIShortName} SPI portion of the "Jakarta EE Platform".
-
-These "suites" are both represented within the single `artifacts/suite.xml` file for the full profile and `artifacts/suite-web.xml` for the web profile, and are identified by their package names:
-
-1. ee.jakarta.tck.concurrent.api.*
-1. ee.jakarta.tck.concurrent.spec.*
-
-*Note:* An implementation **MUST** run against all tests provided in the suite XML file for the given profile [underline]#unmodified# for an implementation of such profile to pass the TCK.
-
 ===== API Signature Files
 
-The one signature file exists for both Java 11 and 17:
+The one signature file exists for both Java {JavaVersion1} and {JavaVersion2}:
 
 1. `artifacts/jakarta.enterprise.concurrent.sig`
 
@@ -403,9 +402,9 @@ include::generated/expected-sig-output.adoc[]
 
 == TCK Challenges/Appeals Process
 
-The https://jakarta.ee/committees/specification/tckprocess/[Jakarta EE TCK Process 1.1] will govern all process details used for challenges to the {APILongName} TCK.
+The {TCKProcessURL}[{TCKProcess}] will govern all process details used for challenges to the {APILongName} TCK.
 
-Except from the *Jakarta EE TCK Process 1.1*:
+Except from the *{TCKProcess}*:
 
 > Specifications are the sole source of truth and considered overruling to the TCK in all senses. In the course of implementing a specification and attempting to pass the TCK, implementations may come to the conclusion that one or more tests or assertions do not conform to the specification, and therefore MUST be excluded from the certification requirements.
 
@@ -413,11 +412,11 @@ Except from the *Jakarta EE TCK Process 1.1*:
 
 === Filing a Challenge 
 
-The challenge process is defined within the [underline]#Challenges# section within the *Jakarta EE TCK Process 1.1*.
+The challenge process is defined within the [underline]#Challenges# section within the *{TCKProcess}*.
 
 Challenges will be tracked via the {APIGitSite}/issues[issues] of the {APILongName} Specification repository.
 
-The challenge process mentioned in the *Jakarta EE TCK Process 1.1* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=challenge&projects=&template=tck-challenge.yml&title=TCK+Challenge[here],
+The challenge process mentioned in the *{TCKProcess}* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=challenge&projects=&template=tck-challenge.yml&title=TCK+Challenge[here],
 it is recommended that you read through the challenge process to understand it in detail.
 
 === Successful Challenges
@@ -428,20 +427,20 @@ include::generated/successful-challenges.adoc[]
 
 == Certification of Compatibility
 
-The https://jakarta.ee/committees/specification/tckprocess[Jakarta EE TCK Process 1.1] will define the core process details used to certify compatibility with the {APILongName} specification, through execution of the {APILongName} TCK.
+The {TCKProcessURL}[{TCKProcess}] will define the core process details used to certify compatibility with the {APILongName} specification, through execution of the {APILongName} TCK.
 
-Except from the *Jakarta EE TCK Process 1.1*:
+Except from the *{TCKProcess}*:
 
 > Jakarta EE is a self-certification ecosystem.
 If you wish to have your implementation listed on the official https://jakarta.ee implementations page for the given specification, a certification request as defined in this section is required.
 
 === Filing a Certification Request
 
-The certification of compatibility process is defined within the [underline]#Certification of Compatibility# section within the *Jakarta EE TCK Process 1.1*.
+The certification of compatibility process is defined within the [underline]#Certification of Compatibility# section within the *{TCKProcess}*.
 
 Certifications will be tracked via the {APIGitSite}/issues[issues] of the {APILongName} Specification repository.
 
-The certification of compatibility process mentioned in the *Jakarta EE TCK Process 1.1* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=certification&projects=&template=certification.yml&title=Certification[here],
+The certification of compatibility process mentioned in the *{TCKProcess}* can be started by clicking {APIGitSite}/issues/new?assignees=&labels=certification&projects=&template=certification.yml&title=Certification[here],
 it is recommended that you read through the certification process to understand it in detail.
 
 == Rules for {APILongName} Products
