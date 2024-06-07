@@ -15,3 +15,8 @@ updates:
     labels:
       - "dependencies"
       - "bot"
+
+  - package-ecosystem: maven
+    directory: /tck-dist/src/main/starter/
+    schedule:
+      interval: daily

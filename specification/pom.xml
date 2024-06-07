@@ -22,7 +22,7 @@
     <parent>
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>concurrency-spec</artifactId>
@@ -48,7 +48,7 @@
         <maven.site.skip>true</maven.site.skip>
         
         <asciidoctor.maven.plugin.version>3.0.0</asciidoctor.maven.plugin.version>
-        <asciidoctorj.version>2.5.12</asciidoctorj.version>
+        <asciidoctorj.version>2.5.13</asciidoctorj.version>
         <asciidoctorj.pdf.version>2.3.15</asciidoctorj.pdf.version>
         <jruby.version>9.4.7.0</jruby.version> 
 
@@ -70,7 +70,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>

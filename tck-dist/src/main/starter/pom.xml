@@ -22,10 +22,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>[YOUR_GROUP_ID]</groupId>
+    <groupId>jakarta.enterprise.concurrent</groupId>
     <artifactId>concurrency.tck.runner</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Jakarta Concurrency TCK Runner for [YOUR_IMPL]</name>
+    <name>Jakarta Concurrency TCK Runner</name>
 
     <properties>
         <!-- General properties -->
@@ -35,17 +35,21 @@
 
         <!-- Dependency and Plugin Versions -->
         <jakarta.concurrent.version>3.1.0</jakarta.concurrent.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+
         <arquillian.version>1.7.0.Final</arquillian.version>
         <junit5.version>5.9.3</junit5.version>
         <sigtest.version>1.6</sigtest.version>
+
         <derby.version>10.15.2.0</derby.version>
+
         <maven.dep.plugin.version>3.3.0</maven.dep.plugin.version>
         <maven.comp.plugin.version>3.10.1</maven.comp.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
 
         <!-- Location to put test application dependencies -->
         <application.server.lib>[path/to/appserver/lib]</application.server.lib>
-        
+
         <!-- Pointer to logging.properties file that has the java.util.logging configuration -->
         <logging.config>logging.properties</logging.config>
 
@@ -102,8 +106,8 @@
         </dependency>
         <!-- JUnit5 -->
         <dependency>
-		    <groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit5.version}</version>
         </dependency>
         <!-- Signature Test Plugin -->
@@ -119,6 +123,8 @@
         <directory>${targetDirectory}</directory>
         <defaultGoal>clean test</defaultGoal>
         <plugins>
+            <!-- TODO - We now package junit and sigtest plugin into application, perhaps we should
+            do the same with derby? -->
             <!-- tag::testServerDep[] -->
             <!-- Test Server Dependencies -->
             <plugin>
@@ -165,7 +171,7 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <systemPropertyVariables>
-                    	<!-- tag::arquillian[] -->
+                        <!-- tag::arquillian[] -->
                         <tck_server>[TODO]</tck_server>
                         <tck_port>[TODO]</tck_port>
                         <!-- end::arquillian[] -->
@@ -176,7 +182,9 @@
                     <groups>${test.included}</groups>                        <!-- Groups to include i.e. web/platform -->
                     <excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
                     <!-- Ensure surfire plugin looks under src/main/java instead of src/test/java -->
-                    <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+                    <testSourceDirectory>
+                        ${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}
+		    </testSourceDirectory>
                 </configuration>
             </plugin>
             <!-- end::configSurefire[] -->

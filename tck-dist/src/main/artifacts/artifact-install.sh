@@ -2,18 +2,21 @@
 
 ## A sample script to install the artifact directory contents into a local maven repository
 
-if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
-  VERSION="$1"
-else
-  echo "A valid version is required to execute this script"
-  exit 1
-fi
+POM=$(ls *.pom)
+TCK=$(ls *.jar | grep -v sources)
 
-# Parent pom
-mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
--Dfile=jakarta.enterprise.concurrent.parent-"$VERSION".pom -DgroupId=jakarta.enterprise.concurrent \
--DartifactId=jakarta.enterprise.concurrent.parent -Dversion="$VERSION" -Dpackaging=pom
+NO_EXT=${POM%.*}      # jakarta.enterprise.concurrent-parent-3.1.0-SNAPSHOT.pom > jakarta.enterprise.concurrent-parent-3.1.0-SNAPSHOT
+NO_REPO=${NO_EXT#*-}  # jakarta.enterprise.concurrent-parent-3.1.0-SNAPSHOT > parent-3.1.0-SNAPSHOT
+VERSION=${NO_REPO#*-} # parent-3.1.0-SNAPSHOT > 3.1.0-SNAPSHOT
 
-# CDI TCK Installed Library - test bean archive
+echo "Installing $POM with version $VERSION"
 mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
--Dfile=jakarta.enterprise.concurrent-tck-"$VERSION".jar
+-Dfile=$POM \
+-DgroupId=jakarta.enterprise.concurrent \
+-DartifactId=jakarta.enterprise.concurrent.parent \
+-Dversion=$VERSION \
+-Dpackaging=pom
+
+echo "Installing $TCK"
+mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
+-Dfile=$TCK

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ~ Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ ~ Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  ~ 
  ~ This program and the accompanying materials are made available under the
  ~ terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@
     <parent>
         <groupId>jakarta.enterprise.concurrent</groupId>
         <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-        <version>3.1.0-SNAPSHOT</version>
+        <version>3.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
@@ -44,7 +44,7 @@
     </licenses>
 
     <properties>
-        <jakarta.concurrent.tck.version>${project.version}</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.version>${project.version}</jakarta.concurrent.version>
 
         <maven.site.skip>true</maven.site.skip>
         <asciidoctor-maven.version>3.0.0</asciidoctor-maven.version>
@@ -56,18 +56,18 @@
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
-            <version>${jakarta.concurrent.tck.version}</version>
+            <version>${jakarta.concurrent.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.tck.version}</version>
+            <version>${jakarta.concurrent.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-            <version>${jakarta.concurrent.tck.version}</version>
+            <version>${jakarta.concurrent.version}</version>
         </dependency>
     </dependencies>
 
@@ -83,18 +83,32 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-            
-            <!-- Load TCK dependency location as variable -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.6.1</version>
                 <executions>
+                    <!-- Load TCK dependency location as variable -->
                     <execution>
                         <phase>initialize</phase>
                         <goals>
                             <goal>properties</goal>
                         </goals>
+                    </execution>
+                    <!-- Copy tck sources to a known location -->
+                    <execution>
+                        <id>get-dependency-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>jakarta.enterprise.concurrent-tck</includeArtifactIds>
+                            <classifier>sources</classifier>
+                            <prependGroupId>true</prependGroupId>
+                            <outputDirectory>${project.build.directory}/copied-sources/</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -103,7 +117,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>generate-asciidoc</id>
@@ -116,7 +130,7 @@
                 <configuration>
                     <mainClass>ee.jakarta.tck.data.metadata.CollectMetaData</mainClass>
                     <arguments>
-                        <argument>true</argument>
+                        <argument>false</argument> <!-- debug? -->
                         <argument>
                             ${jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck:jar}</argument>
                         <argument>
@@ -124,7 +138,7 @@
                     </arguments>
                 </configuration>
             </plugin>
-            
+
             <!-- Aciidoctor will create the html and pdf distributions of the user-guide -->
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -147,7 +161,7 @@
                         <configuration>
                             <backend>html5</backend>
                             <outputFile>
-                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.tck.version}.html
+                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version}.html
                             </outputFile>
                         </configuration>
                     </execution>
@@ -160,7 +174,7 @@
                         <configuration>
                             <backend>pdf</backend>
                             <outputFile>
-                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.tck.version}.pdf
+                                ${project.build.directory}/generated-docs/concurrency-tck-reference-guide-${jakarta.concurrent.version}.pdf
                             </outputFile>
                         </configuration>
                     </execution>
@@ -191,7 +205,7 @@
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
                             <finalName>
-                                concurrency-tck-${jakarta.concurrent.tck.version}</finalName>
+                                concurrency-tck-${jakarta.concurrent.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
