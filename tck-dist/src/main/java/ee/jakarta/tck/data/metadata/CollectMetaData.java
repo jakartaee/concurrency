@@ -303,9 +303,9 @@ public final class CollectMetaData {
         String output =
                 """
                 |===
-                |standalone |core |web |full |skipped
+                |standalone |core |web |platform |skipped
                 
-                |%d         |%d   |%d  |%d   |%d
+                |%d         |%d   |%d  |%d       |%d
 
                 |===""".formatted(getTestCounts(testMetaData));
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLocation))) {
@@ -471,7 +471,7 @@ public final class CollectMetaData {
         }
         
         boolean isFull() {
-            return tags.contains("full");
+            return tags.contains("platform");
         }
     
         boolean isRunnable() {

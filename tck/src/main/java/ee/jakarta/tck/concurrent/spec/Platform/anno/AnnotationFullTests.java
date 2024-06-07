@@ -31,7 +31,7 @@ import ee.jakarta.tck.concurrent.common.context.providers.StringContextProvider;
 import ee.jakarta.tck.concurrent.framework.TestClient;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Platform;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
@@ -40,7 +40,7 @@ import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
  * Covers ContextServiceDefinition, ManagedExecutorDefinition, ManagedScheduledExecutorDefinition, and
  * ManagedThreadFactoryDefinition annotations and their interaction with Deployment Descriptors.
  */
-@Full
+@Platform
 @RunAsClient // Requires client testing due to annotation configuration
 public class AnnotationFullTests extends TestClient {
 

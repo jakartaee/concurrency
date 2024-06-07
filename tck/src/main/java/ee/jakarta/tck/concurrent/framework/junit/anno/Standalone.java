@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -36,7 +36,7 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
 @Tag("standalone")
 @Tag("core")
 @Tag("web")
-@Tag("full")
+@Tag("platform")
 @ExtendWith({ ArquillianExtension.class, AssertionExtension.class })
 public @interface Standalone {
 }

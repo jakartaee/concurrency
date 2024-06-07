@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,14 +32,14 @@ import ee.jakarta.tck.concurrent.framework.URLBuilder;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common.PACKAGE;
-import ee.jakarta.tck.concurrent.framework.junit.anno.Full;
+import ee.jakarta.tck.concurrent.framework.junit.anno.Platform;
 import ee.jakarta.tck.concurrent.framework.junit.anno.TestName;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionBean;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionInterface;
 import ee.jakarta.tck.concurrent.spec.ContextService.contextPropagate.ContextServiceDefinitionServlet;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
-@Full
+@Platform
 @RunAsClient // Requires client testing due to annotation configuration
 public class ManagedScheduledExecutorDefinitionFullTests extends TestClient {
 
