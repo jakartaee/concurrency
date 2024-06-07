@@ -116,7 +116,7 @@ Once the TCK is extracted, you'll see the following structure:
 ----
 concurrency-tck-<version>-dist/
   artifacts/
-  doc/
+  docs/
   starter/
   LICENSE
   README.md
@@ -126,7 +126,7 @@ In more detail:
 
 - `artifacts` contains all the test artifacts pertaining to the TCK: The TCK test classes and source, the {TCKTestPlatform} configuration file, a copy of the SignatureTest file for reference, and a script to copy the TCK into local maven repository.
 
-- `doc` contains the documentation for the TCK: this reference guide.
+- `docs` contains the documentation for the TCK: this reference guide.
 
 - `starter` a very basic starter maven project to get you started.
 
