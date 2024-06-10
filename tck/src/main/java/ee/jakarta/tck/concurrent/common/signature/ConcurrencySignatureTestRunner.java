@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -35,11 +35,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-
-import ee.jakarta.tck.concurrent.framework.TestLogger;
+import java.util.logging.Logger;
 
 public class ConcurrencySignatureTestRunner extends SigTestEE {
 
+    private Logger log = Logger.getLogger(getClass().getCanonicalName());
+    
     public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
     public static final String SIG_MAP_NAME = "sig-test.map";
     public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
@@ -47,8 +48,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
     public static final String[] SIG_RESOURCES = {
             SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME
             };
-
-    private static final TestLogger log = TestLogger.get(ConcurrencySignatureTestRunner.class);
 
     public ConcurrencySignatureTestRunner() {
         setup();

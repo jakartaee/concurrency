@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -29,6 +30,8 @@ import java.util.List;
  * </p>
  */
 public class SigTestDriver extends SignatureTestDriver {
+    
+    private static final Logger log = Logger.getLogger(SigTestDriver.class.getCanonicalName());
 
     private static final String CLASSPATH_FLAG = "-Classpath";
 
@@ -94,7 +97,7 @@ public class SigTestDriver extends SignatureTestDriver {
         if (bStaticMode) {
             // static mode allows finer level of constants checking
             // -CheckValue says to check the actual const values
-            System.out.println("Setting static mode flag to allow constant checking.");
+            log.info("Setting static mode flag to allow constant checking.");
             command.add(STATIC_FLAG);
             command.add(CHECKVALUE_FLAG);
 
@@ -105,7 +108,7 @@ public class SigTestDriver extends SignatureTestDriver {
             // command.add("bin");
             command.add("src");
         } else {
-            System.out.println("Not Setting static mode flag to allow constant checking.");
+            log.info("Not Setting static mode flag to allow constant checking.");
         }
 
         command.add("-Verbose");
@@ -145,9 +148,9 @@ public class SigTestDriver extends SignatureTestDriver {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         // do some logging to help with troubleshooting
-        System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
+        log.fine("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
         for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("   testArguments[" + ii + "] = " + testArguments[ii]);
+            log.fine("   testArguments[" + ii + "] = " + testArguments[ii]);
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
@@ -162,8 +165,8 @@ public class SigTestDriver extends SignatureTestDriver {
 
         // currently, there is no way to determine if there are error msgs in
         // the rawmessages, so we will always dump this and call it a status.
-        System.out.println("********** Status Report '" + packageOrClassName + "' **********\n");
-        System.out.println(rawMessages);
+        log.info("********** Status Report '" + packageOrClassName + "' **********\n");
+        log.info(rawMessages);
 
         return sigTestInstance.toString().substring(7).startsWith("Passed.");
     } // END runSignatureTest
@@ -188,9 +191,9 @@ public class SigTestDriver extends SignatureTestDriver {
         }
 
         // dump args for debugging aid
-        System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
+        log.fine("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
         for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("\t  testArguments[" + ii + "] = " + testArguments[ii]);
+            log.fine("\t  testArguments[" + ii + "] = " + testArguments[ii]);
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
@@ -205,8 +208,8 @@ public class SigTestDriver extends SignatureTestDriver {
 
         // currently, there is no way to determine if there are error msgs in
         // the rawmessages, so we will always dump this and call it a status.
-        System.out.println("********** Status Report '" + packageOrClassName + "' **********\n");
-        System.out.println(rawMessages);
+        log.info("********** Status Report '" + packageOrClassName + "' **********\n");
+        log.info(rawMessages);
 
         return sigTestInstance.toString().substring(7).startsWith("Passed.");
     }
