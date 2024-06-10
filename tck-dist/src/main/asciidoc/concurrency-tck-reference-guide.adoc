@@ -14,8 +14,8 @@
 :APIGitSite: https://github.com/jakartaee/concurrency
 
 :TCKTestPlatform: Junit5
-:SigPluginVersion: 1.6
-:SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:{SigPluginVersion}
+:SigPluginVersion: 2.3
+:SigPluginGAV: jakarta.tck:sigtest-maven-plugin:{SigPluginVersion}
 
 :JavaVersion1: 17
 :JavaVersion2: 21
@@ -268,7 +268,7 @@ The TCK uses external libraries that also need to be available on the Applicatio
 
 - org.apache.derby:derby - For database testing
 - org.junit.jupiter:junit-jupiter - For test assertions
-- org.netbeans.tools:sigtest-maven-plugin - For signature testing
+- jakarta.tck:sigtest-maven-plugin - For signature testing
 
 See <<Test Server Dependencies>>
 

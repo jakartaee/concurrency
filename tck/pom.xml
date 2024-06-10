@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -48,7 +48,7 @@
 
     <properties>
         <jakarta.concurrent.api.version>${project.version}</jakarta.concurrent.api.version>
-        <sigtest.version>1.6</sigtest.version>
+        <sigtest.version>2.3</sigtest.version>
         <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
     </properties>
 
@@ -92,7 +92,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.netbeans.tools</groupId>
+            <groupId>jakarta.tck</groupId>
             <artifactId>sigtest-maven-plugin</artifactId>
             <version>${sigtest.version}</version>
         </dependency>
@@ -267,7 +267,7 @@
                     
                     <!-- Run signature plugin to generate signature file -->
                     <plugin>
-                        <groupId>org.netbeans.tools</groupId>
+                        <groupId>jakarta.tck</groupId>
                         <artifactId>sigtest-maven-plugin</artifactId>
                         <version>${sigtest.version}</version>
                         <executions>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -100,7 +100,7 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
             ((ClassContainer<?>) applicationArchive).addPackage(signaturePackage);
 
             // Add the sigtest plugin library
-            File sigTestDep = Maven.resolver().resolve("org.netbeans.tools:sigtest-maven-plugin:1.6").withoutTransitivity().asSingleFile();
+            File sigTestDep = Maven.resolver().resolve("jakarta.tck:sigtest-maven-plugin:2.3").withoutTransitivity().asSingleFile();
             log.info("Application Archive [" + applicationName + "] is being appended with library " + sigTestDep.getName());
             ((LibraryContainer<?>) applicationArchive).addAsLibrary(sigTestDep);
             
