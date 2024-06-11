@@ -41,14 +41,13 @@ import ee.jakarta.tck.concurrent.framework.TestProperty;
 public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     private Logger log = Logger.getLogger(getClass().getCanonicalName());
-    
+
+    public static final String SIG_RESOURCE_PACKAGE = "ee.jakarta.tck.concurrent.common.signature";
     public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
     public static final String SIG_MAP_NAME = "sig-test.map";
     public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
-
-    public static final String[] SIG_RESOURCES = {
-            SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME
-            };
+    
+    public static final String[] SIG_RESOURCES = {SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME};
 
     public ConcurrencySignatureTestRunner() {
         setup();
@@ -58,6 +57,10 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
      * Returns a list of strings where each string represents a package name. Each
      * package name will have it's signature tested by the signature test framework.
      *
+     * TODO is there a way to construct this list at runtime?
+     * Unlikely due to lazy classloading Package.getPackages() will not contain anything
+     * that hasn't been loaded.
+     *
      * @return String[] The names of the packages whose signatures should be
      *         verified.
      */
@@ -66,7 +69,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         return new String[] {
                 "jakarta.enterprise.concurrent", "jakarta.enterprise.concurrent.spi"
                 };
-
     }
 
     /**
@@ -86,9 +88,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         };
 
         // The JDK modules we want added to our classpath
-        String[] jdkModules = new String[] {
-                "java.base", "java.rmi", "java.sql", "java.naming"
-                };
+        String[] jdkModules = new String[] {"java.base", "java.rmi", "java.sql", "java.naming"};
 
         // Get Jakarta artifacts from application server
         Set<String> classPaths = new HashSet<String>();
@@ -206,19 +206,19 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         try {
 
             InputStream inStreamMapfile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_MAP_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_MAP_NAME);
             File mFile = writeStreamToTempFile(inStreamMapfile, "sig-test", ".map");
             mapFile = mFile.getCanonicalPath();
             log.info("mapFile location is :" + mapFile);
 
             InputStream inStreamPackageFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_PKG_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_PKG_NAME);
             File pFile = writeStreamToTempFile(inStreamPackageFile, "sig-test-pkg-list", ".txt");
             packageListFile = pFile.getCanonicalPath();
             log.info("packageFile location is :" + packageListFile);
 
             InputStream inStreamSigFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_FILE_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_FILE_NAME);
             File sigFile = writeStreamToSigFile(inStreamSigFile);
             log.info("signature File location is :" + sigFile.getCanonicalPath());
             signatureRepositoryDir = TestProperty.javaTempDir.getValue();

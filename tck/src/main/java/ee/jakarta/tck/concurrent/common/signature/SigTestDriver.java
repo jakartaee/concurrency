@@ -61,14 +61,6 @@ public class SigTestDriver extends SignatureTestDriver {
 
     private static final String EXCLUDE_JDK_CLASS_FLAG = "-IgnoreJDKClass";
 
-    private static String[] excludeJdkClasses = {
-            "java.util.Map", "java.lang.Object", "java.io.ByteArrayInputStream",
-            "java.io.InputStream", "java.lang.Deprecated", "java.io.Writer", "java.io.OutputStream", "java.util.List",
-            "java.util.Collection", "java.lang.instrument.IllegalClassFormatException",
-            "javax.transaction.xa.XAException", "java.lang.annotation.Repeatable", "java.lang.InterruptedException",
-            "java.lang.CloneNotSupportedException", "java.lang.Throwable", "java.lang.Thread", "java.lang.Enum"
-            };
-
     // ---------------------------------------- Methods from SignatureTestDriver
 
     @Override
@@ -107,6 +99,7 @@ public class SigTestDriver extends SignatureTestDriver {
             command.add(SMODE_FLAG);
             // command.add("bin");
             command.add("src");
+            command.add("-BootCp");
         } else {
             log.info("Not Setting static mode flag to allow constant checking.");
         }
@@ -126,11 +119,8 @@ public class SigTestDriver extends SignatureTestDriver {
             command.add(EXCLUDE_FLAG);
             command.add(subPackages[i]);
         }
-
-        for (String jdkClassName : excludeJdkClasses) {
-            command.add(EXCLUDE_JDK_CLASS_FLAG);
-            command.add(jdkClassName);
-        }
+        
+        command.add(EXCLUDE_JDK_CLASS_FLAG);
 
         command.add(API_VERSION_FLAG);
         command.add(info.getVersion());
@@ -154,12 +144,8 @@ public class SigTestDriver extends SignatureTestDriver {
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class
-                        });
-        runMethod.invoke(sigTestInstance, new Object[] {
-                testArguments, new PrintWriter(output, true), null
-                });
+                new Class[] {String[].class, PrintWriter.class, PrintWriter.class});
+        runMethod.invoke(sigTestInstance, new Object[] {testArguments, new PrintWriter(output, true), null});
 
         String rawMessages = output.toString();
 
@@ -179,7 +165,7 @@ public class SigTestDriver extends SignatureTestDriver {
     protected boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-        Object sigTestInstance = sigTestClass.getConstructor().newInstance();
+        Object sigTestInstance = sigTestClass.getDeclaredConstructor().newInstance();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -197,12 +183,8 @@ public class SigTestDriver extends SignatureTestDriver {
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class
-                        });
-        runMethod.invoke(sigTestInstance, new Object[] {
-                testArguments, new PrintWriter(output, true), null
-                });
+                new Class[] {String[].class, PrintWriter.class, PrintWriter.class});
+        runMethod.invoke(sigTestInstance, new Object[] {testArguments, new PrintWriter(output, true), null});
 
         String rawMessages = output.toString();
 
@@ -211,52 +193,6 @@ public class SigTestDriver extends SignatureTestDriver {
         log.info("********** Status Report '" + packageOrClassName + "' **********\n");
         log.info(rawMessages);
 
-        return sigTestInstance.toString().substring(7).startsWith("Passed.");
-    }
-
-    /*
-     * @return This returns true if javax.transaction.xa is not found in the JTA API
-     * jar
-     */
-    protected boolean verifyJTAJarForNoXA(final String classpath, final String repositoryDir) throws Exception {
-
-        System.out.println("SigTestDriver#verifyJTAJarForNoXA - Starting:");
-        List<String> command = new ArrayList<>();
-
-        // Build Commandline for com.sun.tdk.signaturetest.SignatureTest
-        command.add(STATIC_FLAG);
-        command.add(FILENAME_FLAG);
-        command.add(repositoryDir + "empty.sig");
-        command.add(PACKAGE_FLAG);
-        command.add("javax.transaction.xa");
-        command.add(CLASSPATH_FLAG);
-        command.add(classpath);
-
-        String[] testArguments = (String[]) command.toArray(new String[command.size()]);
-
-        // do some logging to help with troubleshooting
-        System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
-        for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("   testArguments[" + ii + "] = " + testArguments[ii]);
-        }
-
-        Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-        Object sigTestInstance = sigTestClass.getConstructor().newInstance();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class
-                        });
-        runMethod.invoke(sigTestInstance, new Object[] {
-                testArguments, new PrintWriter(output, true), null
-                });
-        String rawMessages = output.toString();
-
-        // currently, there is no way to determine if there are error msgs in
-        // the rawmessages, so we will always dump this and call it a status.
-        System.out.println("********** Status Report JTA JAR validation **********\n");
-        System.out.println(rawMessages);
         return sigTestInstance.toString().substring(7).startsWith("Passed.");
     }
 }

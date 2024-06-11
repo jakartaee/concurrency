@@ -209,14 +209,14 @@ class PackageList {
         List<String> delPkgs = new ArrayList<>();
         // iterate over package set and find package names to remove
         for (Iterator<String> i = packageNames.iterator(); i.hasNext();) {
-            packageName = i.next();
+            packageName = (String) i.next();
             if (packageName.startsWith(delPackage)) {
                 delPkgs.add(packageName);
             }
         }
         // actually remove the package names from the set
         for (int i = 0; i < delPkgs.size(); i++) {
-            packageName = delPkgs.get(i);
+            packageName = (String) (delPkgs.get(i));
             packageNames.remove(packageName);
             log.info("PackageList.removeExistingPackage() \"" + packageName + "\"");
         }
@@ -341,7 +341,7 @@ class PackageList {
             out = new BufferedWriter(new FileWriter(packageFile));
             writeHeader(out);
             for (Iterator<String> i = packageNames.iterator(); i.hasNext();) {
-                String packageName = i.next();
+                String packageName = (String) i.next();
                 out.write(packageName);
                 out.newLine();
                 log.info("PackageList.writePkgFile() \"" + packageName + "\"");
@@ -365,7 +365,7 @@ class PackageList {
         List<String> result = new ArrayList<>();
         String subPackageName = pkgName + ".";
         for (Iterator<String> i = packageNames.iterator(); i.hasNext();) {
-            String packageName = i.next();
+            String packageName = (String) i.next();
             if (packageName.startsWith(subPackageName)) {
                 result.add(packageName);
             }

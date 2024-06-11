@@ -171,6 +171,9 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <systemPropertyVariables>
+                        <!-- tag::signature[] -->
+                        <jimage.dir>${jimage.dir}</jimage.dir>
+                        <!-- end::signature[] -->
                         <!-- tag::arquillian[] -->
                         <tck_server>[TODO]</tck_server>
                         <tck_port>[TODO]</tck_port>

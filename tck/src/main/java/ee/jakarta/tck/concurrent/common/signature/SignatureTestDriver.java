@@ -505,7 +505,7 @@ public abstract class SignatureTestDriver {
     protected SignatureFileInfo getSigFileInfo(final String packageName, final String mapFile, final String repositoryDir)
             throws Exception {
 
-        String originalPackage = packageName;
+        String packageNameCopy = packageName;
         String name = null;
         String version = null;
         Properties props = loadMapFile(mapFile);
@@ -514,7 +514,7 @@ public abstract class SignatureTestDriver {
             boolean packageFound = false;
             for (Enumeration<?> e = props.propertyNames(); e.hasMoreElements();) {
                 name = (String) (e.nextElement());
-                if (name.equals(packageName)) {
+                if (name.equals(packageNameCopy)) {
                     version = props.getProperty(name);
                     packageFound = true;
                     break;
@@ -532,12 +532,12 @@ public abstract class SignatureTestDriver {
              * We do this by removing the specified packages last package name section. So
              * jakarta.ejb.spi would become jakarta.ejb
              */
-            int index = packageName.lastIndexOf(".");
+            int index = packageNameCopy.lastIndexOf(".");
             if (index <= 0) {
                 throw new Exception(
-                        "Package \"" + originalPackage + "\" not specified in mapping file \"" + mapFile + "\".");
+                        "Package \"" + packageName + "\" not specified in mapping file \"" + mapFile + "\".");
             }
-            originalPackage = packageName.substring(0, index);
+            packageNameCopy = packageNameCopy.substring(0, index);
         } // end while
 
         /* Return the expected name of the signature file */

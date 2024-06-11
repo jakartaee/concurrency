@@ -4,7 +4,7 @@ This package is inherited from the Platform-TCK (https://github.com/eclipse-ee4j
 
 The latest signature files are updated in the concurrency TCK Repository 
 (concurrency-api//tck/src/main/resources/ee/jakarta/tck/spec/signature) 
-generated using sigtest-maven-plugin.jar(version 1.6).
+generated using sigtest-maven-plugin.jar (version 2.3).
 
 The signature tests are run using the sigtest-maven-plugin.jar and the framework available in this folder.
 
@@ -32,17 +32,18 @@ The plugin that generates the signature file has been copied below for reference
 	</executions>
 	<configuration>
 		<classes>${project.build.directory}/concurrency-api</classes>
+		<classes>${project.build.directory}/jimage/java.base</classes><classes>${project.build.directory}/jimage/java.base</classes>
 		<packages>
 			jakarta.enterprise.concurrent,
 			jakarta.enterprise.concurrent.spi,
 		</packages>
 		<attach>false</attach>
-		<sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${version}</sigfile>
+		<sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${java.version}</sigfile>
 	</configuration>
 </plugin>
 ```
 
-- The `classes` configuration points to a location where an earlier plugin has unpacked the api jar form which we are generating the signature file.
+- The `classes` configuration points to a location where an earlier plugin has unpacked the api jar from which we are generating the signature file.
 - The `packages` configuration specifies the packages we want to generate signatures from. 
 - The `attach` configuration specifies that we do not want the plugin to use its default file extension
 - The `sigfile` configurations specifies the signature file we want the plugin to generate
@@ -76,10 +77,7 @@ The signature file will be automatically copied to the `/src/main/resource/ee/ja
 
 Since the Concurrency TCK can only be run against Jakarta EE Servers we have simplified the running of signature tests.
 
-Signature tests will be automatically run as part of the TCK via the `ee.jakarta.tck.concurrent.spec.signature` project. 
+Signature tests will be automatically run as part of the TCK via the `ee.jakarta.tck.concurrent.spec.signature` package. 
 
-This project will deploy a servlet application to the Jakarta EE Server. 
-The servlet runs the signature test using the signaturetest framework from the Platform TCK.
-
-TCK Users will only need to set a single JVM property `-Djimage.dir=<path-your-app-server-has-access-to>`.
-This directory will be populated with class files extracted from the JDK modules.
+This package will deploy an application to the Jakarta EE Server. 
+The application runs the signature test using the signaturetest framework from the Platform TCK.
