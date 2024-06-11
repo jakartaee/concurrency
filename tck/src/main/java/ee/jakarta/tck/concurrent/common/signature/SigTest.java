@@ -204,7 +204,7 @@ public abstract class SigTest {
     public static class Fault extends Exception {
         private static final long serialVersionUID = -1574745208867827913L;
 
-        public Throwable t;
+        private Throwable t;
 
         /**
          * creates a Fault with a message
@@ -300,7 +300,7 @@ public abstract class SigTest {
     public static class SetupException extends Exception {
         private static final long serialVersionUID = -7616313680616499158L;
 
-        public Exception e;
+        private Exception e;
 
         /**
          * creates a Fault with a message

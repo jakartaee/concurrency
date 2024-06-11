@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 
+import ee.jakarta.tck.concurrent.framework.TestProperty;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Assertion;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Challenge;
 
@@ -111,6 +112,7 @@ public final class CollectMetaData {
         writeSigOutput(new File(adocGeneratedLocation, SIG_OUTPUT_FILE));
         writeOutput(testMetaData, new File(adocGeneratedLocation, EXPECTED_OUTPUT_FILE));
         writeGitIgnore(new File(adocGeneratedLocation, ".gitignore"), RUNTIME_TESTS_FILE, CHALLENGED_TESTS_FILE, SIG_OUTPUT_FILE, EXPECTED_OUTPUT_FILE, TEST_PROPERTIES_FILE);
+        writeTestProperties(new File(adocGeneratedLocation, TEST_PROPERTIES_FILE));
         
         for (TestMetaData data: testMetaData) {
             debug(data.debugString());
@@ -325,6 +327,36 @@ public final class CollectMetaData {
         results.add(testMetaData.stream().filter(Predicate.not(TestMetaData::isRunnable)).count());
         
         return results.toArray();
+    }
+    
+    /**
+     * Compiles a list of all system properties used by the TCK output to the generated adoc folder.
+     *
+     * @param outputLocation - the output file
+     * @throws IOException   - exception if we cannot write to this location
+     */
+    private static void writeTestProperties(final File outputLocation) throws IOException {
+        String output =
+                """
+                |===
+                |Key  |Required  |Description
+                $properties
+                |===""".replaceAll("\\$properties", getTestProperties());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLocation))) {
+            writer.write(output.trim() + System.lineSeparator());
+        }
+    }
+    
+    private static String getTestProperties() {
+        String output = "";
+        for (TestProperty property : TestProperty.values()) {
+            output +=
+                    """
+                    
+                    |%s |%s |%s
+                    """.formatted(property.getKey(), property.isRequired(), property.getDescription());
+        }
+        return output;
     }
     
     /**

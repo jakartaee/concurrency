@@ -330,6 +330,21 @@ Example META-INF/services/org.jboss.arquillian.core.spi.LoadableExtension:
 my.custom.test.package.MyLoadableExtension
 ----
 
+=== Test property reference
+
+In the previous sections, there were sample configurations that contained information about
+the different system properties that can be set under the `<systemPropertyVariables>` of the Surefire plugin. 
+
+This section contains a complete list of the system properties that will be looked up by the TCK
+and a short description of what data each represents. 
+
+Use this reference as a quick guide for customizing how this TCK is run for your implementation.
+
+include::generated/test-properties.adoc[]
+
+Note: All non-java properties set on the test client, will be exported to the test server so there is no
+need to set the same properties on both.
+
 == Running the TCK
 
 Once the TCK Runner project is created and configured the {APIShortName} TCK is run as part of the maven test lifecycle. 
@@ -356,13 +371,10 @@ The signature tests validate the integrity of the `jakarta.enterprise.concurrent
 The {APIShortName} TCK will run signature tests on the application server itself, and not as part of a separate plugin / execution.
 This means that the signature tests will run during the maven `test` phase.
 
-You need to configure your application server with a JVM property `-Djimage.dir=<path-your-server-has-access-to>`.
-This is because, when running the signature tests on JDK 9+ we need to convert the JDK modules back into class files for signature testing.
-
 The signature test plugin we use will also attempt to perform reflective access of classes, methods, and fields.
 Due to the new module system in JDK 9+ special permissions need to be added in order for these tests to run: 
 
-If you are using a Security Manager add the following permissions to the `sigtest-maven-plugin` on your application server:
+If you are using a Security Manager add the following permissions to applications running on your application server:
 
 [source, txt]
 ----
@@ -373,7 +385,7 @@ permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.vm.ann
 
 By default the java.base module only exposes certain classes for reflective access. 
 Therefore, the {APIShortName} TCK test will need access to the `jdk.internal.vm.annotation` class.
-To give the `sigtest-maven-plugin` access to this class set the following JVM properties: 
+To give the TCK access to this class set the following JVM properties: 
 
 [source, properties]
 ----

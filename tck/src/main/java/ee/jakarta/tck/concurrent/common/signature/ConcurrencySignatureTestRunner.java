@@ -33,9 +33,10 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import ee.jakarta.tck.concurrent.framework.TestProperty;
 
 public class ConcurrencySignatureTestRunner extends SigTestEE {
 
@@ -72,10 +73,11 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
      * Returns the classpath for the packages we are interested in.
      */
     protected String getClasspath() {
-        final String defined = System.getProperty("signature.sigTestClasspath");
+        final String defined = TestProperty.signatureClasspath.getValue();
         if (defined != null && !defined.isBlank()) {
             return defined;
         }
+        
         // The Jakarta artifacts we want added to our classpath
         String[] classes = new String[] {
                 "jakarta.enterprise.concurrent.AbortedException", // For jakarta.enterprise.concurrent-api-3.0.0.jar
@@ -111,7 +113,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
         // Get JDK modules from jimage
         // Add JDK classes to classpath
-        File jimageOutput = new File(System.getProperty("jimage.dir"));
+        File jimageOutput = TestProperty.signatureImageDir.getFile();
         for (String module : jdkModules) {
             Path modulePath = Paths.get(jimageOutput.getAbsolutePath(), module);
             if (Files.isDirectory(modulePath)) {
@@ -151,7 +153,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     protected File writeStreamToSigFile(final InputStream inputStream) throws IOException {
         FileOutputStream outputStream = null;
-        String tmpdir = System.getProperty("java.io.tmpdir");
+        String tmpdir = TestProperty.javaTempDir.getValue();
         try {
             File sigfile = new File(tmpdir + File.separator + SIG_FILE_NAME);
             if (sigfile.exists()) {
@@ -219,7 +221,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
                     .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_FILE_NAME);
             File sigFile = writeStreamToSigFile(inStreamSigFile);
             log.info("signature File location is :" + sigFile.getCanonicalPath());
-            signatureRepositoryDir = System.getProperty("java.io.tmpdir");
+            signatureRepositoryDir = TestProperty.javaTempDir.getValue();
 
         } catch (IOException ex) {
             log.info("Exception while creating temp files :" + ex);
@@ -238,14 +240,13 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
         // If testing with Java 9+, extract the JDK's modules so they can be used
         // on the testcase's classpath.
-        Properties sysProps = System.getProperties();
-        String version = (String) sysProps.get("java.version");
+        String version = TestProperty.javaVer.getValue();
         if (!version.startsWith("1.")) {
-            String jimageDir = sysProps.getProperty("jimage.dir");
+            String jimageDir = TestProperty.signatureImageDir.getValue();
             File f = new File(jimageDir);
             f.mkdirs();
 
-            String javaHome = (String) sysProps.get("java.home");
+            String javaHome = TestProperty.javaHome.getValue();
             log.info("Executing JImage");
 
             try {
@@ -307,7 +308,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         // Ensure that jimage directory is set.
         // This is where modules will be converted back to .class files for use in
         // signature testing
-        assertNotNull(System.getProperty("jimage.dir"),
+        assertNotNull(TestProperty.signatureImageDir.getValue(),
                 "The system property jimage.dir must be set in order to run the Signature test.");
 
         // Ensure user has the correct security/JDK settings to allow the plugin access

@@ -26,6 +26,8 @@ import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import ee.jakarta.tck.concurrent.framework.TestProperty;
+
 /**
  * Allows the sigtest framework to be extended using different signature test
  * implementations (e.g. ApiCheck, or SigTest)
@@ -109,7 +111,7 @@ public abstract class SignatureTestDriver {
      * @return - true if the passed in version matches the current Java version being used, false otherwise.
      */
     public Boolean isJavaSEVersion(final String ver) {
-        String strOSVersion = System.getProperty("java.version");
+        String strOSVersion = TestProperty.javaVer.getValue();
         return strOSVersion.startsWith(ver);
     }
 

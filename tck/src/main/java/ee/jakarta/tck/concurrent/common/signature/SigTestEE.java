@@ -22,8 +22,9 @@ import java.io.PrintWriter;
 import java.io.PrintStream;
 
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.logging.Logger;
+
+import ee.jakarta.tck.concurrent.framework.TestProperty;
 
 /**
  * This class should be extended by TCK developers that wish to create a set of
@@ -219,7 +220,7 @@ public abstract class SigTestEE {
         String[] packages = getPackages();
         String[] classes = getClasses();
         String packageFile = getPackageFile();
-        String testClasspath = System.getProperty("sigTestClasspath");
+        String testClasspath = TestProperty.signatureClasspath.getValue();
         String optionalPkgToIgnore = "";
 
         // unlisted optional packages are technology packages for those optional
@@ -231,14 +232,13 @@ public abstract class SigTestEE {
 
         // If testing with Java 9+, extract the JDK's modules so they can be used
         // on the testcase's classpath.
-        Properties sysProps = System.getProperties();
-        String version = (String) sysProps.get("java.version");
+        String version = TestProperty.javaVer.getValue();
         if (!version.startsWith("1.")) {
-            String jimageDir = sysProps.getProperty("jimage.dir");
+            String jimageDir = TestProperty.signatureImageDir.getValue();
             File f = new File(jimageDir);
             f.mkdirs();
 
-            String javaHome = (String) sysProps.get("java.home");
+            String javaHome = TestProperty.javaHome.getValue();
             log.info("Executing JImage");
 
             try {
@@ -301,11 +301,9 @@ public abstract class SigTestEE {
     }
 
     public static class Fault extends Exception {
-
         private static final long serialVersionUID = -1574745208867827913L;
 
-
-        public Throwable t;
+        private Throwable t;
 
         /**
          * creates a Fault with a message
