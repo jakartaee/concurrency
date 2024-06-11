@@ -50,6 +50,8 @@ public abstract class SigTest {
      * {@link SignatureTestDriver} that will use API Check. TCK developers can
      * override this to return the desired {@link SignatureTestDriver} for their
      * TCK.
+     *
+     * @return Object instance of SignatureTestDriver
      */
     protected SignatureTestDriver getSigTestDriver() {
 
@@ -72,7 +74,7 @@ public abstract class SigTest {
      * @return String The path and name of the package list file.
      */
     protected String getPackageFile() {
-        return getSigTestDriver().getPackageFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getPackageFileImpl();
     }
 
     /**
@@ -89,7 +91,7 @@ public abstract class SigTest {
      * @return String The path and name of the signature map file.
      */
     protected String getMapFile() {
-        return getSigTestDriver().getMapFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getMapFileImpl();
     }
 
     /**
@@ -102,10 +104,11 @@ public abstract class SigTest {
      * @return String The signature repository directory.
      */
     protected String getRepositoryDir() {
-        return getSigTestDriver().getRepositoryDirImpl(SigTestData.getTSHome());
+        return getSigTestDriver().getRepositoryDirImpl();
     }
 
     /**
+     * <p>
      * Returns the list of Optional Packages which are not accounted for. By
      * 'unlisted optional' we mean the packages which are Optional to the technology
      * under test that the user did NOT specifically list for testing. For example,
@@ -114,21 +117,28 @@ public abstract class SigTest {
      * list this optional technology for testing (via ts.jte javaee.level prop) then
      * this method will return the packages for JSR-88 technology with this method
      * call.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * This is useful for checking for a scenarios when a user may have forgotten to
      * identify a whole or partial technology implementation and in such cases, Java
      * EE platform still requires testing it.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * Any partial or complete impl of an unlistedOptionalPackage sends up a red
      * flag indicating that the user must also pass tests for this optional
      * technology area.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * Sub-classes are free to override this method if they use a different
      * signature repository directory. Most users should be able to use this default
      * implementation - which means that there was NO optional technology packages
      * that need to be tested.
+     * </p>
      *
-     * @return ArrayList<String>
+     * @return List of unlisted packages
      */
     protected ArrayList<String> getUnlistedOptionalPackages() {
         return null;
@@ -163,9 +173,6 @@ public abstract class SigTest {
      * Called by the test framework to initialize this test. The method simply
      * retrieves some state information that is necessary to run the test when when
      * the test framework invokes the run method (actually the test1 method).
-     *
-     * @throws Fault When an error occurs reading or saving the state information
-     *               processed by this method.
      */
     public void setup() {
         try {
@@ -197,10 +204,11 @@ public abstract class SigTest {
     public static class Fault extends Exception {
         private static final long serialVersionUID = -1574745208867827913L;
 
-        private Throwable t;
+        public Throwable t;
 
         /**
          * creates a Fault with a message
+         * @param msg - Error message
          */
         public Fault(final String msg) {
             super(msg);
@@ -231,7 +239,6 @@ public abstract class SigTest {
 
         /**
          * Prints this Throwable and its backtrace to the standard error stream.
-         *
          */
         public void printStackTrace() {
             if (this.t != null) {
@@ -293,10 +300,11 @@ public abstract class SigTest {
     public static class SetupException extends Exception {
         private static final long serialVersionUID = -7616313680616499158L;
 
-        private Exception e;
+        public Exception e;
 
         /**
          * creates a Fault with a message
+         * @param msg - The error message
          */
         public SetupException(final String msg) {
             super(msg);

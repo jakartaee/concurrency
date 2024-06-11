@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package ee.jakarta.tck.concurrent.common.signature;
 
 import java.io.BufferedReader;
@@ -49,6 +48,8 @@ public abstract class SigTestEE {
      * {@link SignatureTestDriver} that will use API Check. TCK developers can
      * override this to return the desired {@link SignatureTestDriver} for their
      * TCK.
+     *
+     * @return Instance of SignatureTestDriver
      */
     protected SignatureTestDriver getSigTestDriver() {
 
@@ -61,9 +62,11 @@ public abstract class SigTestEE {
     } // END getSigTestDriver
 
     /**
+     * <p>
      * Returns the location of the package list file. This file denotes the valid
      * sub-packages of any package being verified in the signature tests.
-     * <p/>
+     * </p>
+     *
      * Sub-classes are free to override this method if they use a different path or
      * filename for their package list file. Most users should be able to use this
      * default implementation.
@@ -71,16 +74,18 @@ public abstract class SigTestEE {
      * @return String The path and name of the package list file.
      */
     protected String getPackageFile() {
-        return getSigTestDriver().getPackageFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getPackageFileImpl();
     }
 
     /**
+     * <p>
      * Returns the path and name of the signature map file that this TCK uses when
      * conducting signature tests. The signature map file tells the signature test
      * framework which API versions of tested packages to use. To keep this code
      * platform independent, be sure to use the File.separator string (or the
      * File.separatorChar) to denote path separators.
-     * <p/>
+     * </p>
+     *
      * Sub-classes are free to override this method if they use a different path or
      * filename for their signature map file. Most users should be able to use this
      * default implementation.
@@ -88,12 +93,14 @@ public abstract class SigTestEE {
      * @return String The path and name of the signature map file.
      */
     protected String getMapFile() {
-        return getSigTestDriver().getMapFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getMapFileImpl();
     }
 
     /**
+     * <p>
      * Returns the directory that contains the signature files.
-     * <p/>
+     * </p>
+     *
      * Sub-classes are free to override this method if they use a different
      * signature repository directory. Most users should be able to use this default
      * implementation.
@@ -101,10 +108,11 @@ public abstract class SigTestEE {
      * @return String The signature repository directory.
      */
     protected String getRepositoryDir() {
-        return getSigTestDriver().getRepositoryDirImpl(SigTestData.getTSHome());
+        return getSigTestDriver().getRepositoryDirImpl();
     }
 
     /**
+     * <p>
      * Returns the list of Optional Packages which are not accounted for. By
      * 'unlisted optional' we mean the packages which are Optional to the technology
      * under test that the user did NOT specifically list for testing. For example,
@@ -113,21 +121,26 @@ public abstract class SigTestEE {
      * list this optional technology for testing (via ts.jte javaee.level prop) then
      * this method will return the packages for JSR-88 technology with this method
      * call.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * This is useful for checking for a scenarios when a user may have forgotten to
      * identify a whole or partial technology implementation and in such cases, Java
      * EE platform still requires testing it.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * Any partial or complete impl of an unlistedOptionalPackage sends up a red
      * flag indicating that the user must also pass tests for this optional
      * technology area.
-     * <p/>
+     * </p>
+     *
      * Sub-classes are free to override this method if they use a different
      * signature repository directory. Most users should be able to use this default
      * implementation - which means that there was NO optional technology packages
      * that need to be tested.
      *
-     * @return ArrayList<String>
+     * @return List of unlisted packages
      */
     protected ArrayList<String> getUnlistedOptionalPackages() {
         return null;
@@ -137,10 +150,6 @@ public abstract class SigTestEE {
      * Returns the list of packages that must be tested by the signature test
      * framework. TCK developers must implement this method in their signature test
      * sub-class.
-     *
-     * @param vehicleName The name of the vehicle the signature tests should be
-     *                    conducted in. Valid values for this property are ejb,
-     *                    servlet, ejb and appclient.
      *
      * @return String[] A list of packages that the developer wishes to test using
      *         the signature test framework. If the developer does not wish to test
@@ -156,7 +165,7 @@ public abstract class SigTestEE {
      *         the specified vehicle has no package signatures to be verified within
      *         it.
      */
-    protected abstract String[] getPackages(final String vehicleName);
+    protected abstract String[] getPackages();
 
     /**
      * <p>
@@ -171,19 +180,13 @@ public abstract class SigTestEE {
      * vehicle, the implementation of this method must return a zero-length array.
      * </p>
      *
-     * @param vehicleName The name of the vehicle the signature tests should be
-     *                    conducted in. Valid values for this property are ejb,
-     *                    servlet, ejb and appclient.
-     *
      * @return an Array of Strings containing the individual classes the framework
      *         should test based on the specifed vehicle. The default implementation
      *         of this method returns a zero-length array no matter the vehicle
      *         specified.
      */
-    protected String[] getClasses(final String vehicleName) {
-
+    protected String[] getClasses() {
         return new String[] {};
-
     } // END getClasses
 
     /**
@@ -213,11 +216,11 @@ public abstract class SigTestEE {
         SigTestResult results = null;
         String mapFile = getMapFile();
         String repositoryDir = getRepositoryDir();
-        String[] packages = getPackages(SigTestData.getVehicle());
-        String[] classes = getClasses(SigTestData.getVehicle());
+        String[] packages = getPackages();
+        String[] classes = getClasses();
         String packageFile = getPackageFile();
-        String testClasspath = SigTestData.getTestClasspath();
-        String optionalPkgToIgnore = SigTestData.getOptionalTechPackagesToIgnore();
+        String testClasspath = System.getProperty("sigTestClasspath");
+        String optionalPkgToIgnore = "";
 
         // unlisted optional packages are technology packages for those optional
         // technologies (e.g. jsr-88) that might not have been specified by the
@@ -231,7 +234,7 @@ public abstract class SigTestEE {
         Properties sysProps = System.getProperties();
         String version = (String) sysProps.get("java.version");
         if (!version.startsWith("1.")) {
-            String jimageDir = SigTestData.getJImageDir();
+            String jimageDir = sysProps.getProperty("jimage.dir");
             File f = new File(jimageDir);
             f.mkdirs();
 
@@ -298,12 +301,15 @@ public abstract class SigTestEE {
     }
 
     public static class Fault extends Exception {
+
         private static final long serialVersionUID = -1574745208867827913L;
 
-        private Throwable t;
+
+        public Throwable t;
 
         /**
          * creates a Fault with a message
+         * @param msg - error message
          */
         public Fault(final String msg) {
             super(msg);
