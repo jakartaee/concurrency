@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -33,22 +33,21 @@ import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import ee.jakarta.tck.concurrent.framework.TestLogger;
+import ee.jakarta.tck.concurrent.framework.TestProperty;
 
 public class ConcurrencySignatureTestRunner extends SigTestEE {
 
+    private Logger log = Logger.getLogger(getClass().getCanonicalName());
+
+    public static final String SIG_RESOURCE_PACKAGE = "ee.jakarta.tck.concurrent.common.signature";
     public static final String SIG_FILE_NAME = "jakarta.enterprise.concurrent.sig";
     public static final String SIG_MAP_NAME = "sig-test.map";
     public static final String SIG_PKG_NAME = "sig-test-pkg-list.txt";
-
-    public static final String[] SIG_RESOURCES = {
-            SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME
-            };
-
-    private static final TestLogger log = TestLogger.get(ConcurrencySignatureTestRunner.class);
+    
+    public static final String[] SIG_RESOURCES = {SIG_FILE_NAME, SIG_MAP_NAME, SIG_PKG_NAME};
 
     public ConcurrencySignatureTestRunner() {
         setup();
@@ -58,25 +57,29 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
      * Returns a list of strings where each string represents a package name. Each
      * package name will have it's signature tested by the signature test framework.
      *
+     * TODO is there a way to construct this list at runtime?
+     * Unlikely due to lazy classloading Package.getPackages() will not contain anything
+     * that hasn't been loaded.
+     *
      * @return String[] The names of the packages whose signatures should be
      *         verified.
      */
     @Override
-    protected String[] getPackages(final String vehicleName) {
+    protected String[] getPackages() {
         return new String[] {
                 "jakarta.enterprise.concurrent", "jakarta.enterprise.concurrent.spi"
                 };
-
     }
 
     /**
      * Returns the classpath for the packages we are interested in.
      */
     protected String getClasspath() {
-        final String defined = System.getProperty("signature.sigTestClasspath");
+        final String defined = TestProperty.signatureClasspath.getValue();
         if (defined != null && !defined.isBlank()) {
             return defined;
         }
+        
         // The Jakarta artifacts we want added to our classpath
         String[] classes = new String[] {
                 "jakarta.enterprise.concurrent.AbortedException", // For jakarta.enterprise.concurrent-api-3.0.0.jar
@@ -85,9 +88,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         };
 
         // The JDK modules we want added to our classpath
-        String[] jdkModules = new String[] {
-                "java.base", "java.rmi", "java.sql", "java.naming"
-                };
+        String[] jdkModules = new String[] {"java.base", "java.rmi", "java.sql", "java.naming"};
 
         // Get Jakarta artifacts from application server
         Set<String> classPaths = new HashSet<String>();
@@ -112,7 +113,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
         // Get JDK modules from jimage
         // Add JDK classes to classpath
-        File jimageOutput = new File(SigTestData.getJImageDir());
+        File jimageOutput = TestProperty.signatureImageDir.getFile();
         for (String module : jdkModules) {
             Path modulePath = Paths.get(jimageOutput.getAbsolutePath(), module);
             if (Files.isDirectory(modulePath)) {
@@ -152,7 +153,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
     protected File writeStreamToSigFile(final InputStream inputStream) throws IOException {
         FileOutputStream outputStream = null;
-        String tmpdir = System.getProperty("java.io.tmpdir");
+        String tmpdir = TestProperty.javaTempDir.getValue();
         try {
             File sigfile = new File(tmpdir + File.separator + SIG_FILE_NAME);
             if (sigfile.exists()) {
@@ -205,30 +206,30 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         try {
 
             InputStream inStreamMapfile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_MAP_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_MAP_NAME);
             File mFile = writeStreamToTempFile(inStreamMapfile, "sig-test", ".map");
             mapFile = mFile.getCanonicalPath();
             log.info("mapFile location is :" + mapFile);
 
             InputStream inStreamPackageFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_PKG_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_PKG_NAME);
             File pFile = writeStreamToTempFile(inStreamPackageFile, "sig-test-pkg-list", ".txt");
             packageListFile = pFile.getCanonicalPath();
             log.info("packageFile location is :" + packageListFile);
 
             InputStream inStreamSigFile = ConcurrencySignatureTestRunner.class.getClassLoader()
-                    .getResourceAsStream("ee/jakarta/tck/concurrent/common/signature/" + SIG_FILE_NAME);
+                    .getResourceAsStream(SIG_RESOURCE_PACKAGE.replace(".", "/") + "/" + SIG_FILE_NAME);
             File sigFile = writeStreamToSigFile(inStreamSigFile);
             log.info("signature File location is :" + sigFile.getCanonicalPath());
-            signatureRepositoryDir = System.getProperty("java.io.tmpdir");
+            signatureRepositoryDir = TestProperty.javaTempDir.getValue();
 
         } catch (IOException ex) {
             log.info("Exception while creating temp files :" + ex);
         }
 
-        String[] packagesUnderTest = getPackages(SigTestData.getVehicle());
-        String[] classesUnderTest = getClasses(SigTestData.getVehicle());
-        String optionalPkgToIgnore = SigTestData.getOptionalTechPackagesToIgnore();
+        String[] packagesUnderTest = getPackages();
+        String[] classesUnderTest = getClasses();
+        String optionalPkgToIgnore = "";
 
         // unlisted optional packages are technology packages for those optional
         // technologies (e.g. jsr-88) that might not have been specified by the
@@ -239,14 +240,13 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
 
         // If testing with Java 9+, extract the JDK's modules so they can be used
         // on the testcase's classpath.
-        Properties sysProps = System.getProperties();
-        String version = (String) sysProps.get("java.version");
+        String version = TestProperty.javaVer.getValue();
         if (!version.startsWith("1.")) {
-            String jimageDir = SigTestData.getJImageDir();
+            String jimageDir = TestProperty.signatureImageDir.getValue();
             File f = new File(jimageDir);
             f.mkdirs();
 
-            String javaHome = (String) sysProps.get("java.home");
+            String javaHome = TestProperty.javaHome.getValue();
             log.info("Executing JImage");
 
             try {
@@ -308,7 +308,7 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
         // Ensure that jimage directory is set.
         // This is where modules will be converted back to .class files for use in
         // signature testing
-        assertNotNull(System.getProperty("jimage.dir"),
+        assertNotNull(TestProperty.signatureImageDir.getValue(),
                 "The system property jimage.dir must be set in order to run the Signature test.");
 
         // Ensure user has the correct security/JDK settings to allow the plugin access

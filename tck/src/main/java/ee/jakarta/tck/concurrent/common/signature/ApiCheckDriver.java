@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,10 +27,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public final class ApiCheckDriver extends SignatureTestDriver implements Serializable {
-
     private static final long serialVersionUID = 1L;
+    
+    private static final Logger log = Logger.getLogger(ApiCheckDriver.class.getCanonicalName());
 
     /* flags for the Diff utility argument list */
     private static final String BASE_FLAG = "-base";
@@ -60,22 +62,14 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
             final boolean bStaticMode) throws Exception {
 
         Class<?> pkgListClass = Class.forName("javasoft.sqe.apiCheck.PackageList");
-        Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] {
-                String.class
-                });
-        Object pkgInstance = pkgCtor.newInstance(new Object[] {
-                packageListFile
-                });
+        Constructor<?> pkgCtor = pkgListClass.getDeclaredConstructor(new Class[] {String.class});
+        Object pkgInstance = pkgCtor.newInstance(new Object[] {packageListFile});
 
-        Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] {
-                String.class
-                });
+        Method pkgMethod = pkgListClass.getDeclaredMethod("getSubPackagesFormatted", new Class[] {String.class});
 
-        String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] {
-                packageOrClassUnderTest
-                });
+        String excludePkgs = (String) pkgMethod.invoke(pkgInstance, new Object[] {packageOrClassUnderTest});
 
-        List<String> sigArgsList = new LinkedList<>();
+        List<String> sigArgsList = new LinkedList<String>();
 
         sigArgsList.add(BASE_FLAG);
         sigArgsList.add(getSigFileInfo(packageOrClassUnderTest, mapFile, signatureRepositoryDir).getFile());
@@ -103,12 +97,8 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     protected boolean runSignatureTest(final String packageOrClassName, final String[] testArguments) throws Exception {
 
         Class<?> diffClass = Class.forName("javasoft.sqe.apiCheck.Diff");
-        Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] {
-                String[].class
-                });
-        mainMethod.invoke(null, new Object[] {
-                testArguments
-                });
+        Method mainMethod = diffClass.getDeclaredMethod("main", new Class[] {String[].class});
+        mainMethod.invoke(null, new Object[] {testArguments});
 
         Method diffMethod = diffClass.getDeclaredMethod("diffsFound", new Class[] {});
         return (!((Boolean) diffMethod.invoke(null, new Object[] {})).booleanValue());
@@ -118,7 +108,7 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
     @Override
     protected boolean runPackageSearch(final String packageOrClassName, final String[] testArguments) throws Exception {
         Class<?> sigTestClass = Class.forName("com.sun.tdk.signaturetest.SignatureTest");
-        Object sigTestInstance = sigTestClass.getConstructor().newInstance();
+        Object sigTestInstance = sigTestClass.getDeclaredConstructor().newInstance();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -130,33 +120,22 @@ public final class ApiCheckDriver extends SignatureTestDriver implements Seriali
         }
 
         // dump args for debugging aid
-        System.out.println("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
+        log.fine("\nCalling:  com.sun.tdk.signaturetest.SignatureTest() with following args:");
         for (int ii = 0; ii < testArguments.length; ii++) {
-            System.out.println("\t  testArguments[" + ii + "] = " + testArguments[ii]);
+            log.fine("\t  testArguments[" + ii + "] = " + testArguments[ii]);
         }
 
         Method runMethod = sigTestClass.getDeclaredMethod("run",
-                new Class[] {
-                        String[].class, PrintWriter.class, PrintWriter.class
-                        });
-        runMethod.invoke(sigTestInstance, new Object[] {
-                testArguments, new PrintWriter(output, true), null
-                });
+                new Class[] {String[].class, PrintWriter.class, PrintWriter.class});
+        runMethod.invoke(sigTestInstance, new Object[] {testArguments, new PrintWriter(output, true), null});
 
         String rawMessages = output.toString();
 
         // currently, there is no way to determine if there are error msgs in
         // the rawmessages, so we will always dump this and call it a status.
-        System.out.println("********** Status Report '" + packageOrClassName + "' **********\n");
-        System.out.println(rawMessages);
+        log.info("********** Status Report '" + packageOrClassName + "' **********\n");
+        log.info(rawMessages);
         return sigTestInstance.toString().substring(7).startsWith("Passed.");
-    }
-
-    @Override
-    protected boolean verifyJTAJarForNoXA(final String classpath, final String repositoryDir) throws Exception {
-        // Need to find out whether implementing this method is really required now.
-        // By default, signature test framework will use sigtest
-        return true;
     }
 
 } // END ApiCheckDriver

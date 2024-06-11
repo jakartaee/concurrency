@@ -112,7 +112,7 @@ public class SigTestResult implements Serializable {
 
         synchronized (this) {
             for (int i = 0; i < list.size(); i++) {
-                String pkg = list.get(i);
+                String pkg = (String) (list.get(i));
                 buf.append("\t\t").append(pkg).append(NL);
             }
         }

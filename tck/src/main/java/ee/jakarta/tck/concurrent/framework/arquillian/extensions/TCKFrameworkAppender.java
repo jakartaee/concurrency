@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 
+import ee.jakarta.tck.concurrent.framework.TestPropertyHandler;
 import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
@@ -57,7 +58,7 @@ public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
 
         framework = ShrinkWrap.create(JavaArchive.class, archiveName);
         framework.addPackages(false, utilPackage, annoPackage, extePackage);
-        return framework;
+        return TestPropertyHandler.storeProperties(framework);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2023 Oracle and/or its affiliates and others.
+ * Copyright (c) 2022, 2024 Oracle and/or its affiliates and others.
  * All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -21,9 +21,11 @@
 
 package ee.jakarta.tck.concurrent.common.signature;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.PrintStream;
+
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * This class should be extended by TCK developers that wish to create a set of
@@ -32,6 +34,8 @@ import java.util.ArrayList;
  * by the signature test framework.
  */
 public abstract class SigTest {
+    
+    private static final Logger log = Logger.getLogger(SigTest.class.getCanonicalName());
 
     private SignatureTestDriver driver;
 
@@ -46,6 +50,8 @@ public abstract class SigTest {
      * {@link SignatureTestDriver} that will use API Check. TCK developers can
      * override this to return the desired {@link SignatureTestDriver} for their
      * TCK.
+     *
+     * @return Object instance of SignatureTestDriver
      */
     protected SignatureTestDriver getSigTestDriver() {
 
@@ -68,7 +74,7 @@ public abstract class SigTest {
      * @return String The path and name of the package list file.
      */
     protected String getPackageFile() {
-        return getSigTestDriver().getPackageFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getPackageFileImpl();
     }
 
     /**
@@ -85,7 +91,7 @@ public abstract class SigTest {
      * @return String The path and name of the signature map file.
      */
     protected String getMapFile() {
-        return getSigTestDriver().getMapFileImpl(SigTestData.getBinDir());
+        return getSigTestDriver().getMapFileImpl();
     }
 
     /**
@@ -98,10 +104,11 @@ public abstract class SigTest {
      * @return String The signature repository directory.
      */
     protected String getRepositoryDir() {
-        return getSigTestDriver().getRepositoryDirImpl(SigTestData.getTSHome());
+        return getSigTestDriver().getRepositoryDirImpl();
     }
 
     /**
+     * <p>
      * Returns the list of Optional Packages which are not accounted for. By
      * 'unlisted optional' we mean the packages which are Optional to the technology
      * under test that the user did NOT specifically list for testing. For example,
@@ -110,21 +117,28 @@ public abstract class SigTest {
      * list this optional technology for testing (via ts.jte javaee.level prop) then
      * this method will return the packages for JSR-88 technology with this method
      * call.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * This is useful for checking for a scenarios when a user may have forgotten to
      * identify a whole or partial technology implementation and in such cases, Java
      * EE platform still requires testing it.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * Any partial or complete impl of an unlistedOptionalPackage sends up a red
      * flag indicating that the user must also pass tests for this optional
      * technology area.
-     * <p/>
+     * </p>
+     *
+     * <p>
      * Sub-classes are free to override this method if they use a different
      * signature repository directory. Most users should be able to use this default
      * implementation - which means that there was NO optional technology packages
      * that need to be tested.
+     * </p>
      *
-     * @return ArrayList<String>
+     * @return List of unlisted packages
      */
     protected ArrayList<String> getUnlistedOptionalPackages() {
         return null;
@@ -159,16 +173,13 @@ public abstract class SigTest {
      * Called by the test framework to initialize this test. The method simply
      * retrieves some state information that is necessary to run the test when when
      * the test framework invokes the run method (actually the test1 method).
-     *
-     * @throws Fault When an error occurs reading or saving the state information
-     *               processed by this method.
      */
     public void setup() {
         try {
-            System.out.println("$$$ SigTest.setup() called");
-            System.out.println("$$$ SigTest.setup() complete");
+            log.info("$$$ SigTest.setup() called");
+            log.info("$$$ SigTest.setup() complete");
         } catch (Exception e) {
-            System.out.println("Unexpected exception " + e.getMessage());
+            log.info("Unexpected exception " + e.getMessage());
             // throw new Fault("setup failed!", e);
         }
     }
@@ -181,10 +192,10 @@ public abstract class SigTest {
      * @throws Fault When an error occurs cleaning up the state of this test.
      */
     public void cleanup() throws Fault {
-        System.out.println("$$$ SigTest.cleanup() called");
+        log.info("$$$ SigTest.cleanup() called");
         try {
             getSigTestDriver().cleanupImpl();
-            System.out.println("$$$ SigTest.cleanup() returning");
+            log.info("$$$ SigTest.cleanup() returning");
         } catch (Exception e) {
             throw new Fault("Cleanup failed!", e);
         }
@@ -197,10 +208,11 @@ public abstract class SigTest {
 
         /**
          * creates a Fault with a message
+         * @param msg - Error message
          */
         public Fault(final String msg) {
             super(msg);
-            System.out.println(msg);
+            log.info(msg);
         }
 
         /**
@@ -212,7 +224,7 @@ public abstract class SigTest {
         public Fault(final String msg, final Throwable t) {
             super(msg);
             this.t = t;
-            // System.out.println(msg, t);
+            // log.info(msg, t);
         }
 
         /**
@@ -227,7 +239,6 @@ public abstract class SigTest {
 
         /**
          * Prints this Throwable and its backtrace to the standard error stream.
-         *
          */
         public void printStackTrace() {
             if (this.t != null) {
@@ -293,6 +304,7 @@ public abstract class SigTest {
 
         /**
          * creates a Fault with a message
+         * @param msg - The error message
          */
         public SetupException(final String msg) {
             super(msg);
