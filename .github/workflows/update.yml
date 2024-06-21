@@ -12,7 +12,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        java-version: [ '17', '21' ]
+        java-version: ['21']
 
     steps:
     - name: Checkout source

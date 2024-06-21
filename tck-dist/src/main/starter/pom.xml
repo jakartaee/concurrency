@@ -30,11 +30,11 @@
     <properties>
         <!-- General properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
 
         <!-- Dependency and Plugin Versions -->
-        <jakarta.concurrent.version>3.1.1</jakarta.concurrent.version>
+        <jakarta.concurrent.version>3.2.0</jakarta.concurrent.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
 
         <arquillian.version>1.8.1.Final</arquillian.version>
