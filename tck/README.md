@@ -15,7 +15,7 @@ This guide will help you build and run the TCK on a supported Jakarta EE Applica
 ### System Requirements
 You will need to download and install the following software before you begin.
 
-- JDK 17 or higher
+- JDK 21 or higher
 - [Maven 3.8.0 or higher](https://maven.apache.org/download.cgi)
 - Jakarta EE Application Server or Container [Glassfish, Open Liberty, JBoss, WebLogic, etc.]
 
