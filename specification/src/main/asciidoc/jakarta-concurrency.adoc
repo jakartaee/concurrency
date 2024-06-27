@@ -1,5 +1,5 @@
 :sectnums:
-= Jakarta Concurrency Specification, Version 3.1
+= Jakarta Concurrency Specification, Version 3.2
 
 Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
 
@@ -26,7 +26,7 @@ It is because of this behavior that application components are typically
 unable to reliably use other Jakarta EE platform services from a thread
 that is not managed by the container.
 
-Jakarta EE Product Providers (see chapter 2.12 of the Jakarta EE 11
+Jakarta EE Product Providers (see chapter 2.12 of the Jakarta EE 12
 Specification) also discourage the use of resources in a non-managed
 way, because it can potentially undermine the enterprise features that
 the platform is designed to provide such as availability, security, and

@@ -1,15 +1,15 @@
 = Jakarta Concurrency TCK Reference Guide
 :author: Kyle Aure
 :email: cu-dev@eclipse.org
-:revnumber: v1.1
+:revnumber: v1.2
 :toc:
 :sectnums:
 
 :APIShortName: Concurrency
 :APILongName: Jakarta Concurrency
-:APIVersion: 3.1.0
+:APIVersion: 3.2
 
-:APISpecSite: https://jakarta.ee/specifications/concurrency/3.1/
+:APISpecSite: https://jakarta.ee/specifications/concurrency/3.2/
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
 
@@ -17,8 +17,8 @@
 :SigPluginVersion: 2.3
 :SigPluginGAV: jakarta.tck:sigtest-maven-plugin:{SigPluginVersion}
 
-:JavaVersion1: 17
-:JavaVersion2: 21
+:JavaVersion1: 21
+:JavaVersion2: 25
 
 :license: Eclipse Foundation Technology Compatibility Kit License
 :licenseURL: https://www.eclipse.org/legal/tck.php
