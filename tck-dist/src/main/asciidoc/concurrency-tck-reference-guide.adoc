@@ -8,13 +8,13 @@
 :APIShortName: Concurrency
 :APIShortNameLC: concurrency
 :APILongName: Jakarta Concurrency
-:APIVersion: 3.0.0
+:APIVersion: 3.0
 :APISpecSite: https://jakarta.ee/specifications/concurrency/3.0/
 :APIEclipseSite: https://projects.eclipse.org/projects/ee4j.cu
 :APIGitSite: https://github.com/jakartaee/concurrency
 :TCKTestPlatform: TestNG
 :RuntimeTestCount: 164
-:SigPluginGAV: org.netbeans.tools:sigtest-maven-plugin:1.6
+:SigPluginGAV: jakarta.tck:sigtest-maven-plugin:2.3
 
 == Preface
 
@@ -272,7 +272,7 @@ The TCK uses external libraries that also need to be available on the Applicatio
 
 - org.apache.derby:derby - For database testing
 - org.testng:testng - For test assertions
-- org.netbeans.tools:sigtest-maven-plugin - For signature testing
+- jakarta.tck:sigtest-maven-plugin - For signature testing
 
 See <<Test Server Dependencies>>
 

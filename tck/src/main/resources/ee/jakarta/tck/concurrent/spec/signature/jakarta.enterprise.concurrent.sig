@@ -1,5 +1,5 @@
 #Signature file v4.1
-#Version 3.0.0-SNAPSHOT
+#Version 3.0.4-SNAPSHOT
 
 CLSS public jakarta.enterprise.concurrent.AbortedException
 cons public init()
@@ -257,7 +257,6 @@ cons public init(java.lang.String)
 cons public init(java.lang.String,java.lang.Throwable)
 cons public init(java.lang.Throwable)
 supr java.lang.Throwable
-hfds serialVersionUID
 
 CLSS public abstract interface !annotation java.lang.FunctionalInterface
  anno 0 java.lang.annotation.Documented()
@@ -301,7 +300,6 @@ meth public void printStackTrace(java.io.PrintStream)
 meth public void printStackTrace(java.io.PrintWriter)
 meth public void setStackTrace(java.lang.StackTraceElement[])
 supr java.lang.Object
-hfds ZeroElementArray,ZeroStackTraceElementArray,cause,detailMessage,disableWritableStackTrace,serialVersionUID,stackTrace,suppressedExceptions,walkback
 
 CLSS public abstract interface java.lang.annotation.Annotation
 meth public abstract boolean equals(java.lang.Object)
@@ -362,7 +360,6 @@ cons protected init(java.lang.String)
 cons public init(java.lang.String,java.lang.Throwable)
 cons public init(java.lang.Throwable)
 supr java.lang.Exception
-hfds serialVersionUID
 
 CLSS public abstract interface java.util.concurrent.Executor
 meth public abstract void execute(java.lang.Runnable)
@@ -426,8 +423,6 @@ meth public void execute(java.lang.Runnable)
 meth public void execute(java.util.concurrent.ForkJoinTask<?>)
 meth public void shutdown()
 supr java.util.concurrent.AbstractExecutorService
-hfds ADD_WORKER,COMMON_MAX_SPARES,COMMON_PARALLELISM,CTL,DEFAULT_COMMON_MAX_SPARES,DEFAULT_KEEPALIVE,DORMANT,FIFO,INITIAL_QUEUE_CAPACITY,MAXIMUM_QUEUE_CAPACITY,MAX_CAP,MODE,OWNED,QA,QLOCK,QUIET,RC_MASK,RC_SHIFT,RC_UNIT,SEED_INCREMENT,SHUTDOWN,SMASK,SP_MASK,SQMASK,SS_SEQ,STOP,SWIDTH,TC_MASK,TC_SHIFT,TC_UNIT,TERMINATED,TIMEOUT_SLOP,TOP_BOUND_SHIFT,UC_MASK,UNSIGNALLED,bounds,common,ctl,factory,indexSeed,keepAlive,mode,modifyThreadPermission,poolNumberSequence,saturate,stealCount,ueh,workQueues,workerNamePrefix
-hcls DefaultForkJoinWorkerThreadFactory,InnocuousForkJoinWorkerThreadFactory,WorkQueue
 
 CLSS public abstract interface static java.util.concurrent.ForkJoinPool$ForkJoinWorkerThreadFactory
  outer java.util.concurrent.ForkJoinPool
