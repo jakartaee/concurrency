@@ -56,7 +56,9 @@
 
     <modules>
         <module>api</module>
+        <module>specification</module>
         <module>tck</module>
+        <module>tck-dist</module>
     </modules>
 
     <scm>
