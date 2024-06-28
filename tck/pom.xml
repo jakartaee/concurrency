@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  /*
- * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -44,15 +44,14 @@
     </licenses>
 
     <properties>
-        <jakarta.concurrent.api.version>3.0.1</jakarta.concurrent.api.version>
-        <sigtest.version>1.6</sigtest.version>
+        <sigtest.version>2.3</sigtest.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.api.version}</version>
+            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -81,7 +80,7 @@
         </dependency>
         
         <dependency>
-            <groupId>org.netbeans.tools</groupId>
+            <groupId>jakarta.tck</groupId>
             <artifactId>sigtest-maven-plugin</artifactId>
             <version>${sigtest.version}</version>
             <scope>provided</scope>
@@ -172,10 +171,6 @@
                     <name>signature</name>
                 </property>
             </activation>
-            <properties>
-                <!--Default assumed JDK version, can be overriden via -Dmajor.jdk.version=X -->
-                <jdk.major.version>11</jdk.major.version>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -193,7 +188,7 @@
                                         <artifactItem>
                                             <groupId>jakarta.enterprise.concurrent</groupId>
                                             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-                                            <version>${jakarta.concurrent.api.version}</version>
+                                            <version>${project.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>
@@ -207,7 +202,7 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.netbeans.tools</groupId>
+                        <groupId>jakarta.tck</groupId>
                         <artifactId>sigtest-maven-plugin</artifactId>
                         <version>${sigtest.version}</version>
                         <executions>
@@ -226,26 +221,6 @@
                             </packages>
                             <attach>false</attach>
                             <sigfile>${project.build.directory}/jakarta.enterprise.concurrent.sig_${project.version}</sigfile>
-                            <!-- Ensure that the signature file we generated will work for both JDK11 and JDK17 -->
-                            <ignoreJDKClasses>
-                                <include>java.util.Map</include>
-                                <include>java.lang.Object</include>
-                                <include>java.io.ByteArrayInputStream</include>
-                                <include>java.io.InputStream</include>
-                                <include>java.lang.Deprecated</include>
-                                <include>java.io.Writer</include>
-                                <include>java.io.OutputStream</include>
-                                <include>java.util.List</include>
-                                <include>java.util.Collection</include>
-                                <include>java.lang.instrument.IllegalClassFormatException</include>
-                                <include>javax.transaction.xa.XAException</include>
-                                <include>java.lang.annotation.Repeatable</include>
-                                <include>java.lang.InterruptedException</include>
-                                <include>java.lang.CloneNotSupportedException</include>
-                                <include>java.lang.Throwable</include>
-                                <include>java.lang.Thread</include>
-                                <include>java.lang.Enum</include>
-                            </ignoreJDKClasses>
                         </configuration>
                     </plugin>
                 </plugins>
