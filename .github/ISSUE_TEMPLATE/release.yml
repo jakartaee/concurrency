@@ -36,16 +36,16 @@ body:
             - [ ] Complete outstanding work
             - [ ] [Update TCK Signatures to capture API changes](https://github.com/jakartaee/concurrency/actions/workflows/update.yml)
           #### Stage release
-            - [ ] [Build and stage artifacts to staging repository](https://ci.eclipse.org/cu/view/Release/job/concurrency_api_1-build-and-stage/)
-            - [ ] [Build and stage the TCK distribution artifact to download.eclipse.org](https://ci.eclipse.org/cu/view/Release/job/concurrency_tck_1-build-and-stage/)
+            - [ ] [Build and stage artifacts to staging repository](https://ci.eclipse.org/cu/view/Release%20Builds/job/concurrency_api_1-build-and-stage/)
+            - [ ] [Build and stage the TCK distribution artifact to download.eclipse.org](https://ci.eclipse.org/cu/view/Eclipse%20Builds/job/concurrency_tck_1-pull-and-stage/)
             - [ ] Update this issue with a comment that links to the staged artifacts and the generated GitHub branch and tag
             - [ ] [Create a `draft` on GitHub](https://github.com/jakartaee/concurrency/releases/new)
           #### Verify and modify
             - [ ] Ask for feedback from the community to verify the staged artifact has all the expected changes.
             - [ ] If anything needs to be added before publishing do that now and repeat the `Stage Release` section
           #### Publish release
-            - [ ] [Publish staged artifacts to the public repository](https://ci.eclipse.org/cu/view/Release/job/concurrency_api_3-staging-to-release/)
-            - [ ] [Publish staged TCK distribution artifact to download.eclipse.org](https://ci.eclipse.org/cu/view/Release/job/concurrency_tck_2-staging-to-promoted/)
+            - [ ] [Publish staged artifacts to the public repository](https://ci.eclipse.org/cu/view/Release%20Builds/job/concurrency_api_3-staging-to-release/)
+            - [ ] [Publish staged TCK distribution artifact to download.eclipse.org](https://ci.eclipse.org/cu/view/Eclipse%20Builds/job/concurrency_tck_2-staging-to-promoted/)
             - [ ] Update this issue with a comment that links to the published artifacts and the generated GitHub branch and tag
             - [ ] [Modify the `draft` release on GitHub to be `latest` or `pre-release`](https://github.com/jakartaee/concurrency/releases)
           #### Follow up
