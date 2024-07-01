@@ -37,7 +37,7 @@
         <jakarta.concurrent.version>3.1.1</jakarta.concurrent.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
 
-        <arquillian.version>1.8.0.Final</arquillian.version>
+        <arquillian.version>1.8.1.Final</arquillian.version>
         <junit5.version>5.10.3</junit5.version>
         <sigtest.version>2.3</sigtest.version>
 
