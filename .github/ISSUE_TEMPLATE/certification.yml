@@ -45,7 +45,7 @@ body:
       description: |
         SHA-256 Checksum
         This is the checksum of the TCK Distribution zip, not the checksum for the TCK jar artifact.
-        Example: `shasum -a 256 jakarta.enterprise.concurrent-tck-dist-3.1.0-dist.zip`
+        Example: `shasum -a 256 jakarta.concurrent-tck-dist-3.1.0-dist.zip`
   - type: textarea
     id: tckResults
     validations:
