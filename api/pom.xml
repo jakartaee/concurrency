@@ -27,14 +27,6 @@
     </parent>
 
     <artifactId>jakarta.concurrent-api</artifactId>
-
-    <distributionManagement>
-        <relocation>
-          <groupId>jakarta.enterprise.concurrent</groupId>
-          <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-        </relocation>
-    </distributionManagement>
-
     <name>Jakarta Concurrency</name>
     <description>
         Jakarta Concurrency provides a specification for using concurrency from application 

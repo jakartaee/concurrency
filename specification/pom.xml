@@ -30,10 +30,6 @@
     <name>Jakarta Concurrency Specification</name>
 
     <distributionManagement>
-        <relocation>
-          <groupId>jakarta.enterprise.concurrent</groupId>
-          <artifactId>concurrency-spec</artifactId>
-        </relocation>
         <site>
             <url>scm:git:git@github.com:jakartaee/jakarta-concurrency.git</url>
         </site>

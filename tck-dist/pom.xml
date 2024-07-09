@@ -29,13 +29,6 @@
     <name>Jakarta Concurrency TCK Distribution</name>
     <description>Jakarta Concurrency TCK Distribution</description>
 
-    <distributionManagement>
-        <relocation>
-          <groupId>jakarta.enterprise.concurrent</groupId>
-          <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
-        </relocation>
-    </distributionManagement>
-
     <licenses>
         <license>
             <name>Eclipse Public License 2.0</name>
