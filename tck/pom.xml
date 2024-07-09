@@ -23,13 +23,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>jakarta.enterprise.concurrent</groupId>
-        <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+        <groupId>jakarta.concurrent</groupId>
+        <artifactId>jakarta.concurrent.parent</artifactId>
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+    <artifactId>jakarta.concurrent-tck</artifactId>
     <packaging>jar</packaging>
+
+    <distributionManagement>
+        <relocation>
+          <groupId>jakarta.enterprise.concurrent</groupId>
+          <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+        </relocation>
+    </distributionManagement>
 
     <name>Jakarta Concurrency TCK</name>
     <description>Jakarta Concurrency TCK Tests</description>
@@ -48,8 +55,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+            <groupId>jakarta.concurrent</groupId>
+            <artifactId>jakarta.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -220,8 +227,8 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>jakarta.enterprise.concurrent</groupId>
-                                            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+                                            <groupId>jakarta.concurrent</groupId>
+                                            <artifactId>jakarta.concurrent-api</artifactId>
                                             <version>${jakarta.concurrent.api.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>

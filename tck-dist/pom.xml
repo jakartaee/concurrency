@@ -20,14 +20,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>jakarta.enterprise.concurrent</groupId>
-        <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+        <groupId>jakarta.concurrent</groupId>
+        <artifactId>jakarta.concurrent.parent</artifactId>
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
+    <artifactId>jakarta.concurrent-tck-dist</artifactId>
     <name>Jakarta Concurrency TCK Distribution</name>
     <description>Jakarta Concurrency TCK Distribution</description>
+
+    <distributionManagement>
+        <relocation>
+          <groupId>jakarta.enterprise.concurrent</groupId>
+          <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
+        </relocation>
+    </distributionManagement>
 
     <licenses>
         <license>
@@ -45,19 +52,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent.parent</artifactId>
+            <groupId>jakarta.concurrent</groupId>
+            <artifactId>jakarta.concurrent.parent</artifactId>
             <version>${jakarta.concurrent.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent-api</artifactId>
+            <groupId>jakarta.concurrent</groupId>
+            <artifactId>jakarta.concurrent-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.enterprise.concurrent</groupId>
-            <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
+            <groupId>jakarta.concurrent</groupId>
+            <artifactId>jakarta.concurrent-tck</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>
     </dependencies>
@@ -95,7 +102,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jakarta.enterprise.concurrent-tck</includeArtifactIds>
+                            <includeArtifactIds>jakarta.concurrent-tck</includeArtifactIds>
                             <classifier>sources</classifier>
                             <prependGroupId>true</prependGroupId>
                             <outputDirectory>${project.build.directory}/copied-sources/</outputDirectory>
@@ -123,7 +130,7 @@
                     <arguments>
                         <argument>false</argument> <!-- debug? -->
                         <argument>
-                            ${jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck:jar}</argument>
+                            ${jakarta.concurrent:jakarta.concurrent-tck:jar}</argument>
                         <argument>
                             ${project.basedir}/src/main/asciidoc/generated</argument>
                     </arguments>
