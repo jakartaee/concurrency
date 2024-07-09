@@ -26,10 +26,9 @@ jobs:
       id: checkout
       run: .github/scripts/checkout.sh update-generated-files-${{ github.sha }}
     - name: Generate signatures
-      #TODO remove -Pstaging once all Jakarta EE 11 dependencies are GA
       run: |
-        mvn install -Pstaging --file api/pom.xml
-        mvn package -Pstaging -Psignature-generation --file tck/pom.xml
+        mvn install --file api/pom.xml
+        mvn package -Psignature-generation --file tck/pom.xml
     ## Add any other automated update steps here
     - name: Needs updates
       id: update

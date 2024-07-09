@@ -35,6 +35,9 @@ jobs:
         cache: maven
     - name: Build project
       run: mvn -B package --file pom.xml
+    - name: Build relocation
+      run: mvn -B package --file relocation/pom.xml
+
   verify:
     runs-on: ubuntu-latest
     steps:
