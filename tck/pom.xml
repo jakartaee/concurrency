@@ -31,13 +31,6 @@
     <artifactId>jakarta.concurrent-tck</artifactId>
     <packaging>jar</packaging>
 
-    <distributionManagement>
-        <relocation>
-          <groupId>jakarta.enterprise.concurrent</groupId>
-          <artifactId>jakarta.enterprise.concurrent-tck</artifactId>
-        </relocation>
-    </distributionManagement>
-
     <name>Jakarta Concurrency TCK</name>
     <description>Jakarta Concurrency TCK Tests</description>
     <licenses>
