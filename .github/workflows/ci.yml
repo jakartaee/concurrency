@@ -34,7 +34,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build project
-      run: mvn -B package --file pom.xml
+      run: mvn -B install --file pom.xml
     - name: Build relocation
       run: mvn -B package --file relocation/pom.xml
 
