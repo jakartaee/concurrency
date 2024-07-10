@@ -34,11 +34,14 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <!-- Dependency and Plugin Versions -->
-        <jakarta.concurrent.version>3.2.0</jakarta.concurrent.version>
+        <jakarta.concurrent.version>3.1.0</jakarta.concurrent.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
 
+        <junit5.version>5.10.2</junit5.version>
         <arquillian.version>1.9.0.Final</arquillian.version>
-        <junit5.version>5.10.3</junit5.version>
+        <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
+        <shrinkwrap.version>1.2.6</shrinkwrap.version>
+        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
         <sigtest.version>2.3</sigtest.version>
 
         <derby.version>10.15.2.0</derby.version>
@@ -66,15 +69,43 @@
     <!-- tag::testClientDep[] -->
     <!-- The Arquillian test framework -->
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${arquillian.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
+      <dependencies>
+        <dependency>
+            <groupId>org.junit</groupId>
+            <artifactId>junit-bom</artifactId>
+            <version>${junit5.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.jakarta</groupId>
+            <artifactId>arquillian-jakarta-bom</artifactId>
+            <version>${arquillian.jakarta.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-bom</artifactId>
+            <version>${shrinkwrap.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-bom</artifactId>
+            <version>${shrinkwrap.resolver.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+      </dependencies>
     </dependencyManagement>
 
     <!-- Client Dependencies -->
@@ -187,7 +218,7 @@
                     <!-- Ensure surfire plugin looks under src/main/java instead of src/test/java -->
                     <testSourceDirectory>
                         ${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}
-		    </testSourceDirectory>
+                    </testSourceDirectory>
                 </configuration>
             </plugin>
             <!-- end::configSurefire[] -->

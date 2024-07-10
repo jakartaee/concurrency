@@ -42,12 +42,6 @@
         <url>https://github.com/jakartaee/concurrency</url>
     </scm>
 
-    <properties>
-        <!-- default is the same for backward compatibility reason
-            Easy to override when building with a system property -->
-        <spec.version>3.2</spec.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.interceptor</groupId>
@@ -60,7 +54,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -70,7 +63,7 @@
              <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>${maven.complier.plugin.version}</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
@@ -81,7 +74,7 @@
             <plugin>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>spec-version-maven-plugin</artifactId>
-                <version>2.2</version>
+                <version>${spec.version.plugin.version}</version>
                 <configuration>
                     <spec>
                         <specVersion>${spec.version}</specVersion>
@@ -103,7 +96,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>5.1.9</version>
+                <version>${maven.bundle.plugin.version}</version>
                 <configuration>
                     <supportedProjectTypes>
                         <supportedProjectType>jar</supportedProjectType>
@@ -136,7 +129,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
+                <version>${maven.jar.plugin.version}</version>
                 <configuration>
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -153,7 +146,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>${maven.javadoc.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-api-javadocs</id>
@@ -190,7 +183,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${maven.source.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -205,7 +198,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${build.helper.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>add-resource</id>
@@ -232,7 +225,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>${maven.jxr.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -244,13 +237,13 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
             
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven.surefire.version}</version>
             </plugin>
             
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>${flatten.maven.plugin.version}</version>
                 <configuration>
                     <flattenMode>ossrh</flattenMode>
                 </configuration>
