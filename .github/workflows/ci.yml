@@ -34,6 +34,17 @@ jobs:
         java-version: ${{ matrix.java-version }}
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      #TODO remove -Pstaging once all Jakarta EE 11 dependencies are GA
-      run: mvn -B -Pstaging package --file pom.xml
+    - name: Build project
+      run: mvn -B package --file pom.xml
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+    - name: Set up JDK 21
+      uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: maven
+    - name: Analyze starters
+      run: mvn dependency:analyze --file tck-dist/src/main/starter/pom.xml
