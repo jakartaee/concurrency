@@ -75,7 +75,7 @@
         <checkstyle.excludes></checkstyle.excludes>
 
         <!-- Used in TCK only -->
-        <junit5.version>5.10.2</junit5.version>
+        <junit5.version>5.11.0</junit5.version>
         <arquillian.version>1.9.1.Final</arquillian.version>
 
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
