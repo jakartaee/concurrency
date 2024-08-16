@@ -41,7 +41,7 @@
         <arquillian.version>1.9.1.Final</arquillian.version>
         <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
-        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
+        <shrinkwrap.resolver.version>3.3.1</shrinkwrap.resolver.version>
         <sigtest.version>2.3</sigtest.version>
 
         <derby.version>10.15.2.0</derby.version>
