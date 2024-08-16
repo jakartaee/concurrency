@@ -47,4 +47,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Analyze starters
-      run: mvn dependency:analyze --file tck-dist/src/main/starter/pom.xml
+      # Note: the starter is always 1 version ahead of what is in maven central
+      # therefore, when we analyze the starters we need to force a prior version
+      run: mvn dependency:analyze -Djakarta.concurrent.version=3.1.1 --file tck-dist/src/main/starter/pom.xml
