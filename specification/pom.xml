@@ -45,22 +45,12 @@
 
     <properties>
         <site.output.dir>${project.build.directory}/staging</site.output.dir>
-        <maven.site.skip>true</maven.site.skip>
-        
-        <asciidoctor.maven.plugin.version>3.0.0</asciidoctor.maven.plugin.version>
-        <asciidoctorj.version>2.5.13</asciidoctorj.version>
-        <asciidoctorj.pdf.version>2.3.18</asciidoctorj.pdf.version>
-        <jruby.version>9.4.8.0</jruby.version> 
 
         <!-- status: DRAFT, BETA, etc., or blank for final -->
         <status>DRAFT</status>
 
         <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
         <revisiondate>${maven.build.timestamp}</revisiondate>
-        
-        <!-- default is the same for backward compatibility reason
-            Easy to override when building with a system property -->
-        <spec.version>${project.version}</spec.version>
     </properties>
 
     <build>
@@ -70,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>${maven.enforcer.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -180,7 +170,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>${maven.release.plugin.version}</version>
                 <configuration>
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <useReleaseProfile>false</useReleaseProfile>
@@ -190,7 +180,7 @@
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>2.1.0</version>
+                        <version>${maven.scm.provider.gitexe.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -201,7 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
+                <version>${maven.assembly.plugin.version}</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>

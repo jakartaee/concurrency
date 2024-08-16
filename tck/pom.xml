@@ -46,17 +46,11 @@
         </license>
     </licenses>
 
-    <properties>
-        <jakarta.concurrent.api.version>${project.version}</jakarta.concurrent.api.version>
-        <sigtest.version>2.3</sigtest.version>
-        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.enterprise.concurrent</groupId>
             <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.api.version}</version>
+            <version>${jakarta.concurrent.version}</version>
             <scope>provided</scope>
         </dependency>
         
@@ -99,17 +93,14 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${junit5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>
-            <version>${arquillian.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-            <version>${shrinkwrap.resolver.version}</version>
         </dependency>
 
     </dependencies>
@@ -136,7 +127,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>${maven.complier.plugin.version}</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
@@ -145,7 +136,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${maven.source.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -177,7 +168,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>${maven.javadoc.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-api-javadocs</id>
@@ -245,7 +236,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.4.1</version>
+                        <version>${exec.maven.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>extractModules</id>
@@ -295,7 +286,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>${maven.antrun.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>copySigFile</id>

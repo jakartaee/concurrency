@@ -68,26 +68,98 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
         
+        <spec.version>3.2</spec.version>
+        
+        <maven.compiler.release>21</maven.compiler.release>
+        <maven.site.skip>true</maven.site.skip>
+        
+        <maven.antrun.plugin.version>3.1.0</maven.antrun.plugin.version>
+        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
+        <maven.bundle.plugin.version>5.1.9</maven.bundle.plugin.version>
         <maven.checkstyle.plugin.version>3.4.0</maven.checkstyle.plugin.version>
+        <maven.complier.plugin.version>3.13.0</maven.complier.plugin.version>
+        <maven.dependency.plugin.version>3.7.0</maven.dependency.plugin.version>
+        <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+        <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
+        <maven.javadoc.plugin.version>3.7.0</maven.javadoc.plugin.version>
+        <maven.jxr.plugin.version>3.4.0</maven.jxr.plugin.version>
+        <maven.release.plugin.version>3.1.0</maven.release.plugin.version>
+        <maven.scm.provider.gitexe.version>2.1.0</maven.scm.provider.gitexe.version>
+        <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
+        <maven.surefire.version>3.3.0</maven.surefire.version>
+        
+        <build.helper.plugin.version>3.6.0</build.helper.plugin.version>
+        <exec.maven.plugin.version>3.3.0</exec.maven.plugin.version>
+        <flatten.maven.plugin.version>1.6.0</flatten.maven.plugin.version>       
+        <spec.version.plugin.version>2.2</spec.version.plugin.version>
+        
         <checkstyle.version>10.17.0</checkstyle.version>
         <checkstyle.excludes></checkstyle.excludes>
+        
+        <asciidoctor.maven.plugin.version>3.0.0</asciidoctor.maven.plugin.version>
+        <asciidoctorj.version>2.5.13</asciidoctorj.version>
+        <asciidoctorj.pdf.version>2.3.17</asciidoctorj.pdf.version>
+        <jruby.version>9.4.8.0</jruby.version> 
 
         <!-- Used in TCK only -->
         <junit5.version>5.11.0</junit5.version>
         <arquillian.version>1.9.1.Final</arquillian.version>
+        <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
+        <shrinkwrap.version>1.2.6</shrinkwrap.version>
+        <shrinkwrap.resolver.version>3.3.0</shrinkwrap.resolver.version>
+        <sigtest.version>2.3</sigtest.version>
 
-        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
-        <jakarta.jsp.version>4.0.0</jakarta.jsp.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
-        <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
         <jakarta.cdi.version>4.1.0</jakarta.cdi.version>
+        <jakarta.concurrent.version>${project.version}</jakarta.concurrent.version>
+        <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
+        <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
+        <jakarta.jsp.version>4.0.0</jakarta.jsp.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- BOMs -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit5.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.jakarta</groupId>
+                <artifactId>arquillian-jakarta-bom</artifactId>
+                <version>${arquillian.jakarta.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap</groupId>
+                <artifactId>shrinkwrap-bom</artifactId>
+                <version>${shrinkwrap.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${shrinkwrap.resolver.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- provided -->
             <dependency>
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
