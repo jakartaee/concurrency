@@ -34,6 +34,7 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <!-- Dependency and Plugin Versions -->
+        <jakarta.concurrent.groupid>jakarta.concurrent</jakarta.concurrent.groupid>
         <jakarta.concurrent.version>3.2.0</jakarta.concurrent.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
 
@@ -112,14 +113,14 @@
     <dependencies>
         <!-- The TCK -->
         <dependency>
-            <groupId>jakarta.concurrent</groupId>
-            <artifactId>jakarta.concurrent-tck</artifactId>
+            <groupId>${jakarta.concurrent.groupid}</groupId>
+            <artifactId>${jakarta.concurrent.groupid}-tck</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>
         <!-- The API -->
         <dependency>
-            <groupId>jakarta.concurrent</groupId>
-            <artifactId>jakarta.concurrent-api</artifactId>
+            <groupId>${jakarta.concurrent.groupid}</groupId>
+            <artifactId>${jakarta.concurrent.groupid}-api</artifactId>
             <version>${jakarta.concurrent.version}</version>
         </dependency>
         <!-- Arquillian Implementation for JUnit5 -->

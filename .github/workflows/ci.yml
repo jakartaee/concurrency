@@ -51,4 +51,4 @@ jobs:
     - name: Analyze starters
       # Note: the starter is always 1 version ahead of what is in maven central
       # therefore, when we analyze the starters we need to force a prior version
-      run: mvn dependency:analyze -Djakarta.concurrent.version=3.1.1 --file tck-dist/src/main/starter/pom.xml
+      run: mvn dependency:analyze -Djakarta.concurrent.groupid=jakarta.enterprise.concurrent -Djakarta.concurrent.version=3.1.1 --file tck-dist/src/main/starter/pom.xml
