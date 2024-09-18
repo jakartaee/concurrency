@@ -26,7 +26,8 @@
     </parent>
 
     <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-
+    <packaging>pom</packaging>
+    
     <name>Jakarta Concurrency</name>
     <description>
         Jakarta Concurrency provides a specification for using concurrency from application 

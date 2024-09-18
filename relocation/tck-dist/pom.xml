@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>jakarta.enterprise.concurrent-tck-dist</artifactId>
+    <packaging>pom</packaging>
 
     <name>Jakarta Concurrency TCK Distribution</name>
     <description>Jakarta Concurrency TCK Distribution</description>
