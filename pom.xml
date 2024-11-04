@@ -87,7 +87,7 @@
         <maven.release.plugin.version>3.1.1</maven.release.plugin.version>
         <maven.scm.provider.gitexe.version>2.1.0</maven.scm.provider.gitexe.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
-        <maven.surefire.version>3.5.1</maven.surefire.version>
+        <maven.surefire.version>3.5.2</maven.surefire.version>
         
         <build.helper.plugin.version>3.6.0</build.helper.plugin.version>
         <exec.maven.plugin.version>3.5.0</exec.maven.plugin.version>
