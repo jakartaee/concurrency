@@ -108,7 +108,7 @@
         <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
         <shrinkwrap.resolver.version>3.3.2</shrinkwrap.resolver.version>
-        <sigtest.version>2.3</sigtest.version>
+        <sigtest.version>2.4</sigtest.version>
 
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <jakarta.cdi.version>4.1.0</jakarta.cdi.version>
