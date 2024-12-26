@@ -28,7 +28,7 @@ import java.time.Month;
  * <p>Defines schedules for
  * {@link Asynchronous#runAt() scheduled asynchronous methods}.</p>
  *
- * <p>For the scheduled asychronous method to aim to run at a given day and time,
+ * <p>For the scheduled asynchronous method to aim to run at a given day and time,
  * all of the criteria specified by the {@code Schedule} must match
  * or be disregarded according to the rules of each field.</p>
  *
