@@ -16,17 +16,16 @@
 
 package jakarta.enterprise.concurrent;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.DayOfWeek;
 import java.time.Month;
-import java.time.ZonedDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-public class CronTriggerTest {
+class CronTriggerTest {
 
     // LastExecution is used for invoking trigger.getNextRunTime and trigger.skipRun
     static class LastExecutionImpl implements LastExecution {
@@ -91,9 +90,9 @@ public class CronTriggerTest {
      * Use a CronTrigger with a basic cron expression.
      */
     @Test
-    public void testBasicCronExpression() {
-        ZoneId Moscow = ZoneId.of("Europe/Moscow");
-        CronTrigger trigger = new CronTrigger("0 9-17 * * MON-FRI", Moscow);
+    void testBasicCronExpression() {
+        ZoneId moscow = ZoneId.of("Europe/Moscow");
+        CronTrigger trigger = new CronTrigger("0 9-17 * * MON-FRI", moscow);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2021, 7, 30, // Friday, July 30, 2021
@@ -102,19 +101,19 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 7, 30, 15, 0, 0, 0, Moscow), time);
+        assertEquals(ZonedDateTime.of(2021, 7, 30, 15, 0, 0, 0, moscow), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 7, 30, 16, 0, 0, 0, Moscow), time);
+        assertEquals(ZonedDateTime.of(2021, 7, 30, 16, 0, 0, 0, moscow), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 7, 30, 17, 0, 0, 0, Moscow), time);
+        assertEquals(ZonedDateTime.of(2021, 7, 30, 17, 0, 0, 0, moscow), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 2, 9, 0, 0, 0, Moscow), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 2, 9, 0, 0, 0, moscow), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 2, 10, 0, 0, 0, Moscow), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 2, 10, 0, 0, 0, moscow), time);
     }
 
     /**
@@ -122,12 +121,12 @@ public class CronTriggerTest {
      * with intervals and ordinal days of week.
      */
     @Test
-    public void testCronExpression() {
+    void testCronExpression() {
         // 3 PM every third month starting with February, every Monday, on the second Tuesday,
         // on the third Wednesday, and on the last Saturday of the month.
 
-        ZoneId Brazil = ZoneId.of("America/Sao_Paulo");
-        CronTrigger trigger = new CronTrigger("0 15 * FEB/3 MON,TUE#2,WED#3,SAT#L", Brazil);
+        ZoneId brazil = ZoneId.of("America/Sao_Paulo");
+        CronTrigger trigger = new CronTrigger("0 15 * FEB/3 MON,TUE#2,WED#3,SAT#L", brazil);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2021, 1, 1, // Friday, Jan 1, 2021
@@ -136,63 +135,63 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 1, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 2, 1, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 8, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 2, 8, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 9, 15, 0, 0, 0, Brazil), time); // Tuesday
+        assertEquals(ZonedDateTime.of(2021, 2, 9, 15, 0, 0, 0, brazil), time); // Tuesday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 15, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 2, 15, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 17, 15, 0, 0, 0, Brazil), time); // Wednesday
+        assertEquals(ZonedDateTime.of(2021, 2, 17, 15, 0, 0, 0, brazil), time); // Wednesday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 22, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 2, 22, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 27, 15, 0, 0, 0, Brazil), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 2, 27, 15, 0, 0, 0, brazil), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 3, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 3, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 10, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 10, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 11, 15, 0, 0, 0, Brazil), time); // Tuesday
+        assertEquals(ZonedDateTime.of(2021, 5, 11, 15, 0, 0, 0, brazil), time); // Tuesday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 17, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 17, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 19, 15, 0, 0, 0, Brazil), time); // Wednesday
+        assertEquals(ZonedDateTime.of(2021, 5, 19, 15, 0, 0, 0, brazil), time); // Wednesday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(12, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 24, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 24, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(13, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 29, 15, 0, 0, 0, Brazil), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 29, 15, 0, 0, 0, brazil), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(14, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 31, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 31, 15, 0, 0, 0, brazil), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(15, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 2, 15, 0, 0, 0, Brazil), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 8, 2, 15, 0, 0, 0, brazil), time); // Monday
     }
 
     /**
      * Use a CronTrigger with a cron expression consisting of 6 fields.
      */
     @Test
-    public void testCronExpressionWithSeconds() {
+    void testCronExpressionWithSeconds() {
         // 10:20:30 AM on the 27th through last days of February, March, and April.
 
-        ZoneId Azores = ZoneId.of("Atlantic/Azores");
-        CronTrigger trigger = new CronTrigger("30 20 10 27-L FEB-APR *", Azores);
+        ZoneId azores = ZoneId.of("Atlantic/Azores");
+        CronTrigger trigger = new CronTrigger("30 20 10 27-L FEB-APR *", azores);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2023, 2, 2, // Thursday, Feb 2, 2023
@@ -201,49 +200,49 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 2, 27, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 2, 27, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 2, 28, 10, 20, 30, 0, Azores), time); // 28 day February
+        assertEquals(ZonedDateTime.of(2023, 2, 28, 10, 20, 30, 0, azores), time); // 28 day February
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 3, 27, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 3, 27, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 3, 28, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 3, 28, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 3, 29, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 3, 29, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 3, 30, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 3, 30, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 3, 31, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 3, 31, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 4, 27, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 4, 27, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 4, 28, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 4, 28, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 4, 29, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 4, 29, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 4, 30, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2023, 4, 30, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 2, 27, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2024, 2, 27, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(12, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 2, 28, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2024, 2, 28, 10, 20, 30, 0, azores), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(13, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 2, 29, 10, 20, 30, 0, Azores), time); // 29 day February
+        assertEquals(ZonedDateTime.of(2024, 2, 29, 10, 20, 30, 0, azores), time); // 29 day February
 
         time = trigger.getNextRunTime(new LastExecutionImpl(14, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 3, 27, 10, 20, 30, 0, Azores), time);
+        assertEquals(ZonedDateTime.of(2024, 3, 27, 10, 20, 30, 0, azores), time);
     }
 
     /**
@@ -252,7 +251,7 @@ public class CronTriggerTest {
      * Friday whenever the former fall on a weekend.
      */
     @Test
-    public void testCronTriggerJavaDocExample() {
+    void testCronTriggerJavaDocExample() {
         CronTrigger trigger = new PayrollTrigger();
         ZoneId zone = trigger.getZoneId();
 
@@ -321,7 +320,7 @@ public class CronTriggerTest {
      * Verify that a cron trigger that runs daily at noon can be properly applied to all hours of the day.
      */
     @Test
-    public void testDailyAtNoon() {
+    void testDailyAtNoon() {
         CronTrigger trigger = new CronTrigger("0 12 * * *", ZoneOffset.UTC);
         ZonedDateTime next;
 
@@ -402,10 +401,10 @@ public class CronTriggerTest {
      * Specify daysOfMonth as a cron expression.
      */
     @Test
-    public void testDaysOfMonthCronExpression() {
-        ZoneId Central = ZoneId.of("America/Chicago");
+    void testDaysOfMonthCronExpression() {
+        ZoneId central = ZoneId.of("America/Chicago");
 
-        CronTrigger trigger = new CronTrigger(Central)
+        CronTrigger trigger = new CronTrigger(central)
                 .daysOfMonth("L,7/9,2-4"); // equivalent to: 2,3,4,7,16,25,L
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -415,41 +414,41 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 31, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 31, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 2, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 2, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 3, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 3, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 4, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 4, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 7, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 7, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 16, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 16, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 25, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 25, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 28, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 2, 28, 0, 0, 0, 0, central), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 2, 0, 0, 0, 0, Central), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 2, 0, 0, 0, 0, central), time);
     }
 
     /**
      * Specify daysOfMonth as a set of literals.
      */
     @Test
-    public void testDaysOfMonthLiterals() {
-        ZoneId Eastern = ZoneId.of("America/New_York");
+    void testDaysOfMonthLiterals() {
+        ZoneId eastern = ZoneId.of("America/New_York");
 
-        CronTrigger trigger = new CronTrigger(Eastern)
+        CronTrigger trigger = new CronTrigger(eastern)
                 .daysOfMonth(30, 7, 31, 3);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -459,38 +458,38 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 9, 3, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 9, 3, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 9, 7, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 9, 7, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 9, 30, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 9, 30, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 10, 3, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 10, 3, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 10, 7, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 10, 7, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 10, 30, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 10, 30, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 10, 31, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 10, 31, 0, 0, 0, 0, eastern), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 3, 0, 0, 0, 0, Eastern), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 3, 0, 0, 0, 0, eastern), time);
     }
 
     /**
      * Specify daysOfWeek as a cron expression.
      */
     @Test
-    public void testDaysOfWeekCronExpression() {
-        ZoneId Mtn = ZoneId.of("America/Denver");
+    void testDaysOfWeekCronExpression() {
+        ZoneId mtn = ZoneId.of("America/Denver");
 
-        CronTrigger trigger = new CronTrigger(Mtn)
+        CronTrigger trigger = new CronTrigger(mtn)
                 .daysOfWeek("SAT-MON,WED#L");
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -500,68 +499,68 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 4, 28, 0, 0, 0, 0, Mtn), time); // Wednesday (Last)
+        assertEquals(ZonedDateTime.of(2021, 4, 28, 0, 0, 0, 0, mtn), time); // Wednesday (Last)
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 1, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 1, 0, 0, 0, 0, mtn), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 2, 0, 0, 0, 0, Mtn), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 5, 2, 0, 0, 0, 0, mtn), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 3, 0, 0, 0, 0, Mtn), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 3, 0, 0, 0, 0, mtn), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 8, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 8, 0, 0, 0, 0, mtn), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 9, 0, 0, 0, 0, Mtn), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 5, 9, 0, 0, 0, 0, mtn), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 10, 0, 0, 0, 0, Mtn), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 10, 0, 0, 0, 0, mtn), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 15, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 15, 0, 0, 0, 0, mtn), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 16, 0, 0, 0, 0, Mtn), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 5, 16, 0, 0, 0, 0, mtn), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 17, 0, 0, 0, 0, Mtn), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 17, 0, 0, 0, 0, mtn), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 22, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 22, 0, 0, 0, 0, mtn), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 23, 0, 0, 0, 0, Mtn), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 5, 23, 0, 0, 0, 0, mtn), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(12, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 24, 0, 0, 0, 0, Mtn), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 24, 0, 0, 0, 0, mtn), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(13, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 26, 0, 0, 0, 0, Mtn), time); // Wednesday (Last)
+        assertEquals(ZonedDateTime.of(2021, 5, 26, 0, 0, 0, 0, mtn), time); // Wednesday (Last)
 
         time = trigger.getNextRunTime(new LastExecutionImpl(14, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 29, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 5, 29, 0, 0, 0, 0, mtn), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(15, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 30, 0, 0, 0, 0, Mtn), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 5, 30, 0, 0, 0, 0, mtn), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(16, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 31, 0, 0, 0, 0, Mtn), time); // Monday
+        assertEquals(ZonedDateTime.of(2021, 5, 31, 0, 0, 0, 0, mtn), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(17, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 5, 0, 0, 0, 0, Mtn), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 6, 5, 0, 0, 0, 0, mtn), time); // Saturday
     }
 
     /**
      * Specify daysOfWeek as a set of literals.
      */
     @Test
-    public void testDaysOfWeekLiterals() {
-        ZoneId Pacific = ZoneId.of("America/Los_Angeles");
+    void testDaysOfWeekLiterals() {
+        ZoneId pacific = ZoneId.of("America/Los_Angeles");
 
-        CronTrigger trigger = new CronTrigger(Pacific)
+        CronTrigger trigger = new CronTrigger(pacific)
                 .daysOfWeek(DayOfWeek.SUNDAY, DayOfWeek.THURSDAY);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -571,22 +570,22 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 0, 0, 0, Pacific), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 0, 0, 0, pacific), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 18, 0, 0, 0, 0, Pacific), time); // Thursday
+        assertEquals(ZonedDateTime.of(2021, 3, 18, 0, 0, 0, 0, pacific), time); // Thursday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 21, 0, 0, 0, 0, Pacific), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 3, 21, 0, 0, 0, 0, pacific), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 25, 0, 0, 0, 0, Pacific), time); // Thursday
+        assertEquals(ZonedDateTime.of(2021, 3, 25, 0, 0, 0, 0, pacific), time); // Thursday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 28, 0, 0, 0, 0, Pacific), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 3, 28, 0, 0, 0, 0, pacific), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 4, 1, 0, 0, 0, 0, Pacific), time);  // Thursday
+        assertEquals(ZonedDateTime.of(2021, 4, 1, 0, 0, 0, 0, pacific), time);  // Thursday
     }
 
     /**
@@ -594,10 +593,10 @@ public class CronTriggerTest {
      * This also covers crossing out of Daylight Saving Time.
      */
     @Test
-    public void testHoursCronExpression() {
-        ZoneId Alaska = ZoneId.of("America/Anchorage");
+    void testHoursCronExpression() {
+        ZoneId alaska = ZoneId.of("America/Anchorage");
 
-        CronTrigger trigger = new CronTrigger(Alaska)
+        CronTrigger trigger = new CronTrigger(alaska)
                 .hours("23-4"); // 11 PM to 4 AM
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -607,46 +606,46 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 6, 23, 0, 0, 0, Alaska), time); // 11 PM
+        assertEquals(ZonedDateTime.of(2021, 11, 6, 23, 0, 0, 0, alaska), time); // 11 PM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 0, 0, 0, Alaska), time); // 12 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 0, 0, 0, alaska), time); // 12 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, Alaska), time); // 1 AM Daylight Savings Time
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, alaska), time); // 1 AM Daylight Savings Time
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, Alaska).plusHours(1), time); // 1 AM Standard Time
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, alaska).plusHours(1), time); // 1 AM Standard Time
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 0, 0, 0, Alaska), time); // 2 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 0, 0, 0, alaska), time); // 2 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 3, 0, 0, 0, Alaska), time); // 3 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 3, 0, 0, 0, alaska), time); // 3 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 4, 0, 0, 0, Alaska), time); // 4 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 4, 0, 0, 0, alaska), time); // 4 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 23, 0, 0, 0, Alaska), time); // 11 PM
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 23, 0, 0, 0, alaska), time); // 11 PM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 0, 0, 0, 0, Alaska), time); // 12 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 0, 0, 0, 0, alaska), time); // 12 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 1, 0, 0, 0, Alaska), time); // 1 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 1, 0, 0, 0, alaska), time); // 1 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 2, 0, 0, 0, Alaska), time); // 2 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 2, 0, 0, 0, alaska), time); // 2 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 3, 0, 0, 0, Alaska), time); // 3 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 3, 0, 0, 0, alaska), time); // 3 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(12, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 4, 0, 0, 0, Alaska), time); // 4 AM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 4, 0, 0, 0, alaska), time); // 4 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(13, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 23, 0, 0, 0, Alaska), time); // 11 PM
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 23, 0, 0, 0, alaska), time); // 11 PM
     }
 
     /**
@@ -654,10 +653,10 @@ public class CronTriggerTest {
      * This also tests crossing over into Daylight Saving Time.
      */
     @Test
-    public void testHoursLiterals() {
-        ZoneId Aleutian = ZoneId.of("America/Adak");
+    void testHoursLiterals() {
+        ZoneId aleutian = ZoneId.of("America/Adak");
 
-        CronTrigger trigger = new CronTrigger(Aleutian)
+        CronTrigger trigger = new CronTrigger(aleutian)
                 .hours(1,2,3);
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
@@ -667,38 +666,38 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 0, 0, 0, Aleutian), time); // 1 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 0, 0, 0, aleutian), time); // 1 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 0, 0, 0, Aleutian), time); // 3 AM (no 2 AM because of Daylight Saving Time)
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 0, 0, 0, aleutian), time); // 3 AM (no 2 AM because of Daylight Saving Time)
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 15, 1, 0, 0, 0, Aleutian), time); // 1 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 15, 1, 0, 0, 0, aleutian), time); // 1 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 15, 2, 0, 0, 0, Aleutian), time); // 2 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 15, 2, 0, 0, 0, aleutian), time); // 2 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 15, 3, 0, 0, 0, Aleutian), time); // 3 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 15, 3, 0, 0, 0, aleutian), time); // 3 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 16, 1, 0, 0, 0, Aleutian), time); // 1 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 16, 1, 0, 0, 0, aleutian), time); // 1 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 16, 2, 0, 0, 0, Aleutian), time); // 2 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 16, 2, 0, 0, 0, aleutian), time); // 2 AM
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 16, 3, 0, 0, 0, Aleutian), time); // 3 AM
+        assertEquals(ZonedDateTime.of(2021, 3, 16, 3, 0, 0, 0, aleutian), time); // 3 AM
     }
 
     /**
      * Specify minutes as a cron expression.
      */
     @Test
-    public void testMinutesCronExpression() {
-        ZoneId NewZealand = ZoneId.of("Pacific/Auckland");
+    void testMinutesCronExpression() {
+        ZoneId newZealand = ZoneId.of("Pacific/Auckland");
 
-        CronTrigger trigger = new CronTrigger(NewZealand)
+        CronTrigger trigger = new CronTrigger(newZealand)
                 .hours("*")
                 .minutes("5-7,14/15,*/20"); // equivalent to: 0,5,6,7,14,20,29,40,44,59
 
@@ -709,50 +708,50 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 6, 59, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 6, 59, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 0, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 0, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 5, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 5, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 6, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 6, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 7, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 7, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 14, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 14, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 20, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 20, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 29, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 29, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 40, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 40, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 44, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 44, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 59, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 7, 59, 0, 0, newZealand), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 8, 0, 0, 0, NewZealand), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 8, 0, 0, 0, newZealand), time);
     }
 
     /**
      * Specify minutes as a set of literals.
      */
     @Test
-    public void testMinutesLiterals() {
-        ZoneId Magadan = ZoneId.of("Asia/Magadan");
+    void testMinutesLiterals() {
+        ZoneId magadan = ZoneId.of("Asia/Magadan");
 
-        CronTrigger trigger = new CronTrigger(Magadan)
+        CronTrigger trigger = new CronTrigger(magadan)
                 .hours("*")
                 .minutes(38, 0, 59, 38, 17); // extra 38 gets ignored
 
@@ -763,35 +762,35 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 7, 31, 23, 59, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 7, 31, 23, 59, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 0, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 0, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 17, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 17, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 38, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 38, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 59, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 0, 59, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 1, 0, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 1, 0, 0, 0, magadan), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 1, 1, 17, 0, 0, Magadan), time);
+        assertEquals(ZonedDateTime.of(2021, 8, 1, 1, 17, 0, 0, magadan), time);
     }
 
     /**
      * Specify months as a cron expression.
      */
     @Test
-    public void testMonthsCronExpression() {
-        ZoneId EasternAUS = ZoneId.of("Australia/Sydney");
+    void testMonthsCronExpression() {
+        ZoneId easternAus = ZoneId.of("Australia/Sydney");
 
-        CronTrigger trigger = new CronTrigger(EasternAUS)
+        CronTrigger trigger = new CronTrigger(easternAus)
                 .months("OCT-MAR")
                 .daysOfMonth("L");
 
@@ -802,50 +801,50 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2019, 11, 30, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2019, 11, 30, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2019, 12, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2019, 12, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 1, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2020, 1, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 2, 29, 0, 0, 0, 0, EasternAUS), time); // 29 day February
+        assertEquals(ZonedDateTime.of(2020, 2, 29, 0, 0, 0, 0, easternAus), time); // 29 day February
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 3, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2020, 3, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 10, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2020, 10, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 11, 30, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2020, 11, 30, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 12, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2020, 12, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 28, 0, 0, 0, 0, EasternAUS), time); // 28 day February
+        assertEquals(ZonedDateTime.of(2021, 2, 28, 0, 0, 0, 0, easternAus), time); // 28 day February
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 31, 0, 0, 0, 0, easternAus), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 10, 31, 0, 0, 0, 0, EasternAUS), time);
+        assertEquals(ZonedDateTime.of(2021, 10, 31, 0, 0, 0, 0, easternAus), time);
     }
 
     /**
      * Specify months as a set of literals.
      */
     @Test
-    public void testMonthsLiterals() {
-        ZoneId Japan = ZoneId.of("Asia/Tokyo");
+    void testMonthsLiterals() {
+        ZoneId japan = ZoneId.of("Asia/Tokyo");
 
-        CronTrigger trigger = new CronTrigger(Japan)
+        CronTrigger trigger = new CronTrigger(japan)
                 .months(Month.SEPTEMBER, Month.FEBRUARY, Month.MAY)
                 .daysOfMonth("2L"); // second-to-last day of month
 
@@ -856,32 +855,32 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2023, 9, 29, 0, 0, 0, 0, Japan), time); // September - 30 day month
+        assertEquals(ZonedDateTime.of(2023, 9, 29, 0, 0, 0, 0, japan), time); // September - 30 day month
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 2, 28, 0, 0, 0, 0, Japan), time); // February - 29 day month
+        assertEquals(ZonedDateTime.of(2024, 2, 28, 0, 0, 0, 0, japan), time); // February - 29 day month
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 5, 30, 0, 0, 0, 0, Japan), time); // May - 31 day month
+        assertEquals(ZonedDateTime.of(2024, 5, 30, 0, 0, 0, 0, japan), time); // May - 31 day month
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2024, 9, 29, 0, 0, 0, 0, Japan), time); // September - 30 day month
+        assertEquals(ZonedDateTime.of(2024, 9, 29, 0, 0, 0, 0, japan), time); // September - 30 day month
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2025, 2, 27, 0, 0, 0, 0, Japan), time); // February - 28 day month
+        assertEquals(ZonedDateTime.of(2025, 2, 27, 0, 0, 0, 0, japan), time); // February - 28 day month
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2025, 5, 30, 0, 0, 0, 0, Japan), time); // May - 31 day month
+        assertEquals(ZonedDateTime.of(2025, 5, 30, 0, 0, 0, 0, japan), time); // May - 31 day month
     }
 
     /**
      * Specify seconds as a cron expression.
      */
     @Test
-    public void testSecondsCronExpression() {
-        ZoneId China = ZoneId.of("Asia/Shanghai");
+    void testSecondsCronExpression() {
+        ZoneId china = ZoneId.of("Asia/Shanghai");
 
-        CronTrigger trigger = new CronTrigger(China)
+        CronTrigger trigger = new CronTrigger(china)
                 .hours("*")
                 .minutes("*")
                 .seconds("3/15"); // equivalent to 3,18,33,48
@@ -893,35 +892,35 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 35, 48, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 35, 48, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 3, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 3, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 18, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 18, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 33, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 33, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 48, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 36, 48, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 37, 3, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 37, 3, 0, china), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 37, 18, 0, China), time);
+        assertEquals(ZonedDateTime.of(2021, 6, 16, 10, 37, 18, 0, china), time);
     }
 
     /**
      * Specify seconds as a set of literals.
      */
     @Test
-    public void testSecondsLiterals() {
-        ZoneId Indochina = ZoneId.of("Asia/Bangkok");
+    void testSecondsLiterals() {
+        ZoneId indochina = ZoneId.of("Asia/Bangkok");
 
-        CronTrigger trigger = new CronTrigger(Indochina)
+        CronTrigger trigger = new CronTrigger(indochina)
                 .hours("*")
                 .minutes("*")
                 .seconds(53, 34, 13);
@@ -933,32 +932,32 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 51, 34, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 51, 34, 0, indochina), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 51, 53, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 51, 53, 0, indochina), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 13, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 13, 0, indochina), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 34, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 34, 0, indochina), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 53, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 52, 53, 0, indochina), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 53, 13, 0, Indochina), time);
+        assertEquals(ZonedDateTime.of(2021, 5, 4, 5, 53, 13, 0, indochina), time);
     }
 
     /**
      * Confirm proper advancement from 59 seconds into the next minute, and so forth.
      */
     @Test
-    public void testTriggerAdvancesAcrossUnits() {
-        ZoneId Hawaii = ZoneId.of("Pacific/Honolulu");
+    void testTriggerAdvancesAcrossUnits() {
+        ZoneId hawaii = ZoneId.of("Pacific/Honolulu");
 
-        CronTrigger trigger = new CronTrigger(Hawaii)
+        CronTrigger trigger = new CronTrigger(hawaii)
                 .seconds("*/20")
                 .minutes("*/15")
                 .hours("*/12")
@@ -972,26 +971,26 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 0, 0, Hawaii), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 0, 0, hawaii), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 20, 0, Hawaii), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 20, 0, hawaii), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 40, 0, Hawaii), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 0, 40, 0, hawaii), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 15, 0, 0, Hawaii), time);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 0, 15, 0, 0, hawaii), time);
     }
 
     /**
      * Specify a cron expression that very infrequently matches, such as leap days that are Fridays.
      */
     @Test
-    public void testVeryLowFrequencyCronExpression() {
-        ZoneId CentralEU = ZoneId.of("Europe/Paris");
+    void testVeryLowFrequencyCronExpression() {
+        ZoneId centralEu = ZoneId.of("Europe/Paris");
 
-        CronTrigger trigger = new CronTrigger(CentralEU)
+        CronTrigger trigger = new CronTrigger(centralEu)
                 .months(Month.FEBRUARY)
                 .daysOfMonth(29)
                 .daysOfWeek(DayOfWeek.FRIDAY)
@@ -1004,78 +1003,78 @@ public class CronTriggerTest {
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2036, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2036, 2, 29, 16, 0, 0, 0, centralEu), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2064, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2064, 2, 29, 16, 0, 0, 0, centralEu), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2092, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2092, 2, 29, 16, 0, 0, 0, centralEu), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2104, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2104, 2, 29, 16, 0, 0, 0, centralEu), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2132, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2132, 2, 29, 16, 0, 0, 0, centralEu), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2160, 2, 29, 16, 0, 0, 0, CentralEU), time);
+        assertEquals(ZonedDateTime.of(2160, 2, 29, 16, 0, 0, 0, centralEu), time);
     }
 
     /**
      * Specify day-of-week and month names fully spelled out and as mixed case abbreviations.
      */
     @Test
-    public void testWeekDayAndMonthNamesInCronExpression() {
-        ZoneId GMT = ZoneId.of("GMT");
+    void testWeekDayAndMonthNamesInCronExpression() {
+        ZoneId gmt = ZoneId.of("GMT");
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2019, 11, 25, // Monday, Nov 25, 2019
-                14, 30, 0, 0, // 2:30 PM 
-                GMT);
+                14, 30, 0, 0, // 2:30 PM
+                gmt);
 
         CronTrigger trigger = new CronTrigger("0 6 L,10,20,30 February,Nov,August Sat-Tuesday", scheduledAt.getZone());
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2019, 11, 30, 6, 0, 0, 0, GMT), time); // Saturday
+        assertEquals(ZonedDateTime.of(2019, 11, 30, 6, 0, 0, 0, gmt), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 2, 10, 6, 0, 0, 0, GMT), time); // Monday
+        assertEquals(ZonedDateTime.of(2020, 2, 10, 6, 0, 0, 0, gmt), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 2, 29, 6, 0, 0, 0, GMT), time); // Saturday
+        assertEquals(ZonedDateTime.of(2020, 2, 29, 6, 0, 0, 0, gmt), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 8, 10, 6, 0, 0, 0, GMT), time); // Monday
+        assertEquals(ZonedDateTime.of(2020, 8, 10, 6, 0, 0, 0, gmt), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 8, 30, 6, 0, 0, 0, GMT), time); // Sunday
+        assertEquals(ZonedDateTime.of(2020, 8, 30, 6, 0, 0, 0, gmt), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 8, 31, 6, 0, 0, 0, GMT), time); // Monday
+        assertEquals(ZonedDateTime.of(2020, 8, 31, 6, 0, 0, 0, gmt), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 11, 10, 6, 0, 0, 0, GMT), time); // Tuesday
+        assertEquals(ZonedDateTime.of(2020, 11, 10, 6, 0, 0, 0, gmt), time); // Tuesday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2020, 11, 30, 6, 0, 0, 0, GMT), time); // Monday
+        assertEquals(ZonedDateTime.of(2020, 11, 30, 6, 0, 0, 0, gmt), time); // Monday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 20, 6, 0, 0, 0, GMT), time); // Saturday
+        assertEquals(ZonedDateTime.of(2021, 2, 20, 6, 0, 0, 0, gmt), time); // Saturday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 2, 28, 6, 0, 0, 0, GMT), time); // Sunday
+        assertEquals(ZonedDateTime.of(2021, 2, 28, 6, 0, 0, 0, gmt), time); // Sunday
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 8, 10, 6, 0, 0, 0, GMT), time); // Tuesday
+        assertEquals(ZonedDateTime.of(2021, 8, 10, 6, 0, 0, 0, gmt), time); // Tuesday
     }
 
     /**
      * 0 and 7 can both be used for Sunday.
      */
     @Test
-    public void testZeroAnd7bothSunday() {
+    void testZeroAnd7bothSunday() {
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2021, 4, 14, // Wednesday, Apr 14, 2021
                 18, 5, 0, 0, // 6:05 PM
@@ -1100,97 +1099,97 @@ public class CronTriggerTest {
      * Specify a ZoneId that uses Daylight Saving Time.
      */
     @Test
-    public void testZoneWithDaylightSavingTime() {
-        ZoneId Newfoundland = ZoneId.of("America/St_Johns");
+    void testZoneWithDaylightSavingTime() {
+        ZoneId newfoundland = ZoneId.of("America/St_Johns");
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2021, 3, 14, // Sunday, March 14, 2021
                 0, 0, 0, 0, // Midnight
-                Newfoundland);
+                newfoundland);
 
         CronTrigger trigger = new CronTrigger("29/30 0-3 7,14 NOV,MAR *", scheduledAt.getZone());
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 59, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 59, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt); // Standard --> DST
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 59, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 59, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(8, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(9, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 59, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(10, time), scheduledAt); // DST --> Standard
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 29, 0, 0, Newfoundland).plusHours(1), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 29, 0, 0, newfoundland).plusHours(1), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(11, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 59, 0, 0, Newfoundland).plusHours(1), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 59, 0, 0, newfoundland).plusHours(1), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(12, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 29, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 29, 0, 0, newfoundland), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(13, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 59, 0, 0, Newfoundland), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 59, 0, 0, newfoundland), time);
     }
 
     /**
      * Specify a ZoneId that doesn't use Daylight Saving Time.
      */
     @Test
-    public void testZoneWithoutDaylightSavingTime() {
-        ZoneId CST = ZoneId.of("America/Regina");
+    void testZoneWithoutDaylightSavingTime() {
+        ZoneId cst = ZoneId.of("America/Regina");
 
         ZonedDateTime scheduledAt = ZonedDateTime.of(
                 2021, 3, 14, // Sunday, March 14, 2021
                 0, 0, 0, 0, // Midnight
-                CST);
+                cst);
 
         CronTrigger trigger = new CronTrigger("0 0-3 7,14 NOV,MAR *", scheduledAt.getZone());
 
         ZonedDateTime time;
         time = trigger.getNextRunTime(null, scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 0, 0, 0, 0, cst), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 1, 0, 0, 0, cst), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 2, 0, 0, 0, CST), time); // Standard --> DST ignored
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 2, 0, 0, 0, cst), time); // Standard --> DST ignored
 
         time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 3, 14, 3, 0, 0, 0, cst), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 0, 0, 0, 0, cst), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(5, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 1, 0, 0, 0, cst), time);
 
         time = trigger.getNextRunTime(new LastExecutionImpl(6, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 0, 0, 0, CST), time); // DST --> Standard ignored
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 2, 0, 0, 0, cst), time); // DST --> Standard ignored
 
         time = trigger.getNextRunTime(new LastExecutionImpl(7, time), scheduledAt);
-        assertEquals(ZonedDateTime.of(2021, 11, 7, 3, 0, 0, 0, CST), time);
+        assertEquals(ZonedDateTime.of(2021, 11, 7, 3, 0, 0, 0, cst), time);
     }
 }
