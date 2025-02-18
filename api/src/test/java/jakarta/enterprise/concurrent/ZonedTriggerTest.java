@@ -16,21 +16,24 @@
 
 package jakarta.enterprise.concurrent;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
-
-public class ZonedTriggerTest {
+class ZonedTriggerTest {
 
     /**
      * Example trigger from the ZonedTrigger JavaDoc.
@@ -93,43 +96,43 @@ public class ZonedTriggerTest {
      * Verify that the example trigger from the ZonedTrigger JavaDoc works.
      */
     @Test
-    public void testExampleCodeFromZonedTriggerJavaDoc() {
+    void testExampleCodeFromZonedTriggerJavaDoc() {
         ZonedTrigger trigger = new HourlyDuringBusinessHoursTrigger();
 
-        ZoneId Central = ZoneId.of("America/Chicago");
-        assertEquals(Central, trigger.getZoneId());
+        ZoneId central = ZoneId.of("America/Chicago");
+        assertEquals(central, trigger.getZoneId());
 
         ZonedDateTime scheduledAtTime = ZonedDateTime.of(
                 2021, 11, 4, // Thursday Nov 4, 2021
                 19, 30, 21, 987654321, // 7:30:21.987654321 PM
-                Central);
+                central);
 
         ZonedDateTime nextTime = trigger.getNextRunTime(null, scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 4, 20, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 4, 20, 0, 0, 0, central), nextTime);
 
         // switch to Friday @8 AM
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 350, 15), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 5, 8, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 5, 8, 0, 0, 0, central), nextTime);
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 0, 0), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 5, 9, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 5, 9, 0, 0, 0, central), nextTime);
 
         // simulate being delayed by 8+ hours
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 29000000, 18), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 5, 18, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 5, 18, 0, 0, 0, central), nextTime);
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 1, 1), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 5, 19, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 5, 19, 0, 0, 0, central), nextTime);
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 999, 0), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 5, 20, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 5, 20, 0, 0, 0, central), nextTime);
 
         // switch to Monday @8 AM (crossing over daylight savings change)
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 123, 45), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 8, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 8, 0, 0, 0, central), nextTime);
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 543, 21), scheduledAtTime);
-        assertEquals(ZonedDateTime.of(2021, 11, 8, 9, 0, 0, 0, Central), nextTime);
+        assertEquals(ZonedDateTime.of(2021, 11, 8, 9, 0, 0, 0, central), nextTime);
 
         assertFalse(trigger.skipRun(new LastExecutionImpl(nextTime.toInstant(), 987, 65), scheduledAtTime));
     }
@@ -139,12 +142,12 @@ public class ZonedTriggerTest {
      * which ought to delegate to getNextRunTime(LastExecution, ZonedDateTime).
      */
     @Test
-    public void testGetNextRunTimeDefaultImplementation() {
+    void testGetNextRunTimeDefaultImplementation() {
         ZonedTrigger trigger = new HourlyDuringBusinessHoursTrigger();
 
-        TimeZone Central = TimeZone.getTimeZone("America/Chicago");
+        TimeZone central = TimeZone.getTimeZone("America/Chicago");
 
-        Calendar cal = Calendar.getInstance(Central);
+        Calendar cal = Calendar.getInstance(central);
         cal.set(2021, 3-1, 12, 17, 59, 59); // Friday March 12, 2021 @ 5:59:59 PM
         Date scheduledAtTime = cal.getTime();
 
@@ -153,15 +156,15 @@ public class ZonedTriggerTest {
 
         Date nextTime = trigger.getNextRunTime(null, scheduledAtTime);
         cal.set(2021, 3-1, 12, 18, 0, 0);
-        assertEquals(cal.getTime().getTime() + " vs " + nextTime.getTime(), cal.getTime(), nextTime);
+        assertEquals(cal.getTime(), nextTime, cal.getTime().getTime() + " vs " + nextTime.getTime());
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 190, 6), scheduledAtTime);
         cal.set(2021, 3-1, 12, 19, 0, 0);
-        assertEquals(cal.getTime().getTime() + " vs " + nextTime.getTime(), cal.getTime(), nextTime);
+        assertEquals(cal.getTime(), nextTime, cal.getTime().getTime() + " vs " + nextTime.getTime());
 
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 200, 5), scheduledAtTime);
         cal.set(2021, 3-1, 12, 20, 0, 0);
-        assertEquals(cal.getTime().getTime() + " vs " + nextTime.getTime(), cal.getTime(), nextTime);
+        assertEquals(cal.getTime(), nextTime, cal.getTime().getTime() + " vs " + nextTime.getTime());
 
         // switch to Monday @8 AM (crossing over daylight savings change)
         nextTime = trigger.getNextRunTime(new LastExecutionImpl(nextTime.toInstant(), 0, 4), scheduledAtTime);
@@ -195,13 +198,13 @@ public class ZonedTriggerTest {
      * the scheduled-at time, start time, and end time without a ZoneId parameter.
      */
     @Test
-    public void testLastExecutionDefaultImplementation() {
-        ZoneId MtnTime = ZoneId.of("America/Denver");
-        Instant scheduledAt = ZonedDateTime.of(2020, 7, 17, 3, 16, 30, 123000000, MtnTime).toInstant();
+    void testLastExecutionDefaultImplementation() {
+        ZoneId mtnTime = ZoneId.of("America/Denver");
+        Instant scheduledAt = ZonedDateTime.of(2020, 7, 17, 3, 16, 30, 123000000, mtnTime).toInstant();
 
         LastExecution lastExec = new LastExecutionImpl(scheduledAt, 420, 15);
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(MtnTime));
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(mtnTime));
 
         cal.set(2020, 7-1, 17, 3, 16, 30);
         cal.set(Calendar.MILLISECOND, 123);
@@ -242,13 +245,8 @@ public class ZonedTriggerTest {
      * cope with a null being returned by getNextRunTime(LastExecution, ZonedDateTime).
      */
     @Test
-    public void testNullNextRunTime() {
-        ZonedTrigger trigger = new ZonedTrigger() {
-            @Override
-            public ZonedDateTime getNextRunTime(LastExecution lastExec, ZonedDateTime taskScheduledTime) {
-                return null;
-            }
-        };
+    void testNullNextRunTime() {
+        ZonedTrigger trigger = (lastExec, taskScheduledTime) -> null;
 
         assertNull(trigger.getNextRunTime(null, new Date()));
     }
@@ -258,7 +256,7 @@ public class ZonedTriggerTest {
      * which ought to delegate to skipRun(LastExecution, ZonedDateTime).
      */
     @Test
-    public void testSkipRunDefaultImplementation() {
+    void testSkipRunDefaultImplementation() {
         // A trigger that skips executions for which the scheduled start
         // is overlapped by the end of a previous execution.
         ZonedTrigger trigger = new ZonedTrigger() {

@@ -16,14 +16,12 @@
 
 package jakarta.enterprise.concurrent;
 
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.annotation.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @ManagedScheduledExecutorDefinition( // from ManagedScheduledExecutorDefinition JavaDoc
         name = "java:comp/concurrent/MyScheduledExecutor",
@@ -35,7 +33,7 @@ import org.junit.Test;
         propagated = APPLICATION)
 @ManagedScheduledExecutorDefinition(
         name = "java:global/concurrent/ManagedScheduledExecutorDefinitionDefaults")
-public class ManagedScheduledExecutorDefinitionTest {
+class ManagedScheduledExecutorDefinitionTest {
 
     // from ManagedScheduledExecutorDefinition JavaDoc
     @Resource(lookup = "java:comp/concurrent/MyScheduledExecutor",
@@ -46,7 +44,7 @@ public class ManagedScheduledExecutorDefinitionTest {
      * Validate the default values for ManagedScheduledExecutorDefinition.
      */
     @Test
-    public void testManagedScheduledExecutorDefinitionDefaultValues() throws Exception {
+    void testManagedScheduledExecutorDefinitionDefaultValues() throws Exception {
         ManagedScheduledExecutorDefinition def = null;
         for (ManagedScheduledExecutorDefinition anno : ManagedScheduledExecutorDefinitionTest.class
                 .getAnnotationsByType(ManagedScheduledExecutorDefinition.class))
@@ -62,7 +60,7 @@ public class ManagedScheduledExecutorDefinitionTest {
      * Validate the example that is used in ManagedScheduledExecutorDefinition JavaDoc.
      */
     @Test
-    public void testManagedScheduledExecutorDefinitionJavaDocExample() throws Exception {
+    void testManagedScheduledExecutorDefinitionJavaDocExample() throws Exception {
         ManagedScheduledExecutorDefinition def = null;
         for (ManagedScheduledExecutorDefinition anno : ManagedScheduledExecutorDefinitionTest.class
                 .getAnnotationsByType(ManagedScheduledExecutorDefinition.class))

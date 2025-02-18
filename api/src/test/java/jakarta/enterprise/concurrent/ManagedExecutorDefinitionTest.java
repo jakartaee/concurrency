@@ -16,14 +16,13 @@
 
 package jakarta.enterprise.concurrent;
 
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.annotation.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @ManagedExecutorDefinition( // from ManagedExecutorDefinition JavaDoc
         name = "java:module/concurrent/MyExecutor",
@@ -35,7 +34,7 @@ import org.junit.Test;
         propagated = { SECURITY, APPLICATION })
 @ManagedExecutorDefinition(
         name = "java:app/concurrent/ManagedExecutorDefinitionDefaults")
-public class ManagedExecutorDefinitionTest {
+class ManagedExecutorDefinitionTest {
 
     // from ManagedExecutorDefinition JavaDoc
     @Resource(lookup = "java:module/concurrent/MyExecutor",
@@ -46,7 +45,7 @@ public class ManagedExecutorDefinitionTest {
      * Validate the default values for ManagedExecutorDefinition.
      */
     @Test
-    public void testManagedExecutorDefinitionDefaultValues() throws Exception {
+    void testManagedExecutorDefinitionDefaultValues() throws Exception {
         ManagedExecutorDefinition def = null;
         for (ManagedExecutorDefinition anno : ManagedExecutorDefinitionTest.class.getAnnotationsByType(ManagedExecutorDefinition.class))
             if ("java:app/concurrent/ManagedExecutorDefinitionDefaults".equals(anno.name()))
@@ -61,7 +60,7 @@ public class ManagedExecutorDefinitionTest {
      * Validate the example that is used in ManagedExecutorDefinition JavaDoc.
      */
     @Test
-    public void testManagedExecutorDefinitionJavaDocExample() throws Exception {
+    void testManagedExecutorDefinitionJavaDocExample() throws Exception {
         ManagedExecutorDefinition def = null;
         for (ManagedExecutorDefinition anno : ManagedExecutorDefinitionTest.class.getAnnotationsByType(ManagedExecutorDefinition.class))
             if ("java:module/concurrent/MyExecutor".equals(anno.name()))
