@@ -16,14 +16,12 @@
 
 package jakarta.enterprise.concurrent;
 
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.annotation.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @ManagedThreadFactoryDefinition( // from ManagedThreadFactoryDefinition JavaDoc
         name = "java:global/concurrent/MyThreadFactory",
@@ -34,7 +32,7 @@ import org.junit.Test;
         propagated = APPLICATION)
 @ManagedThreadFactoryDefinition(
         name = "java:comp/concurrent/ManagedThreadFactoryDefinitionDefaults")
-public class ManagedThreadFactoryDefinitionTest {
+class ManagedThreadFactoryDefinitionTest {
 
     // from ManagedThreadFactoryDefinition JavaDoc
     @Resource(lookup = "java:global/concurrent/MyThreadFactory",
@@ -45,7 +43,7 @@ public class ManagedThreadFactoryDefinitionTest {
      * Validate the default values for ManagedThreadFactoryDefinition.
      */
     @Test
-    public void testManagedThreadFactoryDefinitionDefaultValues() throws Exception {
+    void testManagedThreadFactoryDefinitionDefaultValues() throws Exception {
         ManagedThreadFactoryDefinition def = null;
         for (ManagedThreadFactoryDefinition anno : ManagedThreadFactoryDefinitionTest.class
                 .getAnnotationsByType(ManagedThreadFactoryDefinition.class))
@@ -60,7 +58,7 @@ public class ManagedThreadFactoryDefinitionTest {
      * Validate the example that is used in ManagedThreadFactoryDefinition JavaDoc.
      */
     @Test
-    public void testManagedThreadFactoryDefinitionJavaDocExample() throws Exception {
+    void testManagedThreadFactoryDefinitionJavaDocExample() throws Exception {
         ManagedThreadFactoryDefinition def = null;
         for (ManagedThreadFactoryDefinition anno : ManagedThreadFactoryDefinitionTest.class
                 .getAnnotationsByType(ManagedThreadFactoryDefinition.class))

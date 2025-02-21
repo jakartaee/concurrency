@@ -16,17 +16,19 @@
 
 package jakarta.enterprise.concurrent;
 
-import static org.junit.Assert.*;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextRestorer;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 import java.util.Collections;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+
 
 /**
  * Tests of the ThreadContextProvider examples from the specification and JavaDoc.
@@ -42,7 +44,7 @@ import org.junit.Test;
 @ManagedExecutorDefinition( // from spec ThreadContextProvider example
         name = "java:module/concurrent/PriorityExec",
         context = "java:module/concurrent/PriorityContext")
-public class ThreadContextProviderTest {
+class ThreadContextProviderTest {
     public static final String CONTEXT_NAME = "MyCustomContext";
 
     @Resource(lookup = "java:module/concurrent/PriorityExec")
@@ -53,16 +55,14 @@ public class ThreadContextProviderTest {
 
         Thread.currentThread().setPriority(3);
 
-        executor.runAsync(() -> {
-            System.out.println("Running with priority of " +
-                Thread.currentThread().getPriority());
-        });
+        executor.runAsync(() -> System.out.println("Running with priority of " +
+            Thread.currentThread().getPriority()));
     }
 
     @Test
-    public void testCaptureCurrentThreadContext() throws Exception {
+    void testCaptureCurrentThreadContext() throws Exception {
         ThreadContextProvider provider = new ThreadPriorityContextProvider();
-       
+
         Thread.currentThread().setPriority(2);
         ThreadContextSnapshot snapshot = provider.currentContext(Collections.emptyMap());
 
@@ -76,9 +76,9 @@ public class ThreadContextProviderTest {
     }
 
     @Test
-    public void testClearThreadContext() throws Exception {
+    void testClearThreadContext() throws Exception {
         ThreadContextProvider provider = new ThreadPriorityContextProvider();
-       
+
         Thread.currentThread().setPriority(8);
         ThreadContextSnapshot snapshot = provider.clearedContext(Collections.emptyMap());
 
@@ -93,7 +93,7 @@ public class ThreadContextProviderTest {
      * Validate the example that is used in the specification ThreadContextProvider example.
      */
     @Test
-    public void testSpecThreadContextProviderExample() throws Exception {
+    void testSpecThreadContextProviderExample() throws Exception {
         ManagedExecutorDefinition def = null;
         for (ManagedExecutorDefinition anno : getClass().getAnnotationsByType(ManagedExecutorDefinition.class))
             if ("java:module/concurrent/PriorityExec".equals(anno.name()))
