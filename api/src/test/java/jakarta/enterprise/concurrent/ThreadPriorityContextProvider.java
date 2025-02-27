@@ -16,8 +16,6 @@
 
 package jakarta.enterprise.concurrent;
 
-import static org.junit.Assert.*;
-
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 import jakarta.enterprise.concurrent.spi.ThreadContextSnapshot;
 import java.util.Map;

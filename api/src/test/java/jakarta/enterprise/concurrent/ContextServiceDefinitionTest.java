@@ -20,10 +20,11 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINI
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.annotation.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @ContextServiceDefinition( // from ContextServiceDefinition JavaDoc
         name = "java:app/concurrent/MyContext",
@@ -37,7 +38,7 @@ import org.junit.Test;
         propagated = SECURITY,
         unchanged = TRANSACTION,
         cleared = ALL_REMAINING)
-public class ContextServiceDefinitionTest {
+class ContextServiceDefinitionTest {
 
     // from ContextServiceDefinition JavaDoc
     @Resource(lookup = "java:app/concurrent/MyContext",
@@ -48,7 +49,7 @@ public class ContextServiceDefinitionTest {
      * Validate the example that is used in the ALL_REMAINING JavaDoc.
      */
     @Test
-    public void testContextServiceDefinitionALL_REMAININGJavaDocExample() throws Exception {
+    void testContextServiceDefinitionALL_REMAININGJavaDocExample() throws Exception {
         ContextServiceDefinition csdSecurityContext = null;
         for (ContextServiceDefinition anno : ContextServiceDefinitionTest.class.getAnnotationsByType(ContextServiceDefinition.class))
             if ("java:module/concurrent/SecurityContext".equals(anno.name()))
@@ -63,7 +64,7 @@ public class ContextServiceDefinitionTest {
      * Validate the default values for ContextServiceDefinition.
      */
     @Test
-    public void testContextServiceDefinitionDefaultValues() throws Exception {
+    void testContextServiceDefinitionDefaultValues() throws Exception {
         ContextServiceDefinition csdDefaults = null;
         for (ContextServiceDefinition anno : ContextServiceDefinitionTest.class.getAnnotationsByType(ContextServiceDefinition.class))
             if ("java:comp/concurrent/ContextServiceDefinitionDefaults".equals(anno.name()))
@@ -78,7 +79,7 @@ public class ContextServiceDefinitionTest {
      * Validate the example that is used in ContextServiceDefinition JavaDoc.
      */
     @Test
-    public void testContextServiceDefinitionJavaDocExample() throws Exception {
+    void testContextServiceDefinitionJavaDocExample() throws Exception {
         ContextServiceDefinition csdMyContext = null;
         for (ContextServiceDefinition anno : ContextServiceDefinitionTest.class.getAnnotationsByType(ContextServiceDefinition.class))
             if ("java:app/concurrent/MyContext".equals(anno.name()))
