@@ -103,7 +103,7 @@
         <jruby.version>9.4.12.0</jruby.version> 
 
         <!-- Used in TCK only -->
-        <junit5.version>5.12.0</junit5.version>
+        <junit5.version>5.12.1</junit5.version>
         <arquillian.version>1.9.3.Final</arquillian.version>
         <arquillian.jakarta.version>10.0.0.Final</arquillian.jakarta.version>
         <shrinkwrap.version>1.2.6</shrinkwrap.version>
