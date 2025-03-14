@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -43,8 +43,9 @@ import java.util.function.Function;
  * <tr valign="top"><td>hours</td><td>0-23, *</td></tr>
  * <tr valign="top"><td>dayOfMonth</td><td>0-31, *, L</td></tr>
  * <tr valign="top"><td>month</td><td>1-12, JAN-DEC, January-December, *</td></tr>
- * <tr valign="top"><td>dayOfWeek</td><td>SUN-SAT, Sunday-Saturday, 0-7, *.
- *         0 and 7 both represent Sunday: 0 to designate the first day of the week,
+ * <tr valign="top"><td>dayOfWeek</td><td>SUN-SAT, Sunday-Saturday, 0-7, *<br>
+ *         The values 0 and 7 both represent Sunday:
+ *         0 to designate the first day of the week,
  *         and 7 for consistency with {@link java.time.DayOfWeek}.</td></tr>
  * </table>
  * <br>
