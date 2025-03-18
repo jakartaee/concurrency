@@ -484,7 +484,7 @@ public interface ContextService {
   /**
    * <p>Captures thread context as an {@link java.util.concurrent.Executor}
    * that runs tasks on the same thread from which
-   * <code>execute</code>is invoked but with context that is captured from the thread
+   * <code>execute</code> is invoked but with context that is captured from the thread
    * that invokes <code>currentContextExecutor</code>.</p>
    *
    * <p>Example usage:</p>
