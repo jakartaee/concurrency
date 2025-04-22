@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -102,6 +102,21 @@ import jakarta.interceptor.InterceptorBinding;
  * findSingleLayoverFlights(RST, DEN).thenApply(Itinerary::sortByPrice);
  * </pre>
  *
+ * <h2>Automatic submit on startup</h2>
+ *
+ * <p>Asynchronous methods can be submitted automaticaly on application startup
+ * by observing the application's {@code jakarta.enterprise.Startup} event.
+ * For example,</p>
+ *
+ * <pre>
+ * {@literal @}Asynchronous(runAt = {@literal @}Schedule(cron = "0 9 * SEP-MAY TUE,THU", zone = "America/Chicago"))
+ * public void tuesdaysAndThursdaysAt9({@literal @}Observes Startup event) {
+ *     // ...
+ * }
+ * </pre>
+ *
+ * <h2>Return types</h2>
+ *
  * <p>
  * Methods with the following return types can be annotated to be
  * asynchronous methods:
@@ -110,6 +125,9 @@ import jakarta.interceptor.InterceptorBinding;
  * <li>{@link java.util.concurrent.CompletionStage CompletionStage}</li>
  * <li><code>void</code></li>
  * </ul>
+ *
+ * <h2>Exceptions</h2>
+ *
  * <p>
  * The Jakarta EE Product Provider raises
  * {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
@@ -144,6 +162,9 @@ import jakarta.interceptor.InterceptorBinding;
  * exceptionally with {@link java.util.concurrent.CancellationException CancellationException},
  * and chains a cause exception if there is any.
  * <p>
+ *
+ * <h2>Interceptor and Transactional</h2>
+ *
  * The Jakarta EE Product Provider must assign the interceptor for asynchronous methods
  * to have priority of <code>Interceptor.Priority.PLATFORM_BEFORE + 5</code>.
  * Interceptors with a lower priority, such as <code>Transactional</code>, must run on

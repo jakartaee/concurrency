@@ -1,7 +1,7 @@
 :sectnums:
 = Jakarta Concurrency Specification, Version 3.2
 
-Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, 2025 Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
@@ -2809,4 +2809,105 @@ Jakarta Transactions specification. User-managed transactions allow
 components to manually control global transaction demarcation
 boundaries. Task implementations may optionally begin, commit, and
 roll-back a transaction. See EE.4 for details on transaction management
+in Jakarta EE.
+
+== Scheduled Methods
+
+The `jakarta.enterprise.concurrent.Schedule` annotation can be applied to a
+CDI managed bean method to cause the method to run automatically on a
+schedule. The method must have a `void` return type and no parameters.
+The bean must not be a Jakarta Enterprise Bean.
+
+After the application starts, the Jakarta EE Product Provider arranges for
+non-overlapping invocation of the scheduled method to run on the default
+`ManagedScheduledExecutorService` according to the schedule.
+
+=== Skipped Invocation
+
+A scheduled time is skipped if the difference between its actual start time
+and its target start time would exceed the `skipIfLateBy` field of the
+`Schedule` annotation or if the prior invocation ended after its scheduled time.
+
+=== Lifecycle
+
+Once the method runs, or if late, is skipped, the completion time (or time
+of the skip) is used to compute the next time according to the schedule.
+Invocation of the method continues according to the scheduled times until the
+application stops or an invocation of the method raises an error or exception,
+after which no further invocation of the method is scheduled.
+
+=== Responsibilities and Requirements
+
+==== Application Component Provider’s Responsibilities
+
+Application Component Providers (application developers) (EE2.12.2)
+specify the `jakarta.enterprise.concurrent.Schedule` annotation on one or more
+CDI managed bean methods that have a return type of `void` and no parameters.
+
+The Application Component Provider supplies the implementation of the
+scheduled method. The application may raise an exception from the method
+to prevent subsequent invocations of the method from continuing to be
+scheduled.
+
+The application must not invoke the method directly or submit it for
+invocation in any other way.
+
+===== Usage Example
+
+In this example, an application component wants to run some business logic
+every Monday, Wednesday, and Friday at 10:00 AM Central US time.
+
+[source,java]
+----
+@ApplicationScoped
+public class ScheduleBean {
+   @Schedule(daysOfWeek = { DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY },
+             hours = 10,
+             zone = "America/Chicago")
+   public void monWedFriAt10() {
+      System.out.println("Running at " + ZonedDateTime.now());
+   }
+}
+----
+
+==== Jakarta EE Product Provider’s Responsibilities
+
+The Jakarta EE Product Provider’s responsibilities are as defined in
+EE.5.8.3.
+
+The Jakarta EE Product Provider identifies CDI managed bean methods that are
+annotated with the `jakarta.enterprise.concurrent.Schedule` annotation and
+computes the next time from the schedule.
+
+The Jakarta EE Product Provider submits tasks to the default
+`ManagedScheduledExecutorService` to invoke scheduled methods, compute the
+next time, and to reschedule for that time.
+
+The Jakarta EE Product Provider makes the component context available on the
+thread that invokes the scheduled method, such that the scheduled method is
+able to look up resources in the component namespace.
+
+The Jakarta EE Product Provider ceases to invoke scheduled methods after the
+method raises an error or exception or the application stops.
+
+=== Transaction Management
+
+When an scheduled method is also annotated with
+`jakarta.transaction.Transactional`, the transactional types which can be
+used are:
+
+* `jakarta.transaction.Transactional.TxType.REQUIRES_NEW` -
+which causes the method to run in a new transaction
+* `jakarta.transaction.Transactional.TxType.NOT_SUPPORTED` -
+which causes the method to run with no transaction
+
+When a scheduled method is not annotated as
+`jakarta.transaction.Transactional` or the transaction type is set to
+`TxType.NOT_SUPPORTED`, the Jakarta EE Product Provider
+must support user-managed global transaction demarcation using the
+`jakarta.transaction.UserTransaction` interface, which is described in the
+Jakarta Transactions specification. User-managed transactions allow
+components to manually control global transaction demarcation boundaries.
+Scheduled method implementations may optionally begin, commit, and
+roll back a transaction. See EE.4 for details on transaction management
 in Jakarta EE.

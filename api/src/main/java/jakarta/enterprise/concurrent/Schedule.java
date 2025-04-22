@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023,2025 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,18 +25,90 @@ import java.time.DayOfWeek;
 import java.time.Month;
 
 /**
- * <p>Defines schedules for
- * {@link Asynchronous#runAt() scheduled asynchronous methods}.</p>
+ * <p>Defines a schedule that indicates when to run a method.</p>
  *
  * <p>For the scheduled asychronous method to aim to run at a given day and time,
  * all of the criteria specified by the {@code Schedule} must match
  * or be disregarded according to the rules of each field.</p>
  *
+ * <h2>Scheduled methods</h2>
+ *
+ * <p>When the {@code Schedule} annotation is applied to a CDI managed bean method,
+ * the schedule defines the times after which to run the method. The method must
+ * have a {@code void} return type and no parameters. The bean must not be a
+ * Jakarta Enterprise Bean.</p>
+ *
+ * <p>Upon starting the application, the Jakarta EE Product Provider computes the
+ * next time from the {@code Schedule} annotation and schedules a task that aims to
+ * run at the computed time on the default {@link ManagedScheduledExecutorService}.
+ * After it is time to run the task, the task first checks to ensure that the
+ * schedule does not require {@linkplain #skipIfLateBy() skipping} the invocation
+ * of the method. If method invocation is not skipped, the task obtains an instance
+ * of the bean and invokes the method on the bean instance.</p>
+ *
+ * <p>After successful or skipped invocation of the method, the task uses the
+ * {@code Schedule} annotation to computes the next time that is after the method
+ * completion time (or the time of the skip) and likewise schedules another task
+ * that aims to run after the computed next time. This continues with each
+ * invocation of the method until an invocation of the method raises an exception
+ * or error or the application stops.
+ * </p>
+ *
+ * <p>For example,</p>
+ * <pre>
+ *  {@literal @}Schedule(daysOfWeek = { DayOfWeek.SATURDAY, DayOfWeek.SUNDAY },
+ *            hours = 8,
+ *            minutes = 30,
+ *            zone = "America/Chicago")
+ *  public void weekendsAtEightThirtyAM() {
+ *      System.out.println("Good morning. Today is " + ZonedDateTime.now());
+ *  }
+ * </pre>
+ *
+ * <h2>Asynchronous methods with a Schedule</h2>
+ *
+ * <p>When the {@code Schedule} annotation is used as a value of
+ * {@link Asynchronous#runAt()}, the schedule defines the times after which to
+ * run the asynchronous method.</p>
+ *
+ * <p>{@link Asynchronous} methods with a {@code Schedule} annotation can be
+ * written to schedule automatically at application startup by observing the
+ * application's {@code jakarta.enterprise.Startup} event. For example,
+ * </p>
+ * <pre>
+ *  {@literal @}Asynchronous(runAt = {@literal @}Schedule(cron = "30 8 * * SAT,SUN",
+ *                                  zone = "America/Chicago"))
+ *  public void weekendsAtEightThirtyAM({@literal @}Observes Startup event) {
+ *      System.out.println("Good morning. Today is " + ZonedDateTime.now());
+ *  }
+ * </pre>
+ *
+ * <p>Or, asynchronous methods can be written to require invocation in order to
+ * apply the schedule. For example,
+ * </p>
+ * <pre>
+ *  {@literal @}Asynchronous(runAt = {@literal @}Schedule(cron = "30 6 * * MON-FRI",
+ *                                  zone = "America/Chicago"))
+ *  public void weekdaysAtSixThirtyAM(String message) {
+ *      System.out.println(message + " Today is " + ZonedDateTime.now());
+ *  }
+ * </pre>
+ *
+ * <p>The above method does not run even if a scheduled time is reached until
+ * the application manually requests to schedule it by invoking the method,
+ * </p>
+ *
+ * <pre>
+ *  if (decidedToScheduleDailyMessage) {
+ *      bean.weekdaysAtSixThirtyAM("Good morning!");
+ *  }
+ * </pre>
+ *
  * @since 3.1
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 public @interface Schedule {
     /**
      * <p>Cron expression following the rules of {@link CronTrigger}.</p>
