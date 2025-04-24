@@ -2813,7 +2813,7 @@ in Jakarta EE.
 
 == Scheduled Methods
 
-The `jakarta.enterprise.concurrent.Schedule` annotation can be applied to a
+The `jakarta.enterprise.concurrent.Schedule` annotation can annotate a
 CDI managed bean method to cause the method to run automatically on a
 schedule. The method must have a `void` return type and no parameters.
 The bean must not be a Jakarta Enterprise Bean.
