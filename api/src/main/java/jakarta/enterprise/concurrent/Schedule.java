@@ -47,9 +47,10 @@ import java.time.Month;
  * of the bean and invokes the method on the bean instance.</p>
  *
  * <p>After successful or skipped invocation of the method, the task uses the
- * {@code Schedule} annotation to computes the next time that is after the method
- * completion time (or the time of the skip) and likewise schedules another task
- * that aims to run after the computed next time. This continues with each
+ * {@code Schedule} annotation to compute the next time.
+ * The computed next time is after the method completion time or the time of the skip.
+ * The task schedules another task that aims to run after the computed next time.
+ * This continues with each
  * invocation of the method until an invocation of the method raises an exception
  * or error or the application stops.
  * </p>
