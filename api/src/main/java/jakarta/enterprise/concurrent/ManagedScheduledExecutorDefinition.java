@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -230,11 +230,6 @@ public @interface ManagedScheduledExecutorDefinition {
      * another stage or a join operation on the completion stage.
      * In situations such as these, the executor does not control
      * the type of thread that is used to run the task.</p>
-     *
-     * <p>When running on Java SE 17, the {@code true} value
-     * behaves the same as the {@code false} value and results in
-     * platform threads being created rather than virtual threads.
-     * </p>
      *
      * @return {@code true} if the executor can create virtual threads,
      *         otherwise {@code false}.
