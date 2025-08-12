@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021, 2025 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -99,7 +99,7 @@ public interface ZonedTrigger extends Trigger {
      * @return the date/time after which the next execution of the task should start.
      * @throws IllegalArgumentException if the next run time is too large to represent as a <code>Date</code>.
      */
-    public default Date getNextRunTime(LastExecution lastExecutionInfo, Date taskScheduledTime) {
+    public default Date getNextRunTime(final LastExecution lastExecutionInfo, final Date taskScheduledTime) {
         ZonedDateTime nextTime = getNextRunTime(lastExecutionInfo, taskScheduledTime.toInstant().atZone(getZoneId()));
         return nextTime == null ? null : Date.from(nextTime.toInstant());
     }
@@ -140,7 +140,7 @@ public interface ZonedTrigger extends Trigger {
      *                          is scheduled to start.
      * @return true if the task should be skipped and rescheduled.
      */
-    public default boolean skipRun(LastExecution lastExecutionInfo, ZonedDateTime scheduledRunTime) {
+    public default boolean skipRun(final LastExecution lastExecutionInfo, final ZonedDateTime scheduledRunTime) {
         return false;
     }
 
@@ -157,7 +157,7 @@ public interface ZonedTrigger extends Trigger {
      *                          is scheduled to start.
      * @return true if the task should be skipped and rescheduled.
      */
-    public default boolean skipRun(LastExecution lastExecutionInfo, Date scheduledRunTime) {
+    public default boolean skipRun(final LastExecution lastExecutionInfo, final Date scheduledRunTime) {
         return skipRun(lastExecutionInfo, scheduledRunTime.toInstant().atZone(getZoneId()));
     }
 }
