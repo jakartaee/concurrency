@@ -2892,7 +2892,7 @@ method raises an error or exception or the application stops.
 
 === Transaction Management
 
-When an scheduled method is also annotated with
+When a scheduled method is also annotated with
 `jakarta.transaction.Transactional`, the transactional types which can be
 used are:
 
