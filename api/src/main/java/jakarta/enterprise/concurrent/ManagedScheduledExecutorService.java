@@ -168,7 +168,7 @@ public interface ManagedScheduledExecutorService extends
    * running execution of the task. After completion of all executions, its
    * state represents completion of the final execution. Future and past
    * executions are otherwise not represented by the {@code ScheduledFuture}.
-   * Multiple results can be expected when there are multiple of executions
+   * Differing results can be expected when there are multiple of executions
    * of the task.</p>
    *
    * @param callable the function to execute.
