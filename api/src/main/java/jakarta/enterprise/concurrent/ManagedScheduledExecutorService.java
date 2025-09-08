@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2025 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,9 @@
 
 package jakarta.enterprise.concurrent;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * A manageable version of a {@link java.util.concurrent.ScheduledExecutorService}.<p>
@@ -135,8 +137,15 @@ public interface ManagedScheduledExecutorService extends
     ManagedExecutorService, ScheduledExecutorService {
 
   /**
-   * Creates and executes a task based on a Trigger. The Trigger determines when the task
-   * should run and how often.
+   * <p>Creates and executes a task based on a {@link Trigger}. The
+   * {@code Trigger} determines when the task should run and how often.</p>
+   *
+   * <p>Prior to completion of all executions of the task, the state of the
+   * {@link ScheduledFuture} changes to represent the currently scheduled or
+   * running execution of the task. After completion of all executions, its
+   * state represents completion of the final execution. Future and past
+   * executions are otherwise not represented by the {@code ScheduledFuture}.
+   * </p>
    *
    * @param command the task to execute.
    * @param trigger the trigger that determines when the task should fire.
@@ -147,24 +156,32 @@ public interface ManagedScheduledExecutorService extends
    * @throws java.util.concurrent.RejectedExecutionException if task cannot be scheduled for execution.
    * @throws java.lang.NullPointerException if command is null.
    */
-  public java.util.concurrent.ScheduledFuture<?> schedule(java.lang.Runnable command,
-                                                          Trigger trigger);
+  public ScheduledFuture<?> schedule(Runnable command,
+                                     Trigger trigger);
   
   /**
-   * Creates and executes a task based on a Trigger. The Trigger determines when the task should
-   * run and how often.
+   * <p>Creates and executes a task based on a {@link Trigger}. The
+   * {@code Trigger} determines when the task should run and how often.</p>
+   *
+   * <p>Prior to completion of all executions of the task, the state of the
+   * {@link ScheduledFuture} changes to represent the currently scheduled or
+   * running execution of the task. After completion of all executions, its
+   * state represents completion of the final execution. Future and past
+   * executions are otherwise not represented by the {@code ScheduledFuture}.
+   * Differing results can be expected when there are multiple executions
+   * of the task.</p>
    *
    * @param callable the function to execute.
    * @param trigger the trigger that determines when the task should fire.
    * @param <V> the return type of the <code>Callable</code>
    *
-   * @return a ScheduledFuture that can be used to extract result or cancel.
+   * @return a ScheduledFuture that can be used to extract a result or cancel.
    *
    * @throws java.util.concurrent.RejectedExecutionException if task cannot be scheduled for execution.
    * @throws java.lang.NullPointerException if callable is null.
    *
    */
-  public <V> java.util.concurrent.ScheduledFuture<V> schedule(java.util.concurrent.Callable<V> callable,
-                                                              Trigger trigger);
+  public <V> ScheduledFuture<V> schedule(Callable<V> callable,
+                                         Trigger trigger);
 
 }
