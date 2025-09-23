@@ -312,9 +312,7 @@ Provider must propagate that security context to the thread of
 execution.
 
 Application Component Providers should use the interfaces provided in
-this specification when interacting with threads. If the Jakarta EE Product
-Provider has implemented a security manager, some operations may not be
-allowed.
+this specification when interacting with threads.
 
 == Managed Objects
 
@@ -2012,8 +2010,7 @@ using JNDI (EE.5), or through resource injection by the use of the
 * New threads are created using the `newThread(Runnable r)` method on the
 `java.util.concurrent.ThreadFactory` interface.
 * The application component thread has permission to interrupt the
-thread. All other modifications to the thread are subject to the
-security manager, if present.
+thread.
 * All Threads are contextual (see section 2.3). When the thread is
 started using the `Thread.start()` method, the `Runnable` that is executed
 will run with the context of the application component instance that
