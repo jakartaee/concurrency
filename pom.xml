@@ -85,7 +85,7 @@
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.jxr.plugin.version>3.6.0</maven.jxr.plugin.version>
         <maven.release.plugin.version>3.1.1</maven.release.plugin.version>
-        <maven.scm.provider.gitexe.version>2.1.0</maven.scm.provider.gitexe.version>
+        <maven.scm.provider.gitexe.version>2.2.1</maven.scm.provider.gitexe.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         
