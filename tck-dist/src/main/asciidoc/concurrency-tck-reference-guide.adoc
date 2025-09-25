@@ -372,16 +372,7 @@ The {APIShortName} TCK will run signature tests on the application server itself
 This means that the signature tests will run during the maven `test` phase.
 
 The signature test plugin we use will also attempt to perform reflective access of classes, methods, and fields.
-Due to the new module system in JDK 9+ special permissions need to be added in order for these tests to run: 
-
-If you are using a Security Manager add the following permissions to applications running on your application server:
-
-[source, txt]
-----
-permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal";
-permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.reflect";
-permission java.lang.RuntimePermission "accessClassInPackage.jdk.internal.vm.annotation";
-----
+Due to the new module system in JDK 9+ special permissions need to be added in order for these tests to run:
 
 By default the java.base module only exposes certain classes for reflective access. 
 Therefore, the {APIShortName} TCK test will need access to the `jdk.internal.vm.annotation` class.
