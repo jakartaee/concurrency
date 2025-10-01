@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2022, 2025 Contributors to the Eclipse Foundation
   ~ 
   ~ This program and the accompanying materials are made available under the
   ~ terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.9</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>jakarta.enterprise.concurrent</groupId>
@@ -64,6 +64,20 @@
         <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
         <url>https://github.com/jakartaee/concurrency</url>
     </scm>
+
+    <repositories>
+        <repository>
+            <name>Central Portal Snapshots</name>
+            <id>central-portal-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -117,7 +131,6 @@
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
         <jakarta.jsp.version>4.0.0</jakarta.jsp.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-
     </properties>
 
     <dependencyManagement>
