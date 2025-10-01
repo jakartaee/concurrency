@@ -332,15 +332,6 @@ public class ConcurrencySignatureTestRunner extends SigTestEE {
                         + "--add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED "
                         + "--add-opens java.base/jdk.internal.vm.annotation=ALL-UNNAMED";
                 fail(message, ioe);
-            } catch (SecurityException se) {
-                // This means that this application was running under a security manager that
-                // did not allow the method call
-                String message = "Tried to call setAccessible on JDK internal method and received SecurityException from the security manager. "
-                        + "Give this application permission to make this method call with the security manager using the following permissions:"
-                        + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal\"; "
-                        + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.reflect\"; "
-                        + "permission java.lang.RuntimePermission \"accessClassInPackage.jdk.internal.vm.annotation\";";
-                fail(message, se);
             }
         }
     }
