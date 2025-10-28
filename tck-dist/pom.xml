@@ -177,6 +177,8 @@
                     <toc>left</toc>
                     <sourceHighlighter>coderay</sourceHighlighter>
                     <skip>${maven.adoc.skip}</skip>
+                    <inceptionYear>${inception.year}</inceptionYear>
+                    <currentYear>${current.year}</currentYear>
                 </configuration>
             </plugin>
 

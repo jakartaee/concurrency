@@ -9,6 +9,15 @@ on:
             specVersion:
                 description: 'Major and Minor level of release. Example: 3.1'
                 required: true
+            specStatus:
+                type: choice
+                description: 'Status of the specification.'
+                required: true
+                default: 'DRAFT'
+                options:
+                  - DRAFT
+                  - FINAL
+
 
 jobs:
   generate:
@@ -24,16 +33,15 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Generate specification docs
-      #TODO remove -Pstaging once all Jakarta EE 11 dependencies are GA
       run: |
-        mvn package -Pstaging --file api/pom.xml -Dspec.version=${{ github.event.inputs.specVersion }}
-        mvn package -Pstaging --file specification/pom.xml -Dstatus=FINAL -Dspec.version=${{ github.event.inputs.specVersion }}
+        mvn package --file api/pom.xml           -Dstatus=${{ github.event.inputs.specStatus }} -Dspec.version=${{ github.event.inputs.specVersion }}
+        mvn package --file specification/pom.xml -Dstatus=${{ github.event.inputs.specStatus }} -Dspec.version=${{ github.event.inputs.specVersion }}
     - name: Assemble documentation
       run: |
         mkdir documentation/
         cp specification/target/generated-docs/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.pdf   documentation/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.pdf
         cp specification/target/generated-docs/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.html  documentation/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.html
-        cp -r api/target/apidocs/ documentation/apidocs
+        cp -r api/target/reports/apidocs/ documentation/apidocs
     - name: Upload documentation
       uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
       with:
