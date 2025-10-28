@@ -69,6 +69,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
+        <inception.year>2018</inception.year> <!-- of eclipse copyright -->
         <spec.version>3.2</spec.version>
         
         <maven.compiler.release>21</maven.compiler.release>
@@ -216,6 +217,25 @@
                                     <version>3.8.0</version>
                                 </requireMavenVersion>
                             </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Sets current year for copyright footers in docs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <pattern>yyyy</pattern>
                         </configuration>
                     </execution>
                 </executions>

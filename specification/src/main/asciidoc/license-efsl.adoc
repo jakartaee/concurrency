@@ -9,7 +9,7 @@ Status: {revremark}
 Release: {revdate}
 ....
 
-Copyright (c) 2018,2024 Eclipse Foundation.
+Copyright (c) {inceptionYear}, {currentYear} Eclipse Foundation.
 
 === Eclipse Foundation Specification License - v1.1
 
@@ -47,7 +47,7 @@ specification is expressly prohibited.
 
 The notice is:
 
-"Copyright (c) 2018, 2024 Eclipse Foundation AISBL.This software or
+"Copyright (c) {inceptionYear}, {currentYear} Eclipse Foundation AISBL.This software or
 document includes material copied from or derived from Jakarta Concurrency and 
 https://jakarta.ee/specifications/concurrency/3.0/."
 

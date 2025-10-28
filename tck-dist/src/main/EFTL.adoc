@@ -1,6 +1,6 @@
 = Eclipse Foundation Technology Compatibility Kit License - v1.1
 
-The accompanying Technology Compatibility Kit is "Copyright (c) 2018, 2024 Eclipse Foundation AISBL and its licensors."
+The accompanying Technology Compatibility Kit is "Copyright (c) {inceptionYear}, {currentYear} Eclipse Foundation AISBL and its licensors."
 
 Redistribution and use of the TCK (as defined below) in binary form is permitted provided that the following conditions are met:
 

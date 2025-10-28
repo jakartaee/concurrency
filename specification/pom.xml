@@ -123,6 +123,8 @@
                                 <idprefix />
                                 <idseparator>-</idseparator>
                                 <docinfo1>true</docinfo1>
+                                <inceptionYear>${inception.year}</inceptionYear>
+                                <currentYear>${current.year}</currentYear>
                             </attributes>
                         </configuration>
                     </execution>
@@ -153,6 +155,8 @@
                                 <idseparator>-</idseparator>
                                 <docinfo1>true</docinfo1>
                                 <embedAssets>true</embedAssets>
+                                <inceptionYear>${inception.year}</inceptionYear>
+                                <currentYear>${current.year}</currentYear>
                             </attributes>
                         </configuration>
                     </execution>

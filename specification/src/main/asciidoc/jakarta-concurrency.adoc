@@ -1,7 +1,7 @@
 :sectnums:
 = Jakarta Concurrency Specification, Version 3.2
 
-Copyright (c) 2013, 2025 Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 2013, {currentYear} Oracle and/or its affiliates. All rights reserved.
 
 Oracle and Java are registered trademarks of Oracle and/or its 
 affiliates. Other names may be trademarks of their respective owners. 
