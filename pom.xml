@@ -82,7 +82,7 @@
         <maven.complier.plugin.version>3.14.1</maven.complier.plugin.version>
         <maven.dependency.plugin.version>3.9.0</maven.dependency.plugin.version>
         <maven.enforcer.plugin.version>3.6.2</maven.enforcer.plugin.version>
-        <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
+        <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.jxr.plugin.version>3.6.0</maven.jxr.plugin.version>
         <maven.release.plugin.version>3.2.0</maven.release.plugin.version>
