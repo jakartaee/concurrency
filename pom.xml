@@ -76,7 +76,7 @@
         <maven.site.skip>true</maven.site.skip>
         
         <maven.antrun.plugin.version>3.2.0</maven.antrun.plugin.version>
-        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
+        <maven.assembly.plugin.version>3.8.0</maven.assembly.plugin.version>
         <maven.bundle.plugin.version>6.0.0</maven.bundle.plugin.version>
         <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
         <maven.complier.plugin.version>3.14.1</maven.complier.plugin.version>
