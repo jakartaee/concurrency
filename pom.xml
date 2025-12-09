@@ -24,7 +24,7 @@
     </parent>
 
     <groupId>jakarta.concurrent</groupId>
-    <artifactId>jakarta.concurrent.parent</artifactId>
+    <artifactId>jakarta.concurrent-parent</artifactId>
     <version>3.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

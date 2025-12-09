@@ -13,7 +13,7 @@ echo "Installing $POM with version $VERSION"
 mvn org.apache.maven.plugins:maven-install-plugin:3.0.0-M1:install-file \
 -Dfile=$POM \
 -DgroupId=jakarta.concurrent \
--DartifactId=jakarta.concurrent.parent \
+-DartifactId=jakarta.concurrent-parent \
 -Dversion=$VERSION \
 -Dpackaging=pom
 
