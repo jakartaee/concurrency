@@ -42,10 +42,10 @@
             <destName>README.md</destName>
         </file>
 
-        <!-- The jakarta.enterprise.concurrent-parent pom file -->
+        <!-- The jakarta.concurrent-parent pom file -->
         <file>
             <source>../pom.xml</source>
-            <destName>artifacts/jakarta.enterprise.concurrent-parent-${project.version}.pom</destName>
+            <destName>artifacts/jakarta.concurrent-parent-${project.version}.pom</destName>
         </file>
 
     </files>
@@ -99,7 +99,7 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-tck</include>
+                <include>jakarta.concurrent:jakarta.concurrent-tck</include>
             </includes>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <outputDirectory>artifacts</outputDirectory>
