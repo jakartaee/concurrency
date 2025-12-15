@@ -95,7 +95,7 @@
         <flatten.maven.plugin.version>1.7.3</flatten.maven.plugin.version>       
         <spec.version.plugin.version>2.2</spec.version.plugin.version>
         
-        <checkstyle.version>12.2.0</checkstyle.version>
+        <checkstyle.version>12.3.0</checkstyle.version>
         <checkstyle.excludes></checkstyle.excludes>
         
         <asciidoctor.maven.plugin.version>3.2.0</asciidoctor.maven.plugin.version>
