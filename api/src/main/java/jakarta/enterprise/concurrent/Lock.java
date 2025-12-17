@@ -45,7 +45,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * the default values of the {@code Lock} annotation when bean methods that are
  * not annotated {@code Lock} are invoked.</p>
  *
- * @since 3.2.0
+ * @since 3.2
  */
 @InterceptorBinding
 @Target({ METHOD, TYPE })
