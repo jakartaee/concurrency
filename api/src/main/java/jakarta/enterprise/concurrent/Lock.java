@@ -30,7 +30,20 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * Declares a concurrency lock for a CDI managed bean with container managed concurrency.
+ * <p>A lock that governs concurrent access to a CDI managed bean.</p>
+ *
+ * <p>When the {@code Lock} annotation is applied to a bean class or method,
+ * a single lock controls access to an instance of the bean. The lock is obtained,
+ * either in {@linkplain Type#WRITE exclusive} or {@linkplain Type#READ shared}
+ * mode, by invoking bean methods. If the bean implementation internally accesses
+ * one of its own methods or fields, that access is not subject to the lock.</p>
+ *
+ * <p>A bean method that does not have a {@code Lock} annotation inherits
+ * the {@code Lock} annotation, if present, of the class that declares the method.
+ * A bean class that has a method annotated {@code Lock}, but does not have a
+ * {@code Lock} annotation of its own at the class level, operates according to
+ * the default values of the {@code Lock} annotation when bean methods that are
+ * not annotated {@code Lock} are invoked.</p>
  *
  * @since 3.2.0
  */
