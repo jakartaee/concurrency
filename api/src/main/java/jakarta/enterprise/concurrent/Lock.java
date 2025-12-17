@@ -93,12 +93,18 @@ public @interface Lock {
     @Nonbinding Type type() default Type.WRITE;
 
     /**
+     * <p>The maximum amount of time to wait to obtain the lock.
+     * If the lock that allows running the method cannot be obtained within
+     * the specified amount of time, a {@link java.util.concurrent.CompletionException}
+     * that chains a {@link java.util.concurrent.TimeoutException} is thrown
+     * from the method invocation attempt.</p>
      *
-     * @return the way to deal with time out waiting for a lock
-     */
-    @Nonbinding TimeoutType timeoutType() default TimeoutType.TIMEOUT;
-
-    /**
+     * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
+     *
+     * <p>Use the {@link #UNLIMITED} constant to avoid timing out.</p>
+     *
+     * <p>The supplied timeout value must be positive or one of the constants
+     * described above.</p>
      *
      * @return the time to wait to obtain a lock
      */
