@@ -122,20 +122,18 @@ public @interface Lock {
         /**
          * Instance of the Literal annotation.
          */
-        public static final Literal INSTANCE = of(Type.WRITE, TimeoutType.TIMEOUT, 60, SECONDS);
+        public static final Literal INSTANCE = of(Type.WRITE, 60, SECONDS);
 
         private final Type type;
-        private final TimeoutType timeoutType;
         private final long accessTimeout;
         private final TimeUnit unit;
 
-        public static Literal of(final Type type, final TimeoutType timeoutType, final long accessTimeout, final TimeUnit unit) {
-            return new Literal(type, timeoutType, accessTimeout, unit);
+        public static Literal of(final Type type, final long accessTimeout, final TimeUnit unit) {
+            return new Literal(type, accessTimeout, unit);
         }
 
-        private Literal(final Type type, final TimeoutType timeoutType, final long accessTimeout, final TimeUnit unit) {
+        private Literal(final Type type, final long accessTimeout, final TimeUnit unit) {
             this.type = type;
-            this.timeoutType = timeoutType;
             this.accessTimeout = accessTimeout;
             this.unit = unit;
         }
@@ -146,14 +144,6 @@ public @interface Lock {
         @Override
         public Type type() {
             return type;
-        }
-
-        /**
-         * {@return the way to deal with time out waiting for a lock.}
-         */
-        @Override
-        public TimeoutType timeoutType() {
-            return timeoutType;
         }
 
         /**
