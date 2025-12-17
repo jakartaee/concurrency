@@ -93,7 +93,9 @@ public @interface Lock {
     }
 
     /**
-     *
+     * <p>Indicates whether to obtain the lock on the bean instance in
+     * {@linkplain Type#WRITE exclusive} or {@linkplain Type#READ shared} mode.
+     * </p>
      * @return The Lock.Type to use
      */
     @Nonbinding Type type() default Type.WRITE;
