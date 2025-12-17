@@ -71,26 +71,18 @@ public @interface Lock {
     }
 
     /**
-     * Specifies what type of timeout to use for grabbing a lock.
+     * Value for {@link #accessTimeout} that indicates that the lock that
+     * permits running a bean method must be obtained immediately.
+     * Otherwise, a {@link java.util.concurrent.CompletionException} that
+     * chains a {@link java.util.concurrent.TimeoutException} is thrown.
      */
-    enum TimeoutType {
-        /**
-         * A timeout value in the units specified by the <code>unit</code> element.
-         */
-        TIMEOUT,
+    long IMMEDIATE = 0;
 
-        /**
-         * Concurrent access is not permitted; so no wait therefore no timeout is allowed.
-         * Either the lock is available and grabbed immediately, or an exception is thrown.
-         */
-        NOT_PERMITTED,
-
-        /**
-         * The client request will block indefinitely until it can proceed; it waits for as long
-         * as it needs to, hence the timeout is unlimited.
-         */
-        INDEFINITTE
-    }
+    /**
+     * Value for {@link #accessTimeout} that indicates to wait as long as necessary
+     * to obtain the lock that permits running a bean method.
+     */
+    long UNLIMITED = -1;
 
     /**
      * <p>Indicates whether to obtain the lock on the bean instance in
