@@ -58,7 +58,7 @@ public @interface Lock {
      */
     enum Type {
         /**
-         * For read-only operations. Allows simultaneous access to methods designated as <code>READ</code>, as long as no
+         * For read-only operations. Allows simultaneous access, as long as no
          * <code>WRITE</code> lock is held.
          */
         READ,
