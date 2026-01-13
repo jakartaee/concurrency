@@ -23,6 +23,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
@@ -81,7 +82,7 @@ public @interface Pooled {
     /**
      * Value for {@link #accessTimeout} that indicates that the bean instance
      * running a bean method must be obtained immediately.
-     * Otherwise, a {@link PoolLockTimeoutException} is thrown.
+     * Otherwise, a {@link TimeoutException} is thrown.
      */
     long IMMEDIATE = 0;
 
@@ -100,7 +101,7 @@ public @interface Pooled {
      * <p>The maximum amount of time to wait to obtain a bean instance instance
      * from the pool to run a single bean method against.
      * If the lock cannot be obtained within the specified amount of time, a
-     * {@link java.util.concurrent.TimeoutException} is thrown.</p>
+     * {@link TimeoutException} is thrown.</p>
      *
      * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
      *
@@ -136,7 +137,7 @@ public @interface Pooled {
      * <p>
      * If the {@link #destroyOn()} property is empty, but the keepOn property is not, then the bean will be
      * destroyed for any Throwable that isn't an instance of a type in the keepOn property.
-     * When the {@link #destroyOn()} property is not empty, then the dontDestroyOn property takes precedence.
+     * When the {@link #destroyOn()} property is not empty, then the keepOn property takes precedence.
      * If a pooled bean instance throws a throwable which is an instance of a type in both the
      * destroyOn and keepOn properties, then the bean will not be destroyed.
      * </p>
