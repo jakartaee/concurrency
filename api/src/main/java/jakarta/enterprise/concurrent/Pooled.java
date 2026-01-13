@@ -96,7 +96,7 @@ public @interface Pooled {
      * <p>The maximum amount of time to wait to obtain a bean instance instance
      * from the pool to run a single bean method against.
      * If the lock cannot be obtained within the specified amount of time, a
-     * {@link PoolLockTimeoutException} is thrown.</p>
+     * {@link java.util.concurrent.TimeoutException} is thrown.</p>
      *
      * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
      *
