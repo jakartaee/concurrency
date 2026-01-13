@@ -63,7 +63,11 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  *     // to service the first call.
  *     someBean.myMethod();
  * }
+ * </p>
  *
+ * <p>The {@code @Pooled} annotation can only be applied to a bean instance
+ * or a producer method that creates a bean instance. It must not annotate
+ * any other locations, such as bean methods.</p>
  *
  * @since 3.2
  */
