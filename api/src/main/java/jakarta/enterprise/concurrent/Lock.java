@@ -162,7 +162,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return the Lock.Type to use.}
+         * {@return the Lock.Type to use}
          */
         @Override
         public Type type() {
@@ -170,7 +170,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return the time to wait to obtain a lock.}
+         * {@return the time to wait to obtain a lock}
          */
         @Override
         public long accessTimeout() {
@@ -178,7 +178,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return units used for the specified accessTimeout value.}
+         * {@return units used for the specified accessTimeout value}
          */
         @Override
         public TimeUnit unit() {
