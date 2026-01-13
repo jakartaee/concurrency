@@ -145,7 +145,7 @@ public @interface Pooled {
     /**
      * Supports inline instantiation of the Pooled annotation.
      *
-     * @since 3.0
+     * @since 3.2
      */
     public static final class Literal extends AnnotationLiteral<Pooled> implements Pooled {
 
