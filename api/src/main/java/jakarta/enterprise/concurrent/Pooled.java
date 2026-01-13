@@ -124,7 +124,7 @@ public @interface Pooled {
      * <p>
      * If the pooled bean instances throws any Throwable which is an instance of a type set in the destroyOn property,
      * then the bean will be destroyed, except if the throwable is also an instance of a type set in the {@link
-     * #dontDestroyOn()} property.
+     * #keepOn()} property.
      * </p>
      *
      * @return The types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance
