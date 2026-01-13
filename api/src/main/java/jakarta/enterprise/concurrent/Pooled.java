@@ -39,6 +39,32 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  * each other, multiple different beans may be used.
  * </p>
  *
+ * <p>
+ * Example of usage
+ *
+ * {@snippet lang="java" :
+ *     @Pooled
+ *     public class SomeBean {
+ *
+ *        public void myMethod() {
+ *
+ *        }
+ *     }
+ *
+ *     @Inject
+ *     SomeBean someBean;
+ *
+ *     // myMethod call is directed to a free bean from the pool
+ *     // for the duration of the method call.
+ *     someBean.myMethod();
+ *
+ *     // myMethod call is again directed to a any free bean from the pool,
+ *     // which may be a totally different instance than the bean used
+ *     // to service the first call.
+ *     someBean.myMethod();
+ * }
+ *
+ *
  * @since 3.2
  */
 @Inherited
@@ -49,17 +75,43 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public @interface Pooled {
 
     /**
+     * Value for {@link #accessTimeout} that indicates that the bean instance
+     * running a bean method must be obtained immediately.
+     * Otherwise, a {@link PoolLockTimeoutException} is thrown.
+     */
+    long IMMEDIATE = 0;
+
+    /**
+     * Value for {@link #accessTimeout} that indicates to wait as long as necessary
+     * to obtain the bean instance that permits running a bean method.
+     */
+    long UNLIMITED = -1;
+
+    /**
      * {@return the maximum number of instances in the pool.}
      */
     int value() default 10;
 
     /**
-     * {@return the maximum amount of time to attempt to obtain a lock on an instance from the pool.}
+     * <p>The maximum amount of time to wait to obtain a bean instance instance
+     * from the pool to run a single bean method against.
+     * If the lock cannot be obtained within the specified amount of time, a
+     * {@link PoolLockTimeoutException} is thrown.</p>
+     *
+     * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
+     *
+     * <p>Use the {@link #UNLIMITED} constant to avoid timing out.</p>
+     *
+     * <p>The supplied timeout value must be positive or one of the constants
+     * described above.</p>
+     *
+     * @return the time to wait to obtain a bean instance for the duration of
+     * a single method call.
      */
     long accessTimeout() default 5;
 
     /**
-     * {@return the {@link TimeUnit} to use for the {@link #instanceLockTimeout()}}
+     * {@return the {@link TimeUnit} to use for the {@link #accessTimeout()}}
      */
     TimeUnit unit() default MINUTES;
 
@@ -78,11 +130,15 @@ public @interface Pooled {
     /**
      * The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
      * <p>
-     * If the {@link #destroyOn()} property is empty, but the dontDestroyOn property is not, then the bean will be
-     * destroyed for any Throwable that isn't an instance of a type in the dontDestroyOn property. When the {@link #destroyOn()} property is not empty, then the dontDestroyOn property takes precedence. If a pooled bean instance throws a throwable which is an instance of a type in both the destroyOn and dontDestroyOn properties, then the bean will not be destroyed.
+     * If the {@link #destroyOn()} property is empty, but the keepOn property is not, then the bean will be
+     * destroyed for any Throwable that isn't an instance of a type in the keepOn property.
+     * When the {@link #destroyOn()} property is not empty, then the dontDestroyOn property takes precedence.
+     * If a pooled bean instance throws a throwable which is an instance of a type in both the
+     * destroyOn and keepOn properties, then the bean will not be destroyed.
      * </p>
      *
-     * @return The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
+     * @return The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean
+     * instance.
      */
     Class<? extends Throwable>[] keepOn() default {};
 
@@ -95,15 +151,16 @@ public @interface Pooled {
 
         private static final long serialVersionUID = 1L;
 
-        private final int        maxNumberOfInstances;
-        private final long       instanceLockTimeout;
-        private final TimeUnit   instanceLockTimeoutUnit;
-        private final Class<?>[] destroyOn;
-        private final Class<?>[] dontDestroyOn;
+        private final int        value;
+        private final long       accessTimeout;
+        private final TimeUnit   unit;
+        private final Class<? extends Throwable>[] destroyOn;
+        private final Class<? extends Throwable>[] keepOn;
 
         /**
          * Default instance of the {@link Pooled} annotation.
          */
+        @SuppressWarnings("unchecked")
         public static final Literal INSTANCE = of(
             10,
             5,
@@ -115,45 +172,45 @@ public @interface Pooled {
         /**
          * Instance of the {@link Pooled} annotation.
          *
-         * @param maxNumberOfInstances The maximum number of instances in the pool.
-         * @param instanceLockTimeout The maximum amount of time to attempt to obtain a lock on an instance from the pool.
-         * @param instanceLockTimeoutUnit The {@link TimeUnit} to use for the {@link #instanceLockTimeout()}
+         * @param value The maximum number of instances in the pool.
+         * @param accessTimeout The maximum amount of time to wait attempting to retrieve an instance from the pool.
+         * @param unit The {@link TimeUnit} to use for the {@link #accessTimeout()}
          * @param destroyOn The types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance.
-         * @param dontDestroyOn The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
+         * @param keepOn The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
 
          * @return instance of the {@link Pooled} annotation
          */
         public static Literal of(
-                        final int           maxNumberOfInstances,
-                        final long          instanceLockTimeout,
-                        final TimeUnit      instanceLockTimeoutUnit,
-                        final Class<?>[]    destroyOn,
-                        final Class<?>[]    dontDestroyOn
+                        final int                             value,
+                        final long                            accessTimeout,
+                        final TimeUnit                        unit,
+                        final Class<? extends Throwable>[]    destroyOn,
+                        final Class<? extends Throwable>[]    keepOn
 
 
             ) {
             return new Literal(
-                                            maxNumberOfInstances,
-                                            instanceLockTimeout,
-                                            instanceLockTimeoutUnit,
+                                            value,
+                                            accessTimeout,
+                                            unit,
                                             destroyOn,
-                                            dontDestroyOn
+                                            keepOn
                 );
         }
 
         private Literal(
-                        final int           maxNumberOfInstances,
-                        final long          instanceLockTimeout,
-                        final TimeUnit      instanceLockTimeoutUnit,
-                        final Class<?>[]    destroyOn,
-                        final Class<?>[]    dontDestroyOn
+                        final int           value,
+                        final long          accessTimeout,
+                        final TimeUnit      unit,
+                        final Class<? extends Throwable>[]    destroyOn,
+                        final Class<? extends Throwable>[]    keepOn
                 ) {
 
-            this.maxNumberOfInstances =     maxNumberOfInstances;
-            this.instanceLockTimeout =      instanceLockTimeout;
-            this.instanceLockTimeoutUnit =  instanceLockTimeoutUnit;
+            this.value =                    value;
+            this.accessTimeout =            accessTimeout;
+            this.unit =                     unit;
             this.destroyOn =                destroyOn;
-            this.dontDestroyOn =            dontDestroyOn;
+            this.keepOn =                   keepOn;
         }
 
 
@@ -161,31 +218,31 @@ public @interface Pooled {
          * {@return the maximum number of instances in the pool.}
          */
         @Override
-        public int maxNumberOfInstances() {
-            return maxNumberOfInstances;
+        public int value() {
+            return value;
         }
 
         /**
-         * {@return the maximum amount of time to attempt to obtain a lock on an instance from the pool.}
+         * {@return the maximum amount of time to wait attempting to retrieve an instance from the pool.}
          */
         @Override
-        public long instanceLockTimeout() {
-            return instanceLockTimeout;
+        public long accessTimeout() {
+            return accessTimeout;
         }
 
         /**
-         * {@return the {@link TimeUnit} to use for the {@link #instanceLockTimeout()}}
+         * {@return the {@link TimeUnit} to use for the {@link #accessTimeout()}}
          */
         @Override
-        public TimeUnit instanceLockTimeoutUnit() {
-            return instanceLockTimeoutUnit;
+        public TimeUnit unit() {
+            return unit;
         }
 
         /**
          * {@return the types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance.}
          */
         @Override
-        public Class<?>[] destroyOn() {
+        public Class<? extends Throwable>[] destroyOn() {
             return destroyOn;
         }
 
@@ -193,8 +250,8 @@ public @interface Pooled {
          * {@return the types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.}
          */
         @Override
-        public Class<?>[] dontDestroyOn() {
-            return dontDestroyOn;
+        public Class<? extends Throwable>[] keepOn() {
+            return keepOn;
         }
 
     }
