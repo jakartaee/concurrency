@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Contributors to the Eclipse Foundation.
+ * Copyright (c) 2025,2026 Contributors to the Eclipse Foundation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -134,7 +134,24 @@ public @interface Lock {
         private final long accessTimeout;
         private final TimeUnit unit;
 
+        /**
+         * Create a {@link Lock} annotation instance.
+         *
+         * @param type          whether to obtain the lock on the bean instance in
+         *                      {@linkplain Type#WRITE exclusive} or
+         *                      {@linkplain Type#READ shared} mode.
+         * @param accessTimeout maximum amount of time to wait to obtain the lock.
+         * @param unit          units of the given {@code accessTimeout} value.
+         *
+         * @return {@code Lock} annotation instance.
+         */
         public static Literal of(final Type type, final long accessTimeout, final TimeUnit unit) {
+            if (type == null)
+                throw new IllegalArgumentException("type: null");
+
+            if (unit == null)
+                throw new IllegalArgumentException("unit: null");
+
             return new Literal(type, accessTimeout, unit);
         }
 
@@ -145,7 +162,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return the Lock.Type to use.}
+         * {@return the Lock.Type to use}
          */
         @Override
         public Type type() {
@@ -153,7 +170,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return the time to wait to obtain a lock.}
+         * {@return the time to wait to obtain a lock}
          */
         @Override
         public long accessTimeout() {
@@ -161,7 +178,7 @@ public @interface Lock {
         }
 
         /**
-         * {@return units used for the specified accessTimeout value.}
+         * {@return units used for the specified accessTimeout value}
          */
         @Override
         public TimeUnit unit() {
