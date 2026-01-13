@@ -84,7 +84,7 @@ public @interface Pooled {
      *
      * @return The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
      */
-    Class<?>[] dontDestroyOn() default {};
+    Class<? extends Throwable>[] keepOn() default {};
 
     /**
      * Supports inline instantiation of the Pooled annotation.
