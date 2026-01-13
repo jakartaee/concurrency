@@ -56,7 +56,7 @@ public @interface Pooled {
     /**
      * {@return the maximum amount of time to attempt to obtain a lock on an instance from the pool.}
      */
-    long instanceLockTimeout() default 5;
+    long accessTimeout() default 5;
 
     /**
      * {@return the {@link TimeUnit} to use for the {@link #instanceLockTimeout()}}
