@@ -29,6 +29,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Specify that a bean is to be pooled.
@@ -118,7 +119,7 @@ public @interface Pooled {
     /**
      * {@return the {@link TimeUnit} to use for the {@link #accessTimeout()}}
      */
-    TimeUnit unit() default MINUTES;
+    TimeUnit unit() default SECONDS;
 
     /**
      * The types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance.
