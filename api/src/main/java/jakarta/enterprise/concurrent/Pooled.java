@@ -61,7 +61,7 @@ public @interface Pooled {
     /**
      * {@return the {@link TimeUnit} to use for the {@link #instanceLockTimeout()}}
      */
-    TimeUnit instanceLockTimeoutUnit() default MINUTES;
+    TimeUnit unit() default MINUTES;
 
     /**
      * The types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance.
