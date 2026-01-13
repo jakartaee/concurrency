@@ -73,7 +73,7 @@ public @interface Pooled {
      *
      * @return The types of {@link Throwable Throwables} which must cause the destruction of a pooled bean instance
      */
-    Class<?>[] destroyOn() default {};
+    Class<? extends Throwable>[] destroyOn() default {};
 
     /**
      * The types of {@link Throwable Throwables} which must not cause the destruction of a pooled bean instance.
