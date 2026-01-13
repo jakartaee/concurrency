@@ -51,7 +51,7 @@ public @interface Pooled {
     /**
      * {@return the maximum number of instances in the pool.}
      */
-    int maxNumberOfInstances() default 10;
+    int value() default 10;
 
     /**
      * {@return the maximum amount of time to attempt to obtain a lock on an instance from the pool.}
