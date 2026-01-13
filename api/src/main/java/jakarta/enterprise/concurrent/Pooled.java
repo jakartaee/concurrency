@@ -58,7 +58,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  *     // for the duration of the method call.
  *     someBean.myMethod();
  *
- *     // myMethod call is again directed to a any free bean from the pool,
+ *     // myMethod call is again directed to any free bean from the pool,
  *     // which may be a totally different instance than the bean used
  *     // to service the first call.
  *     someBean.myMethod();
