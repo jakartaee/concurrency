@@ -220,7 +220,7 @@ public @interface Pooled {
         public static final Literal INSTANCE = of(
             10,
             5,
-            MINUTES,
+            SECONDS,
             new Class[]{},
             new Class[]{}
         );
