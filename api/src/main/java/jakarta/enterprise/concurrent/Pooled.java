@@ -89,19 +89,25 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Example: two successive calls through the same injected proxy may be serviced by different underlying instances.
  *
  * {@snippet lang="java" :
- *     @Pooled
+ *     @Pooled//
  *     public class SomeBean {
  *         public void myMethod() { }
  *     }
  *
- *     @Inject
- *     SomeBean someBean;
+ *     public class UsingBean {
  *
- *     // myMethod call is directed to a free underlying instance for the duration of the call.
- *     someBean.myMethod();
+ *          @Inject//
+ *          SomeBean someBean;
  *
- *     // A subsequent call may be directed to a different underlying instance.
- *     someBean.myMethod();
+ *          public void run() {
+ *
+ *              // myMethod call is directed to a free underlying instance for the duration of the call.
+ *              someBean.myMethod();
+ *
+ *              // A subsequent call may be directed to a different underlying instance.
+ *              someBean.myMethod();
+ *          }
+ *     }
  * }
  * </p>
  *
