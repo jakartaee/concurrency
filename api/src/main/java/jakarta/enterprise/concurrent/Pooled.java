@@ -243,10 +243,15 @@ public @interface Pooled {
                         final Class<? extends Throwable>[]    destroyOn,
                         final Class<? extends Throwable>[]    keepOn
 
-
+        public static Literal of(
+                        final int           value,
+                        final long          accessTimeout,
+                        final TimeUnit      unit,
+                        final Class<?>[]    destroyOn,
+                        final Class<?>[]    keepOn
             ) {
-            if (unit == null)
-                throw new IllegalArgumentException("unit: null");
+            if (accessTimeout == null)
+                throw new IllegalArgumentException("accessTimeout: null");
             if (destroyOn == null)
                 throw new IllegalArgumentException("destroyOn: null");
             if (keepOn == null)
