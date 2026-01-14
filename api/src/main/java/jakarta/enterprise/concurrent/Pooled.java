@@ -244,6 +244,7 @@ public @interface Pooled {
                         final Class<? extends Throwable>[]    keepOn
             ) {
 
+            requireNonNull(unit, "unit: null");
             requireNonNull(destroyOn, "destroyOn: null");
             requireNonNull(keepOn, "keepOn: null");
 
