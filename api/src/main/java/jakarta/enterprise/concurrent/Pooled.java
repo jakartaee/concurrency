@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
@@ -237,25 +237,15 @@ public @interface Pooled {
          * @return instance of the {@link Pooled} annotation
          */
         public static Literal of(
-                        final int                             value,
-                        final long                            accessTimeout,
-                        final TimeUnit                        unit,
-                        final Class<? extends Throwable>[]    destroyOn,
-                        final Class<? extends Throwable>[]    keepOn
-
-        public static Literal of(
                         final int           value,
                         final long          accessTimeout,
                         final TimeUnit      unit,
-                        final Class<?>[]    destroyOn,
-                        final Class<?>[]    keepOn
+                        final Class<? extends Throwable>[]    destroyOn,
+                        final Class<? extends Throwable>[]    keepOn
             ) {
-            if (accessTimeout == null)
-                throw new IllegalArgumentException("accessTimeout: null");
-            if (destroyOn == null)
-                throw new IllegalArgumentException("destroyOn: null");
-            if (keepOn == null)
-                throw new IllegalArgumentException("keepOn: null");
+
+            requireNonNull(destroyOn, "destroyOn: null");
+            requireNonNull(keepOn, "keepOn: null");
 
             return new Literal(
                                             value,
