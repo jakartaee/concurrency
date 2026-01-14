@@ -89,14 +89,14 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Example: two successive calls through the same injected proxy may be serviced by different underlying instances.
  *
  * {@snippet lang="java" :
- *     @Pooled//
+ *     @jakarta.enterprise.concurrent.Pooled
  *     public class SomeBean {
  *         public void myMethod() { }
  *     }
  *
  *     public class UsingBean {
  *
- *          @Inject//
+ *          @jakarta.inject.Inject
  *          SomeBean someBean;
  *
  *          public void run() {
