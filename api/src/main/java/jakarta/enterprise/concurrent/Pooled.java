@@ -35,41 +35,85 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Specify that a bean is to be pooled.
  *
  * <p>
- * Pooled beans can have multiple instances that are shared between all threads of an application, but can never be
- * called by more than one thread at the same time. When a method call on a pooled bean is performed, an instance is
- * selected from the pool and is locked until the method call ends. When performing multiple method calls directly after
- * each other, multiple different beans may be used.
+ * A pooled bean provides <em>max concurrency</em> (throttling) semantics. Instead of allowing an unbounded number of
+ * concurrent method invocations, the container exposes a single contextual reference (a normal-scoped client proxy)
+ * backed by a bounded pool of underlying bean instances. Each underlying instance is used by at most one thread at a
+ * time.
  * </p>
  *
  * <p>
- * Example of usage
+ * For each invocation of a business method through the pooled bean proxy, the container must first obtain an available
+ * underlying instance from the pool. If an instance is available, the invocation proceeds using that instance and the
+ * instance remains reserved for the duration of the invocation. When the invocation completes (normally or
+ * exceptionally), the instance is returned to the pool and becomes available for other callers, or, depending on the
+ * configured exception policy, is destroyed and replaced.
+ * </p>
+ *
+ * <p>
+ * The pool size, configured by {@link #value()}, defines the maximum number of concurrent invocations that may execute
+ * at any one time. If more callers invoke the pooled bean proxy concurrently than there are underlying instances available,
+ * callers must wait for an instance to become available, or fail with a {@link TimeoutException} if the configured
+ * {@link #accessTimeout()} expires. This makes {@code @Pooled} suitable for protecting concurrency-sensitive resources
+ * (for example, rate-limited downstream APIs, or non thread-safe objects). In effect, {@code value()} acts as a concurrency
+ * limit (similar to a semaphore with {@code value()} permits) for invocations of the pooled bean.
+ * </p>
+ *
+ * <p>
+ * To avoid waiting, use {@link #IMMEDIATE}, which causes a {@link TimeoutException} to be thrown if no instance is
+ * immediately available. To wait without timing out, use {@link #UNLIMITED}.
+ * </p>
+ *
+ * <p>
+ * Example: limit concurrency to 20 invocations, failing fast when the pool is exhausted.
+ *
+ * {@snippet lang="java" :
+ *     @Pooled(value = 20, accessTimeout = Pooled.IMMEDIATE)
+ *     public class ReportService {
+ *         public Report generate(...) { ... }
+ *     }
+ * }
+ * </p>
+ *
+ * <p>
+ * Example: limit concurrency to 5 invocations, applying bounded backpressure.
+ *
+ * {@snippet lang="java" :
+ *     @Pooled(value = 5, accessTimeout = 2, unit = TimeUnit.SECONDS)
+ *     public class LegacyApiClient {
+ *         public Response call(...) { ... }
+ *     }
+ * }
+ * </p>
+ *
+ * <p>
+ * Example: two successive calls through the same injected proxy may be serviced by different underlying instances.
  *
  * {@snippet lang="java" :
  *     @Pooled
  *     public class SomeBean {
- *
- *        public void myMethod() {
- *
- *        }
+ *         public void myMethod() { }
  *     }
  *
  *     @Inject
  *     SomeBean someBean;
  *
- *     // myMethod call is directed to a free bean from the pool
- *     // for the duration of the method call.
+ *     // myMethod call is directed to a free underlying instance for the duration of the call.
  *     someBean.myMethod();
  *
- *     // myMethod call is again directed to any free bean from the pool,
- *     // which may be a totally different instance than the bean used
- *     // to service the first call.
+ *     // A subsequent call may be directed to a different underlying instance.
  *     someBean.myMethod();
  * }
  * </p>
  *
- * <p>The {@code @Pooled} annotation can only be applied to a bean instance
- * or a producer method that creates a bean instance. It must not annotate
- * any other locations, such as bean methods.</p>
+ * <p>
+ * When configured via {@link #destroyOn()} and {@link #keepOn()}, the container may destroy an underlying instance after
+ * an exceptional invocation in order to avoid reusing an instance that may have been left in an inconsistent state.
+ * </p>
+ *
+ * <p>
+ * The {@code @Pooled} annotation can only be applied to a bean class or a producer method that defines a bean.
+ * It must not annotate individual bean methods.
+ * </p>
  *
  * @since 3.2
  */
