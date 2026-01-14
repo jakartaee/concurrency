@@ -245,6 +245,13 @@ public @interface Pooled {
 
 
             ) {
+            if (unit == null)
+                throw new IllegalArgumentException("unit: null");
+            if (destroyOn == null)
+                throw new IllegalArgumentException("destroyOn: null");
+            if (keepOn == null)
+                throw new IllegalArgumentException("keepOn: null");
+
             return new Literal(
                                             value,
                                             accessTimeout,
