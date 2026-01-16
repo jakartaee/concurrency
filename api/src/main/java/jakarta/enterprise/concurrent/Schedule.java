@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Objects;
 
 import jakarta.enterprise.util.AnnotationLiteral;
 
@@ -309,37 +310,14 @@ public @interface Schedule {
                                  final long skipIfLateBy,
                                  final String zone) {
 
-            if (cron == null) {
-                throw new IllegalArgumentException("cron: null");
-            }
-
-            if (months == null) {
-                throw new IllegalArgumentException("months: null");
-            }
-
-            if (daysOfMonth == null) {
-                throw new IllegalArgumentException("daysOfMonth: null");
-            }
-
-            if (daysOfWeek == null) {
-                throw new IllegalArgumentException("daysOfWeek: null");
-            }
-
-            if (hours == null) {
-                throw new IllegalArgumentException("hours: null");
-            }
-
-            if (minutes == null) {
-                throw new IllegalArgumentException("minutes: null");
-            }
-
-            if (seconds == null) {
-                throw new IllegalArgumentException("seconds: null");
-            }
-
-            if (zone == null) {
-                throw new IllegalArgumentException("zone: null");
-            }
+            Objects.requireNonNull(cron, "cron: null");
+            Objects.requireNonNull(months, "months: null");
+            Objects.requireNonNull(daysOfMonth, "daysOfMonth: null");
+            Objects.requireNonNull(daysOfWeek, "daysOfWeek: null");
+            Objects.requireNonNull(hours, "hours: null");
+            Objects.requireNonNull(minutes, "minutes: null");
+            Objects.requireNonNull(seconds, "seconds: null");
+            Objects.requireNonNull(zone, "zone: null");
 
             return new Literal(
                     cron,
