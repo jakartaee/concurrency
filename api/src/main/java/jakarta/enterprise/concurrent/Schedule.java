@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023,2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,6 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.time.DayOfWeek;
 import java.time.Month;
+import java.util.Arrays;
+
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  * <p>Defines a schedule that indicates when to run a method.</p>
@@ -213,4 +216,267 @@ public @interface Schedule {
      * for the system.</p>
      */
     String zone() default "";
+
+    /**
+     * Enables instances of the {@link Schedule} annotation to be created
+     * at run time.
+     */
+    public static final class Literal
+            extends AnnotationLiteral<Schedule>
+            implements Schedule {
+
+        /**
+         * Instance of the {@link Schedule} annotation with all values
+         * set to their defaults.
+         */
+        public static final Literal INSTANCE =
+                new Literal("",               // cron not used
+                            new Month[0],     // disregard the month
+                            new int[0],       // disregard the day of month
+                            new DayOfWeek[0], // disregard the day of the week
+                            new int[] {0},    // first hour of day (Midnight)
+                            new int[] {0},    // first minute of the hour
+                            new int[] {0},    // first second of the minute
+                            600L,             // skip if late by 600 seconds
+                            ""                // system default time zone
+                            );
+
+        private static final long serialVersionUID = 1L;
+
+        private final String cron;
+        private final Month[] months;
+        private final int[] daysOfMonth;
+        private final DayOfWeek[] daysOfWeek;
+        private final int[] hours;
+        private final int[] minutes;
+        private final int[] seconds;
+        private final long skipIfLateBy;
+        private final String zone;
+
+        private Literal(final String cron,
+                        final Month[] months,
+                        final int[] daysOfMonth,
+                        final DayOfWeek[] daysOfWeek,
+                        final int[] hours,
+                        final int[] minutes,
+                        final int[] seconds,
+                        final long skipIfLateBy,
+                        final String zone) {
+            this.cron = cron;
+            this.months = months;
+            this.daysOfMonth = daysOfMonth;
+            this.daysOfWeek = daysOfWeek;
+            this.hours = hours;
+            this.minutes = minutes;
+            this.seconds = seconds;
+            this.skipIfLateBy = skipIfLateBy;
+            this.zone = zone;
+        }
+
+        /**
+         * Construct a new instance of the {@link Schedule} annotation.
+         *
+         * @param cron         Cron expression following the rules of
+         *                     {@link CronTrigger}. Empty string to disregard.
+         * @param months       Months in which the method aims to run.
+         *                     Empty to disregard.
+         * @param daysOfMonth  Days of the month (1 to 31) on which the method
+         *                     aims to run. Empty to disregard.
+         * @param daysOfWeek   Days of the week on which the method aims to run.
+         *                     Empty to disregard.
+         * @param hours        Hours of the day (0 to 23) at which the method
+         *                     aims to run. Empty to disregard.
+         * @param minutes      Minutes (0 to 59) at which the method aims to run.
+         *                     Empty to disregard.
+         * @param seconds      Seconds (0 to 59) at which the method aims to run.
+         *                     Must not be empty.
+         * @param skipIfLateBy Seconds after which an execution that is late to
+         *                     start should be skipped instead of starting late.
+         * @param zone         Time zone id, such as {@code America/Chicago},
+         *                     of the schedule. Empty string indicates the
+         *                     {@link java.time.ZoneId#systemDefault() default time zone}.
+         * @return a new instance of the {@code Schedule} annotation.
+         */
+        public static Literal of(final String cron,
+                                 final Month[] months,
+                                 final int[] daysOfMonth,
+                                 final DayOfWeek[] daysOfWeek,
+                                 final int[] hours,
+                                 final int[] minutes,
+                                 final int[] seconds,
+                                 final long skipIfLateBy,
+                                 final String zone) {
+
+            if (cron == null) {
+                throw new IllegalArgumentException("cron: null");
+            }
+
+            if (months == null) {
+                throw new IllegalArgumentException("months: null");
+            }
+
+            if (daysOfMonth == null) {
+                throw new IllegalArgumentException("daysOfMonth: null");
+            }
+
+            if (daysOfWeek == null) {
+                throw new IllegalArgumentException("daysOfWeek: null");
+            }
+
+            if (hours == null) {
+                throw new IllegalArgumentException("hours: null");
+            }
+
+            if (minutes == null) {
+                throw new IllegalArgumentException("minutes: null");
+            }
+
+            if (seconds == null) {
+                throw new IllegalArgumentException("seconds: null");
+            }
+
+            if (zone == null) {
+                throw new IllegalArgumentException("zone: null");
+            }
+
+            return new Literal(
+                    cron,
+                    months.length == 0
+                            ? months
+                            : Arrays.copyOf(months, months.length),
+                    daysOfMonth.length == 0
+                            ? daysOfMonth
+                            : Arrays.copyOf(daysOfMonth, daysOfMonth.length),
+                    daysOfWeek.length == 0
+                            ? daysOfWeek
+                            : Arrays.copyOf(daysOfWeek, daysOfWeek.length),
+                    hours.length == 0
+                            ? hours
+                            : Arrays.copyOf(hours, months.length),
+                    minutes.length == 0
+                            ? minutes
+                            : Arrays.copyOf(minutes, minutes.length),
+                    seconds.length == 0
+                            ? seconds
+                            : Arrays.copyOf(seconds, seconds.length),
+                    skipIfLateBy,
+                    zone
+                    );
+        }
+
+        /**
+         * <p>Cron expression following the rules of {@link CronTrigger}.</p>
+         *
+         * @return cron expression indicating when to run the method.
+         */
+        @Override
+        public String cron() {
+            return cron;
+        }
+
+        /**
+         * <p>Months in which the method aims to run.</p>
+         *
+         * @return list of months in which the method aims to run;
+         *         An empty list disregards the month.
+         */
+        @Override
+        public Month[] months() {
+            return months.length == 0
+                    ? months
+                    : Arrays.copyOf(months, months.length);
+        }
+
+        /**
+         * <p>Days of the month on which the method aims to run.
+         * Values can range from 1 to 31.</p>
+         *
+         * @return list of days of the month on which the method aims to run;
+         *         An empty list disregards the day of the month.
+         */
+        @Override
+        public int[] daysOfMonth() {
+            return daysOfMonth.length == 0
+                    ? daysOfMonth
+                    : Arrays.copyOf(daysOfMonth, daysOfMonth.length);
+        }
+
+        /**
+         * <p>Days of the week on which the method aims to run.</p>
+         *
+         * @return list of days of the week on which the method aims to run;
+         *         An empty list disregards the day of the week.
+         */
+        @Override
+        public DayOfWeek[] daysOfWeek() {
+            return daysOfWeek.length == 0
+                    ? daysOfWeek
+                    : Arrays.copyOf(daysOfWeek, daysOfWeek.length);
+        }
+
+        /**
+         * <p>Hours of the day at which the method aims to run.
+         * Values can range from 0 to 23.</p>
+         *
+         * @return list of hours at which the method aims to run;
+         *         An empty list disregards the hour.
+         */
+        @Override
+        public int[] hours() {
+            return hours.length == 0
+                    ? hours
+                    : Arrays.copyOf(hours, hours.length);
+        }
+
+        /**
+         * <p>Minutes at which the method aims to run.
+         * Values can range from 0 to 59.</p>
+         *
+         * @return list of minutes at which the method aims to run;
+         *         An empty list disregards the minutes.
+         */
+        @Override
+        public int[] minutes() {
+            return minutes.length == 0
+                    ? minutes
+                    : Arrays.copyOf(minutes, minutes.length);
+        }
+
+        /**
+         * <p>Seconds at which the method aims to run.
+         * Values can range from 0 to 59.</p>
+         *
+         * @return list of seconds at which the method aims to run.
+         */
+        @Override
+        public int[] seconds() {
+            return seconds.length == 0
+                    ? seconds
+                    : Arrays.copyOf(seconds, seconds.length);
+        }
+
+        /**
+         * <p>Seconds after which an execution that is late to start should be
+         * skipped rather than starting late. Values must be greater than 0.
+         * </p>
+         *
+         * @return the threshold for skipping executions that are late to start.
+         */
+        @Override
+        public long skipIfLateBy() {
+            return skipIfLateBy;
+        }
+
+        /**
+         * <p>Time zone id, such as {@code America/Chicago},
+         * which identifies the time zone of the schedule.</p>
+         *
+         * @return the time zone id. Empty string indicates to use the
+         *         {@link java.time.ZoneId#systemDefault() default time zone}.
+         */
+        @Override
+        public String zone() {
+            return zone;
+        }
+    }
 }
