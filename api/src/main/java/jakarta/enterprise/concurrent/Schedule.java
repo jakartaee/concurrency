@@ -214,6 +214,8 @@ public @interface Schedule {
      * <p>The default value of empty string indicates to use the
      * {@link java.time.ZoneId#systemDefault() default time zone}
      * for the system.</p>
+     *
+     * @return the time zone id. Empty string for the system default.
      */
     String zone() default "";
 
