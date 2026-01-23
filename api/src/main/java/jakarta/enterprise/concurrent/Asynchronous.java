@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,8 +22,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
@@ -258,6 +261,83 @@ public @interface Asynchronous {
      */
     @Nonbinding
     Schedule[] runAt() default {};
+
+    /**
+     * Enables instances of the {@link Asynchronous} annotation to be created
+     * at run time.
+     */
+    public static final class Literal
+            extends AnnotationLiteral<Asynchronous>
+            implements Asynchronous {
+
+        /**
+         * Instance of the {@link Asynchronous} annotation with all values
+         * set to their defaults.
+         */
+        public static final Literal INSTANCE =
+                new Literal("java:comp/DefaultManagedExecutorService",
+                            new Schedule[0]);
+
+        private static final long serialVersionUID = 1L;
+
+        private final String executor;
+
+        private final Schedule[] runAt;
+
+        private Literal(final String executor,
+                        final Schedule[] runAt) {
+            this.executor = executor;
+            this.runAt = runAt;
+        }
+
+        /**
+         * The JNDI name of the {@link ManagedExecutorService} or
+         * {@link ManagedScheduledExecutorService} upon which to run the
+         * asynchronous method.
+         *
+         * @return managed executor service JNDI name.
+         */
+        @Override
+        public String executor() {
+            return executor;
+        }
+
+        /**
+         * Construct a new instance of the {@link Asynchronous} annotation.
+         *
+         * @param executor JNDI name of the {@link ManagedExecutorService} or
+         *                 {@link ManagedScheduledExecutorService} upon which
+         *                 to run the asynchronous method.
+         * @param runAt    A schedule for repeated execution of the method.
+         *                 Otherwise an empty array.
+         * @return a new instance of the {@code Asynchronous} annotation.
+         */
+        public static Literal of(final String executor,
+                                 final Schedule[] runAt) {
+
+            Objects.requireNonNull(executor, "executor: null");
+            Objects.requireNonNull(runAt, "runAt: null");
+
+            return new Literal(
+                    executor,
+                    runAt.length == 0
+                            ? runAt
+                            : Arrays.copyOf(runAt, runAt.length));
+        }
+
+        /**
+         * A schedule for repeated execution of the method.
+         * Otherwise an empty array.
+         *
+         * @return the schedule for the asynchronous method.
+         */
+        @Override
+        public Schedule[] runAt() {
+            return runAt.length == 0
+                    ? runAt
+                    : Arrays.copyOf(runAt, runAt.length);
+        }
+    }
 
     /**
      * Mechanism by which the Jakarta EE Product Provider makes available
