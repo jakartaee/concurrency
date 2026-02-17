@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  
-    Copyright (c) 2024, 2025 Contributors to the Eclipse Foundation
+    Copyright (c) 2024, 2026 Contributors to the Eclipse Foundation
  
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>2.0.0-M1</version>
+        <version>2.0.0</version>
         <relativePath />
     </parent>
 
@@ -46,6 +46,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    
+    <scm>
+        <connection>scm:git:https://github.com/jakartaee/concurrency.git</connection>
+        <developerConnection>scm:git:git@github.com:jakartaee/concurrency.git</developerConnection>
+        <url>https://github.com/jakartaee/concurrency</url>
+    </scm>
+    
+    <properties>
+        <!-- See: https://repo3.eclipse.org/#browse/browse:cu-maven2-staging -->
+        <nexus.staging.repository>cu-maven2-staging</nexus.staging.repository>
+    </properties>
 
     <distributionManagement>
         <relocation>
