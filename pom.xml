@@ -115,12 +115,12 @@
         <sigtest.version>2.6</sigtest.version>
 
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
-        <jakarta.cdi.version>4.1.0</jakarta.cdi.version>
+        <jakarta.cdi.version>5.0.0-M1</jakarta.cdi.version>
         <jakarta.concurrent.version>${project.version}</jakarta.concurrent.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
-        <jakarta.jsp.version>4.0.0</jakarta.jsp.version>
-        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.jsp.version>4.1.0-M1</jakarta.jsp.version>
+        <jakarta.servlet.version>6.2.0-M1</jakarta.servlet.version>
     </properties>
 
     <dependencyManagement>
@@ -272,4 +272,35 @@
             </plugin>
         </plugins>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <repositories>
+                <repository>
+                    <id>sonatype-oss-snapshots</id>
+                    <url>https://central.sonatype.com/repository/maven-snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>fail</checksumPolicy>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <name>Nexus staging</name>
+                    <id>repo3.eclipse.org</id>
+                    <url>https://repo3.eclipse.org/repository/ee4j-staging/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
 </project>
