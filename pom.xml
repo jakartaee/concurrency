@@ -115,12 +115,12 @@
         <sigtest.version>2.6</sigtest.version>
 
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
-        <jakarta.cdi.version>4.1.0</jakarta.cdi.version>
+        <jakarta.cdi.version>5.0.0.Alpha3</jakarta.cdi.version>
         <jakarta.concurrent.version>${project.version}</jakarta.concurrent.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
-        <jakarta.jsp.version>4.0.0</jakarta.jsp.version>
-        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <jakarta.jsp.version>4.1.0-M1</jakarta.jsp.version>
+        <jakarta.servlet.version>6.2.0-M1</jakarta.servlet.version>
     </properties>
 
     <dependencyManagement>
@@ -194,8 +194,8 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>jakarta.enterprise</groupId>
-                <artifactId>jakarta.enterprise.cdi-api</artifactId>
+                <groupId>jakarta.cdi</groupId>
+                <artifactId>jakarta.cdi-api</artifactId>
                 <version>${jakarta.cdi.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -272,4 +272,5 @@
             </plugin>
         </plugins>
     </build>
+    
 </project>
