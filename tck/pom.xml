@@ -23,12 +23,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>jakarta.concurrent</groupId>
-        <artifactId>jakarta.concurrent-parent</artifactId>
+        <groupId>jakarta.concurrency</groupId>
+        <artifactId>jakarta.concurrency-parent</artifactId>
         <version>3.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jakarta.concurrent-tck</artifactId>
+    <artifactId>jakarta.concurrency-tck</artifactId>
     <packaging>jar</packaging>
 
     <name>Jakarta Concurrency TCK</name>
@@ -48,9 +48,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.concurrent</groupId>
-            <artifactId>jakarta.concurrent-api</artifactId>
-            <version>${jakarta.concurrent.version}</version>
+            <groupId>jakarta.concurrency</groupId>
+            <artifactId>jakarta.concurrency-api</artifactId>
+            <version>${jakarta.concurrency.version}</version>
             <scope>provided</scope>
         </dependency>
         
@@ -220,9 +220,9 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>jakarta.concurrent</groupId>
-                                            <artifactId>jakarta.concurrent-api</artifactId>
-                                            <version>${jakarta.concurrent.api.version}</version>
+                                            <groupId>jakarta.concurrency</groupId>
+                                            <artifactId>jakarta.concurrency-api</artifactId>
+                                            <version>${jakarta.concurrency.api.version}</version>
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/concurrency-api</outputDirectory>
