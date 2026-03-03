@@ -60,8 +60,8 @@
 
     <distributionManagement>
         <relocation>
-          <groupId>jakarta.concurrent</groupId>
-          <artifactId>jakarta.concurrent-parent</artifactId>
+          <groupId>jakarta.concurrency</groupId>
+          <artifactId>jakarta.concurrency-parent</artifactId>
         </relocation>
     </distributionManagement>
 

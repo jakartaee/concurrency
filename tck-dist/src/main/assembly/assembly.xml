@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  /*
- * Copyright (c) 2022, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022, 2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,7 +25,7 @@
         <format>zip</format>
     </formats>
 
-    <baseDirectory>concurrency-tck-${jakarta.concurrent.version}
+    <baseDirectory>concurrency-tck-${jakarta.concurrency.version}
     </baseDirectory>
 
     <files>
@@ -42,10 +42,10 @@
             <destName>README.md</destName>
         </file>
 
-        <!-- The jakarta.concurrent-parent pom file -->
+        <!-- The jakarta.concurrency-parent pom file -->
         <file>
             <source>../pom.xml</source>
-            <destName>artifacts/jakarta.concurrent-parent-${project.version}.pom</destName>
+            <destName>artifacts/jakarta.concurrency-parent-${project.version}.pom</destName>
         </file>
 
     </files>
@@ -99,7 +99,7 @@
     <dependencySets>
         <dependencySet>
             <includes>
-                <include>jakarta.concurrent:jakarta.concurrent-tck</include>
+                <include>jakarta.concurrency:jakarta.concurrency-tck</include>
             </includes>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <outputDirectory>artifacts</outputDirectory>

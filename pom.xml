@@ -23,8 +23,8 @@
         <version>2.0.1</version>
     </parent>
 
-    <groupId>jakarta.concurrent</groupId>
-    <artifactId>jakarta.concurrent-parent</artifactId>
+    <groupId>jakarta.concurrency</groupId>
+    <artifactId>jakarta.concurrency-parent</artifactId>
     <version>3.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -116,7 +116,7 @@
 
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <jakarta.cdi.version>5.0.0.Alpha3</jakarta.cdi.version>
-        <jakarta.concurrent.version>${project.version}</jakarta.concurrent.version>
+        <jakarta.concurrency.version>${project.version}</jakarta.concurrency.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
         <jakarta.jsp.version>4.1.0-M1</jakarta.jsp.version>
