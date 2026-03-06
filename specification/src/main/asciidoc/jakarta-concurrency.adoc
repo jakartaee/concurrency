@@ -1214,7 +1214,10 @@ public class CtxListener implements ServletContextListener {
 
   public void contextInitialized(ServletContextEvent scEvent) {
     LoggerTimer logger = new LoggerTimer();
-    loggerHandle = mes.scheduleAtFixedRate(logger, 5, TimeUnit.SECONDS);
+    loggerHandle = mes.scheduleAtFixedRate(logger,
+                                           5,  // initial delay
+                                           60, // period
+                                           TimeUnit.SECONDS);
   }
 
   public void contextDestroyed(ServletContextEvent scEvent) {
