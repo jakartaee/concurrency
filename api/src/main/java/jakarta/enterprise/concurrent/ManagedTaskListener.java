@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2026 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -213,8 +213,9 @@ public interface ManagedTaskListener {
 
   /**
    * This method is called before the task is about to start. The task will
-   * not enter the starting state until the taskSubmitted listener has completed. This method
-   * may be called from the same thread that the task was submitted with.
+   * not enter the starting state until the {@code taskStarting} listener has
+   * completed. This method may be called from the same thread that runs the
+   * task.
    *
    * @param future the {@link Future} instance that was created when the task was submitted.
    * @param executor the executor used to run the associated Future.
