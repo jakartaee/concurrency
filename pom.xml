@@ -115,7 +115,7 @@
         <sigtest.version>2.6</sigtest.version>
 
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
-        <jakarta.cdi.version>5.0.0.Alpha4</jakarta.cdi.version>
+        <jakarta.cdi.version>5.0.0.Alpha5</jakarta.cdi.version>
         <jakarta.concurrency.version>${project.version}</jakarta.concurrency.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
