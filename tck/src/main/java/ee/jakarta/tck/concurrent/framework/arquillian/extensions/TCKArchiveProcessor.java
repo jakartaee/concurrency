@@ -35,7 +35,6 @@ import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import ee.jakarta.tck.concurrent.common.signature.ConcurrencySignatureTestRunner;
-import ee.jakarta.tck.concurrent.framework.TestProperty;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Common;
 import ee.jakarta.tck.concurrent.framework.junit.anno.Signature;
 
@@ -85,7 +84,15 @@ public class TCKArchiveProcessor implements ApplicationArchiveProcessor {
         if (!testClass.isAnnotationPresent(Signature.class)) {
             return; //Nothing to append
         }
-        final String jdkVersion = TestProperty.javaSpecVer.getValue();
+        final String jdkVersion;
+        final int currentJdkVersion = Runtime.version().feature();
+        if (currentJdkVersion >= 21) {
+            jdkVersion = "21";
+        } else if (currentJdkVersion >= 17) {
+            jdkVersion = "17";
+        } else {
+            throw new RuntimeException("Unsupported Java version %d".formatted(currentJdkVersion));
+        }
         
         final Package signaturePackage = ConcurrencySignatureTestRunner.class.getPackage();
         final String signatureFileName = ConcurrencySignatureTestRunner.SIG_FILE_NAME + "_" + jdkVersion;
