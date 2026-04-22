@@ -1,5 +1,5 @@
 #Signature file v4.1
-#Version 3.2.0-SNAPSHOT
+#Version 1.0
 
 CLSS public jakarta.enterprise.concurrent.AbortedException
 cons public init()
@@ -16,10 +16,21 @@ CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Asynchr
  anno 0 java.lang.annotation.Inherited()
  anno 0 java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy value=RUNTIME)
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[METHOD, TYPE])
+innr public final static Literal
 innr public final static Result
 intf java.lang.annotation.Annotation
 meth public abstract !hasdefault jakarta.enterprise.concurrent.Schedule[] runAt()
 meth public abstract !hasdefault java.lang.String executor()
+
+CLSS public final static jakarta.enterprise.concurrent.Asynchronous$Literal
+ outer jakarta.enterprise.concurrent.Asynchronous
+fld public final static jakarta.enterprise.concurrent.Asynchronous$Literal INSTANCE
+intf jakarta.enterprise.concurrent.Asynchronous
+meth public jakarta.enterprise.concurrent.Schedule[] runAt()
+meth public java.lang.String executor()
+meth public static jakarta.enterprise.concurrent.Asynchronous$Literal of(java.lang.String,jakarta.enterprise.concurrent.Schedule[])
+supr jakarta.enterprise.util.AnnotationLiteral<jakarta.enterprise.concurrent.Asynchronous>
+hfds executor,runAt,serialVersionUID
 
 CLSS public final static jakarta.enterprise.concurrent.Asynchronous$Result
  outer jakarta.enterprise.concurrent.Asynchronous
@@ -103,6 +114,39 @@ meth public abstract java.time.ZonedDateTime getScheduledStart(java.time.ZoneId)
 meth public java.util.Date getRunEnd()
 meth public java.util.Date getRunStart()
 meth public java.util.Date getScheduledStart()
+
+CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Lock
+ anno 0 jakarta.interceptor.InterceptorBinding()
+ anno 0 java.lang.annotation.Inherited()
+ anno 0 java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy value=RUNTIME)
+ anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[METHOD, TYPE])
+fld public final static long IMMEDIATE = 0
+fld public final static long UNLIMITED = -1
+innr public final static !enum Type
+innr public final static Literal
+intf java.lang.annotation.Annotation
+meth public abstract !hasdefault jakarta.enterprise.concurrent.Lock$Type type()
+meth public abstract !hasdefault java.util.concurrent.TimeUnit unit()
+meth public abstract !hasdefault long accessTimeout()
+
+CLSS public final static jakarta.enterprise.concurrent.Lock$Literal
+ outer jakarta.enterprise.concurrent.Lock
+fld public final static jakarta.enterprise.concurrent.Lock$Literal INSTANCE
+intf jakarta.enterprise.concurrent.Lock
+meth public jakarta.enterprise.concurrent.Lock$Type type()
+meth public java.util.concurrent.TimeUnit unit()
+meth public long accessTimeout()
+meth public static jakarta.enterprise.concurrent.Lock$Literal of(jakarta.enterprise.concurrent.Lock$Type,long,java.util.concurrent.TimeUnit)
+supr jakarta.enterprise.util.AnnotationLiteral<jakarta.enterprise.concurrent.Lock>
+hfds accessTimeout,serialVersionUID,type,unit
+
+CLSS public final static !enum jakarta.enterprise.concurrent.Lock$Type
+ outer jakarta.enterprise.concurrent.Lock
+fld public final static jakarta.enterprise.concurrent.Lock$Type READ
+fld public final static jakarta.enterprise.concurrent.Lock$Type WRITE
+meth public static jakarta.enterprise.concurrent.Lock$Type valueOf(java.lang.String)
+meth public static jakarta.enterprise.concurrent.Lock$Type[] values()
+supr java.lang.Enum<jakarta.enterprise.concurrent.Lock$Type>
 
 CLSS public abstract interface jakarta.enterprise.concurrent.ManageableThread
 meth public abstract boolean isShutdown()
@@ -217,7 +261,8 @@ meth public abstract jakarta.enterprise.concurrent.ManagedThreadFactoryDefinitio
 CLSS public abstract interface !annotation jakarta.enterprise.concurrent.Schedule
  anno 0 java.lang.annotation.Documented()
  anno 0 java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy value=RUNTIME)
- anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[ANNOTATION_TYPE])
+ anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[ANNOTATION_TYPE, METHOD])
+innr public final static Literal
 intf java.lang.annotation.Annotation
 meth public abstract !hasdefault int[] daysOfMonth()
 meth public abstract !hasdefault int[] hours()
@@ -228,6 +273,23 @@ meth public abstract !hasdefault java.lang.String zone()
 meth public abstract !hasdefault java.time.DayOfWeek[] daysOfWeek()
 meth public abstract !hasdefault java.time.Month[] months()
 meth public abstract !hasdefault long skipIfLateBy()
+
+CLSS public final static jakarta.enterprise.concurrent.Schedule$Literal
+ outer jakarta.enterprise.concurrent.Schedule
+fld public final static jakarta.enterprise.concurrent.Schedule$Literal INSTANCE
+intf jakarta.enterprise.concurrent.Schedule
+meth public int[] daysOfMonth()
+meth public int[] hours()
+meth public int[] minutes()
+meth public int[] seconds()
+meth public java.lang.String cron()
+meth public java.lang.String zone()
+meth public java.time.DayOfWeek[] daysOfWeek()
+meth public java.time.Month[] months()
+meth public long skipIfLateBy()
+meth public static jakarta.enterprise.concurrent.Schedule$Literal of(java.lang.String,java.time.Month[],int[],java.time.DayOfWeek[],int[],int[],int[],long,java.lang.String)
+supr jakarta.enterprise.util.AnnotationLiteral<jakarta.enterprise.concurrent.Schedule>
+hfds cron,daysOfMonth,daysOfWeek,hours,minutes,months,seconds,serialVersionUID,skipIfLateBy,zone
 
 CLSS public jakarta.enterprise.concurrent.SkippedException
 cons public init()
@@ -267,6 +329,17 @@ meth public abstract jakarta.enterprise.concurrent.spi.ThreadContextRestorer beg
 
 CLSS abstract interface jakarta.enterprise.concurrent.spi.package-info
 
+CLSS public abstract jakarta.enterprise.util.AnnotationLiteral<%0 extends java.lang.annotation.Annotation>
+cons protected init()
+intf java.io.Serializable
+intf java.lang.annotation.Annotation
+meth public boolean equals(java.lang.Object)
+meth public int hashCode()
+meth public java.lang.Class<? extends java.lang.annotation.Annotation> annotationType()
+meth public java.lang.String toString()
+supr java.lang.Object
+hfds annotationType,cachedHashCode,members,serialVersionUID
+
 CLSS public abstract interface !annotation jakarta.interceptor.InterceptorBinding
  anno 0 java.lang.annotation.Documented()
  anno 0 java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy value=RUNTIME)
@@ -277,6 +350,30 @@ CLSS public abstract interface java.io.Serializable
 
 CLSS public abstract interface java.lang.AutoCloseable
 meth public abstract void close() throws java.lang.Exception
+
+CLSS public abstract interface java.lang.Comparable<%0 extends java.lang.Object>
+meth public abstract int compareTo({java.lang.Comparable%0})
+
+CLSS public abstract java.lang.Enum<%0 extends java.lang.Enum<{java.lang.Enum%0}>>
+cons protected init(java.lang.String,int)
+innr public final static EnumDesc
+intf java.io.Serializable
+intf java.lang.Comparable<{java.lang.Enum%0}>
+intf java.lang.constant.Constable
+meth protected final java.lang.Object clone() throws java.lang.CloneNotSupportedException
+meth protected final void finalize()
+ anno 0 java.lang.Deprecated(boolean forRemoval=true, java.lang.String since="18")
+meth public final boolean equals(java.lang.Object)
+meth public final int compareTo({java.lang.Enum%0})
+meth public final int hashCode()
+meth public final int ordinal()
+meth public final java.lang.Class<{java.lang.Enum%0}> getDeclaringClass()
+meth public final java.lang.String name()
+meth public final java.util.Optional<java.lang.Enum$EnumDesc<{java.lang.Enum%0}>> describeConstable()
+meth public java.lang.String toString()
+meth public static <%0 extends java.lang.Enum<{%%0}>> {%%0} valueOf(java.lang.Class<{%%0}>,java.lang.String)
+supr java.lang.Object
+hfds hash,name,ordinal
 
 CLSS public java.lang.Exception
 cons protected init(java.lang.String,java.lang.Throwable,boolean,boolean)
@@ -370,6 +467,9 @@ CLSS public abstract interface !annotation java.lang.annotation.Target
  anno 0 java.lang.annotation.Target(java.lang.annotation.ElementType[] value=[ANNOTATION_TYPE])
 intf java.lang.annotation.Annotation
 meth public abstract java.lang.annotation.ElementType[] value()
+
+CLSS public abstract interface java.lang.constant.Constable
+meth public abstract java.util.Optional<? extends java.lang.constant.ConstantDesc> describeConstable()
 
 CLSS public abstract java.util.concurrent.AbstractExecutorService
 cons public init()
