@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2025 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2026 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -72,11 +72,11 @@ import java.util.concurrent.ScheduledFuture;
  * check if the task is complete or wait for its completion.<p>
  *
  * If the task is cancelled, the result for the task is a
- * <code>CancellationException</code> exception.  If the task is unable
- * to run due to start due to a reason other than cancellation, the result is a
- * {@link AbortedException} exception.  If the task is scheduled
+ * <code>CancellationException</code> exception.  If the task is scheduled
  * with a {@link Trigger} and the Trigger forces the task to be skipped,
- * the result will be a {@link SkippedException} exception.<p>
+ * the result is a {@link SkippedException} exception.  If the task is unable
+ * to start due to a reason other than cancellation or being skipped,
+ * the result is an {@link AbortedException} exception.<p>
  *
  * Tasks can be scheduled to run periodically using the <code>schedule</code> methods that
  * take a <code>Trigger</code> as an argument and the <code>scheduleAtFixedRate</code> and
