@@ -111,8 +111,9 @@ public @interface Lock {
     @Nonbinding long accessTimeout() default 60;
 
     /**
+     * Time unit of the {@link #accessTimeout() accessTimeout}.
      *
-     * @return units used for the specified accessTimeout value.
+     * @return units used for the specified {@code accessTimeout} value.
      */
     @Nonbinding TimeUnit unit() default SECONDS;
 
