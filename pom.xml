@@ -120,7 +120,7 @@
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
         <jakarta.jsp.version>4.1.0-M1</jakarta.jsp.version>
-        <jakarta.servlet.version>6.2.0-M1</jakarta.servlet.version>
+        <jakarta.servlet.version>6.2.0-M2</jakarta.servlet.version>
     </properties>
 
     <dependencyManagement>
