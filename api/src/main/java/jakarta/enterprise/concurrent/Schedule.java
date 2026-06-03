@@ -40,12 +40,14 @@ import jakarta.enterprise.util.AnnotationLiteral;
  * <p>When the {@code Schedule} annotation is applied to a CDI managed bean method,
  * the schedule defines the times after which to run the method. The method must
  * have a {@code void} return type and no parameters. The bean must not be a
- * Jakarta Enterprise Bean.</p>
+ * Jakarta Enterprise Bean. Neither the bean nor the bean method may be annotated
+ * {@link Asynchronous @Asynchronous}.</p>
  *
  * <p>Upon starting the application, the Jakarta EE Product Provider computes the
  * next time from the {@code Schedule} annotation and schedules a task that aims to
  * run at the computed time on the default {@link ManagedScheduledExecutorService}.
- * After it is time to run the task, the task first checks to ensure that the
+ * The task runs with the context of the application component that defines the
+ * bean. After it is time to run the task, the task first checks to ensure that the
  * schedule does not require {@linkplain #skipIfLateBy() skipping} the invocation
  * of the method. If method invocation is not skipped, the task obtains an instance
  * of the bean and invokes the method on the bean instance.</p>
