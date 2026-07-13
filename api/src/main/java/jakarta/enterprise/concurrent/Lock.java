@@ -54,18 +54,29 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public @interface Lock {
 
     /**
-     * Designates the type of lock to be READ or WRITE.
+     * Designates the type of lock to be {@link READ} or {@link WRITE}.
      */
     enum Type {
         /**
          * For read-only operations. Allows simultaneous access, as long as no
-         * <code>WRITE</code> lock is held.
+         * other thread holds a <code>WRITE</code> lock on the bean.
          */
         READ,
 
         /**
-         * For exclusive access to the bean instance. A <code>WRITE</code> lock can only be acquired when no other method with
-         * either a <code>READ</code> or <code>WRITE</code> lock is currently held.
+         * For exclusive access to the bean instance. A <code>WRITE</code>
+         * lock can only be acquired when no thread holds a <code>READ</code>
+         * or <code>WRITE</code> lock on the bean.
+         * <p>
+         * A thread that already holds a {@code READ} lock does not upgrade
+         * to a {@code WRITE} lock on the bean. Instead, the bean method
+         * raises {@link IllegalStateException} to the caller.
+         * <p>
+         * A thread that already holds a {@code WRITE} lock for purposes
+         * of running a bean method, and from the bean method either
+         * directly or indirectly invokes a method of the bean, does so
+         * under the same lock rather than acquiring an additional lock on
+         * the bean.
          */
         WRITE
     }
