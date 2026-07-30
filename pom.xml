@@ -80,7 +80,7 @@
         
         <maven.antrun.plugin.version>3.2.0</maven.antrun.plugin.version>
         <maven.assembly.plugin.version>3.8.0</maven.assembly.plugin.version>
-        <maven.bundle.plugin.version>6.0.2</maven.bundle.plugin.version>
+        <maven.bundle.plugin.version>6.1.0</maven.bundle.plugin.version>
         <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
         <maven.complier.plugin.version>3.15.0</maven.complier.plugin.version>
         <maven.dependency.plugin.version>3.11.0</maven.dependency.plugin.version>
