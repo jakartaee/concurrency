@@ -220,7 +220,7 @@
                     <excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
                     <!-- Ensure surfire plugin looks under src/main/java instead of src/test/java -->
                     <testSourceDirectory>
-                        ${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}
+                        ${basedir}${file.separator}src${file.separator}main${file.separator}java${file.separator}
                     </testSourceDirectory>
                 </configuration>
             </plugin>
