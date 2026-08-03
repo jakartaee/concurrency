@@ -105,9 +105,9 @@ public @interface Lock {
     /**
      * <p>The maximum amount of time to wait to obtain the lock.</p>
      *
-     * <p>If the lock that allows running the method cannot be obtained within
-     * the specified amount of time, a {@link LockTimeoutException} is thrown
-     * from the method invocation attempt.</p>
+     * <p>If the lock that controls access to the method cannot be obtained
+     * within the specified amount of time, a {@link LockTimeoutException}
+     * is thrown from the method invocation attempt.</p>
      *
      * <p>If the thread is interrupted while awaiting the lock, and the bean
      * method declares that it throws {@link InterruptedException}, then
