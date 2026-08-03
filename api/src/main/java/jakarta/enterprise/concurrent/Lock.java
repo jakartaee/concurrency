@@ -84,8 +84,7 @@ public @interface Lock {
     /**
      * Value for {@link #accessTimeout} that indicates that the lock that
      * permits running a bean method must be obtained immediately.
-     * Otherwise, a {@link java.util.concurrent.CompletionException} that
-     * chains a {@link java.util.concurrent.TimeoutException} is thrown.
+     * Otherwise, a {@link LockTimeoutException} is thrown.
      */
     long IMMEDIATE = 0;
 
@@ -106,8 +105,7 @@ public @interface Lock {
     /**
      * <p>The maximum amount of time to wait to obtain the lock.
      * If the lock that allows running the method cannot be obtained within
-     * the specified amount of time, a {@link java.util.concurrent.CompletionException}
-     * that chains a {@link java.util.concurrent.TimeoutException} is thrown
+     * the specified amount of time, a {@link LockTimeoutException} is thrown
      * from the method invocation attempt.</p>
      *
      * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
