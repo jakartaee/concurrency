@@ -218,10 +218,6 @@
                     </systemPropertyVariables>
                     <groups>${test.included}</groups>                        <!-- Groups to include i.e. web/platform -->
                     <excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
-                    <!-- Ensure surfire plugin looks under src/main/java instead of src/test/java -->
-                    <testSourceDirectory>
-                        ${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}
-                    </testSourceDirectory>
                 </configuration>
             </plugin>
             <!-- end::configSurefire[] -->
