@@ -40,10 +40,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  *
  * <p>A bean method that does not have a {@code Lock} annotation inherits
  * the {@code Lock} annotation, if present, of the class that declares the method.
- * A bean class that has a method annotated {@code Lock}, but does not have a
- * {@code Lock} annotation of its own at the class level, operates according to
- * the default values of the {@code Lock} annotation when bean methods that are
- * not annotated {@code Lock} are invoked.</p>
+ * If neither the bean method nor the bean class are annotated {@code Lock},
+ * then invocation of the method does not require a lock to be obtained.</p>
  *
  * @since 3.2
  */
