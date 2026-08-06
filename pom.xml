@@ -119,6 +119,8 @@
         <jakarta.concurrency.version>${project.version}</jakarta.concurrency.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
+        <!-- TODO switch the following to 2.1.0 for EE 12 once it exists -->
+        <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
         <jakarta.jsp.version>4.1.0-M2</jakarta.jsp.version>
         <jakarta.servlet.version>6.2.0-M2</jakarta.servlet.version>
     </properties>
@@ -197,6 +199,12 @@
                 <groupId>jakarta.cdi</groupId>
                 <artifactId>jakarta.cdi-api</artifactId>
                 <version>${jakarta.cdi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>${jakarta.transaction.version}</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

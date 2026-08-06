@@ -28,7 +28,9 @@ import java.util.concurrent.CompletableFuture;
 
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.enterprise.util.Nonbinding;
+import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InterceptorBinding;
+import jakarta.transaction.Transactional;
 
 /**
  * Annotates a CDI managed bean method to run asynchronously.
@@ -168,17 +170,24 @@ import jakarta.interceptor.InterceptorBinding;
  *
  * <h2>Interceptor and Transactional</h2>
  *
- * The Jakarta EE Product Provider must assign the interceptor for asynchronous methods
- * to have priority of <code>Interceptor.Priority.PLATFORM_BEFORE + 5</code>.
- * Interceptors with a lower priority, such as <code>Transactional</code>, must run on
- * the thread where the asynchronous method executes, rather than on the submitting thread.
- * When an asynchronous method is annotated as <code>Transactional</code>,
+ * When an asynchronous method is annotated as {@link Transactional},
  * the transactional types which can be used are:
- * <code>TxType.REQUIRES_NEW</code>, which causes the method to run in a new transaction, and
- * <code>TxType.NOT_SUPPORTED</code>, which causes the method to run with no transaction.
- * All other transaction attributes must result in
- * {@link java.lang.UnsupportedOperationException UnsupportedOperationException}
+ * <ul>
+ * <li>{@link Transactional.TxType#REQUIRES_NEW REQUIRES_NEW},
+ * which causes the method to run in a new transaction, and</li>
+ * <li>{@link Transactional.TxType#NOT_SUPPORTED NOT_SUPPORTED},
+ * which causes the method to run with no transaction.</li>
+ * </ul>
+ * All other transaction attributes must result in {@link
+ * java.lang.UnsupportedOperationException UnsupportedOperationException}
  * upon invocation of the asynchronous method.
+ *
+ * <p>
+ * The Jakarta EE Product Provider must assign the {@code @Asynchronous}
+ * interceptor a priority of {@link Interceptor.Priority#PLATFORM_BEFORE}
+ * {@code + 5}. Interceptors with a lower priority, such as {@link Lock @Lock}
+ * and {@link Transactional @Transactional}, must run on the thread where the
+ * asynchronous method executes, rather than on the submitting thread.
  *
  * @since 3.0
  */

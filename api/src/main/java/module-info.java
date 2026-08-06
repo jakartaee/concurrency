@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022,2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,4 +19,5 @@ module jakarta.concurrency {
 
     requires jakarta.interceptor;
     requires jakarta.cdi;
+    requires static jakarta.transaction; // compile time dependency for Javadoc
 }
