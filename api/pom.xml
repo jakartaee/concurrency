@@ -51,6 +51,11 @@
             <artifactId>jakarta.cdi-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
@@ -165,6 +170,11 @@ Copyright &#169; 2020, ${current.year} Eclipse Foundation. All rights reserved.<
 Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.]]>
                             </bottom>
                             <docfilessubdirs>true</docfilessubdirs>
+                            <links>
+                                <link>https://jakarta.ee/specifications/interceptors/2.2/apidocs/</link>
+                                <link>https://jakarta.ee/specifications/transactions/2.0/apidocs/</link>
+                                <!-- TODO switch the above to transactions/2.1 for EE 12 once it exists -->
+                            </links>
                             <groups>
                                 <group>
                                     <title>Jakarta Concurrency API Documentation</title>

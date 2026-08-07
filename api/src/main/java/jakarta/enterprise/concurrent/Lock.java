@@ -43,6 +43,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * If neither the bean method nor the bean class are annotated {@code Lock},
  * then invocation of the method does not require a lock to be obtained.</p>
  *
+ * <p>The Jakarta EE Product Provider must assign the {@code @Lock} interceptor
+ * a priority of {@link jakarta.interceptor.Interceptor.Priority#PLATFORM_BEFORE}
+ * {@code + 100}.</p>
+ *
  * @since 3.2
  */
 @InterceptorBinding
