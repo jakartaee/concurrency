@@ -105,10 +105,19 @@ public @interface Lock {
     @Nonbinding Type type() default Type.WRITE;
 
     /**
-     * <p>The maximum amount of time to wait to obtain the lock.
-     * If the lock that allows running the method cannot be obtained within
-     * the specified amount of time, a {@link LockTimeoutException} is thrown
-     * from the method invocation attempt.</p>
+     * <p>The maximum amount of time to wait to obtain the lock.</p>
+     *
+     * <p>If the lock that controls access to the method cannot be obtained
+     * within the specified amount of time, a {@link LockTimeoutException}
+     * is thrown from the method invocation attempt.</p>
+     *
+     * <p>If the thread is interrupted while awaiting the lock, and the bean
+     * method declares that it throws {@link InterruptedException}, then
+     * {@code InterruptedException} is raised to the caller.
+     * If the thread is interrupted while awaiting the lock, but the bean
+     * does not declare that it throws {@code InterruptedException}, then an
+     * {@link IllegalStateException} that chains {@code InterruptedException}
+     * is raised to the caller.</p>
      *
      * <p>Use the {@link #IMMEDIATE} constant to avoid waiting.</p>
      *
