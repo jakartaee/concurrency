@@ -46,7 +46,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
  * <p>Upon starting the application, the Jakarta EE Product Provider computes the
  * next time from the {@code Schedule} annotation and schedules a task that aims to
  * run at the computed time on the default {@link ManagedScheduledExecutorService}.
- * The task runs with the context of the application component that defines the
+ * The task runs with the context of the application module that defines the
  * bean. After it is time to run the task, the task first checks to ensure that the
  * schedule does not require {@linkplain #skipIfLateBy() skipping} the invocation
  * of the method. If method invocation is not skipped, the task obtains an instance
