@@ -38,8 +38,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * mode, by invoking bean methods. If the bean implementation internally accesses
  * one of its own methods or fields, that access is not subject to the lock.</p>
  *
- * <p>A {@code Lock} annotation on a bean method takes precedence over a
- * {@code Lock} on the bean class.
+ * <p>A {@code Lock} annotation on a bean method takes precedence over and
+ * fully replaces a {@code Lock} annotation on the bean class.
  * A bean method that does not have a {@code Lock} annotation inherits the
  * {@code Lock} annotation, if present, of the class that declares the method.
  * If neither the bean method nor the bean class are annotated {@code Lock},
