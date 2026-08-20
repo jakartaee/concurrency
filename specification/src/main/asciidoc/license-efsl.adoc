@@ -9,8 +9,6 @@ Status: {revremark}
 Release: {revdate}
 ....
 
-Copyright (c) {inceptionYear}, {currentYear} Eclipse Foundation.
-
 == Eclipse Foundation Specification License - v2.0
 
 This license (the "`License`") governs the use, modification and distribution of a specification generated pursuant to the Eclipse Foundation Specification Process.
