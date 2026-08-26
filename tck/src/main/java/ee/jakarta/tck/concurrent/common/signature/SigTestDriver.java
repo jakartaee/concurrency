@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2024 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2026 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -154,7 +154,7 @@ public class SigTestDriver extends SignatureTestDriver {
         log.info("********** Status Report '" + packageOrClassName + "' **********\n");
         log.info(rawMessages);
 
-        return sigTestInstance.toString().substring(7).startsWith("Passed.");
+        return isPassed(sigTestClass, sigTestInstance);
     } // END runSignatureTest
 
     /*
@@ -193,6 +193,18 @@ public class SigTestDriver extends SignatureTestDriver {
         log.info("********** Status Report '" + packageOrClassName + "' **********\n");
         log.info(rawMessages);
 
-        return sigTestInstance.toString().substring(7).startsWith("Passed.");
+        return isPassed(sigTestClass, sigTestInstance);
+    }
+
+    /**
+     * Invokes {@code isPassed()} on the {@code com.sun.tdk.signaturetest.Result}
+     * instance via reflection. This avoids depending on {@code toString()} which
+     * resolves its text through an i18n resource bundle that may not be visible
+     * to the classloader in an EE container, causing the bundle keys to be
+     * returned verbatim instead of the resolved strings.
+     */
+    private boolean isPassed(final Class<?> sigTestClass, final Object sigTestInstance) throws Exception {
+        Method isPassedMethod = sigTestClass.getMethod("isPassed");
+        return (Boolean) isPassedMethod.invoke(sigTestInstance);
     }
 }
