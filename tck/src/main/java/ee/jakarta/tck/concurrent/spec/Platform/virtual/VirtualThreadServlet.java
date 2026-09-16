@@ -18,13 +18,10 @@ package ee.jakarta.tck.concurrent.spec.Platform.virtual;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -68,8 +65,6 @@ public class VirtualThreadServlet extends TestServlet {
 
     private static final Runnable NOOP_RUNNABLE = () -> {
     };
-        
-    private static final int VERSION = Runtime.version().feature();
 
     public void testPlatformExecutor() throws Exception {
         ManagedExecutorService platformManagedExecutorAnno = InitialContext
@@ -83,14 +78,9 @@ public class VirtualThreadServlet extends TestServlet {
         Thread annoThread = platformManagedExecutorAnno.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         Thread ddThread = platformManagedExecutorDD.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
-        assertFalse(isVirtual(annoThread));
-        assertFalse(isVirtual(ddThread));
+        assertFalse(annoThread.isVirtual());
+        assertFalse(ddThread.isVirtual());
     }
 
     public void testVirtualExecutor() throws Exception {
@@ -108,14 +98,9 @@ public class VirtualThreadServlet extends TestServlet {
         Thread ddThread = virtualManagedExecutorDD.supplyAsync(Thread::currentThread)
               .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
         // Java 21+
-        assumingThat(isVirtual(annoThread), () -> {
+        assumingThat(annoThread.isVirtual(), () -> {
             // Test invokeAll on potential virtual threads
             List<Future<Object>> results = virtualManagedExecutorAnno.invokeAll(
                     List.of(new LookupActionCaptureThread(null, "java:app/concurrent/ManagedExecutorAnnoVirtual"),
@@ -134,20 +119,20 @@ public class VirtualThreadServlet extends TestServlet {
             assertNotNull(result0);
             if (result0 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result0);
-            if (isVirtual((Thread) result0))
+            if (((Thread) result0).isVirtual())
                 virtualThreads.add((Thread) result0);
 
             assertNotNull(result1);
             if (result1 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result1);
-            if (isVirtual((Thread) result1))
+            if (((Thread) result1).isVirtual())
                 virtualThreads.add((Thread) result1);
             
 
             assertNotNull(result2);
             if (result2 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result2);
-            if (isVirtual((Thread) result2))
+            if (((Thread) result2).isVirtual())
                 virtualThreads.add((Thread) result2);
             
             // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
@@ -155,7 +140,7 @@ public class VirtualThreadServlet extends TestServlet {
                 + " out of 3 tasks were run on virtual threads.");
         });
         
-        assumingThat(isVirtual(ddThread), () -> {
+        assumingThat(ddThread.isVirtual(), () -> {
             // Test invokeAny on virtual threads
             Object result = virtualManagedExecutorDD
                     .invokeAny(List.of(
@@ -167,7 +152,7 @@ public class VirtualThreadServlet extends TestServlet {
                 throw new AssertionError("An error occured on thread.", (Throwable) result);
             
             // Avoid assertion that a task was executed on a virtual thread since there is no guarantee
-            if (isVirtual((Thread) result))
+            if (((Thread) result).isVirtual())
                 log.info("ManagedExecutorService.invokeAny() resulted in task being run on a virtual thread.");
         });
 
@@ -185,14 +170,9 @@ public class VirtualThreadServlet extends TestServlet {
         Thread annoThread = platformManagedScheduledExecutorAnno.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         Thread ddThread = platformManagedScheduledExecutorDD.submit(Thread::currentThread).get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
-        assertFalse(isVirtual(annoThread));
-        assertFalse(isVirtual(ddThread));
+        assertFalse(annoThread.isVirtual());
+        assertFalse(ddThread.isVirtual());
     }
 
     public void testVirtualScheduledExecutor() throws Exception {
@@ -210,14 +190,9 @@ public class VirtualThreadServlet extends TestServlet {
         Thread ddThread = virtualManagedScheduledExecutorDD.supplyAsync(Thread::currentThread)
                 .get(TestConstants.waitTimeout.toMillis(), TimeUnit.MILLISECONDS);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
         // Java 21+
-        assumingThat(isVirtual(ddThread), () -> {
+        assumingThat(ddThread.isVirtual(), () -> {
             
             // Test schedule on virtual threads
             final LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
@@ -242,12 +217,12 @@ public class VirtualThreadServlet extends TestServlet {
                 throw new AssertionError("An error occured on thread.", (Throwable) result);
             
             // Avoid assertion that a task was executed on a virtual thread since there is no guarantee
-            if (isVirtual((Thread) thread))
+            if (((Thread) thread).isVirtual())
                 log.info("ManagedScheduledExecutorService.schedule() resulted in task being run on a virtual thread.");
 
         });
         
-        assumingThat(isVirtual(annoThread), () -> {
+        assumingThat(annoThread.isVirtual(), () -> {
             // Test scheduleAtFixedRate on virtual threads
             final LinkedBlockingQueue<Object> resultsFixedRate = new LinkedBlockingQueue<>();
             ScheduledFuture<?> future = virtualManagedScheduledExecutorAnno.scheduleAtFixedRate(
@@ -281,17 +256,17 @@ public class VirtualThreadServlet extends TestServlet {
     
             if (result0 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result0);
-            if (isVirtual((Thread) thread0))
+            if (((Thread) thread0).isVirtual())
                 virtualThreads.add((Thread) thread0);
     
             if (result1 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result1);
-            if (isVirtual((Thread) thread1))
+            if (((Thread) thread1).isVirtual())
                 virtualThreads.add((Thread) thread1);
     
             if (result2 instanceof Throwable)
                 throw new AssertionError("An error occured on thread.", (Throwable) result2);
-            if (isVirtual((Thread) thread2))
+            if (((Thread) thread2).isVirtual())
                 virtualThreads.add((Thread) thread2);
             
             // Avoid assertions of how many tasks were executed on virtual threads since there is no guarantee
@@ -312,15 +287,10 @@ public class VirtualThreadServlet extends TestServlet {
         Thread annoThread = platformThreadFactoryAnno.newThread(NOOP_RUNNABLE);
         Thread ddThread = platformThreadFactoryDD.newThread(NOOP_RUNNABLE);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
-        assertFalse(isVirtual(annoThread),
+        assertFalse(annoThread.isVirtual(),
                 "Thread Factory should not have returned a virtual thread when defined with virtual=false");
-        assertFalse(isVirtual(ddThread),
+        assertFalse(ddThread.isVirtual(),
                 "Thread Factory should not have returned a virtual thread when defined with virtual=false");
     }
 
@@ -336,14 +306,9 @@ public class VirtualThreadServlet extends TestServlet {
         Thread annoThread = virtualThreadFactoryAnno.newThread(NOOP_RUNNABLE);
         Thread ddThread = virtualThreadFactoryDD.newThread(NOOP_RUNNABLE);
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(annoThread), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(ddThread), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
 
         // Java 21+
-        assumingThat(isVirtual(annoThread), () -> {
+        assumingThat(annoThread.isVirtual(), () -> {
             LinkedBlockingQueue<Object> results;
             Object result;
 
@@ -359,7 +324,7 @@ public class VirtualThreadServlet extends TestServlet {
 
         });
         
-       assumingThat(isVirtual(ddThread), () -> {
+       assumingThat(ddThread.isVirtual(), () -> {
            LinkedBlockingQueue<Object> results;
            Object result;
             
@@ -405,39 +370,12 @@ public class VirtualThreadServlet extends TestServlet {
             platformPool.shutdown();
         }
         
-        if (VERSION == 17) { //TODO remove when Concurrency API supports only 21+
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(thread1), "Should be impossible to get a virtual thread on Java 17");
-            assertThrows(NoSuchMethodException.class, () -> isVirtual(thread2), "Should be impossible to get a virtual thread on Java 17");
-            return;
-        }
         
         // Java 21+
-        assertFalse(isVirtual(thread1), "Should never get a virtual thread from a ForkJoinPool");
-        assertFalse(isVirtual(thread2), "Should never get a virtual thread from a ForkJoinPool");
+        assertFalse(thread1.isVirtual(), "Should never get a virtual thread from a ForkJoinPool");
+        assertFalse(thread2.isVirtual(), "Should never get a virtual thread from a ForkJoinPool");
     }
 
-    /**
-     * Uses reflection to call method isVirtual on on the supplied thread.
-     *
-     * @param thread - the thread being tested
-     * @return
-     *  true, if the thread is virtual
-     *  false, if the thread is not virtual
-     *
-     * @throws NoSuchMethodException when run on Java 17
-     *
-     * @throws RuntimeException if a reflection exception occurs
-     */
-    private static boolean isVirtual(final Thread thread) throws NoSuchMethodException {
-            Method isVirtual = Thread.class.getMethod("isVirtual");
-            isVirtual.setAccessible(true);
-            
-            try {
-                return (boolean) isVirtual.invoke(thread);
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                throw new RuntimeException("Could not invoke isVirtual on thread: " + thread.getName(), e);
-            }
-    }
 
     /**
      * A simple lookup action that can pass/fail on a virtual thread
