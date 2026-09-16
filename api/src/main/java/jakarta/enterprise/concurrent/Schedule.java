@@ -26,22 +26,32 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.Objects;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Singleton;
 
 /**
- * <p>Defines a schedule that indicates when to run a method.</p>
+ * <p>A schedule that indicates when to run a method.</p>
  *
- * <p>For the scheduled asynchronous method to aim to run at a given day and time,
+ * <p>For the scheduled method to aim to run at a given day and time,
  * all of the criteria specified by the {@code Schedule} must match
  * or be disregarded according to the rules of each field.</p>
  *
- * <h2>Scheduled methods</h2>
+ * <h2><a id="scheduled-methods">Scheduled methods</a></h2>
  *
  * <p>When the {@code Schedule} annotation is applied to a CDI managed bean method,
  * the schedule defines the times after which to run the method. The method must
  * have a {@code void} return type and no parameters. The bean must not be a
  * Jakarta Enterprise Bean. Neither the bean nor the bean method may be annotated
- * {@link Asynchronous @Asynchronous}.</p>
+ * {@link Asynchronous @Asynchronous}. The CDI managed bean must have one of the
+ * following scopes or pseudo-scopes:
+ * <ul>
+ * <li>{@link ApplicationScoped}</li>
+ * <li>{@link Dependent}</li>
+ * <li>{@link Singleton}</li>
+ * </ul>
+ * </p>
  *
  * <p>Upon starting the application, the Jakarta EE Product Provider computes the
  * next time from the {@code Schedule} annotation and schedules a task that aims to
@@ -72,7 +82,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
  *  }
  * </pre>
  *
- * <h2>Asynchronous methods with a Schedule</h2>
+ * <h2><a id="scheduled-async-method">Scheduled Asynchronous Methods</a></h2>
  *
  * <p>When the {@code Schedule} annotation is used as a value of
  * {@link Asynchronous#runAt()}, the schedule defines the times after which to
@@ -80,7 +90,7 @@ import jakarta.enterprise.util.AnnotationLiteral;
  *
  * <p>{@link Asynchronous} methods with a {@code Schedule} annotation can be
  * written to schedule automatically at application startup by observing the
- * application's {@code jakarta.enterprise.Startup} event. For example,
+ * application's {@link jakarta.enterprise.event.Startup} event. For example,
  * </p>
  * <pre>
  *  {@literal @}Asynchronous(runAt = {@literal @}Schedule(cron = "30 8 * * SAT,SUN",
@@ -128,73 +138,83 @@ public @interface Schedule {
      * <p>The default value is the empty string, indicating that
      * no cron expression is to be used.</p>
      *
-     * @return cron expression indicating when to run the asynchronous method.
+     * @return cron expression indicating when to run the method.
      */
     String cron() default "";
 
     /**
-     * <p>Months in which the asynchronous method aims to run.</p>
+     * <p>Months in which the method aims to run.</p>
      *
      * <p>The default value is an empty list, which means that the month is
-     * not included in the criteria for deciding when to run the asynchronous method.</p>
+     * not included in the criteria for deciding when to run the method.</p>
      *
-     * @return list of months in which the asynchronous method aims to run; An empty list disregards the month.
+     * @return list of months in which the method aims to run; An empty list
+     *         disregards the month.
      */
     Month[] months() default {};
 
     /**
-     * <p>Days of the month on which the asynchronous method aims to run. Values can range from 1 to 31.</p>
+     * <p>Days of the month on which the method aims to run. Values can range
+     * from {@code 1} to {@code 31}.</p>
      *
-     * <p>The default value is an empty list, which means that the day of the month is
-     * not included in the criteria for deciding when to run the asynchronous method.</p>
+     * <p>The default value is an empty list, which means that the day of the month
+     * is not included in the criteria for deciding when to run the method.</p>
      *
-     * @return list of days of the month on which the asynchronous method aims to run; An empty list disregards the day of the month.
+     * @return list of days of the month on which the method aims to run; An empty
+     *         list disregards the day of the month.
      */
     int[] daysOfMonth() default {};
 
     /**
-     * <p>Days of the week on which the asynchronous method aims to run.</p>
+     * <p>Days of the week on which the method aims to run.</p>
      *
-     * <p>The default value is an empty list, which means that the day of the week is
-     * not included in the criteria for deciding when to run the asynchronous method.</p>
+     * <p>The default value is an empty list, which means that the day of the week
+     * is not included in the criteria for deciding when to run the method.</p>
      *
-     * @return list of days of the week on which the asynchronous method aims to run; An empty list disregards the day of the week.
+     * @return list of days of the week on which the method aims to run; An empty
+     *         list disregards the day of the week.
      */
     DayOfWeek[] daysOfWeek() default {};
 
     /**
-     * <p>Hours of the day at which the asynchronous method aims to run.</p>
+     * <p>Hours of the day at which the method aims to run.</p>
      *
      * <p>Values can range from 0 to 23. A value of empty list indicates that the
-     * hour is not included in the criteria for deciding when to run the asynchronous method.</p>
+     * hour is not included in the criteria for deciding when to run the method.</p>
      *
      * <p>The default value is 0 (midnight).</p>
      *
-     * @return list of hours at which the asynchronous method aims to run; An empty list disregards the hour.
+     * @return list of hours at which the method aims to run; An empty list
+     *         disregards the hour.
      */
     int[] hours() default { 0 };
 
     /**
-     * <p>Minutes at which the asynchronous method aims to run.</p>
+     * <p>Minutes at which the method aims to run.</p>
      *
-     * <p>Values can range from 0 to 59. A value of empty list indicates that the
-     * minute is not included in the criteria for deciding when to run the asynchronous method.</p>
+     * <p>Values can range from {@code 0} to {@code 59}. A value of empty list
+     * indicates that the minute is not included in the criteria for deciding
+     * when to run the method.</p>
      *
-     * <p>The default value is 0 (at the start of the hour).</p>
+     * <p>The default value is {@code 0} (at the start of the hour).</p>
      *
-     * @return list of minutes at which the asynchronous method aims to run; An empty list disregards the minutes.
+     * @return list of minutes at which the method aims to run; An empty list
+     *         disregards the minutes.
      */
     int[] minutes() default { 0 };
 
     /**
-     * <p>Seconds at which the asynchronous method aims to run.</p>
+     * <p>Seconds at which the method aims to run.</p>
      *
-     * <p>Values can range from 0 to 59. A value of empty list causes the asynchronous method
-     * to raise {@link IllegalArgumentException}.</p>
+     * <p>Values can range from {@code 0} to {@code 59}. A value of empty list
+     * is not valid, causing a <a href="Schedule.html#scheduled-methods">Scheduled
+     * Method</a> to never run and a <a href="Schedule.html#scheduled-async-method">
+     * Scheduled Asynchronous Method</a> to raise {@link IllegalArgumentException}.
+     * </p>
      *
-     * <p>The default value is 0 (at the start of the minute).</p>
+     * <p>The default value is {@code 0} (at the start of the minute).</p>
      *
-     * @return list of seconds at which the asynchronous method aims to run.
+     * @return list of seconds at which the method aims to run.
      */
     int[] seconds() default { 0 };
 
@@ -202,9 +222,10 @@ public @interface Schedule {
      * <p>Seconds after which an execution that is late to start should be skipped
      * rather than starting it late.</p>
      *
-     * <p>Values must be greater than 0.
-     * The default value is 600 seconds (10 minutes).
-     * This differs from executions that are missed due to overlap, which are always skipped.</p>
+     * <p>Values must be greater than {@code 0}.
+     * The default value is {@code 600} seconds (10 minutes).
+     * This differs from executions that are missed due to overlap, which are
+     * always skipped.</p>
      *
      * @return the threshold for skipping executions that are late to start.
      */
@@ -225,6 +246,8 @@ public @interface Schedule {
     /**
      * Enables instances of the {@link Schedule} annotation to be created
      * at run time.
+     *
+     * @since 3.1
      */
     public static final class Literal
             extends AnnotationLiteral<Schedule>
@@ -300,7 +323,7 @@ public @interface Schedule {
          * @param zone         Time zone id, such as {@code America/Chicago},
          *                     of the schedule. Empty string indicates the
          *                     {@link java.time.ZoneId#systemDefault() default time zone}.
-         * @return a new instance of the {@code Schedule} annotation.
+         * @return a new instance of the {@link Schedule} annotation.
          */
         public static Literal of(final String cron,
                                  final Month[] months,
@@ -371,7 +394,7 @@ public @interface Schedule {
 
         /**
          * <p>Days of the month on which the method aims to run.
-         * Values can range from 1 to 31.</p>
+         * Values can range from {@code 1} to {@code 31}.</p>
          *
          * @return list of days of the month on which the method aims to run;
          *         An empty list disregards the day of the month.
@@ -398,7 +421,7 @@ public @interface Schedule {
 
         /**
          * <p>Hours of the day at which the method aims to run.
-         * Values can range from 0 to 23.</p>
+         * Values can range from {@code 0} to {@code 23}.</p>
          *
          * @return list of hours at which the method aims to run;
          *         An empty list disregards the hour.
@@ -412,7 +435,7 @@ public @interface Schedule {
 
         /**
          * <p>Minutes at which the method aims to run.
-         * Values can range from 0 to 59.</p>
+         * Values can range from {@code 0} to {@code 59}.</p>
          *
          * @return list of minutes at which the method aims to run;
          *         An empty list disregards the minutes.
@@ -426,7 +449,7 @@ public @interface Schedule {
 
         /**
          * <p>Seconds at which the method aims to run.
-         * Values can range from 0 to 59.</p>
+         * Values can range from {@code 0} to {@code 59}.</p>
          *
          * @return list of seconds at which the method aims to run.
          */
@@ -439,7 +462,7 @@ public @interface Schedule {
 
         /**
          * <p>Seconds after which an execution that is late to start should be
-         * skipped rather than starting late. Values must be greater than 0.
+         * skipped rather than starting late. Values must be greater than {@code 0}.
          * </p>
          *
          * @return the threshold for skipping executions that are late to start.

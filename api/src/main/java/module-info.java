@@ -17,7 +17,8 @@ module jakarta.concurrency {
     exports jakarta.enterprise.concurrent;
     exports jakarta.enterprise.concurrent.spi;
 
-    requires jakarta.interceptor;
     requires jakarta.cdi;
+    requires static jakarta.inject; // compile time dependency for Javadoc
+    requires jakarta.interceptor;
     requires static jakarta.transaction; // compile time dependency for Javadoc
 }

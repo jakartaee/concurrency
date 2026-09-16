@@ -118,6 +118,7 @@
         <jakarta.cdi.version>5.0.0.CR1</jakarta.cdi.version>
         <jakarta.concurrency.version>${project.version}</jakarta.concurrency.version>
         <jakarta.ejb.version>4.0.1</jakarta.ejb.version>
+        <jakarta.inject.version>2.0.1</jakarta.inject.version>
         <jakarta.interceptor.version>2.2.0</jakarta.interceptor.version>
         <!-- TODO switch the following to 2.1.0 for EE 12 once it exists -->
         <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
@@ -199,6 +200,12 @@
                 <groupId>jakarta.cdi</groupId>
                 <artifactId>jakarta.cdi-api</artifactId>
                 <version>${jakarta.cdi.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.inject</groupId>
+                <artifactId>jakarta.inject-api</artifactId>
+                <version>${jakarta.inject.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

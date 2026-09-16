@@ -43,12 +43,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.interceptor</groupId>
-            <artifactId>jakarta.interceptor-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>jakarta.cdi</groupId>
             <artifactId>jakarta.cdi-api</artifactId>
+        </dependency>
+        <dependency> <!-- for Javadoc references only -->
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.interceptor</groupId>
+            <artifactId>jakarta.interceptor-api</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>
@@ -171,6 +176,8 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                             </bottom>
                             <docfilessubdirs>true</docfilessubdirs>
                             <links>
+                                <link>https://jakarta.ee/specifications/cdi/5.0/apidocs/</link>
+                                <link>https://jakarta.ee/specifications/dependency-injection/2.0/apidocs/</link>
                                 <link>https://jakarta.ee/specifications/interceptors/2.2/apidocs/</link>
                                 <link>https://jakarta.ee/specifications/transactions/2.0/apidocs/</link>
                                 <!-- TODO switch the above to transactions/2.1 for EE 12 once it exists -->
