@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2023, 2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -15,9 +15,7 @@
  */
 package ee.jakarta.tck.concurrent.framework.arquillian.extensions;
 
-import java.util.logging.Logger;
-
-import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
+import org.jboss.arquillian.container.test.spi.client.deployment.CachedAuxilliaryArchiveAppender;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -36,27 +34,15 @@ import ee.jakarta.tck.concurrent.framework.junit.extensions.AssertionExtension;
  * Package - ee.jakarta.tck.concurrent.framework.junit.extensions
  *
  */
-public class TCKFrameworkAppender implements AuxiliaryArchiveAppender {
-
-    private static final Logger log = Logger.getLogger(TCKFrameworkAppender.class.getCanonicalName());
-
+public class TCKFrameworkAppender extends CachedAuxilliaryArchiveAppender {
+    
     private static final Package utilPackage = TestServlet.class.getPackage();
     private static final Package annoPackage = Common.class.getPackage();
     private static final Package extePackage = AssertionExtension.class.getPackage();
 
-    private static final String archiveName = "jakarta-concurrent-framework.jar";
-
-    private static JavaArchive framework = null;
-
     @Override
-    public Archive<?> createAuxiliaryArchive() {
-        if (framework != null) {
-            return framework;
-        }
-
-        log.info("Creating auxiliary archive: " + archiveName);
-
-        framework = ShrinkWrap.create(JavaArchive.class, archiveName);
+    public Archive<?> buildArchive() {
+        JavaArchive framework = ShrinkWrap.create(JavaArchive.class, "jakarta-concurrent-framework.jar");
         framework.addPackages(false, utilPackage, annoPackage, extePackage);
         return TestPropertyHandler.storeProperties(framework);
     }
