@@ -148,6 +148,14 @@ meth public static jakarta.enterprise.concurrent.Lock$Type valueOf(java.lang.Str
 meth public static jakarta.enterprise.concurrent.Lock$Type[] values()
 supr java.lang.Enum<jakarta.enterprise.concurrent.Lock$Type>
 
+CLSS public jakarta.enterprise.concurrent.LockTimeoutException
+cons public init()
+cons public init(java.lang.String)
+cons public init(java.lang.String,java.lang.Throwable)
+cons public init(java.lang.Throwable)
+supr java.lang.RuntimeException
+hfds serialVersionUID
+
 CLSS public abstract interface jakarta.enterprise.concurrent.ManageableThread
 meth public abstract boolean isShutdown()
 
@@ -404,6 +412,15 @@ meth public final void wait(long) throws java.lang.InterruptedException
 meth public final void wait(long,int) throws java.lang.InterruptedException
 meth public int hashCode()
 meth public java.lang.String toString()
+
+CLSS public java.lang.RuntimeException
+cons protected init(java.lang.String,java.lang.Throwable,boolean,boolean)
+cons public init()
+cons public init(java.lang.String)
+cons public init(java.lang.String,java.lang.Throwable)
+cons public init(java.lang.Throwable)
+supr java.lang.Exception
+hfds serialVersionUID
 
 CLSS public java.lang.Throwable
 cons protected init(java.lang.String,java.lang.Throwable,boolean,boolean)
