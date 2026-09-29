@@ -22,7 +22,7 @@ We also have a link:https://accounts.eclipse.org/mailing-list/cu-dev[mailing lis
 
 == Building from Source
 
-You don not need to build from source to use the project, but you can do so using:
+You do not need to build from source to use the project, but you can do so using:
 
     mvn clean install
 
