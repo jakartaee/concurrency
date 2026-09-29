@@ -22,8 +22,13 @@ We also have a link:https://accounts.eclipse.org/mailing-list/cu-dev[mailing lis
 
 == Building from Source
 
-You don’t need to build from source to use the project, but you can do so with Maven and Java 8 or higher.
+You do not need to build from source to use the project, but you can do so using:
 
     mvn clean install
 
 We have a link:https://ci.eclipse.org/cu/[Jenkins Instance] set up for building and testing.
+
+== How to publish a new release
+
+Open a new issue using the link:https://github.com/jakartaee/concurrency/issues/new?template=release.yml[release issue template]
+which has a checklist of pipelines and updates that need to happen in order to publish a new release.
