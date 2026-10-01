@@ -32,9 +32,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class SkippedException extends ExecutionException implements Serializable {
 
-  /**
-   *
-   */
   private static final long serialVersionUID = 6296866815328432550L;
 
   /**
