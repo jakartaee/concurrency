@@ -42,41 +42,9 @@
         <tag>HEAD</tag>
     </scm>
 
-    <properties>
-        <site.output.dir>${project.build.directory}/staging</site.output.dir>
-
-        <!-- status: DRAFT, BETA, etc., or blank for final -->
-        <status>DRAFT</status>
-
-        <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
-        <revisiondate>${maven.build.timestamp}</revisiondate>
-    </properties>
-
     <build>
         <defaultGoal>package</defaultGoal>
-        <plugins>
-            <!-- Sets minimal Maven version to 3.6.0 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6.0</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
+        <plugins>            
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -108,7 +76,7 @@
                         <configuration>
                             <backend>html5</backend>
                             <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
-                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec-${spec.version}.html</outputFile>
+                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec.html</outputFile>
                             <attributes>
                                 <source-highlighter>coderay</source-highlighter>
                                 <imagesdir>images</imagesdir>
@@ -136,7 +104,7 @@
                         <configuration>
                             <backend>pdf</backend>
                             <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
-                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec-${spec.version}.pdf</outputFile>
+                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec.pdf</outputFile>
                             <attributes>
                                 <source-highlighter>coderay</source-highlighter>
                                 <imagesdir>images</imagesdir>
@@ -164,7 +132,7 @@
                     <sourceDocumentName>jakarta-concurrency-spec.adoc</sourceDocumentName>
                     <attributes>
                         <revnumber>${spec.version}</revnumber>
-                        <revremark>${status}</revremark>
+                        <revremark>${doc.mark}</revremark>
                         <revdate>${revisiondate}</revdate>
                     </attributes>
                 </configuration>
