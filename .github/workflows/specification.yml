@@ -3,20 +3,11 @@
 
 name: Generate specification documentation
 
-on: 
-    workflow_dispatch:
-        inputs:
-            specVersion:
-                description: 'Major and Minor level of release. Example: 3.1'
-                required: true
-            specStatus:
-                type: choice
-                description: 'Status of the specification.'
-                required: true
-                default: 'DRAFT'
-                options:
-                  - DRAFT
-                  - FINAL
+on:
+    release:
+        types: [published]
+    workflow_dispatch: # For testing purposes
+
 
 
 jobs:
@@ -33,15 +24,16 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Generate specification docs
-      run: |
-        mvn package --file api/pom.xml           -Dstatus=${{ github.event.inputs.specStatus }} -Dspec.version=${{ github.event.inputs.specVersion }}
-        mvn package --file specification/pom.xml -Dstatus=${{ github.event.inputs.specStatus }} -Dspec.version=${{ github.event.inputs.specVersion }}
+      run: mvn package -DskipTests -projects '.,api,specification'
     - name: Assemble documentation
       run: |
         mkdir documentation/
-        cp specification/target/generated-docs/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.pdf   documentation/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.pdf
-        cp specification/target/generated-docs/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.html  documentation/jakarta-concurrency-spec-${{ github.event.inputs.specVersion }}.html
-        cp -r api/target/reports/apidocs/ documentation/apidocs
+        cp specification/target/generated-docs/jakarta-concurrency-spec.pdf \ 
+           documentation/jakarta-concurrency-spec.pdf
+        cp specification/target/generated-docs/jakarta-concurrency-spec.html \ 
+           documentation/jakarta-concurrency-spec.html
+        cp -r api/target/reports/apidocs/ \ 
+              documentation/apidocs
     - name: Upload documentation
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:

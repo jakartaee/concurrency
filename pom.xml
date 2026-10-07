@@ -219,7 +219,7 @@
 
     <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.8.0 -->
+            <!-- Sets minimal Maven version to 3.8.0 and Java version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -234,6 +234,10 @@
                                 <requireMavenVersion>
                                     <version>3.8.0</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[${maven.compiler.release},)</version>
+                                    <message>You need JDK ${maven.compiler.release} or newer</message>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
