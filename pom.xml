@@ -68,15 +68,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <!-- See: https://repo.eclipse.org/#browse/browse:cu-maven2-staging -->
         <nexus.staging.repository>cu-maven2-staging</nexus.staging.repository>
         
         <inception.year>2018</inception.year> <!-- of eclipse copyright -->
         <spec.version>3.2</spec.version>
-        
-        <maven.compiler.release>21</maven.compiler.release>
-        <maven.site.skip>true</maven.site.skip>
         
         <maven.antrun.plugin.version>3.2.0</maven.antrun.plugin.version>
         <maven.assembly.plugin.version>3.8.0</maven.assembly.plugin.version>
