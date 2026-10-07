@@ -29,8 +29,8 @@
     <artifactId>jakarta.concurrency-api</artifactId>
     <name>Jakarta Concurrency</name>
     <description>
-        Jakarta Concurrency provides a specification for using concurrency from application 
-        components without compromising container integrity while still preserving the Jakarta EE 
+        Jakarta Concurrency provides a specification for using concurrency from application
+        components without compromising container integrity while still preserving the Jakarta EE
         platform's fundamental benefits.
     </description>
     <url>https://github.com/jakartaee/concurrency</url>
@@ -69,11 +69,11 @@
 
     <build>
         <plugins>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.complier.plugin.version}</version>
-             </plugin>
+            </plugin>
             <!-- Creates the OSGi MANIFEST.MF file -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -107,7 +107,7 @@
                     </execution>
                 </executions>
             </plugin>
-           
+
             <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -122,8 +122,8 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
-            <!-- 
+
+            <!--
                Create Javadoc for API jar
             -->
             <plugin>
@@ -138,7 +138,7 @@
                         </goals>
                         <configuration>
                             <source>${maven.compiler.release}</source>
-                            <quiet>true</quiet>                          
+                            <quiet>true</quiet>
                             <additionalJOption>-Xdoclint:none</additionalJOption>
                             <description>Jakarta Concurrency API documentation</description>
                             <doctitle>Jakarta Concurrency API documentation</doctitle>
@@ -169,7 +169,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-          
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -184,7 +184,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -211,7 +211,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -224,12 +224,12 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
