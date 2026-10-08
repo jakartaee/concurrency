@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- 
     Copyright (c) 2017, 2026 Oracle and/or its affiliates. All rights reserved.
- 
+
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
     http://www.eclipse.org/legal/epl-2.0.
- 
+
     This Source Code may also be made available under the following Secondary
     Licenses when the conditions for such availability set forth in the
     Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
     version 2 with the GNU Classpath Exception, which is available at
     https://www.gnu.org/software/classpath/license.html.
- 
+
     SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
- 
+
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -42,41 +41,9 @@
         <tag>HEAD</tag>
     </scm>
 
-    <properties>
-        <site.output.dir>${project.build.directory}/staging</site.output.dir>
-
-        <!-- status: DRAFT, BETA, etc., or blank for final -->
-        <status>DRAFT</status>
-
-        <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
-        <revisiondate>${maven.build.timestamp}</revisiondate>
-    </properties>
-
     <build>
         <defaultGoal>package</defaultGoal>
         <plugins>
-            <!-- Sets minimal Maven version to 3.6.0 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6.0</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            
             <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -108,7 +75,7 @@
                         <configuration>
                             <backend>html5</backend>
                             <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
-                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec-${spec.version}.html</outputFile>
+                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec.html</outputFile>
                             <attributes>
                                 <source-highlighter>coderay</source-highlighter>
                                 <imagesdir>images</imagesdir>
@@ -136,7 +103,7 @@
                         <configuration>
                             <backend>pdf</backend>
                             <sourceDirectory>${basedir}/src/main/asciidoc</sourceDirectory>
-                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec-${spec.version}.pdf</outputFile>
+                            <outputFile>${project.build.directory}/generated-docs/jakarta-concurrency-spec.pdf</outputFile>
                             <attributes>
                                 <source-highlighter>coderay</source-highlighter>
                                 <imagesdir>images</imagesdir>
@@ -164,12 +131,12 @@
                     <sourceDocumentName>jakarta-concurrency-spec.adoc</sourceDocumentName>
                     <attributes>
                         <revnumber>${spec.version}</revnumber>
-                        <revremark>${status}</revremark>
+                        <revremark>${doc.mark}</revremark>
                         <revdate>${revisiondate}</revdate>
                     </attributes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>

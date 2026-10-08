@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright (c) 2022, 2026 Contributors to the Eclipse Foundation
-  ~ 
+  ~
   ~ This program and the accompanying materials are made available under the
   ~ terms of the Eclipse Public License v. 2.0, which is available at
   ~ http://www.eclipse.org/legal/epl-2.0.
-  ~ 
+  ~
   ~ This Source Code may also be made available under the following Secondary
   ~ Licenses when the conditions for such availability set forth in the
   ~ Eclipse Public License v. 2.0 are satisfied: GNU General Public License,
   ~ version 2 with the GNU Classpath Exception, which is available at
   ~ https://www.gnu.org/software/classpath/license.html.
-  ~ 
+  ~
   ~ SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -68,16 +68,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <!-- See: https://repo.eclipse.org/#browse/browse:cu-maven2-staging -->
         <nexus.staging.repository>cu-maven2-staging</nexus.staging.repository>
-        
+
         <inception.year>2018</inception.year> <!-- of eclipse copyright -->
-        <spec.version>3.2</spec.version>
-        
-        <maven.compiler.release>21</maven.compiler.release>
-        <maven.site.skip>true</maven.site.skip>
-        
+
         <maven.antrun.plugin.version>3.2.0</maven.antrun.plugin.version>
         <maven.assembly.plugin.version>3.8.0</maven.assembly.plugin.version>
         <maven.bundle.plugin.version>6.2.0</maven.bundle.plugin.version>
@@ -92,19 +89,19 @@
         <maven.scm.provider.gitexe.version>2.2.1</maven.scm.provider.gitexe.version>
         <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
         <maven.surefire.version>3.6.0</maven.surefire.version>
-        
+
         <build.helper.plugin.version>3.6.2</build.helper.plugin.version>
         <exec.maven.plugin.version>3.6.4</exec.maven.plugin.version>
-        <flatten.maven.plugin.version>1.8.0</flatten.maven.plugin.version>       
+        <flatten.maven.plugin.version>1.8.0</flatten.maven.plugin.version>
         <spec.version.plugin.version>2.2</spec.version.plugin.version>
-        
+
         <checkstyle.version>14.3.0</checkstyle.version>
         <checkstyle.excludes></checkstyle.excludes>
-        
+
         <asciidoctor.maven.plugin.version>3.2.0</asciidoctor.maven.plugin.version>
         <asciidoctorj.version>3.0.1</asciidoctorj.version>
         <asciidoctorj.pdf.version>2.3.27</asciidoctorj.pdf.version>
-        <jruby.version>9.4.15.0</jruby.version> 
+        <jruby.version>9.4.15.0</jruby.version>
 
         <!-- Used in TCK only -->
         <junit5.version>6.1.3</junit5.version>
@@ -124,6 +121,9 @@
         <jakarta.transaction.version>2.0.1</jakarta.transaction.version>
         <jakarta.jsp.version>4.1.0-M2</jakarta.jsp.version>
         <jakarta.servlet.version>6.2.0-M2</jakarta.servlet.version>
+
+        <maven.build.timestamp.format>MMMM dd, yyyy</maven.build.timestamp.format>
+        <revisiondate>${maven.build.timestamp}</revisiondate>
     </properties>
 
     <dependencyManagement>
@@ -219,7 +219,7 @@
 
     <build>
         <plugins>
-            <!-- Sets minimal Maven version to 3.8.0 -->
+            <!-- Sets minimal Maven version to 3.8.0 and Java version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -234,12 +234,17 @@
                                 <requireMavenVersion>
                                     <version>3.8.0</version>
                                 </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[${maven.compiler.release},)</version>
+                                    <message>You need JDK ${maven.compiler.release} or newer</message>
+                                </requireJavaVersion>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <!-- Sets current year for copyright footers in docs -->
+            <!-- Parse the version number to determine the spec version, minor version, and document mark (DRAFT/FINAL) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -254,6 +259,72 @@
                         <configuration>
                             <name>current.year</name>
                             <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                    <!-- 1. Parse spec.version (Takes the first two parts, e.g., 3.0 from 3.0.0-SNAPSHOT) -->
+                    <execution>
+                        <id>parse-spec-version</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>spec.version</name>
+                            <value>${project.version}</value>
+                            <!-- Matches major.minor and captures it -->
+                            <regex>^([0-9]+\.[0-9]+)\..*</regex>
+                            <replacement>$1</replacement>
+                            <failIfNoMatch>true</failIfNoMatch>
+                        </configuration>
+                    </execution>
+
+                    <!-- 2. Parse bundle.version (Takes the first three parts, e.g., 3.0.1 from 3.0.1-M1) -->
+                    <execution>
+                        <id>parse-bundle-version</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>bundle.version</name>
+                            <value>${project.version}</value>
+                            <!-- Matches major.minor.micro and captures it -->
+                            <regex>^([0-9]+\.[0-9]+\.[0-9]+).*</regex>
+                            <replacement>$1</replacement>
+                            <failIfNoMatch>true</failIfNoMatch>
+                        </configuration>
+                    </execution>
+
+                    <!-- 3. Parse doc.mark for DRAFT versions (-SNAPSHOT, -M*, -RC*) -->
+                    <execution>
+                        <id>parse-doc-mark-draft</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>doc.mark</name>
+                            <value>${project.version}</value>
+                            <!-- Matches if version contains -SNAPSHOT, -M, or -RC -->
+                            <regex>.*-(SNAPSHOT|M[0-9]+|RC[0-9]+).*</regex>
+                            <replacement>DRAFT</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+
+                    <!-- 4. Parse doc.mark for FINAL versions (Fallback if no DRAFT suffix matches) -->
+                    <execution>
+                        <id>parse-doc-mark-final</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>doc.mark</name>
+                            <value>${doc.mark}</value>
+                            <regex>^(?!DRAFT$).*$</regex>
+                            <replacement>FINAL</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
                         </configuration>
                     </execution>
                 </executions>
@@ -287,5 +358,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

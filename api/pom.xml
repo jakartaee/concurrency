@@ -29,8 +29,8 @@
     <artifactId>jakarta.concurrency-api</artifactId>
     <name>Jakarta Concurrency</name>
     <description>
-        Jakarta Concurrency provides a specification for using concurrency from application 
-        components without compromising container integrity while still preserving the Jakarta EE 
+        Jakarta Concurrency provides a specification for using concurrency from application
+        components without compromising container integrity while still preserving the Jakarta EE
         platform's fundamental benefits.
     </description>
     <url>https://github.com/jakartaee/concurrency</url>
@@ -69,37 +69,11 @@
 
     <build>
         <plugins>
-             <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.complier.plugin.version}</version>
-                <configuration>
-                    <release>21</release>
-                </configuration>
             </plugin>
-        
-            <!-- First sets properties for the maven-bundle-plugin and later checks if they are indeed used. -->
-            <plugin>
-                <groupId>org.glassfish.build</groupId>
-                <artifactId>spec-version-maven-plugin</artifactId>
-                <version>${spec.version.plugin.version}</version>
-                <configuration>
-                    <spec>
-                        <specVersion>${spec.version}</specVersion>
-                        <specImplVersion>${project.version}</specImplVersion>
-                        <apiPackage>${project.groupId}</apiPackage>
-                    </spec>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>set-spec-properties</goal>
-                            <goal>check-module</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            
             <!-- Creates the OSGi MANIFEST.MF file -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -110,16 +84,17 @@
                         <supportedProjectType>jar</supportedProjectType>
                     </supportedProjectTypes>
                     <instructions>
-                        <Bundle-Version>${spec.bundle.version}</Bundle-Version>
-                        <Bundle-SymbolicName>${spec.bundle.symbolic-name}</Bundle-SymbolicName>
-                        <Extension-Name>${spec.extension.name}</Extension-Name>
-                        <Implementation-Version>${spec.implementation.version}</Implementation-Version>
-                        <Specification-Version>${spec.specification.version}</Specification-Version>
                         <Bundle-Description>
-                            Jakarta Concurrency ${spec.specification.version} Specification
+                            Jakarta Concurrency ${spec.version} API jar
                         </Bundle-Description>
-                        <specversion>${spec.specification.version}</specversion>
-                        <Export-Package>jakarta.enterprise.concurrent.*; version=${spec.bundle.version}</Export-Package>
+                        <Bundle-Name>Jakarta Concurrency API jar</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Version>${bundle.version}</Bundle-Version>
+                        <Extension-Name>${project.groupId}</Extension-Name>
+                        <Implementation-Version>${bundle.version}</Implementation-Version>
+                        <Specification-Vendor>Eclipse Foundation</Specification-Vendor>
+                        <Specification-Version>${spec.version}</Specification-Version>
+                        <Export-Package>jakarta.enterprise.concurrent.*; version=${bundle.version}</Export-Package>
                     </instructions>
                 </configuration>
                 <executions>
@@ -132,7 +107,7 @@
                     </execution>
                 </executions>
             </plugin>
-           
+
             <!-- Adds the manifest file created by the org.apache.felix:maven-bundle-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -147,8 +122,8 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
-            <!-- 
+
+            <!--
                Create Javadoc for API jar
             -->
             <plugin>
@@ -162,13 +137,13 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <source>21</source>
-                            <quiet>true</quiet>                          
+                            <source>${maven.compiler.release}</source>
+                            <quiet>true</quiet>
                             <additionalJOption>-Xdoclint:none</additionalJOption>
                             <description>Jakarta Concurrency API documentation</description>
                             <doctitle>Jakarta Concurrency API documentation</doctitle>
                             <windowtitle>Jakarta Concurrency API documentation</windowtitle>
-                            <header><![CDATA[<br>Jakarta Concurrency API v${spec.specification.version}]]></header>
+                            <header><![CDATA[<br>Jakarta Concurrency API v${spec.version}]]></header>
                             <bottom><![CDATA[
 Comments to: <a href="mailto:cu-dev@eclipse.org">cu-dev@eclipse.org</a>.<br>
 Copyright &#169; 2020, ${current.year} Eclipse Foundation. All rights reserved.<br>
@@ -194,7 +169,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-          
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -209,7 +184,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -236,7 +211,7 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
@@ -249,12 +224,12 @@ Use is subject to <a href="{@docRoot}/doc-files/speclicense.html" target="_top">
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
