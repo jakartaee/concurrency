@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -13,7 +13,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  */
-
 package ee.jakarta.tck.concurrent.spec.ManagedExecutorService.tx;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +37,7 @@ import ee.jakarta.tck.concurrent.framework.TestServlet;
 import ee.jakarta.tck.concurrent.framework.junit.extensions.Wait;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,8 +58,8 @@ public class TransactionServlet extends TestServlet {
     @Resource(lookup = "java:comp/env/jdbc/ManagedExecutorServiceDB")
     private DataSource ds;
 
-    @Resource(lookup = TestConstants.defaultManagedScheduledExecutorService)
-    private ManagedScheduledExecutorService scheduledExecutor;
+    @Resource(lookup = TestConstants.defaultManagedExecutorService)
+    private ManagedExecutorService executor;
 
     @Override
     protected void beforeClass() throws RemoteException {
@@ -84,7 +83,7 @@ public class TransactionServlet extends TestServlet {
     public void transactionTest(final HttpServletRequest req, final HttpServletResponse res) throws Exception {
         boolean isCommit = Boolean.parseBoolean(req.getParameter(Constants.PARAM_COMMIT));
 
-        Future<?> taskResult = scheduledExecutor.submit(new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT));
+        Future<?> taskResult = executor.submit(new TransactedTask(isCommit, Constants.SQL_TEMPLATE_INSERT));
 
         Wait.waitForTaskComplete(taskResult);
     }
@@ -93,7 +92,7 @@ public class TransactionServlet extends TestServlet {
         int originTableCount = Counter.getCount();
 
         CancelledTransactedTask cancelledTask = new CancelledTransactedTask(Constants.SQL_TEMPLATE_INSERT);
-        Future<?> future = scheduledExecutor.submit(cancelledTask);
+        Future<?> future = executor.submit(cancelledTask);
 
         // wait for transaction to begin
         Wait.waitForTransactionBegan(cancelledTask);
