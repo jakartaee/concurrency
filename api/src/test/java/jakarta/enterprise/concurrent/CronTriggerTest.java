@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -551,6 +551,38 @@ class CronTriggerTest {
 
         time = trigger.getNextRunTime(new LastExecutionImpl(17, time), scheduledAt);
         assertEquals(ZonedDateTime.of(2021, 6, 5, 0, 0, 0, 0, mtn), time); // Saturday
+    }
+
+    /**
+     * Specify ordinal days of week with numeric day values.
+     */
+    @Test
+    void testDaysOfWeekNumericOrdinals() {
+        ZoneId central = ZoneId.of("America/Chicago");
+
+        // 10 AM on the first Friday and the last Sunday of the month
+        CronTrigger trigger = new CronTrigger("0 10 * * 5#1,0#L", central);
+
+        ZonedDateTime scheduledAt = ZonedDateTime.of(
+                2020, 12, 31, // Thursday, Dec 31, 2020
+                12, 0, 0, 0, // 12:00 PM
+                trigger.getZoneId());
+
+        ZonedDateTime time;
+        time = trigger.getNextRunTime(null, scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 1, 10, 0, 0, 0, central), time); // Friday (First)
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(1, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 1, 31, 10, 0, 0, 0, central), time); // Sunday (Last)
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(2, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 2, 5, 10, 0, 0, 0, central), time); // Friday (First)
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(3, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 2, 28, 10, 0, 0, 0, central), time); // Sunday (Last)
+
+        time = trigger.getNextRunTime(new LastExecutionImpl(4, time), scheduledAt);
+        assertEquals(ZonedDateTime.of(2021, 3, 5, 10, 0, 0, 0, central), time); // Friday (First)
     }
 
     /**

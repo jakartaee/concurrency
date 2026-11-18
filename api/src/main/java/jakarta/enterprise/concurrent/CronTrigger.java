@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021,2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2026 Contributors to the Eclipse Foundation
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -761,7 +761,7 @@ public class CronTrigger implements ZonedTrigger {
             }
             if (day.length() < 3) {
                 int d = Integer.parseInt(day);
-                return d == 0 ? 7 : d;
+                return 7 * ordinal + (d == 0 ? 7 : d);
             }
         } catch (NumberFormatException x) {
             throw new IllegalArgumentException("dayOfWeek: " + day, x);
